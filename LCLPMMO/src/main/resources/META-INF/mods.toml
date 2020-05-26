@@ -1,0 +1,32 @@
+
+modLoader="javafml"
+loaderVersion="[31,)"
+issueTrackerURL="http://my.issue.tracker/"
+displayURL="http://lclpnet.work/" #optional
+authors="LCLP" #optional
+
+[[mods]]
+    modId="lclpmmo"
+    version="${version}"
+    displayName="LCLPMMO"
+    updateJSONURL="http://myurl.me/" #optional
+    logoFile="logo.png" #optional
+    credits="LCLPNetwork!" #optional
+    description='''
+    A modification that adds MMO stuff to Minecraft.
+    Intended to be used on LCLPServer 5.0.
+    '''
+    
+    [[dependencies.core]] #optional
+        modId="forge" #mandatory
+        mandatory=true #mandatory
+        versionRange="[31,)" #mandatory
+        ordering="NONE"
+        side="BOTH"
+    [[dependencies.core]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[1.15.2]"
+        ordering="NONE"
+        side="BOTH"
+
