@@ -1,0 +1,8 @@
+{
+    "intro_theme": {
+        "sounds": [{
+            "name": "lclpmmo:intro_theme",
+            "stream": false
+        }]
+    }
+}
