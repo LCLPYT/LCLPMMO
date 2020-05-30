@@ -4,5 +4,18 @@
             "name": "lclpmmo:intro_theme",
             "stream": false
         }]
+    },
+    "ui.button.hover": {
+        "sounds": [{
+            "name": "lclpmmo:ui/buttonhover",
+            "stream": false
+        }]
+    },
+    "music.ls5": {
+        "sounds": [{
+            "name": "lclpmmo:music/ls5",
+            "stream": true,
+            "volume": 0.5
+        }]
     }
 }

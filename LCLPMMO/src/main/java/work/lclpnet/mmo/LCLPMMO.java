@@ -27,6 +27,8 @@ public class LCLPMMO {
 	private void setup(final FMLCommonSetupEvent event) { //preinit
 		LOGGER.info("LCLPMMO initializing...");
 
+		Config.load();
+		
 		LOGGER.info("LCLPMMO initialized.");
 	}
 

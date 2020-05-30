@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
@@ -41,7 +40,7 @@ public class PreIntroScreen extends Screen{
 			this.firstTitleRenderTime = firstRenderTime + FADEIN_DELAY;
 		}
 		else if(System.currentTimeMillis() - this.firstRenderTime >= INTRO_LENGTH) {
-			minecraft.displayGuiScreen(new MainMenuScreen(true));
+			minecraft.displayGuiScreen(new MMOMainScreen(true));
 			return;
 		}
 

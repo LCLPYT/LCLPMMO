@@ -1,0 +1,158 @@
+package work.lclpnet.mmo.gui;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.AccessibilityScreen;
+import net.minecraft.client.gui.screen.LanguageScreen;
+import net.minecraft.client.gui.screen.MultiplayerScreen;
+import net.minecraft.client.gui.screen.MultiplayerWarningScreen;
+import net.minecraft.client.gui.screen.OptionsScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.WorldSelectionScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.client.renderer.RenderSkybox;
+import net.minecraft.client.renderer.RenderSkyboxCube;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.screen.ModListScreen;
+import work.lclpnet.mmo.LCLPMMO;
+
+public class MMOMainScreen extends Screen{
+
+	public static final RenderSkyboxCube PANORAMA_RESOURCES = new RenderSkyboxCube(new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama"));
+	private static final ResourceLocation PANORAMA_OVERLAY_TEXTURES = new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama_overlay.png"),
+			MINECRAFT_TITLE_TEXTURES = new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/title.png"),
+			ACCESSIBILITY_TEXTURES = new ResourceLocation("textures/gui/accessibility.png"),
+			THEME_MUSIC = new ResourceLocation(LCLPMMO.MODID, "music.ls5");
+	private final RenderSkybox panorama = new RenderSkybox(PANORAMA_RESOURCES);
+	private boolean showFadeInAnimation;
+	private long firstRenderTime = 0L;
+	private List<MMOButtonInfo> menuButtons = new ArrayList<>();
+
+	public MMOMainScreen(boolean fade) {
+		super(new StringTextComponent("Main menu"));
+		this.showFadeInAnimation = fade;
+
+		setupButtons();
+	}
+
+	private void setupButtons() {
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.singleplayer"), b -> this.minecraft.displayGuiScreen(new WorldSelectionScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.multiplayer"), b -> {
+			if (this.minecraft.gameSettings.field_230152_Z_) this.minecraft.displayGuiScreen(new MultiplayerScreen(this));
+			else this.minecraft.displayGuiScreen(new MultiplayerWarningScreen(this));
+		}));
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
+	}
+
+	@Override
+	protected void init() {
+		int x = (int) (this.width / 12.8), y = (int) (this.height / 2.8);
+		int width = this.width / 2 - 100, height = this.height / 18;
+		int marginTop = this.height / 36;
+
+		for(MMOButtonInfo b : menuButtons) {
+			this.addButton(new FancyButton(x, y, width, height, b.text, b.onClick, b.color, b.hoverColor));
+			y += height + marginTop;
+		}
+
+		int quitY = (int) (this.height * 0.9);
+		int imgBtnY = quitY - (int) (40 * (this.height / 360D));
+		
+		this.addButton(new ImageButton(x, imgBtnY, 20, 20, 0, 106, 20, Button.WIDGETS_LOCATION, 256, 256, b -> {
+			this.minecraft.displayGuiScreen(new LanguageScreen(this, this.minecraft.gameSettings, this.minecraft.getLanguageManager()));
+		}, I18n.format("narrator.button.language")));
+		
+		this.addButton(new ImageButton(x + 25, imgBtnY, 20, 20, 0, 0, 20, ACCESSIBILITY_TEXTURES, 32, 64, b -> {
+			this.minecraft.displayGuiScreen(new AccessibilityScreen(this, this.minecraft.gameSettings));
+		}, I18n.format("narrator.button.accessibility")));
+
+		FancyButton quitButton = new FancyButton(x, quitY, 
+				width, height, 
+				I18n.format("menu.quit"), 
+				b -> this.minecraft.shutdown(), 
+				0xFFFF7070, TextFormatting.RED.getColor());
+		this.addButton(quitButton);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+		if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
+			this.firstRenderTime = Util.milliTime();
+			onStart();
+		}
+
+		float f = this.showFadeInAnimation ? (float)(Util.milliTime() - this.firstRenderTime) / 1000.0F : 1.0F;
+		this.panorama.render(p_render_3_, MathHelper.clamp(f, 0.0F, 1.0F));
+
+		this.minecraft.getTextureManager().bindTexture(PANORAMA_OVERLAY_TEXTURES);
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.showFadeInAnimation ? (float)MathHelper.ceil(MathHelper.clamp(f, 0.0F, 1.0F)) : 1.0F);
+		blit(0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
+
+		float f1 = this.showFadeInAnimation ? MathHelper.clamp(f - 1.0F, 0.0F, 1.0F) : 1.0F;
+		int l = MathHelper.ceil(f1 * 255.0F) << 24;
+		if ((l & -67108864) != 0) { //Prevent "flicker" when fading
+			this.minecraft.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, f1);
+			int padding = (int) (this.width / 21.3);
+
+			double scale = 1D / (360D / this.height), 
+					neg = 1D / scale;
+			GlStateManager.scaled(scale, scale, scale);
+			this.blit(padding, padding, 0, 0, 255, 84);
+			GlStateManager.scaled(neg, neg, neg);
+
+			for(Widget widget : this.buttons) {
+				widget.setAlpha(f1);
+			}
+
+			super.render(p_render_1_, p_render_2_, p_render_3_);
+		}
+	}
+
+	private void onStart() {
+		minecraft.getSoundHandler().play(SimpleSound.music(new SoundEvent(THEME_MUSIC)));
+	}
+
+	@Override
+	public boolean shouldCloseOnEsc() {
+		return false;
+	}
+
+	public class MMOButtonInfo {
+
+		public String text;
+		public IPressable onClick;
+		public int color, hoverColor;
+
+		public MMOButtonInfo(String text, IPressable onClick) {
+			this(text, onClick, TextFormatting.WHITE.getColor(), TextFormatting.YELLOW.getColor());
+		}
+
+		public MMOButtonInfo(String text, IPressable onClick, int color, int hoverColor) {
+			this.text = text;
+			this.onClick = onClick;
+			this.color = color;
+			this.hoverColor = hoverColor;
+		}
+
+	}
+
+}
