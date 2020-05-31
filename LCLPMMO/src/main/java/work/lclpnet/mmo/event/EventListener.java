@@ -3,6 +3,8 @@ package work.lclpnet.mmo.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,6 +20,7 @@ public class EventListener {
 
 	private static boolean startup = true;
 
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onSound(PlaySoundEvent e) {
 		if(e.getSound().getCategory() == SoundCategory.MUSIC 
@@ -26,6 +29,7 @@ public class EventListener {
 			e.setResultSound(null);
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onGui(GuiOpenEvent e) {
 		if(startup && e.getGui() instanceof MainMenuScreen) {

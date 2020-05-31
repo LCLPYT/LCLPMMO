@@ -10,8 +10,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
 
+@OnlyIn(Dist.CLIENT)
 public class FancyButton extends Button{
 
 	public static final ResourceLocation LOCATION_HOVER = new ResourceLocation(LCLPMMO.MODID, "ui.button.hover");

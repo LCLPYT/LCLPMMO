@@ -11,9 +11,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.util.Color;
 
+@OnlyIn(Dist.CLIENT)
 public class PreIntroScreen extends Screen{
 
 	private static final long FADEIN_DELAY = 2000,

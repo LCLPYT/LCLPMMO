@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.gui;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AccessibilityScreen;
 import net.minecraft.client.gui.screen.LanguageScreen;
 import net.minecraft.client.gui.screen.MultiplayerScreen;
@@ -14,22 +16,36 @@ import net.minecraft.client.gui.screen.MultiplayerWarningScreen;
 import net.minecraft.client.gui.screen.OptionsScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.WorldSelectionScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.renderer.RenderSkybox;
 import net.minecraft.client.renderer.RenderSkyboxCube;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.gui.util.FakeClientPlayNetHandler;
+import work.lclpnet.mmo.gui.util.FakeWorld;
 
+@OnlyIn(Dist.CLIENT)
 public class MMOMainScreen extends Screen{
 
 	public static final RenderSkyboxCube PANORAMA_RESOURCES = new RenderSkyboxCube(new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama"));
@@ -41,12 +57,40 @@ public class MMOMainScreen extends Screen{
 	private boolean showFadeInAnimation;
 	private long firstRenderTime = 0L;
 	private List<MMOButtonInfo> menuButtons = new ArrayList<>();
+	private ClientPlayerEntity player;
 
 	public MMOMainScreen(boolean fade) {
 		super(new StringTextComponent("Main menu"));
 		this.showFadeInAnimation = fade;
 
 		setupButtons();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setupEntity() {
+		if(player != null) return;
+		ClientPlayNetHandler netHandler = new FakeClientPlayNetHandler(minecraft);
+		ClientWorld world = new FakeWorld(netHandler, new WorldSettings(0, GameType.NOT_SET, true, false, WorldType.DEFAULT));
+		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null);
+		
+		DataParameter<Byte> PLAYER_MODEL_FLAG = null;
+		try {
+			Field f = PlayerEntity.class.getDeclaredField("PLAYER_MODEL_FLAG");
+			f.setAccessible(true);
+			Object o = f.get(null);
+			PLAYER_MODEL_FLAG = (DataParameter<Byte>) o;
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
+		}
+		
+		int modelParts = 0;
+		for (PlayerModelPart part : minecraft.gameSettings.getModelParts())
+			modelParts |= part.getPartMask();
+		
+		if(PLAYER_MODEL_FLAG != null) player.getDataManager().set(PLAYER_MODEL_FLAG, (byte) modelParts);
+		
+		minecraft.player = player;
+		minecraft.getRenderManager().cacheActiveRenderInfo(world, minecraft.gameRenderer.getActiveRenderInfo(), player);
 	}
 
 	private void setupButtons() {
@@ -61,6 +105,8 @@ public class MMOMainScreen extends Screen{
 
 	@Override
 	protected void init() {
+		setupEntity();
+		
 		int x = (int) (this.width / 12.8), y = (int) (this.height / 2.8);
 		int width = this.width / 2 - 100, height = this.height / 18;
 		int marginTop = this.height / 36;
@@ -72,11 +118,11 @@ public class MMOMainScreen extends Screen{
 
 		int quitY = (int) (this.height * 0.9);
 		int imgBtnY = quitY - (int) (40 * (this.height / 360D));
-		
+
 		this.addButton(new ImageButton(x, imgBtnY, 20, 20, 0, 106, 20, Button.WIDGETS_LOCATION, 256, 256, b -> {
 			this.minecraft.displayGuiScreen(new LanguageScreen(this, this.minecraft.gameSettings, this.minecraft.getLanguageManager()));
 		}, I18n.format("narrator.button.language")));
-		
+
 		this.addButton(new ImageButton(x + 25, imgBtnY, 20, 20, 0, 0, 20, ACCESSIBILITY_TEXTURES, 32, 64, b -> {
 			this.minecraft.displayGuiScreen(new AccessibilityScreen(this, this.minecraft.gameSettings));
 		}, I18n.format("narrator.button.accessibility")));
@@ -119,12 +165,26 @@ public class MMOMainScreen extends Screen{
 			this.blit(padding, padding, 0, 0, 255, 84);
 			GlStateManager.scaled(neg, neg, neg);
 
+			this.drawGuiContainerBackgroundLayer(p_render_3_, p_render_1_, p_render_2_, f1);
+
 			for(Widget widget : this.buttons) {
 				widget.setAlpha(f1);
 			}
 
 			super.render(p_render_1_, p_render_2_, p_render_3_);
 		}
+	}
+
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY, float alpha) {
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
+		int x = (int) (this.width * 0.8), y = (int) (this.height * 0.8);
+		int scale = (int) (100F * (this.height / 360F));
+		
+		mouseY = MathHelper.clamp(mouseY, (int) (this.height * 0.6F), (int) (this.height * 0.75F));
+		
+		RenderSystem.translatef(0F, 0F, 60F);
+		InventoryScreen.drawEntityOnScreen(x, y, scale, (float)(x) - mouseX, (float)(y - 50) - mouseY, player);
+		RenderSystem.translated(0F, 0F, -60F);
 	}
 
 	private void onStart() {
