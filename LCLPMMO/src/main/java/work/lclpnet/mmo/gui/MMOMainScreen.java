@@ -137,26 +137,26 @@ public class MMOMainScreen extends Screen{
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
 			this.firstRenderTime = Util.milliTime();
 			onStart();
 		}
 
-		float f = this.showFadeInAnimation ? (float)(Util.milliTime() - this.firstRenderTime) / 1000.0F : 1.0F;
-		this.panorama.render(p_render_3_, MathHelper.clamp(f, 0.0F, 1.0F));
+		float alphaRaw = this.showFadeInAnimation ? (float)(Util.milliTime() - this.firstRenderTime) / 1000.0F : 1.0F;
+		this.panorama.render(partialTicks, MathHelper.clamp(alphaRaw, 0.0F, 1.0F));
 
 		this.minecraft.getTextureManager().bindTexture(PANORAMA_OVERLAY_TEXTURES);
 		RenderSystem.enableBlend();
 		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.showFadeInAnimation ? (float)MathHelper.ceil(MathHelper.clamp(f, 0.0F, 1.0F)) : 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.showFadeInAnimation ? (float)MathHelper.ceil(MathHelper.clamp(alphaRaw, 0.0F, 1.0F)) : 1.0F);
 		blit(0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
 
-		float f1 = this.showFadeInAnimation ? MathHelper.clamp(f - 1.0F, 0.0F, 1.0F) : 1.0F;
-		int l = MathHelper.ceil(f1 * 255.0F) << 24;
+		float alpha = this.showFadeInAnimation ? MathHelper.clamp(alphaRaw - 1.0F, 0.0F, 1.0F) : 1.0F;
+		int l = MathHelper.ceil(alpha * 255.0F) << 24;
 		if ((l & -67108864) != 0) { //Prevent "flicker" when fading
 			this.minecraft.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
-			RenderSystem.color4f(1.0F, 1.0F, 1.0F, f1);
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 			int padding = (int) (this.width / 21.3);
 
 			double scale = 1D / (360D / this.height), 
@@ -165,17 +165,17 @@ public class MMOMainScreen extends Screen{
 			this.blit(padding, padding, 0, 0, 255, 84);
 			GlStateManager.scaled(neg, neg, neg);
 
-			this.drawGuiContainerBackgroundLayer(p_render_3_, p_render_1_, p_render_2_, f1);
+			this.drawPlayerModel(partialTicks, mouseX, mouseY, alpha);
 
 			for(Widget widget : this.buttons) {
-				widget.setAlpha(f1);
+				widget.setAlpha(alpha);
 			}
 
-			super.render(p_render_1_, p_render_2_, p_render_3_);
+			super.render(mouseX, mouseY, partialTicks);
 		}
 	}
 
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY, float alpha) {
+	protected void drawPlayerModel(float partialTicks, int mouseX, int mouseY, float alpha) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 		int x = (int) (this.width * 0.8), y = (int) (this.height * 0.8);
 		int scale = (int) (100F * (this.height / 360F));
