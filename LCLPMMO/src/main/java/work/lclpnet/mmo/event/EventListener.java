@@ -32,12 +32,11 @@ public class EventListener {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onGui(GuiOpenEvent e) {
-		if(startup && e.getGui() instanceof MainMenuScreen) {
+		if(e.getGui() instanceof MainMenuScreen) {
 			e.setCanceled(true);
+			Minecraft.getInstance().displayGuiScreen(Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen());
 			startup = false;
-			
-			Minecraft.getInstance().displayGuiScreen(Config.shouldSkipIntro() ? new MMOMainScreen(true) : new PreIntroScreen());
 		}
 	}
-
+	
 }
