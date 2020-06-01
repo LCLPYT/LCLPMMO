@@ -78,8 +78,6 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock{
 			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
 		}
 	}
-
-	
 	
 	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {

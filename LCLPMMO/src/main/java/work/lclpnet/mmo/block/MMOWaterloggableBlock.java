@@ -26,12 +26,13 @@ public class MMOWaterloggableBlock extends MMOBlock implements IWaterLoggable{
 	
     public MMOWaterloggableBlock(Properties properties) {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(WATERLOGGED, false));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(WATERLOGGED, Boolean.valueOf(false)));
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(WATERLOGGED, false);
+    	IFluidState fluidState = context.getWorld().getFluidState(context.getPos());
+        return this.getDefaultState().with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
     @SuppressWarnings("deprecation")
