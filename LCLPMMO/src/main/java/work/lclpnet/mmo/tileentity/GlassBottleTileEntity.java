@@ -5,6 +5,8 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import work.lclpnet.mmo.block.GlassBottleBlock;
@@ -45,6 +47,19 @@ public class GlassBottleTileEntity extends TileEntity{
 		ItemStackHelper.loadAllItems(tag, items);
 	}
 	
+	@Override
+	public SUpdateTileEntityPacket getUpdatePacket() {
+		CompoundNBT nbt = new CompoundNBT();
+		ItemStackHelper.saveAllItems(nbt, items);
+		return new SUpdateTileEntityPacket(getPos(), -1, nbt);
+	}
+	
+	@Override
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+		CompoundNBT nbt = pkt.getNbtCompound();
+		ItemStackHelper.loadAllItems(nbt, items);
+	}
+	
 	public ItemStack getItem() {
 		return items.get(0);
 	}
@@ -53,6 +68,7 @@ public class GlassBottleTileEntity extends TileEntity{
 		items.set(0, item);
 		this.markDirty();
 		updateState();
+		if(!world.isRemote) world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
 	}
 
 	private void updateState() {
