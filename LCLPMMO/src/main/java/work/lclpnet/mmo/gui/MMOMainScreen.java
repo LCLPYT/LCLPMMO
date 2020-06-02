@@ -72,23 +72,36 @@ public class MMOMainScreen extends Screen{
 		ClientPlayNetHandler netHandler = new FakeClientPlayNetHandler(minecraft);
 		ClientWorld world = new FakeWorld(netHandler, new WorldSettings(0, GameType.NOT_SET, true, false, WorldType.DEFAULT));
 		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null);
-		
+
+		Field f;
 		DataParameter<Byte> PLAYER_MODEL_FLAG = null;
 		try {
-			Field f = PlayerEntity.class.getDeclaredField("PLAYER_MODEL_FLAG");
-			f.setAccessible(true);
-			Object o = f.get(null);
-			PLAYER_MODEL_FLAG = (DataParameter<Byte>) o;
+			f = PlayerEntity.class.getDeclaredField("field_184827_bp");
 		} catch (ReflectiveOperationException e) {
-			e.printStackTrace();
+			try {
+				f = PlayerEntity.class.getDeclaredField("PLAYER_MODEL_FLAG");
+			} catch (ReflectiveOperationException ex) {
+				ex.printStackTrace();
+				f = null;
+			}
 		}
-		
-		int modelParts = 0;
-		for (PlayerModelPart part : minecraft.gameSettings.getModelParts())
-			modelParts |= part.getPartMask();
-		
-		if(PLAYER_MODEL_FLAG != null) player.getDataManager().set(PLAYER_MODEL_FLAG, (byte) modelParts);
-		
+
+		if(f != null) {
+			try {
+				f.setAccessible(true);
+				Object o = f.get(null);
+				PLAYER_MODEL_FLAG = (DataParameter<Byte>) o;
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
+			}
+
+			int modelParts = 0;
+			for (PlayerModelPart part : minecraft.gameSettings.getModelParts())
+				modelParts |= part.getPartMask();
+
+			if(PLAYER_MODEL_FLAG != null) player.getDataManager().set(PLAYER_MODEL_FLAG, (byte) modelParts);
+		}
+
 		minecraft.player = player;
 		minecraft.getRenderManager().cacheActiveRenderInfo(world, minecraft.gameRenderer.getActiveRenderInfo(), player);
 	}
@@ -106,7 +119,7 @@ public class MMOMainScreen extends Screen{
 	@Override
 	protected void init() {
 		setupEntity();
-		
+
 		int x = (int) (this.width / 12.8), y = (int) (this.height / 2.8);
 		int width = this.width / 2 - 100, height = this.height / 18;
 		int marginTop = this.height / 36;
@@ -179,9 +192,9 @@ public class MMOMainScreen extends Screen{
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 		int x = (int) (this.width * 0.8), y = (int) (this.height * 0.8);
 		int scale = (int) (100F * (this.height / 360F));
-		
+
 		mouseY = MathHelper.clamp(mouseY, (int) (this.height * 0.6F), (int) (this.height * 0.75F));
-		
+
 		RenderSystem.translatef(0F, 0F, 60F);
 		InventoryScreen.drawEntityOnScreen(x, y, scale, (float)(x) - mouseX, (float)(y - 50) - mouseY, player);
 		RenderSystem.translated(0F, 0F, -60F);
