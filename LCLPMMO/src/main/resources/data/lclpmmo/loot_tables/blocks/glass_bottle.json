@@ -6,7 +6,7 @@
         "entries": [
           {
             "type": "minecraft:item",
-            "name": "lclpmmo:glass_bottle_empty"
+            "name": "lclpmmo:glass_bottle"
           }
         ],
         "conditions": [

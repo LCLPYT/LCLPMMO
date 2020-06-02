@@ -27,7 +27,7 @@ public class MMOBlocks {
 	private static final List<Block> BLOCKS = new ArrayList<>();
 	private static final List<Item> ITEMS = new ArrayList<>();
 
-	public static final Block GLASS_BOTTLE_EMPTY = register(MMONames.Block.GLASS_BOTTLE_EMPTY, new GlassBottleBlock(Block.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).sound(SoundType.GLASS).notSolid().doesNotBlockMovement()));
+	public static final Block GLASS_BOTTLE = register(MMONames.Block.GLASS_BOTTLE, new GlassBottleBlock(Block.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).sound(SoundType.GLASS).notSolid().doesNotBlockMovement()));
 
 	private static Block register(String name, Block block) {
 		return register(name, block, new Item.Properties().group(LCLPMMO.GROUP));

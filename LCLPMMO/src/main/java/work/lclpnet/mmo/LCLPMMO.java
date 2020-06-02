@@ -10,6 +10,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import work.lclpnet.mmo.event.EventListener;
+import work.lclpnet.mmo.util.ColorHandler;
 import work.lclpnet.mmo.util.RenderLayerHandler;
 
 @Mod(LCLPMMO.MODID)
@@ -39,6 +40,7 @@ public class LCLPMMO {
 	
 	private void clientSetup(final FMLClientSetupEvent e) {
 		RenderLayerHandler.init();
+		ColorHandler.init();
 	}
 
 }

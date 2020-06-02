@@ -6,7 +6,13 @@ public class MMONames {
 
 	public static class Block {
 		
-		public static final String GLASS_BOTTLE_EMPTY = MODID + ":glass_bottle_empty";
+		public static final String GLASS_BOTTLE = MODID + ":glass_bottle";
+		
+	}
+	
+	public static class TileEntity {
+		
+		public static final String GLASS_BOTTLE = MODID + ":glass_bottle";
 		
 	}
 	
