@@ -7,6 +7,7 @@ import java.util.List;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AccessibilityScreen;
@@ -68,7 +69,7 @@ public class MMOMainScreen extends Screen{
 
 	@SuppressWarnings("unchecked")
 	private void setupEntity() {
-		if(player != null) return;
+		if(player != null && Minecraft.getInstance().getConnection() != null) return;
 		ClientPlayNetHandler netHandler = new FakeClientPlayNetHandler(minecraft);
 		ClientWorld world = new FakeWorld(netHandler, new WorldSettings(0, GameType.NOT_SET, true, false, WorldType.DEFAULT));
 		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null);

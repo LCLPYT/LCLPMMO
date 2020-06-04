@@ -38,7 +38,7 @@ import work.lclpnet.mmo.util.SoundHelper;
 @SuppressWarnings("deprecation")
 public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements ITileEntityProvider{
 
-	private static final VoxelShape SHAPE = Block.makeCuboidShape(3.5D, 0D, 3.5D, 12.5D, 13D, 12.5D);
+	private static final VoxelShape SHAPE = Block.makeCuboidShape(4.5D, 0D, 4.5D, 11.5D, 10.5D, 11.5D);
 	public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
 	public GlassBottleBlock(Properties properties) {
