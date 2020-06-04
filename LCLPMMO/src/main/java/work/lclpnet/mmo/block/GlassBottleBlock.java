@@ -6,9 +6,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.play.server.SChangeBlockPacket;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -30,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import work.lclpnet.mmo.event.custom.GlassBottleEvent;
 import work.lclpnet.mmo.tileentity.GlassBottleTileEntity;
-import work.lclpnet.mmo.util.ItemStackHelper;
+import work.lclpnet.mmo.util.ItemStackUtils;
 import work.lclpnet.mmo.util.SoundHelper;
 
 @SuppressWarnings("deprecation")
@@ -62,18 +64,21 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements
 		if(!(tileentity instanceof GlassBottleTileEntity)) return ActionResultType.PASS;
 
 		ItemStack heldItem = player.getHeldItem(hand);
-		
+
 		GlassBottleTileEntity bottle = (GlassBottleTileEntity) tileentity;
-		if(ItemStackHelper.isAir(bottle.getItem())) {
+		if(ItemStackUtils.isAir(bottle.getItem())) {
 			//The bottle is empty.
 			if(offHandCheck(player, hand)) return ActionResultType.FAIL;
-			
-			if(ItemStackHelper.isPotion(heldItem)) {
+
+			if(ItemStackUtils.isPotion(heldItem)) {
 				//Add to bottle
 				GlassBottleEvent.Fill event = new GlassBottleEvent.Fill(worldIn, pos, state, player, heldItem);
 				MinecraftForge.EVENT_BUS.post(event);
-				if(event.isCanceled()) return ActionResultType.FAIL;
-				
+				if(event.isCanceled()) {
+					updateBlock(worldIn, pos, player, bottle);
+					return ActionResultType.FAIL;
+				}
+
 				ItemStack fluid = event.getItem().copy();
 				fluid.setCount(1);
 				bottle.setItem(fluid);
@@ -87,13 +92,16 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements
 		} else {
 			//Something is inside the bottle.
 			if(offHandCheck(player, hand)) return ActionResultType.FAIL;
-			
-			if(ItemStackHelper.isItem(heldItem, Items.GLASS_BOTTLE)) {
+
+			if(ItemStackUtils.isItem(heldItem, Items.GLASS_BOTTLE)) {
 				//Retrieve from bottle
 				GlassBottleEvent.Empty event = new GlassBottleEvent.Empty(worldIn, pos, state, player, bottle.getItem());
 				MinecraftForge.EVENT_BUS.post(event);
-				if(event.isCanceled()) return ActionResultType.FAIL;
-				
+				if(event.isCanceled()) {
+					updateBlock(worldIn, pos, player, bottle);
+					return ActionResultType.FAIL;
+				}
+
 				player.world.playSound(player, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5F, SoundHelper.randomPitch(0F, 0.3F));
 				if(!player.isCreative()) {
 					heldItem.shrink(1);
@@ -107,11 +115,20 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements
 		return ActionResultType.PASS;
 	}
 
+	private void updateBlock(World worldIn, BlockPos pos, PlayerEntity player, GlassBottleTileEntity bottle) {
+		if(worldIn.isRemote) return;
+		
+		ServerPlayerEntity p = (ServerPlayerEntity) player;
+		p.sendContainerToPlayer(p.openContainer);
+		p.connection.sendPacket(new SChangeBlockPacket(player.world, pos));
+		p.connection.sendPacket(bottle.getUpdatePacket());
+	}
+
 	/**
 	 * @return True, if the interaction was made with off_hand and if the main_hand item is something.
 	 */
 	private boolean offHandCheck(PlayerEntity player, Hand hand) {
-		return hand == Hand.OFF_HAND && !ItemStackHelper.isAir(player.getHeldItemMainhand());
+		return hand == Hand.OFF_HAND && !ItemStackUtils.isAir(player.getHeldItemMainhand());
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -184,5 +201,19 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
 		return new GlassBottleTileEntity();
 	}
-
+	
+	@Override
+	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+		super.onBlockHarvested(worldIn, pos, state, player);
+		
+		if(player.isCreative()) return;
+		
+		TileEntity en = worldIn.getTileEntity(pos);
+		if(!(en instanceof GlassBottleTileEntity)) return;
+		
+		GlassBottleTileEntity bottle = (GlassBottleTileEntity) en;
+		ItemStack item = bottle.getItem();
+		if(!item.isEmpty()) Block.spawnAsEntity(worldIn, pos, item);
+	}
+	
 }
