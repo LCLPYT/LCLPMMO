@@ -3,13 +3,21 @@ package work.lclpnet.mmo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import work.lclpnet.corebase.util.ComponentSupplier;
+import work.lclpnet.mmo.cmd.MMOCommands;
+import work.lclpnet.mmo.cmd.MusicArgumentType;
 import work.lclpnet.mmo.event.EventListener;
+import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.util.ColorHandler;
 import work.lclpnet.mmo.util.RenderLayerHandler;
 
@@ -18,6 +26,7 @@ public class LCLPMMO {
 	
 	public static final String MODID = "lclpmmo";
 	private static final Logger LOGGER = LogManager.getLogger();
+	public static ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
 	public static MMOGroup GROUP = new MMOGroup(MODID);
 
 	public LCLPMMO() {
@@ -34,8 +43,16 @@ public class LCLPMMO {
 		LOGGER.info("LCLPMMO initializing...");
 
 		Config.load();
+		MMOPacketHandler.init();
+		ArgumentTypes.register("mmo_music", MusicArgumentType.class, new ArgumentSerializer<>(MusicArgumentType::music));
 		
 		LOGGER.info("LCLPMMO initialized.");
+	}
+	
+	@SubscribeEvent
+	public void serverStart(final FMLServerStartingEvent e) {
+		LOGGER.info("LCLPMMO server starting...");
+		MMOCommands.registerCommands(e.getCommandDispatcher());
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent e) {

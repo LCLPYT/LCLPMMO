@@ -1,6 +1,14 @@
 {
     "lclpnetwork.presents": "LCLPNetwork presents...",
     "mmo.menu.play": "Play",
+    "music.play.file_not_exist": "The file '%s' does not exist.",
+    "music.play.file_not_playing": "The file '%s' isn't playing.",
+    "music.play.none_playing": "No music is currently playing.",
+    "music.incompatible": "Cannot play file type '%s'.",
+    "music.convert.trying": "Trying to convert to a WAVE file...",
+    "music.convert.success": "Successfully converted to '%s'.",
+    "music.convert.error": "An error occurred.",
+    "warn.ffmpeg.not_installed": "Warning: FFMPEG is not installed.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle"
 }

@@ -16,7 +16,13 @@ authors="LCLP" #optional
     A modification that adds MMO stuff to Minecraft.
     Intended to be used on LCLPServer 5.0.
     '''
-    
+
+    [[dependencies.core]] #optional
+        modId="corebase" #mandatory
+        mandatory=true #mandatory
+        versionRange="1.15.2-1.1.0-forge" #mandatory
+        ordering="BEFORE"
+        side="BOTH"
     [[dependencies.core]] #optional
         modId="forge" #mandatory
         mandatory=true #mandatory
