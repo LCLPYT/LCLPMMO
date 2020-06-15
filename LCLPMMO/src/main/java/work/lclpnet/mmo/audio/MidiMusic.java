@@ -24,7 +24,6 @@ public class MidiMusic extends MusicBase implements MusicInstance {
 
 	private Sequencer sequencer = null;
 	private Thread thread = null;
-	private float volumeFactor = 0.75F;
 	private float volumeBefore = 1F;
 
 	public MidiMusic(File f, float volume) {
@@ -94,7 +93,7 @@ public class MidiMusic extends MusicBase implements MusicInstance {
 
 					ShortMessage shortMessage = (ShortMessage) e.getMessage();
 					if(shortMessage.getData1() == 7) {
-						shortMessage.setMessage(shortMessage.getStatus(), 7, (int) (shortMessage.getData2() / volumeBefore * perc * volumeFactor));
+						shortMessage.setMessage(shortMessage.getStatus(), 7, (int) (shortMessage.getData2() / volumeBefore * perc));
 					}
 				}
 			}
@@ -107,7 +106,7 @@ public class MidiMusic extends MusicBase implements MusicInstance {
 			Receiver r = it.next().getReceiver();
 			for(int i = 0; i < 16; i++)
 				try {
-					r.send(new ShortMessage(ShortMessage.CONTROL_CHANGE, i, 7, (int) (127 * perc * volumeFactor)), 0);
+					r.send(new ShortMessage(ShortMessage.CONTROL_CHANGE, i, 7, (int) (127 * perc)), 0);
 				} catch (InvalidMidiDataException e) {
 					e.printStackTrace();
 				}
