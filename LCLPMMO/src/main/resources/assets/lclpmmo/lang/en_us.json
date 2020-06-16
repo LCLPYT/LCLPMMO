@@ -7,8 +7,12 @@
     "music.incompatible": "Cannot play file type '%s'.",
     "music.convert.trying": "Trying to convert to a WAVE file...",
     "music.convert.success": "Successfully converted to '%s'.",
-    "music.convert.error": "An error occurred.",
+    "music.convert.error": "An error occurred while converting.",
+    "music.download.trying": "Downloading '%s'...",
+    "music.download.success": "Download successful.",
+    "music.download.error": "An error occurred while downloading.",
     "warn.ffmpeg.not_installed": "Warning: FFMPEG is not installed.",
+    "warn.ytdl.not_installed": "Warning: youtube-dl is not installed.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle"
 }

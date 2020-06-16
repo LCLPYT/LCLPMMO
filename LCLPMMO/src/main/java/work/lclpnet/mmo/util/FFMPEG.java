@@ -28,8 +28,8 @@ public class FFMPEG {
 		else return false;
 	}
 
-	private static boolean isLocalInstalled() {
-		File locator = new File("ffmpeg", ".locator");
+	public static boolean isLocalInstalled() {
+		File locator = new File("bin" + File.separatorChar + "ffmpeg", ".locator");
 		if(!locator.exists()) return false;
 
 		String base64;
@@ -44,11 +44,11 @@ public class FFMPEG {
 
 		String decoded = new String(Base64.getDecoder().decode(base64), StandardCharsets.UTF_8);
 		ffmpegLocator = decoded;
-		File ffmpeg = new File("ffmpeg", ffmpegLocator + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
+		File ffmpeg = new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + ffmpegLocator + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
 		return ffmpeg.exists();
 	}
 
-	private static boolean isInPath() {
+	public static boolean isInPath() {
 		try {
 			Runtime.getRuntime().exec("ffmpeg");
 			return true;
@@ -56,13 +56,19 @@ public class FFMPEG {
 			return false;
 		}
 	}
+	
+	public static File getFFMPEGExecutable() {
+		if(!isLocalInstalled()) return null;
+		return new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + ffmpegLocator + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
+	}
 
 	private static void execFFMPEGCommand(Consumer<Integer> callback, String... args) throws IOException {
 		if(!isInstalled()) return;
 
 		String program;
 		if(local != null && local.booleanValue()) {
-			File rel = new File("ffmpeg" + File.separatorChar + ffmpegLocator + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
+			File rel = getFFMPEGExecutable();
+			if(rel == null) return;
 			program = rel.getAbsolutePath();
 		}
 		else if(inPath != null && inPath.booleanValue()) program = "ffmpeg";

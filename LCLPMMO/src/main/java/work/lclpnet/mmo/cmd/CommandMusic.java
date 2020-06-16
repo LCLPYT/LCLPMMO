@@ -1,6 +1,10 @@
 package work.lclpnet.mmo.cmd;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -31,6 +35,9 @@ public class CommandMusic extends CommandBase{
 				.then(Commands.literal("play")
 						.then(Commands.argument("file", MusicArgumentType.music())
 								.executes(this::playSelf)))
+				.then(Commands.literal("play_youtube")
+						.then(Commands.argument("url", StringArgumentType.greedyString())
+								.executes(this::playYtSelf)))
 				.then(Commands.literal("volume")
 						.then(Commands.argument("percent", FloatArgumentType.floatArg(0F, 1F))
 								.executes(this::volumeAllSelf)
@@ -40,6 +47,37 @@ public class CommandMusic extends CommandBase{
 						.executes(this::stopAllSelf)
 						.then(Commands.argument("file", MusicArgumentType.music())
 								.executes(this::stopSelf)));
+	}
+
+	public int playYtSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
+		if(!CoreCommands.isPlayer(ctx.getSource())) {
+			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+			return 1;
+		}
+
+		String file = ctx.getArgument("url", String.class);
+		try {
+			new URL(file);
+		} catch (MalformedURLException e) {
+			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.complexMessage("'%s' is not a valid URL.", TextFormatting.RED, new Substitute(file, TextFormatting.YELLOW)));
+			return 1;
+		}
+
+		ServerPlayerEntity p = ctx.getSource().asPlayer();
+
+		ctx.getSource().sendFeedback(
+				LCLPMMO.TEXT.complexMessage(
+						"Playing music '%s' for %s...", 
+						TextFormatting.GREEN, 
+						new Substitute(file, TextFormatting.YELLOW), 
+						new Substitute(p.getName().getString(), TextFormatting.YELLOW)
+						), 
+				false);
+
+		MessageMusic msg = new MessageMusic(MusicAction.PLAY, file);
+
+		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+		return 0;
 	}
 
 	public int playSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{

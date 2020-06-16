@@ -26,6 +26,7 @@ import work.lclpnet.corebase.util.Substitute;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.util.FFMPEG;
 import work.lclpnet.mmo.util.MessageUtils;
+import work.lclpnet.mmo.util.YoutubeDL;
 
 @OnlyIn(Dist.CLIENT)
 public class MusicSystem {
@@ -33,7 +34,10 @@ public class MusicSystem {
 	private static final Map<String, MusicInstance> playing = new HashMap<>();
 
 	public static void play(String path, Consumer<ITextComponent> feedback) {
-		File file = getMusicFile(path);
+		play(getMusicFile(path), feedback);
+	}
+	
+	public static void play(File file, Consumer<ITextComponent> feedback) {
 		if(!checkFileExists(feedback, file)) return;
 
 		String name = file.getName();
@@ -47,34 +51,6 @@ public class MusicSystem {
 			music.play();
 			playing.put(file.getPath(), music);
 		} else feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.incompatible"), TextFormatting.RED, new Substitute(FilenameUtils.getExtension(name), TextFormatting.YELLOW)));
-	}
-
-	private static boolean tryConvert(File file, Consumer<ITextComponent> feedback) {
-		if(!FFMPEG.isInstalled()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ffmpeg.not_installed"), MessageUtils.WARN));
-			return false;
-		}
-		feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.trying"), MessageType.OTHER));
-		File output = new File(file.getParentFile(), file.getName().split("\\.(?=[^\\.]+$)")[0] + ".wav");
-		if(output.exists()) return true; //Already converted
-
-		try {
-			FFMPEG.convertToWav(file, output, i -> {
-				if(i == null || i != 0) feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
-				else {
-					Minecraft.getInstance().player.sendChatMessage(String.format("/music play %s", output.getName()));
-					feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.convert.success", "%s"), TextFormatting.GREEN, 
-							new Substitute(output.getName(), TextFormatting.YELLOW)));
-					System.out.println("Deleting old file...");
-					System.out.println(file.delete() ? "Successfully deleted old file" : "Could not delete old file.");
-				}
-			});
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
-			return false;
-		}
 	}
 
 	public static void setVolume(String path, float perc, Consumer<ITextComponent> feedback) {
@@ -131,6 +107,34 @@ public class MusicSystem {
 		playing.remove(file.getPath());
 	}
 
+	public static boolean tryConvert(File file, Consumer<ITextComponent> feedback) {
+		if(!FFMPEG.isInstalled()) {
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ffmpeg.not_installed"), MessageUtils.WARN));
+			return false;
+		}
+		feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.trying"), MessageType.OTHER));
+		File output = new File(file.getParentFile(), file.getName().split("\\.(?=[^\\.]+$)")[0] + ".wav");
+		if(output.exists()) return true; //Already converted
+
+		try {
+			FFMPEG.convertToWav(file, output, i -> {
+				if(i == null || i != 0) feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
+				else {
+					MusicSystem.play(output, feedback);
+					feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.convert.success", "%s"), TextFormatting.GREEN, 
+							new Substitute(output.getName(), TextFormatting.YELLOW)));
+					System.out.println("Deleting old file...");
+					System.out.println(file.delete() ? "Successfully deleted old file" : "Could not delete old file.");
+				}
+			});
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
+			return false;
+		}
+	}
+
 	private static boolean checkFileExists(Consumer<ITextComponent> feedback, File file) {
 		if(!file.exists()) {
 			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_exist", file.getPath()), MessageType.ERROR));
@@ -163,6 +167,29 @@ public class MusicSystem {
 	public static float getVolume() {
 		GameSettings settings = Minecraft.getInstance().gameSettings;
 		return settings.getSoundLevel(SoundCategory.RECORDS) * settings.getSoundLevel(SoundCategory.MASTER);
+	}
+
+	public static void playYt(String file, Consumer<ITextComponent> feedback) {
+		if(!YoutubeDL.isInstalled()) {
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MessageUtils.WARN));
+			return;
+		}
+		feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.download.trying", "%s"), TextFormatting.AQUA, new Substitute(file, TextFormatting.YELLOW)));
+
+		try {
+			YoutubeDL.download(file, (i, f) -> {
+				if(i == null || i != 0 || f == null) {
+					feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+					return;
+				}
+				
+				feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
+				MusicSystem.tryConvert(f, feedback);
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+		}
 	}
 
 }

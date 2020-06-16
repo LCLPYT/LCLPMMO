@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.network.msg;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -67,7 +69,15 @@ public class MessageMusic implements IMessage<MessageMusic>{
 		
 		switch (msg.action) {
 		case PLAY:
-			MusicSystem.play(msg.file, feedback);
+			boolean url;
+			try {
+				new URL(msg.file);
+				url = true;
+			} catch (MalformedURLException e) {
+				url = false;
+			}
+			if(url) MusicSystem.playYt(msg.file, feedback);
+			else MusicSystem.play(msg.file, feedback);
 			break;
 		case VOLUME:
 			if(msg.file.isEmpty()) MusicSystem.setOverallVolume(msg.volume, feedback);
