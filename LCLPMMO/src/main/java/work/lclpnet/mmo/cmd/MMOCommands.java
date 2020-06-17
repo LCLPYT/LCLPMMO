@@ -8,6 +8,7 @@ public class MMOCommands {
 
 	public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
 		new CommandMusic().register(dispatcher);
+		new CommandServerMusic().register(dispatcher);
 	}
 	
 }

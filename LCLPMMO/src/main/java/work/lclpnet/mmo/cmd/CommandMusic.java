@@ -181,7 +181,7 @@ public class CommandMusic extends CommandBase{
 
 		ctx.getSource().sendFeedback(
 				LCLPMMO.TEXT.complexMessage(
-						"Setting volume for '%s' to %s...", 
+						"Setting volume of '%s' to %s...", 
 						TextFormatting.GREEN, 
 						new Substitute(file, TextFormatting.YELLOW), 
 						new Substitute(percent, TextFormatting.YELLOW)
