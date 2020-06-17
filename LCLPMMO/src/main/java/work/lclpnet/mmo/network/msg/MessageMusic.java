@@ -8,10 +8,13 @@ import java.util.function.Supplier;
 import com.google.gson.Gson;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+import work.lclpnet.corebase.util.MessageType;
+import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
 import work.lclpnet.mmo.network.IMessage;
 
@@ -69,15 +72,19 @@ public class MessageMusic implements IMessage<MessageMusic>{
 		
 		switch (msg.action) {
 		case PLAY:
-			boolean url;
-			try {
-				new URL(msg.file);
-				url = true;
-			} catch (MalformedURLException e) {
-				url = false;
+			MusicSystem.play(msg.file, feedback);
+			break;
+		case PLAY_YT:
+			if(msg.file.startsWith("url:")) {
+				try {
+					new URL(msg.file);
+					MusicSystem.playYtUrl(msg.file.substring("url:".length()), feedback);
+				} catch (MalformedURLException e) {
+					feedback.accept(LCLPMMO.TEXT.message(I18n.format("url.malformed"), MessageType.ERROR));
+				}
 			}
-			if(url) MusicSystem.playYt(msg.file, feedback);
-			else MusicSystem.play(msg.file, feedback);
+			else if(msg.file.startsWith("search:")) MusicSystem.playYtSearch(msg.file.substring("search:".length()), feedback);
+			else if(msg.file.startsWith("downloaded:")) MusicSystem.playDownloaded(msg.file.substring("downloaded:".length()), feedback);
 			break;
 		case VOLUME:
 			if(msg.file.isEmpty()) MusicSystem.setOverallVolume(msg.volume, feedback);
@@ -99,7 +106,7 @@ public class MessageMusic implements IMessage<MessageMusic>{
 	}
 	
 	public static enum MusicAction {
-		PLAY, VOLUME, STOP
+		PLAY, PLAY_YT, VOLUME, STOP
 	}
 	
 }

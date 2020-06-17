@@ -111,10 +111,49 @@ public class YoutubeDL {
 		};
 		
 		if(FFMPEG.isInPath()) execYTDLCommand(consumer, url, "-o", dir.getAbsolutePath() + File.separatorChar + "%(title)s.%(ext)s", "-x");
-		else {
-			System.out.println("LOCAL");
-			execYTDLCommand(consumer, url, "-o", dir.getAbsolutePath() + File.separatorChar + "%(title)s.%(ext)s", "-x", "--ffmpeg-location", FFMPEG.getFFMPEGExecutable().getAbsolutePath());
+		else execYTDLCommand(consumer, url, "-o", dir.getAbsolutePath() + File.separatorChar + "%(title)s.%(ext)s", "-x", "--ffmpeg-location", FFMPEG.getFFMPEGExecutable().getAbsolutePath());
+	}
+	
+	public static void downloadQuery(String url, BiConsumer<Integer, File> handler) throws IOException {
+		int current = nextId++;
+		final File dir = new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + current);
+		if(!dir.exists()) dir.mkdirs();
+		
+		if(!FFMPEG.isInstalled()) {
+			System.err.println("No ffmpeg installation found.");
+			handler.accept(1, null);
+			return;
 		}
+		
+		Consumer<Integer> consumer = i -> {
+			if(i == null) handler.accept(null, null);
+			else if(i == 0) {
+				File[] children = dir.listFiles();
+				if(children == null || children.length <= 0) {
+					handler.accept(1, null);
+					System.err.println("Downloaded file not found.");
+					return;
+				}
+				File f = children[0];
+				File destFile = new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + f.getName());
+				try {
+					FileUtils.copyFile(f, destFile);
+					FileUtils.forceDelete(dir);
+					destFile.deleteOnExit();
+					handler.accept(0, destFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					handler.accept(1, null);
+					return;
+				}
+			} else {
+				handler.accept(i, null);
+			}
+		};
+		
+		String s = "ytsearch1:" + url;
+		if(FFMPEG.isInPath()) execYTDLCommand(consumer, s, "-o", dir.getAbsolutePath() + File.separatorChar + "%(title)s.%(ext)s", "-x");
+		else execYTDLCommand(consumer, s, "-o", dir.getAbsolutePath() + File.separatorChar + "%(title)s.%(ext)s", "-x", "--ffmpeg-location", FFMPEG.getFFMPEGExecutable().getAbsolutePath());
 	}
 	
 }

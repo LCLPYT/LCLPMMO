@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -24,6 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.corebase.util.Substitute;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.util.EnvironmentUtils;
 import work.lclpnet.mmo.util.FFMPEG;
 import work.lclpnet.mmo.util.MessageUtils;
 import work.lclpnet.mmo.util.YoutubeDL;
@@ -36,7 +39,7 @@ public class MusicSystem {
 	public static void play(String path, Consumer<ITextComponent> feedback) {
 		play(getMusicFile(path), feedback);
 	}
-	
+
 	public static void play(File file, Consumer<ITextComponent> feedback) {
 		if(!checkFileExists(feedback, file)) return;
 
@@ -54,13 +57,8 @@ public class MusicSystem {
 	}
 
 	public static void setVolume(String path, float perc, Consumer<ITextComponent> feedback) {
-		File file = getMusicFile(path);
-		if(!checkFilePlaying(feedback, file)) return;
-
-		perc = MathHelper.clamp(perc, 0F, 1F);
-
-		MusicInstance music = getMusic(file);
-		if(music != null) music.setVolume(perc);
+		if(!volumeIfExists(getMusicFile(path), perc) && !volumeIfExists(getDownloadedMusicFile(path), perc)) 
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", path), MessageType.ERROR));
 	}
 
 	public static void setOverallVolume(float perc, Consumer<ITextComponent> feedback) {
@@ -76,11 +74,26 @@ public class MusicSystem {
 	}
 
 	public static void stopSound(String path, Consumer<ITextComponent> feedback) {
-		File file = getMusicFile(path);
-		if(!checkFilePlaying(feedback, file)) return;
+		if(!stopIfExists(getMusicFile(path)) && !stopIfExists(getDownloadedMusicFile(path))) 
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", path), MessageType.ERROR));
+	}
 
-		MusicInstance music = getMusic(file);
+	private static boolean stopIfExists(File f) {
+		if(!checkFilePlaying(f)) return false;
+
+		MusicInstance music = getMusic(f);
 		if(music != null) music.stop();
+		return true;
+	}
+
+	private static boolean volumeIfExists(File f, float perc) {
+		if(!checkFilePlaying(f)) return false;
+
+		perc = MathHelper.clamp(perc, 0F, 1F);
+
+		MusicInstance music = getMusic(f);
+		if(music != null) music.setVolume(perc);
+		return true;
 	}
 
 	public static void stopAllSound(Consumer<ITextComponent> feedback) {
@@ -101,6 +114,21 @@ public class MusicSystem {
 
 	public static List<String> getAllPlaying() {
 		return playing.keySet().stream().map(key -> FilenameUtils.getName(key)).collect(Collectors.toList());
+	}
+
+	public static List<String> getDownloadedVideoTitles() {
+		File dir = new File(EnvironmentUtils.getTmpDir(), "dl");
+		if(!dir.exists()) return Lists.newArrayList();
+
+		File[] children = dir.listFiles();
+		if(children == null || children.length <= 0) return Lists.newArrayList();
+
+		List<String> titles = new ArrayList<>();
+		for(File f : children) 
+			if(!f.isDirectory()) 
+				titles.add(f.getName());
+
+		return titles;
 	}
 
 	static void untrack(File file) {
@@ -143,17 +171,16 @@ public class MusicSystem {
 		return true;
 	}
 
-	private static boolean checkFilePlaying(Consumer<ITextComponent> feedback, File file) {
-		if(!playing.containsKey(file.getPath())) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", file.getPath()), MessageType.ERROR));
-			return false;
-		}
-		return true;
+	private static boolean checkFilePlaying(File file) {
+		return playing.containsKey(file.getPath());
 	}
 
 	private static File getMusicFile(String path) {
-		File file = new File(getMusicDir(), path);
-		return file;
+		return new File(getMusicDir(), path);
+	}
+
+	private static File getDownloadedMusicFile(String path) {
+		return new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + path);
 	}
 
 	private static File getMusicDir() {
@@ -169,7 +196,7 @@ public class MusicSystem {
 		return settings.getSoundLevel(SoundCategory.RECORDS) * settings.getSoundLevel(SoundCategory.MASTER);
 	}
 
-	public static void playYt(String file, Consumer<ITextComponent> feedback) {
+	public static void playYtUrl(String file, Consumer<ITextComponent> feedback) {
 		if(!YoutubeDL.isInstalled()) {
 			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MessageUtils.WARN));
 			return;
@@ -182,7 +209,7 @@ public class MusicSystem {
 					feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
 					return;
 				}
-				
+
 				feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
 				MusicSystem.tryConvert(f, feedback);
 			});
@@ -190,6 +217,33 @@ public class MusicSystem {
 			e.printStackTrace();
 			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
 		}
+	}
+
+	public static void playYtSearch(String file, Consumer<ITextComponent> feedback) {
+		if(!YoutubeDL.isInstalled()) {
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MessageUtils.WARN));
+			return;
+		}
+		feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.download.trying", "%s"), TextFormatting.AQUA, new Substitute(file, TextFormatting.YELLOW)));
+
+		try {
+			YoutubeDL.downloadQuery(file, (i, f) -> {
+				if(i == null || i != 0 || f == null) {
+					feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+					return;
+				}
+
+				feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
+				MusicSystem.tryConvert(f, feedback);
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+		}
+	}
+
+	public static void playDownloaded(String file, Consumer<ITextComponent> feedback) {
+		play(getDownloadedMusicFile(file), feedback);
 	}
 
 }

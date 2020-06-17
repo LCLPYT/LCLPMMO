@@ -24,6 +24,7 @@ public class MusicArgumentType implements ArgumentType<String>{
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 		String input = context.getInput();
 		if(input.startsWith("/music stop ") || input.startsWith("/music volume ")) MusicSystem.getAllPlaying().forEach(builder::suggest);
+		else if(input.startsWith("/music youtube downloaded ")) MusicSystem.getDownloadedVideoTitles().forEach(builder::suggest);
 		else MusicSystem.getAllMusicFiles().forEach(builder::suggest);
 		
 		return builder.buildFuture();

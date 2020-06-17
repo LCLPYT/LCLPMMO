@@ -13,6 +13,7 @@
     "music.download.error": "An error occurred while downloading.",
     "warn.ffmpeg.not_installed": "Warning: FFMPEG is not installed.",
     "warn.ytdl.not_installed": "Warning: youtube-dl is not installed.",
+    "url.malformed": "Malformed URL.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle"
 }
