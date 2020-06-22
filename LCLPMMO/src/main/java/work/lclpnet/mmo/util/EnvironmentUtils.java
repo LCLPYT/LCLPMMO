@@ -13,7 +13,8 @@ public class EnvironmentUtils {
 
 	public static void deleteTmpDir() {
 		try {
-			FileUtils.forceDelete(getTmpDir());
+			File tmpDir = getTmpDir();
+			if(tmpDir.exists()) FileUtils.forceDelete(tmpDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

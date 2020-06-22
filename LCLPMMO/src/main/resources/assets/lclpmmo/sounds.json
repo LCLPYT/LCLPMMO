@@ -2,7 +2,21 @@
     "intro_theme": {
         "sounds": [{
             "name": "lclpmmo:intro_theme",
-            "stream": false
+            "stream": false,
+            "weight": 1000
+        },
+        {
+            "name": "lclpmmo:intro_theme_alt",
+            "stream": false,
+            "weight": 1,
+            "volume": 0.8
+        }]
+    },
+    "intro_theme_alt": {
+        "sounds": [{
+            "name": "lclpmmo:intro_theme_alt",
+            "stream": false,
+            "volume": 0.8
         }]
     },
     "ui.button.hover": {

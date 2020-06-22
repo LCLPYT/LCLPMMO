@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.gui;
 
+import java.util.Date;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.audio.ISound.AttenuationType;
@@ -15,6 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.util.Color;
+import work.lclpnet.mmo.util.DateUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class PreIntroScreen extends Screen{
@@ -22,7 +25,7 @@ public class PreIntroScreen extends Screen{
 	private static final long FADEIN_DELAY = 2000,
 			FADEIN_TIME = 2000,
 			INTRO_LENGTH = 6000;
-	private static final ResourceLocation INTRO_SOUND = new ResourceLocation(LCLPMMO.MODID, "intro_theme");
+	private static final ResourceLocation INTRO_SOUND = new ResourceLocation(LCLPMMO.MODID, DateUtil.isSpecialDay(new Date()) ? "intro_theme_alt" : "intro_theme");
 	
 	private long firstRenderTime = 0L, firstTitleRenderTime = 0L;
 	private boolean soundPlayed = false;

@@ -42,6 +42,8 @@ import net.minecraft.world.WorldType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.gui.util.FakeClientPlayNetHandler;
 import work.lclpnet.mmo.gui.util.FakeWorld;
@@ -77,14 +79,10 @@ public class MMOMainScreen extends Screen{
 		Field f;
 		DataParameter<Byte> PLAYER_MODEL_FLAG = null;
 		try {
-			f = PlayerEntity.class.getDeclaredField("field_184827_bp");
-		} catch (ReflectiveOperationException e) {
-			try {
-				f = PlayerEntity.class.getDeclaredField("PLAYER_MODEL_FLAG");
-			} catch (ReflectiveOperationException ex) {
-				ex.printStackTrace();
-				f = null;
-			}
+			f = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_184827_bp");
+		} catch (UnableToFindFieldException e) {
+			e.printStackTrace();
+			f = null;
 		}
 
 		if(f != null) {
