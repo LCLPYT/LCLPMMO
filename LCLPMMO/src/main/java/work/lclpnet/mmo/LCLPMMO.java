@@ -18,6 +18,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.corebase.util.ComponentSupplier;
 import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.cmd.MusicArgumentType;
+import work.lclpnet.mmo.event.AttributeListener;
 import work.lclpnet.mmo.event.EventListener;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.util.ColorHandler;
@@ -40,6 +41,7 @@ public class LCLPMMO {
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.register(this);
 		forgeBus.register(new EventListener());
+		forgeBus.register(new AttributeListener());
 	}
 
 	private void setup(final FMLCommonSetupEvent event) { //preinit

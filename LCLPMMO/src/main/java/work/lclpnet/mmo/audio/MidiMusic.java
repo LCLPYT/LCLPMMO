@@ -19,7 +19,10 @@ import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class MidiMusic extends MusicBase implements MusicInstance {
 
 	private Sequencer sequencer = null;

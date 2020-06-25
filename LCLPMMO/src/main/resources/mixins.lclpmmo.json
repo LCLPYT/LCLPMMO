@@ -1,0 +1,20 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "compatibilityLevel": "JAVA_8",
+    "mixinPriority": 1,
+    "package": "work.lclpnet.mmo.asm.mixin",
+    "refmap": "mmo.refmap.json",
+    "mixins": [
+        
+    ],
+    "client": [
+        "client.MixinMinecraft"
+    ],
+    "server": [
+        "server.MixinDedicatedServer"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+  }
