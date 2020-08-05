@@ -6,10 +6,13 @@
     "package": "work.lclpnet.mmo.asm.mixin",
     "refmap": "mmo.refmap.json",
     "mixins": [
-        
+        "common.MixinEntity",
+        "common.MixinLivingEntity"
     ],
     "client": [
-        "client.MixinMinecraft"
+        "client.MixinMinecraft",
+        "client.MixinEntityRendererManager",
+        "client.MixinClientPlayNetHandler"
     ],
     "server": [
         "server.MixinDedicatedServer"
