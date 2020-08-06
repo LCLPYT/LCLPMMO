@@ -12,8 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.network.play.server.SEntityPropertiesPacket;
+import work.lclpnet.mmo.util.MMOMonsterAttributes;
 
 @Mixin(ClientPlayNetHandler.class)
 public class MixinClientPlayNetHandler {
@@ -32,7 +34,8 @@ public class MixinClientPlayNetHandler {
 	public void onSetBaseValue(SEntityPropertiesPacket packetIn, CallbackInfo ci, 
 			Entity entity, AbstractAttributeMap abstractattributemap, Iterator<SEntityPropertiesPacket> iterator, 
 			SEntityPropertiesPacket.Snapshot sentitypropertiespacket$snapshot, IAttributeInstance iattributeinstance) {
-		entity.recalculateSize();
+		IAttribute attr = iattributeinstance.getAttribute();
+		if(attr.equals(MMOMonsterAttributes.SCALE_HEIGHT) || attr.equals(MMOMonsterAttributes.SCALE_WIDTH)) entity.recalculateSize();
 	}
 	
 }
