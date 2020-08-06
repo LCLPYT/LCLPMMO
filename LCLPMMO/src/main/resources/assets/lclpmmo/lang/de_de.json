@@ -14,6 +14,9 @@
     "warn.ffmpeg.not_installed": "Warnung: FFMPEG ist nicht installiert.",
     "warn.ytdl.not_installed": "Warnung: youtube-dl ist nicht installiert.",
     "url.malformed": "Ungültige URL.",
+    "cmd.scale.set.no_valid": "In deiner Auswahl befindet sich keine einzige lebende Entität.",
+    "cmd.scale.set.success": "Größenskalierung wurde auf %s für %s gesetzt.",
+    "cmd.scale.set.success_rel": "Größenskalierung wurde für %s gesetzt.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glasflasche"
 }

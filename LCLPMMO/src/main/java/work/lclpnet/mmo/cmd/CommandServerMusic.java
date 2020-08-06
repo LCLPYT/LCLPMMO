@@ -19,6 +19,7 @@ import work.lclpnet.corebase.cmd.CommandBase;
 import work.lclpnet.corebase.cmd.CoreCommands;
 import work.lclpnet.corebase.util.Substitute;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.cmd.args.MusicArgumentType;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageMusic;
 import work.lclpnet.mmo.network.msg.MessageMusic.MusicAction;

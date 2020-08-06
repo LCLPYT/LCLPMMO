@@ -14,6 +14,9 @@
     "warn.ffmpeg.not_installed": "Warning: FFMPEG is not installed.",
     "warn.ytdl.not_installed": "Warning: youtube-dl is not installed.",
     "url.malformed": "Malformed URL.",
+    "cmd.scale.set.no_valid": "There is no living entity target in your selection.",
+    "cmd.scale.set.success": "Set entity size scale to %s for %s.",
+    "cmd.scale.set.success_rel": "Set entity size scale for %s.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle"
 }

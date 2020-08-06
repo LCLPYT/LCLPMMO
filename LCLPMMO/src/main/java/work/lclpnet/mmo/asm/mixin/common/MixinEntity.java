@@ -40,7 +40,7 @@ public class MixinEntity {
 			)
 	public void onGetJumpFactor(CallbackInfoReturnable<Float> cir) {
 		float scaleHeight = MMOMonsterAttributes.getScaleHeight((Entity) ((Object) this));
-		if(scaleHeight == 1F || !((Object) this instanceof PlayerEntity)) return;
+		if(scaleHeight <= 1F || !((Object) this instanceof PlayerEntity)) return;
 		cir.setReturnValue(cir.getReturnValue() * scaleHeight);
 		cir.cancel();
 	}

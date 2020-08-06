@@ -3,8 +3,6 @@ package work.lclpnet.mmo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.command.arguments.ArgumentSerializer;
-import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,7 +15,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.corebase.util.ComponentSupplier;
 import work.lclpnet.mmo.cmd.MMOCommands;
-import work.lclpnet.mmo.cmd.MusicArgumentType;
 import work.lclpnet.mmo.event.AttributeListener;
 import work.lclpnet.mmo.event.EventListener;
 import work.lclpnet.mmo.network.MMOPacketHandler;
@@ -49,7 +46,7 @@ public class LCLPMMO {
 
 		Config.load();
 		MMOPacketHandler.init();
-		ArgumentTypes.register("mmo_music", MusicArgumentType.class, new ArgumentSerializer<>(MusicArgumentType::music));
+		MMOCommands.registerArgumentTypes();
 		
 		if(FMLEnvironment.dist == Dist.CLIENT) EnvironmentUtils.deleteTmpDir();
 		

@@ -8,7 +8,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.MathHelper;
@@ -55,6 +57,20 @@ public class MixinLivingEntity {
 		
 		float heightNullifier = scaleHeight * scaleHeight + 2;
 		cir.setReturnValue(MathHelper.ceil((distance - heightNullifier - f) * damageMultiplier));
+		cir.cancel();
+	}
+	
+	@Inject(
+			method = "Lnet/minecraft/entity/LivingEntity;getEyeHeight(Lnet/minecraft/entity/Pose;Lnet/minecraft/entity/EntitySize;)F",
+			at = @At("RETURN"),
+			cancellable = true
+			)
+	public void onGetEyeHeight(Pose poseIn, EntitySize entitySizeIn, CallbackInfoReturnable<Float> cir) {
+		LivingEntity le = (LivingEntity) (Object) this;
+		float scaleHeight = MMOMonsterAttributes.getScaleHeight(le);
+		if(scaleHeight == 1F) return;
+		
+		cir.setReturnValue(cir.getReturnValue() * scaleHeight);
 		cir.cancel();
 	}
 	

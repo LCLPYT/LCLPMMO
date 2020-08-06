@@ -5,6 +5,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 
 public class MMOMonsterAttributes {
 
@@ -46,8 +48,21 @@ public class MMOMonsterAttributes {
 	}
 	
 	public static void setScale(Entity en, float scale) {
-		setScaleWidth(en, scale);
-		setScaleHeight(en, scale);
+		setScale(en, scale, scale);
+	}
+	
+	public static void setScale(Entity en, float scaleWidth, float scaleHeight) {
+		setScaleWidth(en, scaleWidth);
+		setScaleHeight(en, scaleHeight);
+	}
+	
+	public static void setScale(Entity en, Vec2f scale) {
+		Vec2f clamped = new Vec2f(MathHelper.clamp(scale.x, 0F, 127F), MathHelper.clamp(scale.y, 0F, 127F));
+		setScale(en, clamped.x, clamped.y);
+	}
+
+	public static Vec2f getScales(Entity source) {
+		return new Vec2f(getScaleWidth(source), getScaleHeight(source));
 	}
 	
 }

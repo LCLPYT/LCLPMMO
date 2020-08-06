@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.cmd;
+package work.lclpnet.mmo.cmd.args;
 
 import java.util.concurrent.CompletableFuture;
 

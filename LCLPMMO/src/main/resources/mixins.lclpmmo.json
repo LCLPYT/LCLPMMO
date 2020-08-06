@@ -7,7 +7,8 @@
     "refmap": "mmo.refmap.json",
     "mixins": [
         "common.MixinEntity",
-        "common.MixinLivingEntity"
+        "common.MixinLivingEntity",
+        "common.MixinPlayerEntity"
     ],
     "client": [
         "client.MixinMinecraft",
