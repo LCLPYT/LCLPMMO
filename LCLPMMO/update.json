@@ -1,0 +1,10 @@
+{
+    "homepage": "https://github.com/LCLPYT/LCLPMMO/releases",
+    "promos": {
+        "1.15.2-latest": "1.1.0",
+        "1.15.2-recommended": "1.1.0"
+    },
+    "1.15.2": {
+        "1.1.0": "EntityScale attributes added."
+    }
+}
