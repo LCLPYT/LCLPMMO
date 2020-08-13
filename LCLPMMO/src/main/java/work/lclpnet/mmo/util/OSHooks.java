@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.util;
 
 import java.io.File;
+import java.io.IOException;
 
 public class OSHooks {
 
@@ -17,8 +18,19 @@ public class OSHooks {
 		public File getYTDLExecutable() {
 			return new File("bin", "youtube-dl");
 		}
-		
-    }
+
+		public boolean makeExecutable(File rel) {
+			ProcessBuilder pb = new ProcessBuilder("chmod", "+x", rel.getAbsolutePath());
+			pb.inheritIO();
+			try {
+				Process p = pb.start();
+				if(p.waitFor() == 0) return true;
+			} catch (IOException | InterruptedException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+	}
 
     private static class LinuxHandler extends OSHandler {
         // Override methods here
@@ -35,8 +47,12 @@ public class OSHooks {
     	public File getYTDLExecutable() {
     		return new File("bin", "youtube-dl.exe");
     	}
-    	
-    }
+
+		@Override
+		public boolean makeExecutable(File rel) {
+			return true;
+		}
+	}
 
     private static final OSHandler handler;
 
@@ -57,5 +73,9 @@ public class OSHooks {
     public static File getYTDLExecutable() {
     	return handler.getYTDLExecutable();
     }
+
+	public static boolean makeExecutable(File rel) {
+    	return handler.makeExecutable(rel);
+	}
 
 }

@@ -46,6 +46,10 @@ public class YoutubeDL {
 		String program;
 		if(local != null && local.booleanValue()) {
 			File rel = OSHooks.getYTDLExecutable();
+			if(!OSHooks.makeExecutable(rel)) {
+				System.err.println("Could not access ytdl.");
+				return;
+			}
 			program = rel.getAbsolutePath();
 		}
 		else if(inPath != null && inPath.booleanValue()) program = "youtube-dl";

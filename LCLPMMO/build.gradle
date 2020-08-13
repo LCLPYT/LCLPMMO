@@ -42,6 +42,8 @@ minecraft {
             // Mixin debug
             property "mixin.debug.export", "true"
             property "mixin.debug", "true"
+
+            environment("PULSE_RUNTIME_PATH", "/run/user/1000/pulse") // Required to hear sound in some distributions (using pulse audio)
             
             args '--mixin', 'mixins.lclpmmo.json'
 

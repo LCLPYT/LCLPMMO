@@ -45,6 +45,10 @@ public class FFMPEG {
 		if(local != null && local.booleanValue()) {
 			File rel = getFFMPEGExecutable();
 			if(rel == null) return;
+			if(!OSHooks.makeExecutable(rel)) {
+				System.err.println("Could not access ffmpeg.");
+				return;
+			}
 			program = rel.getAbsolutePath();
 		}
 		else if(inPath != null && inPath.booleanValue()) program = "ffmpeg";
