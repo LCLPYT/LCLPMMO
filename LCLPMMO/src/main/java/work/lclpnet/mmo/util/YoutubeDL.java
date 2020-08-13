@@ -25,7 +25,7 @@ public class YoutubeDL {
 	}
 
 	private static boolean isLocalInstalled() {
-		File exe = new File("bin", "youtube-dl.exe");
+		File exe = OSHooks.getYTDLExecutable();
 		if(!exe.exists()) return false;
 
 		return exe.exists() && !exe.isDirectory();
@@ -45,7 +45,7 @@ public class YoutubeDL {
 
 		String program;
 		if(local != null && local.booleanValue()) {
-			File rel = new File("bin" + File.separatorChar + "youtube-dl.exe");
+			File rel = OSHooks.getYTDLExecutable();
 			program = rel.getAbsolutePath();
 		}
 		else if(inPath != null && inPath.booleanValue()) program = "youtube-dl";

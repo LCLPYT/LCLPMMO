@@ -1,22 +1,14 @@
 package work.lclpnet.mmo.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import org.apache.commons.io.IOUtils;
 
 public class FFMPEG {
 
 	private static Boolean inPath = null, local = null;
-	private static String ffmpegLocator = null;
 
 	public static boolean isInstalled() {
 		if(inPath == null && local == null) {
@@ -29,23 +21,7 @@ public class FFMPEG {
 	}
 
 	public static boolean isLocalInstalled() {
-		File locator = new File("bin" + File.separatorChar + "ffmpeg", ".locator");
-		if(!locator.exists()) return false;
-
-		String base64;
-		try (InputStream in = new FileInputStream(locator);
-				ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			IOUtils.copy(in, out);
-			base64 = new String(out.toByteArray(), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		String decoded = new String(Base64.getDecoder().decode(base64), StandardCharsets.UTF_8);
-		ffmpegLocator = decoded;
-		File ffmpeg = new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + ffmpegLocator + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
-		return ffmpeg.exists();
+		return OSHooks.isFFMPEGLocalInstalled();
 	}
 
 	public static boolean isInPath() {
@@ -59,7 +35,7 @@ public class FFMPEG {
 	
 	public static File getFFMPEGExecutable() {
 		if(!isLocalInstalled()) return null;
-		return new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + ffmpegLocator + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
+		return OSHooks.getFFMPEGExecutable();
 	}
 
 	private static void execFFMPEGCommand(Consumer<Integer> callback, String... args) throws IOException {
