@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.gui.util;
+package work.lclpnet.mmo.gui.main;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.ClientPlayNetHandler;

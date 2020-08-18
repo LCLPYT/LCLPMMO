@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
-import work.lclpnet.mmo.gui.MMOMainScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
+import work.lclpnet.mmo.gui.main.MMOMainScreen;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
 public class EventListener {

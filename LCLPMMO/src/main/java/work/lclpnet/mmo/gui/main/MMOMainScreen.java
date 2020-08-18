@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.gui;
+package work.lclpnet.mmo.gui.main;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import net.minecraft.client.gui.screen.LanguageScreen;
 import net.minecraft.client.gui.screen.MultiplayerScreen;
 import net.minecraft.client.gui.screen.MultiplayerWarningScreen;
 import net.minecraft.client.gui.screen.OptionsScreen;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.WorldSelectionScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -45,11 +44,12 @@ import net.minecraftforge.fml.client.gui.screen.ModListScreen;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.gui.util.FakeClientPlayNetHandler;
-import work.lclpnet.mmo.gui.util.FakeWorld;
+import work.lclpnet.mmo.gui.FancyButton;
+import work.lclpnet.mmo.gui.MMOScreen;
+import work.lclpnet.mmo.gui.racechooser.RaceSelectionScreen;
 
 @OnlyIn(Dist.CLIENT)
-public class MMOMainScreen extends Screen{
+public class MMOMainScreen extends MMOScreen{
 
 	public static final RenderSkyboxCube PANORAMA_RESOURCES = new RenderSkyboxCube(new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama"));
 	private static final ResourceLocation PANORAMA_OVERLAY_TEXTURES = new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama_overlay.png"),
@@ -113,6 +113,7 @@ public class MMOMainScreen extends Screen{
 		}));
 		this.menuButtons.add(new MMOButtonInfo(I18n.format("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
 		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("mmo.menu.btn_create_character"), b -> this.minecraft.displayGuiScreen(new RaceSelectionScreen(this))));
 	}
 
 	@Override

@@ -1,6 +1,13 @@
 {
     "lclpnetwork.presents": "LCLPNetwork presents...",
     "mmo.menu.play": "Play",
+    "mmo.menu.btn_create_character": "Character Creation...",
+    "mmo.menu.create_character.title": "Create Character",
+    "mmo.menu.select_race.title": "Choose your race",
+    "mmo.menu.select_race.choose": "Choose",
+    "mmo.menu.select_race.search": "Search for races",
+    "mmo.race.human.title": "Human",
+    "mmo.race.dwarf.title": "Dwarf",
     "music.play.file_not_exist": "The file '%s' does not exist.",
     "music.play.file_not_playing": "The file '%s' isn't playing.",
     "music.play.none_playing": "No music is currently playing.",
@@ -18,5 +25,6 @@
     "cmd.scale.set.success": "Set entity size scale to %s for %s.",
     "cmd.scale.set.success_rel": "Set entity size scale for %s.",
     "itemGroup.lclpmmo": "LCLPMMO",
-    "block.lclpmmo.glass_bottle": "Glass Bottle"
+    "block.lclpmmo.glass_bottle": "Glass Bottle",
+    "mmo.narrator.select.race": "Selected %s"
 }
