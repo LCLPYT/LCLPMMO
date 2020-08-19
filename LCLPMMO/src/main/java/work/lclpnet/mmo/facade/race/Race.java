@@ -3,9 +3,9 @@ package work.lclpnet.mmo.facade.race;
 import com.google.gson.Gson;
 
 import net.minecraft.util.text.ITextComponent;
-import work.lclpnet.mmo.gui.racechooser.MMOMenuItem;
+import work.lclpnet.mmo.gui.MMOSelectionItem;
 
-public class Race implements MMOMenuItem{
+public class Race implements MMOSelectionItem{
 
 	private String name;
 	private ITextComponent title;
@@ -15,6 +15,7 @@ public class Race implements MMOMenuItem{
 		this.title = title;
 	}
 	
+	@Override
 	public String getName() {
 		return name;
 	}

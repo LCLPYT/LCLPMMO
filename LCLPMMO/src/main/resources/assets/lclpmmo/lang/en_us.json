@@ -26,5 +26,5 @@
     "cmd.scale.set.success_rel": "Set entity size scale for %s.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle",
-    "mmo.narrator.select.race": "Selected %s"
+    "mmo.narrator.selection.selected": "Selected %s"
 }

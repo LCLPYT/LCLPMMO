@@ -1,11 +1,13 @@
-package work.lclpnet.mmo.gui.racechooser;
+package work.lclpnet.mmo.gui;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public interface MMOMenuItem {
+public interface MMOSelectionItem {
 
 	ITextComponent getTitle();
+	
+	String getName();
 	
 	default ResourceLocation getIcon() {
 		return null;

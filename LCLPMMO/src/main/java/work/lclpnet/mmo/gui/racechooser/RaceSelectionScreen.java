@@ -1,90 +1,22 @@
 package work.lclpnet.mmo.gui.racechooser;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import java.util.List;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
-import work.lclpnet.mmo.gui.MMOScreen;
+import work.lclpnet.mmo.facade.race.Race;
+import work.lclpnet.mmo.facade.race.Races;
+import work.lclpnet.mmo.gui.GenericSelectionScreen;
 
-public class RaceSelectionScreen extends MMOScreen {
-
-	protected final Screen prevScreen;
-	private String tooltip;
-	private Button selectButton;
-	protected TextFieldWidget searchField;
-	private RaceSelectionList selectionList;
+public class RaceSelectionScreen extends GenericSelectionScreen<Race>{
 
 	public RaceSelectionScreen(Screen screenIn) {
-		super(new TranslationTextComponent("mmo.menu.select_race.title"));
-		this.prevScreen = null;
-	}
-
-	public boolean mouseScrolled(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double p_mouseScrolled_5_) {
-		return super.mouseScrolled(p_mouseScrolled_1_, p_mouseScrolled_3_, p_mouseScrolled_5_);
-	}
-
-	public void tick() {
-		this.searchField.tick();
-	}
-
-	protected void init() {
-		this.minecraft.keyboardListener.enableRepeatEvents(true);
-		this.searchField = new TextFieldWidget(this.font, this.width / 2 - 100, 22, 200, 20, this.searchField, I18n.format("mmo.menu.select_race.search"));
-		this.searchField.setResponder((p_214329_1_) -> {
-			this.selectionList.search(() -> {
-				return p_214329_1_;
-			}, false);
-		});
-		this.selectionList = new RaceSelectionList(this, this.minecraft, this.width, this.height, 48, this.height - 32, 36, () -> {
-			return this.searchField.getText();
-		}, this.selectionList);
-		this.children.add(this.searchField);
-		this.children.add(this.selectionList);
-		this.selectButton = this.addButton(new Button(this.width / 2 - 154, this.height - 28, 150, 20, I18n.format("mmo.menu.select_race.choose"), clicked -> {
-			this.selectionList.getSelection().ifPresent(entry -> System.out.println("APPLY: " + entry));
-		}));
-		this.addButton(new Button(this.width / 2 + 4, this.height - 28, 150, 20, I18n.format("gui.cancel"), (p_214326_1_) -> {
-			this.minecraft.displayGuiScreen(this.prevScreen);
-		}));
-		this.setButtonsActive(false);
-		this.setFocusedDefault(this.searchField);
-	}
-
-	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) ? true : this.searchField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-	}
-
-	public void onClose() {
-		this.minecraft.displayGuiScreen(this.prevScreen);
-	}
-
-	public boolean charTyped(char c, int i) {
-		return this.searchField.charTyped(c, i);
+		super(new TranslationTextComponent("mmo.menu.select_race.title"), screenIn);
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground();
-		this.tooltip = null;
-		this.selectionList.render(mouseX, mouseY, partialTicks);
-		this.searchField.render(mouseX, mouseY, partialTicks);
-		this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 8, 16777215);
-		super.render(mouseX, mouseY, partialTicks);
-		if (this.tooltip != null) {
-			this.renderTooltip(Lists.newArrayList(Splitter.on("\n").split(this.tooltip)), mouseX, mouseY);
-		}
-	}
-
-	public void setTooltip(String tooltip) {
-		this.tooltip = tooltip;
-	}
-
-	public void setButtonsActive(boolean active) {
-		this.selectButton.active = active;
+	public List<Race> getEntries() {
+		return Races.getRaces();
 	}
 
 }
