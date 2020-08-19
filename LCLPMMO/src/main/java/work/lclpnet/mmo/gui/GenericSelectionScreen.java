@@ -11,7 +11,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends MMOScreen implements GenericSelectionSetup {
+public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends MMOScreen implements GenericSelectionSetup<T> {
 
 	protected final Screen prevScreen;
 	private String tooltip;
@@ -49,7 +49,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 		this.children.add(this.searchField);
 		this.children.add(this.selectionList);
 		this.selectButton = this.addButton(new Button(this.width / 2 - 154, this.height - 28, 150, 20, I18n.format("mmo.menu.select_race.choose"), clicked -> {
-			this.selectionList.getSelection().ifPresent(entry -> System.out.println("APPLY: " + entry));
+			this.selectionList.getSelection().ifPresent(GenericSelectionList<T, GenericSelectionScreen<T>>.Entry::onSelect);
 		}));
 		this.addButton(new Button(this.width / 2 + 4, this.height - 28, 150, 20, I18n.format("gui.cancel"), (p_214326_1_) -> {
 			this.minecraft.displayGuiScreen(this.prevScreen);
@@ -87,7 +87,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	}
 	
 	public abstract List<T> getEntries();
-
+	
 	@Override
 	public void setButtonsActive(boolean active) {
 		this.selectButton.active = active;

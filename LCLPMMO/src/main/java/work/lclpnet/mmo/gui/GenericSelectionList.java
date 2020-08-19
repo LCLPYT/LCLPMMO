@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen & GenericSelectionSetup> extends ExtendedList<GenericSelectionList<T, S>.Entry>{
+public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen & GenericSelectionSetup<T>> extends ExtendedList<GenericSelectionList<T, S>.Entry>{
 
 	private static final ResourceLocation unknownTexture = new ResourceLocation("textures/misc/unknown_server.png");
 	private static final ResourceLocation selectionTextures = new ResourceLocation("textures/gui/world_selection.png");
@@ -135,7 +135,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 		}
 
 		public void onSelect() {
-			System.out.println("SELECTED: " + entry);
+			screen.onSelected(entry);
 		}
 
 	}

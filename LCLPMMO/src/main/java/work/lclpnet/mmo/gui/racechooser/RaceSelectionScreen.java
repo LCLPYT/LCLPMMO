@@ -19,4 +19,9 @@ public class RaceSelectionScreen extends GenericSelectionScreen<Race>{
 		return Races.getRaces();
 	}
 
+	@Override
+	public void onSelected(Race selected) {
+		System.out.printf("SELECTED: %s\n", selected);
+	}
+
 }
