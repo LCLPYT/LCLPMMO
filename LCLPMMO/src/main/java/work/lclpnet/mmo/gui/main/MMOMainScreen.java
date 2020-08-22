@@ -46,7 +46,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFie
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.gui.FancyButton;
 import work.lclpnet.mmo.gui.MMOScreen;
-import work.lclpnet.mmo.gui.racechooser.RaceSelectionScreen;
+import work.lclpnet.mmo.gui.characterchooser.CharacterChooserScreen;
 
 @OnlyIn(Dist.CLIENT)
 public class MMOMainScreen extends MMOScreen{
@@ -113,7 +113,7 @@ public class MMOMainScreen extends MMOScreen{
 		}));
 		this.menuButtons.add(new MMOButtonInfo(I18n.format("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
 		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("mmo.menu.btn_create_character"), b -> this.minecraft.displayGuiScreen(new RaceSelectionScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("mmo.menu.btn_create_character"), b -> this.minecraft.displayGuiScreen(new CharacterChooserScreen(this))));
 	}
 
 	@Override

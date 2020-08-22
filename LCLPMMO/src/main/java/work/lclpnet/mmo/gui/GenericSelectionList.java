@@ -74,7 +74,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 		String s = searchQuery.get().toLowerCase(Locale.ROOT);
 
 		for(T entry : this.entries) {
-			if (entry.getTitle().getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(s) || entry.getName().toLowerCase(Locale.ROOT).contains(s)) {
+			if (entry.getTitle().getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(s) || entry.getUnlocalizedName().toLowerCase(Locale.ROOT).contains(s)) {
 				this.addEntry(new Entry(this, entry));
 			}
 		}
@@ -136,6 +136,10 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
 		public void onSelect() {
 			screen.onSelected(entry);
+		}
+		
+		public T getEntry() {
+			return entry;
 		}
 
 	}

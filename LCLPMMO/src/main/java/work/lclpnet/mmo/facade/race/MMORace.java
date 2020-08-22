@@ -5,19 +5,19 @@ import com.google.gson.Gson;
 import net.minecraft.util.text.ITextComponent;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
 
-public class Race implements MMOSelectionItem{
+public class MMORace implements MMOSelectionItem{
 
-	private String name;
+	private String unlocalizedName;
 	private ITextComponent title;
 	
-	public Race(String name, ITextComponent title) {
-		this.name = name;
+	public MMORace(String unlocalizedName, ITextComponent title) {
+		this.unlocalizedName = unlocalizedName;
 		this.title = title;
 	}
 	
 	@Override
-	public String getName() {
-		return name;
+	public String getUnlocalizedName() {
+		return unlocalizedName;
 	}
 	
 	@Override

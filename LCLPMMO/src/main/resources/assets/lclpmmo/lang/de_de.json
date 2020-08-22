@@ -1,11 +1,22 @@
 {
     "lclpnetwork.presents": "LCLPNetwork präsentiert...",
     "mmo.menu.play": "Spielen",
-    "mmo.menu.btn_create_character": "Charakter erstellen...",
+    "mmo.menu.btn_create_character": "Charakter auswählen...",
+    "mmo.menu.select_character.title": "Wähle einen Charakter",
+    "mmo.menu.select_character.entry_desc": "Rasse: %s",
     "mmo.menu.create_character.title": "Charakter erstellen",
+    "mmo.menu.create_character.character_name": "Charakter Name",
+    "mmo.menu.create_character.choose_race_label": "Rasse",
+    "mmo.menu.create_character.choose_race": "Wähle eine Rasse",
+    "mmo.menu.create_character.create": "Neuen Charakter erstellen",
+    "mmo.menu.create_character.error_name_taken": "Dieser Name existiert bereits.",
     "mmo.menu.select_race.title": "Wähle deine Rasse",
-    "mmo.menu.select_race.choose": "Auswählen",
-    "mmo.menu.select_race.search": "Nach Rassen suchen",
+    "mmo.menu.generic.choose": "Auswählen",
+    "mmo.menu.generic.search": "Nach Gegenstand suchen",
+    "mmo.menu.generic.new": "Neu erstellen...",
+    "mmo.menu.generic.edit": "Bearbeiten",
+    "mmo.menu.generic.delete": "Löschen",
+    "mmo.menu.generic.duplicate": "Duplizieren",
     "mmo.race.human.title": "Mensch",
     "mmo.race.dwarf.title": "Zwerg",
     "music.play.file_not_exist": "Die Datei '%s' existiert nicht.",
@@ -26,5 +37,5 @@
     "cmd.scale.set.success_rel": "Größenskalierung wurde für %s gesetzt.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glasflasche",
-    "mmo.narrator.select.race": "%s ausgewählt."
+    "mmo.narrator.selection.selected": "%s ausgewählt."
 }

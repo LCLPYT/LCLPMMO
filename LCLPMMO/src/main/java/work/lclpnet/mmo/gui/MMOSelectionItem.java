@@ -7,7 +7,7 @@ public interface MMOSelectionItem {
 
 	ITextComponent getTitle();
 	
-	String getName();
+	String getUnlocalizedName();
 	
 	default ResourceLocation getIcon() {
 		return null;
