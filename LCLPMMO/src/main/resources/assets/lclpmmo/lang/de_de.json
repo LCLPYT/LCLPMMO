@@ -31,6 +31,7 @@
     "music.download.error": "Ein Fehler ist beim Download aufgetreten.",
     "warn.ffmpeg.not_installed": "Warnung: FFMPEG ist nicht installiert.",
     "warn.ytdl.not_installed": "Warnung: youtube-dl ist nicht installiert.",
+    "warn.auth.token": "WARNUNG!\nVerschicke niemals die lclpnetwork.token Datei!\nJeder der sie hat, kann mithilfe dieser auf deinen LCLPNetwork account zugreifen!\nAlso pass darauf auf, dass diese Datei nur für dich zugänglich ist!",
     "url.malformed": "Ungültige URL.",
     "cmd.scale.set.no_valid": "In deiner Auswahl befindet sich keine einzige lebende Entität.",
     "cmd.scale.set.success": "Größenskalierung wurde auf %s für %s gesetzt.",

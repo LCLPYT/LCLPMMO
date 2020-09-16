@@ -5,6 +5,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.network.msg.MessageMusic;
+import work.lclpnet.mmo.network.msg.MessageSendMCLinkToken;
 
 public class MMOPacketHandler {
 
@@ -20,6 +21,7 @@ public class MMOPacketHandler {
 				PROTOCOL_VERSION::equals
 				);
 		register(MessageMusic.class, new MessageMusic());
+		register(MessageSendMCLinkToken.class, new MessageSendMCLinkToken());
 	}
 	
 	private static <T> void register(Class<T> clazz, IMessage<T> msg) {

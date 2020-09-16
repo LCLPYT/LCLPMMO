@@ -18,6 +18,7 @@ import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.event.AttributeListener;
 import work.lclpnet.mmo.event.EventListener;
 import work.lclpnet.mmo.network.MMOPacketHandler;
+import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.ColorHandler;
 import work.lclpnet.mmo.util.EnvironmentUtils;
 import work.lclpnet.mmo.util.RenderLayerHandler;
@@ -45,6 +46,7 @@ public class LCLPMMO {
 		LOGGER.info("LCLPMMO initializing...");
 
 		Config.load();
+		LCLPNetwork.loadAccessToken(success -> {});
 		MMOPacketHandler.init();
 		MMOCommands.registerArgumentTypes();
 		

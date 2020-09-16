@@ -31,6 +31,7 @@
     "music.download.error": "An error occurred while downloading.",
     "warn.ffmpeg.not_installed": "Warning: FFMPEG is not installed.",
     "warn.ytdl.not_installed": "Warning: youtube-dl is not installed.",
+    "warn.auth.token": "WARNING!\nDo NEVER share the 'lclpnetwork.token' file!\nWith it, everyone could access your LCLPNetwork account.\nSo please pay attention to keep this file private!",
     "url.malformed": "Malformed URL.",
     "cmd.scale.set.no_valid": "There is no living entity target in your selection.",
     "cmd.scale.set.success": "Set entity size scale to %s for %s.",
