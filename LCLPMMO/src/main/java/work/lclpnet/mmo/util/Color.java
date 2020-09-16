@@ -25,7 +25,6 @@ public class Color {
 	 * @param red Red part. {0.0;255.0}
 	 * @param green Green part. {0.0;255.0}
 	 * @param blue Blue part. {0.0;255.0}
-	 * @return A color integer.
 	 */
 	public Color(float red, float green, float blue) {
 		this.red = MathHelper.clamp(red, 0F, 255F);
@@ -39,7 +38,6 @@ public class Color {
 	 * @param green Green part. {0.0;255.0}
 	 * @param blue Blue part. {0.0;255.0}
 	 * @param alpha Opacity. {0.0;1.0}
-	 * @return A color integer.
 	 */
 	public Color(float alpha, float red, float green, float blue) {
 		this.red = MathHelper.clamp(red, 0F, 255F);

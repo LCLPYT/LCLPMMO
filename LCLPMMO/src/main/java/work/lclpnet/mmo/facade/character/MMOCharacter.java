@@ -14,11 +14,12 @@ import work.lclpnet.mmo.gui.MMOSelectionItem;
 
 public class MMOCharacter implements MMOSelectionItem{
 
-	protected final String name, unlocalizedName;
+	protected final String name;
+	protected final transient String unlocalizedName;
 	protected MMORace race;
 	
 	public MMOCharacter(String name, MMORace race) {
-		this.name = Objects.requireNonNull(name);
+		this.name = Objects.requireNonNull(name); // maybe add CharMatcher.ascii().matchesAllOf(name);
 		this.unlocalizedName = this.name.toLowerCase(Locale.ROOT).replace(' ', '_');
 		this.race = Objects.requireNonNull(race);
 	}

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
@@ -11,6 +12,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.facade.character.MMOCharacter;
+import work.lclpnet.mmo.facade.race.MMORace;
+import work.lclpnet.mmo.facade.race.Races;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.DateUtil;
@@ -56,8 +60,9 @@ public class PreIntroScreen extends MMOScreen{
 		}
 		
 		if(alpha > 0.1F) {
-			//Color color = new Color(alpha, 85, 255, 85);
-			this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 15, 16777215);
+			System.out.println(new MMOCharacter("myName", Races.getRaces().get(0)));
+			Color color = new Color(alpha, 85, 255, 85);
+			drawMultiLineCenteredString(this.font, this.title.getFormattedText(), 1.5D, this.width / 2, this.height / 2, color.toARGBInt());
 		}
 		super.render(p_render_1_, p_render_2_, p_render_3_);
 	}

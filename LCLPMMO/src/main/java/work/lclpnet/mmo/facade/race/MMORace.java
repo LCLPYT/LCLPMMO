@@ -8,7 +8,7 @@ import work.lclpnet.mmo.gui.MMOSelectionItem;
 public class MMORace implements MMOSelectionItem{
 
 	private String unlocalizedName;
-	private ITextComponent title;
+	private transient ITextComponent title;
 	
 	public MMORace(String unlocalizedName, ITextComponent title) {
 		this.unlocalizedName = unlocalizedName;
