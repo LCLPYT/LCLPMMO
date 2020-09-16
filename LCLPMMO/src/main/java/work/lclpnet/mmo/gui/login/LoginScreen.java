@@ -38,23 +38,20 @@ public class LoginScreen extends MMOScreen {
         this.textFieldEmail.setText("");
         this.textFieldEmail.setResponder(this::changed);
         this.children.add(this.textFieldEmail);
+
         this.textFieldPassword = new PasswordTextField(this.font, this.width / 2 - 100, 116, 200, 20, I18n.format("mmo.menu.login.password"));
-        this.textFieldPassword.setMaxStringLength(128);
         this.textFieldPassword.setText("");
         this.textFieldPassword.setResponder(this::changed);
         this.children.add(this.textFieldPassword);
 
-        Color c = new Color(14737632);
-        System.out.println(c);
-        c = new Color(7368816);
-        System.out.println(c);
-
         this.buttonLogin = this.addButton(new Button(this.width / 2 - 100, 146, 200, 20, I18n.format("mmo.menu.login.login"), (p_213030_1_) -> {
+            this.buttonLogin.active = false;
             authManager.login(textFieldEmail.getText(), textFieldPassword.getText(), success -> {
+                this.buttonLogin.active = true;
                 if(success) {
                     SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
                             new TranslationTextComponent("mmo.menu.login.login_successful"), null);
-                    resolve();
+                    resolve(this.minecraft);
                 }
                 else {
                     loginFailed = true;
@@ -66,19 +63,20 @@ public class LoginScreen extends MMOScreen {
         }));
 
         this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20, I18n.format("mmo.menu.login.register"), (p_213031_1_) -> {
-
+            this.minecraft.displayGuiScreen(new RegisterScreen());
         }));
 
         this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20, I18n.format("mmo.menu.login.play_offline"), (p_213029_1_) -> {
-            resolve();
+            resolve(this.minecraft);
         }));
+
         this.validate();
     }
 
-    private void resolve() {
+    public static void resolve(Minecraft mc) {
         Screen startingScreen = EventListener.getStartingScreen();
         if(startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
-        this.minecraft.displayGuiScreen(startingScreen);
+        mc.displayGuiScreen(startingScreen);
     }
 
     private void changed(String s) {

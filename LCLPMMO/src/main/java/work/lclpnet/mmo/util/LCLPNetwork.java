@@ -77,6 +77,16 @@ public class LCLPNetwork {
 			}
 		}, "access token saver").start();
 	}
+
+	public static void checkAccessToken() { //TODO check for offline mode
+		sendRequest("api/auth/user", "GET", null, resp -> {
+			if(resp.getResponseCode() != 200) {
+				accessToken = null;
+				File f = getAuthFile();
+				f.delete();
+			}
+		});
+	}
 	
 	private static File getAuthFile() {
 		return new File(".auth", "lclpnetwork.token");
@@ -95,6 +105,7 @@ public class LCLPNetwork {
 				URL url = new URL(String.format("http://localhost:8000/%s", path));
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestMethod(requestMethod);
+				conn.setRequestProperty("Accept", "application/json");
 				conn.setRequestProperty("Content-Type", "application/json");
 				conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
 				if (accessToken != null)
@@ -118,5 +129,5 @@ public class LCLPNetwork {
 			}
 		}, "HTTP Request").start();
 	}
-	
+
 }
