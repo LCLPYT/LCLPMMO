@@ -27,6 +27,7 @@ public class PreIntroScreen extends MMOScreen{
 	
 	private long firstRenderTime = 0L, firstTitleRenderTime = 0L;
 	private boolean soundPlayed = false;
+	public boolean renderBG = false;
 
 	public PreIntroScreen() {
 		super(new TranslationTextComponent("lclpnetwork.presents"));
@@ -48,7 +49,8 @@ public class PreIntroScreen extends MMOScreen{
 			return;
 		}
 
-		this.fillGradient(0, 0, this.width, this.height, Color.WHITE, Color.WHITE);
+		if(!renderBG) this.fillGradient(0, 0, this.width, this.height, Color.WHITE, Color.WHITE);
+		else this.renderBackground();
 
 		float alpha = MathHelper.clamp((System.currentTimeMillis() - firstTitleRenderTime) / (float) FADEIN_TIME, 0F, 1F);
 
@@ -58,7 +60,6 @@ public class PreIntroScreen extends MMOScreen{
 		}
 		
 		if(alpha > 0.1F) {
-			System.out.println(new MMOCharacter("myName", Races.getRaces().get(0)));
 			Color color = new Color(alpha, 85, 255, 85);
 			drawMultiLineCenteredString(this.font, this.title.getFormattedText(), 1.5D, this.width / 2, this.height / 2, color.toARGBInt());
 		}

@@ -20,6 +20,7 @@ public class MMOPacketHandler {
 				PROTOCOL_VERSION::equals, 
 				PROTOCOL_VERSION::equals
 				);
+
 		register(MessageMusic.class, new MessageMusic());
 		register(MessageSendMCLinkToken.class, new MessageSendMCLinkToken());
 	}

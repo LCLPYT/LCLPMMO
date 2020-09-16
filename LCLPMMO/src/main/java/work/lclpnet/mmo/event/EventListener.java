@@ -2,6 +2,7 @@ package work.lclpnet.mmo.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,8 +15,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
+import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
+import work.lclpnet.mmo.util.LCLPNetwork;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
 public class EventListener {
@@ -36,11 +39,17 @@ public class EventListener {
 	public static void onGui(GuiOpenEvent e) {
 		if(e.getGui() instanceof MainMenuScreen) {
 			e.setCanceled(true);
-			Minecraft.getInstance().displayGuiScreen(Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen());
-			startup = false;
+			if(LCLPNetwork.getAccessToken() == null) Minecraft.getInstance().displayGuiScreen(new LoginScreen());
+			else Minecraft.getInstance().displayGuiScreen(getStartingScreen());
 		}
 	}
-	
+
+	public static Screen getStartingScreen() {
+		Screen screen = Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen();
+		startup = false;
+		return screen;
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onWorldLeave(WorldEvent.Unload e) {

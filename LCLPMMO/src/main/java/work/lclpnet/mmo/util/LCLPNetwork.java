@@ -7,12 +7,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.function.Consumer;
 
+import com.google.gson.JsonObject;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 public class LCLPNetwork {
 
@@ -43,7 +51,10 @@ public class LCLPNetwork {
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static void setAccessToken(String token, Consumer<Boolean> callback) {
+	public static void setAccessToken(String token, final Consumer<Boolean> callback) {
+		Objects.requireNonNull(token);
+		Objects.requireNonNull(callback);
+
 		accessToken = token;
 		
 		new Thread(() -> {
@@ -59,8 +70,10 @@ public class LCLPNetwork {
 			
 			try (OutputStream out = new FileOutputStream(f)) {
 				out.write(token.getBytes());
+				callback.accept(true);
 			} catch (IOException e) {
 				e.printStackTrace();
+				callback.accept(false);
 			}
 		}, "access token saver").start();
 	}
@@ -73,8 +86,37 @@ public class LCLPNetwork {
 		return accessToken;
 	}
 	
-	public static void sendRequest() {
-		// TODO
+	public static void sendRequest(String path, String requestMethod, @Nullable JsonObject body, @Nullable Consumer<HTTPResponse> callback) {
+		Objects.requireNonNull(path);
+		Objects.requireNonNull(requestMethod);
+
+		new Thread(() -> {
+			try {
+				URL url = new URL(String.format("http://localhost:8000/%s", path));
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod(requestMethod);
+				conn.setRequestProperty("Content-Type", "application/json");
+				conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+				if (accessToken != null)
+					conn.setRequestProperty("Authorization", String.format("Bearer %s", accessToken));
+
+				if (body != null) {
+					conn.setDoOutput(true);
+					try (OutputStream out = conn.getOutputStream()) {
+						out.write(body.toString().getBytes(StandardCharsets.UTF_8));
+						out.flush();
+					}
+				}
+
+				HTTPResponse response = HTTPResponse.fromRequest(conn);
+
+				conn.disconnect();
+
+				if (callback != null) callback.accept(response);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}, "HTTP Request").start();
 	}
 	
 }
