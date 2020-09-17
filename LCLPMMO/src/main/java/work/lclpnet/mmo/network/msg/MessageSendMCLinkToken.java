@@ -1,54 +1,63 @@
 package work.lclpnet.mmo.network.msg;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.google.gson.JsonObject;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+import work.lclpnet.mmo.event.custom.MCLinkTokenReceivedEvent;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.util.LCLPNetwork;
 
 public class MessageSendMCLinkToken implements IMessage<MessageSendMCLinkToken>{
 
-	private UUID token;
+	private String token;
 	
 	public MessageSendMCLinkToken() {}
 	
-	public MessageSendMCLinkToken(UUID token) {
+	public MessageSendMCLinkToken(String token) {
 		this.token = token;
 	}
 	
 	@Override
 	public void encode(MessageSendMCLinkToken message, PacketBuffer buffer) {
-		buffer.writeUniqueId(message.token);
+		boolean nonNull = message.token != null;
+		buffer.writeBoolean(nonNull);
+		if(nonNull) buffer.writeByteArray(message.token.getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Override
 	public MessageSendMCLinkToken decode(PacketBuffer buffer) {
-		return new MessageSendMCLinkToken(buffer.readUniqueId());
+		boolean nonNull = buffer.readBoolean();
+		String token = null;
+		if(nonNull) token = new String(buffer.readByteArray(), StandardCharsets.UTF_8);
+
+		return new MessageSendMCLinkToken(token);
 	}
 
 	@Override
 	public void handle(MessageSendMCLinkToken message, Supplier<Context> supplier) {
-		ServerPlayerEntity spe = supplier.get().getSender();
+		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
+
+		final ServerPlayerEntity spe = supplier.get().getSender();
 		if(spe == null) throw new IllegalStateException("Sender might not be null!");
 
-		JsonObject body = new JsonObject();
+		MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(spe, message.getToken()));
+
+		/*JsonObject body = new JsonObject();
 		body.addProperty("mcUuid", spe.getUniqueID().toString());
 		body.addProperty("token", message.getToken().toString());
 
-		LCLPNetwork.sendRequest("api/auth/process-mclink-token", "POST", body, response -> {
-			if(response.isNoConnection()) {
-				System.out.println("No connection.");
-			}
-			System.out.println("RESPONSE: " + response.getResponseCode());
-			System.out.println(response.getRawResponse());
-		});
+		LCLPNetwork.sendRequest("", "POST", body, response -> {});*/
 	}
 	
-	public UUID getToken() {
+	public String getToken() {
 		return token;
 	}
 
