@@ -12,7 +12,6 @@ import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
-import work.lclpnet.mmo.util.LCLPNetwork;
 
 public class LoginScreen extends MMOScreen {
 

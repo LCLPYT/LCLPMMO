@@ -1,8 +1,10 @@
 package work.lclpnet.mmo.network.msg;
 
+import java.util.function.Supplier;
+
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -10,9 +12,6 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.util.LCLPNetwork;
-
-import java.util.UUID;
-import java.util.function.Supplier;
 
 public class MessageRequestMCLink implements IMessage<MessageRequestMCLink>{
 

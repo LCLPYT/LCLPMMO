@@ -11,7 +11,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AccessibilityScreen;
-import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.LanguageScreen;
+import net.minecraft.client.gui.screen.MultiplayerScreen;
+import net.minecraft.client.gui.screen.MultiplayerWarningScreen;
+import net.minecraft.client.gui.screen.OptionsScreen;
+import net.minecraft.client.gui.screen.WorldSelectionScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -45,7 +50,6 @@ import work.lclpnet.mmo.gui.FancyButton;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.characterchooser.CharacterChooserScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
-import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.LCLPNetwork;
 
 @OnlyIn(Dist.CLIENT)

@@ -11,8 +11,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.facade.race.Races;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.DateUtil;

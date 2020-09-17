@@ -1,10 +1,8 @@
 package work.lclpnet.mmo.network.msg;
 
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import java.util.function.Supplier;
 
-import com.google.gson.JsonObject;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,7 +11,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.event.custom.MCLinkTokenReceivedEvent;
 import work.lclpnet.mmo.network.IMessage;
-import work.lclpnet.mmo.util.LCLPNetwork;
 
 public class MessageSendMCLinkToken implements IMessage<MessageSendMCLinkToken>{
 
