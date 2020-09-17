@@ -20,6 +20,7 @@ public class FancyButton extends Button{
 	public static final ResourceLocation LOCATION_HOVER = new ResourceLocation(LCLPMMO.MODID, "ui.button.hover");
 	private int fontColor, hoverFontColor;
 	private boolean hover = false;
+	public double scale = 1.5D;
 
 	public FancyButton(int widthIn, int heightIn, int width, int height, String text, IPressable onPress) {
 		this(widthIn, heightIn, width, height, text, onPress, TextFormatting.WHITE.getColor(), TextFormatting.YELLOW.getColor());
@@ -45,7 +46,6 @@ public class FancyButton extends Button{
 		FontRenderer fontrenderer = minecraft.fontRenderer;
 		int j = getFGColor();
 		int color = j | MathHelper.ceil(this.alpha * 255.0F) << 24;
-		double scale = 1.5D;
 		drawString(fontrenderer, getMessage(), scale, this.x, (int) (this.y + this.height / 2 - fontrenderer.FONT_HEIGHT / scale), color);
 	}
 

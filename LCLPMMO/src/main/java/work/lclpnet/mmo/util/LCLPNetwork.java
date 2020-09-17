@@ -7,10 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -51,8 +48,7 @@ public class LCLPNetwork {
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static void setAccessToken(String token, final Consumer<Boolean> callback) {
-		Objects.requireNonNull(token);
+	public static void setAccessToken(@Nullable String token, final Consumer<Boolean> callback) {
 		Objects.requireNonNull(callback);
 
 		accessToken = token;
@@ -67,6 +63,11 @@ public class LCLPNetwork {
 					e.printStackTrace();
 				}
 			}
+
+			if(f.exists() && token == null) {
+				callback.accept(f.delete());
+				return;
+			}
 			
 			try (OutputStream out = new FileOutputStream(f)) {
 				out.write(token.getBytes());
@@ -78,12 +79,10 @@ public class LCLPNetwork {
 		}, "access token saver").start();
 	}
 
-	public static void checkAccessToken() { //TODO check for offline mode
+	public static void checkAccessToken() {
 		sendRequest("api/auth/user", "GET", null, resp -> {
-			if(resp.getResponseCode() != 200) {
-				accessToken = null;
-				File f = getAuthFile();
-				f.delete();
+			if(!resp.isNoConnection() && resp.getResponseCode() != 200) {
+				setAccessToken(null, b -> {});
 			}
 		});
 	}
@@ -124,10 +123,17 @@ public class LCLPNetwork {
 				conn.disconnect();
 
 				if (callback != null) callback.accept(response);
+			} catch (ConnectException e) {
+				if(callback != null) callback.accept(HTTPResponse.NO_CONNECTION);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}, "HTTP Request").start();
+	}
+
+	public static void logout() {
+		sendRequest("api/auth/revoke-token", "GET", null, null);
+		setAccessToken(null, b -> {});
 	}
 
 }

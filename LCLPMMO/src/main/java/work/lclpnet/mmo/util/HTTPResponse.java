@@ -1,16 +1,15 @@
 package work.lclpnet.mmo.util;
 
-import net.minecraft.client.Minecraft;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 public class HTTPResponse {
 
+    public static final HTTPResponse NO_CONNECTION = new HTTPResponse(-1, null, null);
     private final int responseCode;
     private final String rawResponse, rawError;
 
@@ -30,6 +29,10 @@ public class HTTPResponse {
 
     public String getRawError() {
         return rawError;
+    }
+
+    public boolean isNoConnection() {
+        return NO_CONNECTION.equals(this);
     }
 
     public static HTTPResponse fromRequest(HttpURLConnection conn) throws IOException {
@@ -52,4 +55,12 @@ public class HTTPResponse {
         return new HTTPResponse(status, response, error);
     }
 
+    @Override
+    public String toString() {
+        return "HTTPResponse{" +
+                "responseCode=" + responseCode +
+                ", rawResponse='" + rawResponse + '\'' +
+                ", rawError='" + rawError + '\'' +
+                '}';
+    }
 }

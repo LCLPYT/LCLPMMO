@@ -60,7 +60,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 				this.props.selBtnWidth.apply(this.width), 
 				this.props.selBtnHeight.apply(this.height), 
 				I18n.format("mmo.menu.generic.choose"), clicked -> {
-					this.selectionList.getSelection().ifPresent(GenericSelectionList<T, GenericSelectionScreen<T>>.Entry::onSelect);
+					this.selectionList.getSelection().ifPresent(GenericSelectionList.Entry::onSelect);
 				});
 
 		this.selectButton = this.addButton(selBtn);

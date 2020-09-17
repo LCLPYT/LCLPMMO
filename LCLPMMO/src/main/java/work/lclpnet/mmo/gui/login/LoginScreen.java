@@ -48,7 +48,11 @@ public class LoginScreen extends MMOScreen {
             this.buttonLogin.active = false;
             authManager.login(textFieldEmail.getText(), textFieldPassword.getText(), success -> {
                 this.buttonLogin.active = true;
-                if(success) {
+                if(success == null) {
+                    SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
+                            new TranslationTextComponent("mmo.menu.login.login_failed"),
+                            new TranslationTextComponent("mmo.no_internet"));
+                } else if(success) {
                     SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
                             new TranslationTextComponent("mmo.menu.login.login_successful"), null);
                     resolve(this.minecraft);

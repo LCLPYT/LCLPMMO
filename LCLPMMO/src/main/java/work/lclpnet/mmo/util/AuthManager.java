@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.client.resources.I18n;
 
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +33,11 @@ public class AuthManager {
 
             LCLPNetwork.sendRequest("api/auth/issue-token", "POST", body, resp -> {
                 requestInProgress = false;
+
+                if(resp.isNoConnection()) {
+                    callback.accept(null);
+                    return;
+                }
 
                 if(resp.getResponseCode() != 200) callback.accept(false);
                 else {
@@ -64,6 +70,11 @@ public class AuthManager {
 
             LCLPNetwork.sendRequest("api/auth/register", "POST", body, resp -> {
                 requestInProgress = false;
+
+                if(resp.isNoConnection()) {
+                    callback.accept(I18n.format("mmo.no_internet"));
+                    return;
+                }
 
                 if(resp.getResponseCode() != 201) {
                     JsonObject obj = new Gson().fromJson(resp.getRawError(), JsonObject.class);

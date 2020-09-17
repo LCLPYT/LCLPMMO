@@ -11,11 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AccessibilityScreen;
-import net.minecraft.client.gui.screen.LanguageScreen;
-import net.minecraft.client.gui.screen.MultiplayerScreen;
-import net.minecraft.client.gui.screen.MultiplayerWarningScreen;
-import net.minecraft.client.gui.screen.OptionsScreen;
-import net.minecraft.client.gui.screen.WorldSelectionScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -35,6 +31,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
@@ -47,6 +44,9 @@ import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.gui.FancyButton;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.characterchooser.CharacterChooserScreen;
+import work.lclpnet.mmo.gui.login.LoginScreen;
+import work.lclpnet.mmo.util.Color;
+import work.lclpnet.mmo.util.LCLPNetwork;
 
 @OnlyIn(Dist.CLIENT)
 public class MMOMainScreen extends MMOScreen{
@@ -146,6 +146,27 @@ public class MMOMainScreen extends MMOScreen{
 				b -> this.minecraft.shutdown(), 
 				0xFFFF7070, TextFormatting.RED.getColor());
 		this.addButton(quitButton);
+
+		String logoutText = I18n.format("mmo.menu.logout");
+		FancyButton logoutBtn = new FancyButton(
+				this.width - this.font.getStringWidth(logoutText) - 10,
+				this.height - this.font.FONT_HEIGHT - 5,
+				this.font.getStringWidth(logoutText) + 5,
+				this.font.FONT_HEIGHT + 5,
+				logoutText,
+				b -> {
+					this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
+						if(yes) {
+							LCLPNetwork.logout();
+							this.minecraft.displayGuiScreen(new LoginScreen());
+						} else {
+							this.minecraft.displayGuiScreen(MMOMainScreen.this);
+						}
+					}, new TranslationTextComponent("mmo.menu.confirm_logout"), new TranslationTextComponent("mmo.menu.confirm_logout_desc")));
+				},
+				0xFFFF7070, TextFormatting.RED.getColor());
+		logoutBtn.scale = 1D;
+		this.addButton(logoutBtn);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -171,8 +192,7 @@ public class MMOMainScreen extends MMOScreen{
 			this.minecraft.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 			int padding = (int) (this.width / 21.3);
-
-			double scale = 1D / (360D / this.height), 
+			double scale = 1D / (360D / this.height),
 					neg = 1D / scale;
 			GlStateManager.scaled(scale, scale, scale);
 			this.blit(padding, padding, 0, 0, 255, 84);

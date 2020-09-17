@@ -40,6 +40,9 @@ public class MessageSendMCLinkToken implements IMessage<MessageSendMCLinkToken>{
 		body.addProperty("token", message.getToken().toString());
 
 		LCLPNetwork.sendRequest("api/auth/process-mclink-token", "POST", body, response -> {
+			if(response.isNoConnection()) {
+				System.out.println("No connection.");
+			}
 			System.out.println("RESPONSE: " + response.getResponseCode());
 			System.out.println(response.getRawResponse());
 		});

@@ -1,6 +1,9 @@
 {
     "lclpnetwork.presents": "LCLPNetwork presents...",
     "mmo.menu.play": "Play",
+    "mmo.menu.confirm_logout": "Log out?",
+    "mmo.menu.confirm_logout_desc": "Do you really want to log out? You will have to log back in, if you want to play again.",
+    "mmo.menu.logout": "Log out",
     "mmo.menu.btn_create_character": "Choose character...",
     "mmo.menu.select_character.title": "Choose a character",
     "mmo.menu.select_character.entry_desc": "Race: %s",
@@ -42,6 +45,7 @@
     "mmo.menu.generic.duplicate": "Duplicate",
     "mmo.race.human.title": "Human",
     "mmo.race.dwarf.title": "Dwarf",
+    "mmo.no_internet": "No server connection.",
     "music.play.file_not_exist": "The file '%s' does not exist.",
     "music.play.file_not_playing": "The file '%s' isn't playing.",
     "music.play.none_playing": "No music is currently playing.",
