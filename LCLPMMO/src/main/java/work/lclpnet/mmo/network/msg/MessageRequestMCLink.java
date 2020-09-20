@@ -27,8 +27,10 @@ public class MessageRequestMCLink implements IMessage<MessageRequestMCLink>{
 
 	@Override
 	public void handle(MessageRequestMCLink message, Supplier<Context> supplier) {
+		supplier.get().setPacketHandled(true);
+		
 		if(FMLEnvironment.dist != Dist.CLIENT) return;
-
+		
 		LCLPNetwork.sendRequest("api/auth/request-mclink-token", "POST", null, response -> {
 			String token;
 			try {
@@ -41,8 +43,8 @@ public class MessageRequestMCLink implements IMessage<MessageRequestMCLink>{
 			} catch (Exception e) {
 				token = null;
 			}
-
-			MMOPacketHandler.INSTANCE.sendToServer(new MessageSendMCLinkToken(token));
+			
+			MMOPacketHandler.INSTANCE.reply(new MessageSendMCLinkToken(token), supplier.get());
 		});
 	}
 	

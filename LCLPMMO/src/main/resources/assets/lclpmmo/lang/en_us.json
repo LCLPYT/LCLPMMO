@@ -65,5 +65,8 @@
     "cmd.scale.set.success_rel": "Set entity size scale for %s.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle",
-    "mmo.narrator.selection.selected": "Selected %s"
+    "mmo.narrator.selection.selected": "Selected %s",
+    "multiplayer.disconnect.no_id": "Your minecraft account could not be authenticated!",
+    "multiplayer.disconnect.lclpnetwork_down": "LCLPNetwork Auth Servers are currently down.",
+    "multiplayer.disconnect.not_logged_in": "You have not yet logged in with LCLPNetwork!"
 }

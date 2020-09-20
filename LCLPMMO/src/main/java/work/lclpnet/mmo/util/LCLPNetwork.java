@@ -7,17 +7,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class LCLPNetwork {
 
@@ -56,6 +60,11 @@ public class LCLPNetwork {
 		new Thread(() -> {
 			File f = getAuthFile();
 			if(!f.exists()) {
+				if(token == null) {
+					callback.accept(true);
+					return;
+				}
+				
 				f.getParentFile().mkdirs();
 				try(OutputStream out = new FileOutputStream(new File(".auth", "_README.txt"))) {
 					out.write(I18n.format("warn.auth.token").getBytes(StandardCharsets.UTF_8));
@@ -82,7 +91,8 @@ public class LCLPNetwork {
 	public static void checkAccessToken() {
 		sendRequest("api/auth/user", "GET", null, resp -> {
 			if(!resp.isNoConnection() && resp.getResponseCode() != 200) {
-				setAccessToken(null, b -> {});
+				if(FMLEnvironment.dist == Dist.CLIENT) setAccessToken(null, b -> {});
+				else throw new IllegalStateException("Server access token is not valid!");
 			}
 		});
 	}
@@ -135,5 +145,5 @@ public class LCLPNetwork {
 		sendRequest("api/auth/revoke-token", "GET", null, null);
 		setAccessToken(null, b -> {});
 	}
-
+	
 }

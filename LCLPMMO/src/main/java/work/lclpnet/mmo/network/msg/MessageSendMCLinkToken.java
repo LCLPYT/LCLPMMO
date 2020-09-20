@@ -1,10 +1,11 @@
 package work.lclpnet.mmo.network.msg;
 
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.login.ServerLoginNetHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -14,46 +15,46 @@ import work.lclpnet.mmo.network.IMessage;
 
 public class MessageSendMCLinkToken implements IMessage<MessageSendMCLinkToken>{
 
+	private static final Map<Context, ServerLoginNetHandler> handlers = new HashMap<>();
+
+	public static void storeLoginHandler(Context ctx, ServerLoginNetHandler handler) {
+		handlers.put(ctx, handler);
+	}
+
 	private String token;
-	
+
 	public MessageSendMCLinkToken() {}
-	
+
 	public MessageSendMCLinkToken(String token) {
 		this.token = token;
 	}
-	
+
 	@Override
-	public void encode(MessageSendMCLinkToken message, PacketBuffer buffer) {
+	public void encode(MessageSendMCLinkToken message, PacketBuffer pb) {
 		boolean nonNull = message.token != null;
-		buffer.writeBoolean(nonNull);
-		if(nonNull) buffer.writeByteArray(message.token.getBytes(StandardCharsets.UTF_8));
+		pb.writeBoolean(nonNull);
+		if(nonNull) pb.writeString(message.token, 36);
 	}
 
 	@Override
 	public MessageSendMCLinkToken decode(PacketBuffer buffer) {
 		boolean nonNull = buffer.readBoolean();
-		String token = null;
-		if(nonNull) token = new String(buffer.readByteArray(), StandardCharsets.UTF_8);
-
+		String token = nonNull ? buffer.readString(36) : null;
 		return new MessageSendMCLinkToken(token);
 	}
 
 	@Override
 	public void handle(MessageSendMCLinkToken message, Supplier<Context> supplier) {
+		supplier.get().setPacketHandled(true);
+
 		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
 
-		final ServerPlayerEntity spe = supplier.get().getSender();
-		if(spe == null) throw new IllegalStateException("Sender might not be null!");
+		final ServerLoginNetHandler handler = handlers.remove(supplier.get());
+		if(handler == null) throw new IllegalStateException("Sender might not be null!");
 
-		MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(spe, message.getToken()));
-
-		/*JsonObject body = new JsonObject();
-		body.addProperty("mcUuid", spe.getUniqueID().toString());
-		body.addProperty("token", message.getToken().toString());
-
-		LCLPNetwork.sendRequest("", "POST", body, response -> {});*/
+		MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(handler, message.getToken()));
 	}
-	
+
 	public String getToken() {
 		return token;
 	}

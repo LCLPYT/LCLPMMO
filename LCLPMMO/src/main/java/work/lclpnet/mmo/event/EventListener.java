@@ -15,8 +15,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
-import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
+import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.LCLPNetwork;
 
@@ -33,7 +33,7 @@ public class EventListener {
 				&& e.getSound().getSoundLocation().getNamespace().equals("minecraft")) 
 			e.setResultSound(null);
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onGui(GuiOpenEvent e) {
@@ -44,6 +44,7 @@ public class EventListener {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public static Screen getStartingScreen() {
 		Screen screen = Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen();
 		startup = false;
@@ -55,5 +56,5 @@ public class EventListener {
 	public static void onWorldLeave(WorldEvent.Unload e) {
 		MusicSystem.stopAllSound(x -> {});
 	}
-	
+
 }
