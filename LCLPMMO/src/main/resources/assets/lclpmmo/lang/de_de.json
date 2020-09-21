@@ -68,5 +68,6 @@
     "mmo.narrator.selection.selected": "%s ausgewählt.",
     "multiplayer.disconnect.no_id": "Dein Minecraft-Konto konnte nicht authentifiziert werden!",
     "multiplayer.disconnect.lclpnetwork_down": "Die LCLPNetwork-Authentifizierungs-Server sind im moment nicht erreichbar.",
-    "multiplayer.disconnect.not_logged_in": "Du hast dich noch nicht mit LCLPNetwork angemeldet!"
+    "multiplayer.disconnect.not_logged_in": "Du hast dich noch nicht mit LCLPNetwork angemeldet!",
+    "multiplayer.disconnect.already_linked": "Du hast dein momentanes LCLPNetwork-Konto schon mit einem anderen Minecraft-Konto verlinkt! Bitte wechsle dein Konto."
 }

@@ -68,5 +68,6 @@
     "mmo.narrator.selection.selected": "Selected %s",
     "multiplayer.disconnect.no_id": "Your minecraft account could not be authenticated!",
     "multiplayer.disconnect.lclpnetwork_down": "LCLPNetwork Auth Servers are currently down.",
-    "multiplayer.disconnect.not_logged_in": "You have not yet logged in with LCLPNetwork!"
+    "multiplayer.disconnect.not_logged_in": "You have not yet logged in with LCLPNetwork!",
+    "multiplayer.disconnect.already_linked": "You have already linked your current LCLPNetwork account with another minecraft account! Please Switch to the linked account."
 }
