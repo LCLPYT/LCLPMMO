@@ -15,9 +15,15 @@ public class Config {
 	private static Map<String, Object> register = new HashMap<>();
 	
 	public static final String KEY_SKIP_INTRO = "misc.skip-intro";
+	public static final String KEY_NETWORK_STAGING = "network.staging";
+	public static final String KEY_NETWORK_HOST_STAGING = "network.host-staging";
+	public static final String KEY_NETWORK_HOST_LIVE = "network.host-live";
 	
 	static {
 		register.put(KEY_SKIP_INTRO, false);
+		register.put(KEY_NETWORK_STAGING, false);
+		register.put(KEY_NETWORK_HOST_STAGING, "http://localhost:8000");
+		register.put(KEY_NETWORK_HOST_LIVE, "https://lclpnet.work");
 	}
 	
 	public static void load() {
@@ -89,5 +95,33 @@ public class Config {
 	public static void setSkipIntro(boolean skip) {
 		set(KEY_SKIP_INTRO, skip);
 	}
+	
+	public static boolean isNetworkStagingMode() {
+		return get(KEY_NETWORK_STAGING);
+	}
+	
+	public static void setNetworkStagingMode(boolean staging) {
+		set(KEY_NETWORK_STAGING, staging);
+	}
+	
+	public static String getHostStaging() {
+		return get(KEY_NETWORK_HOST_STAGING);
+	}
+	
+	public static void setHostStaging(String host) {
+		set(KEY_NETWORK_HOST_STAGING, host);
+	}
+	
+	public static String getHostLive() {
+		return get(KEY_NETWORK_HOST_LIVE);
+	}
 
+	public static void setHostLive(String host) {
+		set(KEY_NETWORK_HOST_LIVE, host);
+	}
+	
+	public static String getEffectiveHost() {
+		return isNetworkStagingMode() ? getHostStaging() : getHostLive();
+	}
+	
 }

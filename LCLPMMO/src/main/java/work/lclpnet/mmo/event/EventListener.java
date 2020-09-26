@@ -8,6 +8,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -18,6 +20,7 @@ import work.lclpnet.mmo.audio.MusicSystem;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
+import work.lclpnet.mmo.util.Enqueuer;
 import work.lclpnet.mmo.util.LCLPNetwork;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
@@ -49,6 +52,12 @@ public class EventListener {
 		Screen screen = Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen();
 		startup = false;
 		return screen;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void onRenderTick(RenderTickEvent e) {
+		if(e.phase == Phase.END) Enqueuer.workRender();
 	}
 
 	@OnlyIn(Dist.CLIENT)

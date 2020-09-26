@@ -31,7 +31,7 @@ public class AuthManager {
             body.addProperty("remember_me", true);
             body.addProperty("app_name", "LCLPMMO Client");
 
-            LCLPNetwork.sendRequest("api/auth/issue-token", "POST", body, resp -> {
+            LCLPNetwork.post("api/auth/issue-token", body, resp -> {
                 requestInProgress = false;
 
                 if(resp.isNoConnection()) {
@@ -68,7 +68,7 @@ public class AuthManager {
             body.addProperty("password", password);
             body.addProperty("password_confirmation", confirmPassword);
 
-            LCLPNetwork.sendRequest("api/auth/register", "POST", body, resp -> {
+            LCLPNetwork.post("api/auth/register", body, resp -> {
                 requestInProgress = false;
 
                 if(resp.isNoConnection()) {

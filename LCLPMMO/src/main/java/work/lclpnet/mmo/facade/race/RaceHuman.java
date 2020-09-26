@@ -4,7 +4,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class RaceHuman extends MMORace{
 
-	public RaceHuman() {
+	RaceHuman() {
 		super("human", new TranslationTextComponent("mmo.race.human.title"));
 	}
 

@@ -1,16 +1,20 @@
 package work.lclpnet.mmo.gui.charactercreator;
 
+import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import work.lclpnet.mmo.facade.character.Characters;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.characterchooser.CharacterChooserScreen;
 import work.lclpnet.mmo.gui.racechooser.RaceSelectionScreen;
 import work.lclpnet.mmo.util.Colors;
+import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.ValidationViolations;
 
 public class CharacterCreatorScreen extends MMOScreen{
 
@@ -82,12 +86,8 @@ public class CharacterCreatorScreen extends MMOScreen{
 	}
 
 	private boolean validate() {
-		boolean doesNameExist = Characters.doesNameExist(this.characterName);
-		boolean nameValid = !this.characterName.isEmpty() && !doesNameExist;
+		boolean valid = !this.characterName.isEmpty() && this.selectedRace != null;
 		
-		if(doesNameExist) this.setError(I18n.format("mmo.menu.create_character.error_name_taken"));
-		
-		boolean valid = nameValid && this.selectedRace != null;
 		this.btnCreateCharacter.active = valid;
 		return valid;
 	}
@@ -95,8 +95,36 @@ public class CharacterCreatorScreen extends MMOScreen{
 	public void createCharacter() {
 		if(!validate()) return;
 		
-		Characters.getCharacters().add(new MMOCharacter(characterName, selectedRace));
-		this.minecraft.displayGuiScreen(new CharacterChooserScreen(this.prevScreen.getPrevScreen()));
+		MMOCharacter character = new MMOCharacter(this.characterName, this.selectedRace);
+		
+		LCLPNetwork.post("api/ls5/add-character", character.toJson(), response -> {
+			if(response.isNoConnection()) {
+				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
+	                    new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"),
+	                    new TranslationTextComponent("mmo.no_internet"));
+			}
+			else if(response.getResponseCode() == 201) {
+				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
+						new TranslationTextComponent("mmo.menu.create_character.created"), 
+						null);
+				CharacterChooserScreen.updateContentAndShow(this.minecraft, prevScreen.getPrevScreen());
+			} else {
+				ITextComponent reason;
+				if(response.hasValidationViolations()) {
+					ValidationViolations violations = response.getValidationViolations();
+					if(violations.has("name", "The name has already been taken.")) reason = new TranslationTextComponent("mmo.menu.create_character.error_name_taken");
+					else reason = new StringTextComponent(violations.getFirst());
+				} else {
+					reason = new TranslationTextComponent("error.unknown");
+				}
+				
+				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
+						new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"), 
+						reason);
+				
+				this.setError(reason.getFormattedText());
+			}
+		});
 	}
 
 	public void setSelectedRace(MMORace selected) {

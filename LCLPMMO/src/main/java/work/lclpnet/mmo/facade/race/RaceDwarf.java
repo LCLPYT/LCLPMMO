@@ -6,7 +6,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class RaceDwarf extends MMORace{
 
-	public RaceDwarf() {
+	RaceDwarf() {
 		super("dwarf", new TranslationTextComponent("mmo.race.dwarf.title"));
 	}
 	

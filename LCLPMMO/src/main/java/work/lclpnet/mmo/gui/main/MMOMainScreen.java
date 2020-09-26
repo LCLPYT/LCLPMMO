@@ -117,7 +117,7 @@ public class MMOMainScreen extends MMOScreen{
 		}));
 		this.menuButtons.add(new MMOButtonInfo(I18n.format("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
 		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("mmo.menu.btn_create_character"), b -> this.minecraft.displayGuiScreen(new CharacterChooserScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(I18n.format("mmo.menu.btn_create_character"), b -> CharacterChooserScreen.updateContentAndShow(this.minecraft, this)));
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class MMOMainScreen extends MMOScreen{
 		logoutBtn.scale = 1D;
 		this.addButton(logoutBtn);
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {

@@ -16,16 +16,18 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import work.lclpnet.mmo.Config;
 
 public class LCLPNetwork {
 
 	private static String accessToken = null;
+	public static IPrivateBackend BACKEND = IPrivateBackend.NONE;
 	
 	public static void loadAccessToken(final Consumer<Boolean> callback) {
 		new Thread(() -> {
@@ -105,13 +107,13 @@ public class LCLPNetwork {
 		return accessToken;
 	}
 	
-	public static void sendRequest(String path, String requestMethod, @Nullable JsonObject body, @Nullable Consumer<HTTPResponse> callback) {
+	public static void sendRequest(String path, String requestMethod, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(requestMethod);
 
 		new Thread(() -> {
 			try {
-				URL url = new URL(String.format("http://localhost:8000/%s", path));
+				URL url = new URL(String.format("%s/%s", Config.getEffectiveHost(), path));
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestMethod(requestMethod);
 				conn.setRequestProperty("Accept", "application/json");
@@ -139,6 +141,10 @@ public class LCLPNetwork {
 				e.printStackTrace();
 			}
 		}, "HTTP Request").start();
+	}
+	
+	public static void post(String path, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
+		sendRequest(path, "POST", body, callback);
 	}
 
 	public static void logout() {

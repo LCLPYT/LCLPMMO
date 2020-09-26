@@ -38,13 +38,17 @@ public abstract class EditableGenericSelectionScreen<T extends MMOSelectionItem>
 			this.selectionList.getSelection().ifPresent(entry -> copyEntry(entry.getEntry()));
 		}));
 		
+		editButton.active = false;
+		deleteButton.active = false;
+		copyButton.active = false;
+		
 		super.init();
 	}
 	
 	@Override
 	public void setButtonsActive(boolean active) {
 		super.setButtonsActive(active);
-		this.deleteButton.active = true;
+		this.deleteButton.active = active;
 	}
 	
 	public abstract void addEntry();
