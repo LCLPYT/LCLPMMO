@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.gui.characterchooser;
+package work.lclpnet.mmo.gui.character;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.EditableGenericSelectionScreen;
-import work.lclpnet.mmo.gui.charactercreator.CharacterCreatorScreen;
 import work.lclpnet.mmo.util.Enqueuer;
 import work.lclpnet.mmo.util.LCLPNetwork;
 
@@ -24,6 +23,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 	protected CharacterChooserScreen(Screen prevScreen, List<MMOCharacter> characters) {
 		super(new TranslationTextComponent("mmo.menu.select_character.title"), prevScreen);
 		this.characters = Objects.requireNonNull(characters);
+		this.background = BACKGROUND_LOCATION_ALT;
 	}
 
 	@Override

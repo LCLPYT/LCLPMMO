@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.gui.charactercreator;
+package work.lclpnet.mmo.gui.character;
 
 import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -10,8 +10,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOScreen;
-import work.lclpnet.mmo.gui.characterchooser.CharacterChooserScreen;
-import work.lclpnet.mmo.gui.racechooser.RaceSelectionScreen;
 import work.lclpnet.mmo.util.Colors;
 import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.ValidationViolations;
@@ -63,7 +61,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground();
+		this.renderBackgroundTexture(BACKGROUND_LOCATION_ALT);
 		this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 20, -1);
 		
 		this.drawString(this.font, I18n.format("mmo.menu.create_character.character_name"), this.width / 2 - 100, 47, -6250336);

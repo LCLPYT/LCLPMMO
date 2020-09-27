@@ -14,21 +14,22 @@ import work.lclpnet.mmo.util.LCLPNetwork;
 
 public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem{
 
-	protected final transient Integer id = null; // retrieved from lclpnet.work
-	protected final transient String unlocalizedName;
+	public transient Integer id = null; // retrieved from lclpnet.work
+	protected transient String unlocalizedName;
 	protected final String name;
 	protected MMORace race;
 	
 	public MMOCharacter(String name, MMORace race) {
 		this.name = Objects.requireNonNull(name); // maybe add CharMatcher.ascii().matchesAllOf(name);
-		this.unlocalizedName = this.name.toLowerCase(Locale.ROOT).replace(' ', '_');
+		generateUnlocalizedName();
 		this.race = Objects.requireNonNull(race);
 	}
 
-	public Integer getId() {
-		return id;
+	public void generateUnlocalizedName() {
+		if(this.unlocalizedName == null) 
+			this.unlocalizedName = this.name.toLowerCase(Locale.ROOT).replace(' ', '_');
 	}
-	
+
 	public String getName() {
 		return name;
 	}

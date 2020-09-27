@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends MMOScreen implements GenericSelectionSetup<T> {
@@ -20,6 +21,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	protected TextFieldWidget searchField;
 	protected GenericSelectionList<T, GenericSelectionScreen<T>> selectionList;
 	protected Properties props;
+	protected ResourceLocation background = null;
 
 	protected GenericSelectionScreen(ITextComponent titleIn, Screen prevScreen) {
 		this(titleIn, prevScreen, new Properties());
@@ -84,6 +86,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 		this.selectionList = new GenericSelectionList<T, GenericSelectionScreen<T>>(this, this.minecraft, this.width, this.height, 48, props.selectionListHeight.apply(this.height), 36, this::getEntries, () -> {
 			return this.searchField.getText();
 		}, this.selectionList);
+		if(background != null) this.selectionList.setBgTexture(background);
 	}
 
 	@Override
@@ -103,7 +106,9 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground();
+		if(background == null) this.renderBackground();
+		else this.renderBackgroundTexture(background);
+		
 		this.tooltip = null;
 		this.selectionList.render(mouseX, mouseY, partialTicks);
 		this.searchField.render(mouseX, mouseY, partialTicks);

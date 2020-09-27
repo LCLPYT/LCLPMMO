@@ -48,7 +48,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFie
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.gui.FancyButton;
 import work.lclpnet.mmo.gui.MMOScreen;
-import work.lclpnet.mmo.gui.characterchooser.CharacterChooserScreen;
+import work.lclpnet.mmo.gui.character.CharacterChooserScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.util.LCLPNetwork;
 
