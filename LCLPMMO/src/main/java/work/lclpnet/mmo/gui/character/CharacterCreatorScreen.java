@@ -35,7 +35,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 		this.characterNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, I18n.format("mmo.menu.create_character.character_name"));
 		this.characterNameField.setText(this.characterName);
 		this.characterNameField.setResponder((p_214319_1_) -> {
-			this.characterName = p_214319_1_;
+			this.characterName = p_214319_1_.trim();
 			this.validate();
 		});
 		this.children.add(this.characterNameField);

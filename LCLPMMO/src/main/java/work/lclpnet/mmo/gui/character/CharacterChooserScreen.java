@@ -53,7 +53,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 
 	@Override
 	public void editEntry(MMOCharacter character) {
-
+		this.minecraft.displayGuiScreen(new EditCharacterScreen(character, this));
 	}
 
 	@Override

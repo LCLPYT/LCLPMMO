@@ -49,6 +49,7 @@ public abstract class EditableGenericSelectionScreen<T extends MMOSelectionItem>
 	public void setButtonsActive(boolean active) {
 		super.setButtonsActive(active);
 		this.deleteButton.active = active;
+		this.editButton.active = active;
 	}
 	
 	public abstract void addEntry();
