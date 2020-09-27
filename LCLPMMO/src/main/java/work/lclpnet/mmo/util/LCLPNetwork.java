@@ -151,5 +151,9 @@ public class LCLPNetwork {
 		sendRequest("api/auth/revoke-token", "GET", null, null);
 		setAccessToken(null, b -> {});
 	}
+
+	public static boolean isLoggedIn() {
+		return accessToken != null;
+	}
 	
 }

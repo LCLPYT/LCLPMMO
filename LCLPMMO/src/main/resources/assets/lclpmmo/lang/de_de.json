@@ -5,6 +5,7 @@
     "mmo.menu.confirm_logout_desc": "Möchtest du dich wirklich abmelden? Du kannst erst wieder spielen, wenn du dich wieder anmeldest.",
     "mmo.menu.btn_create_character": "Charakter auswählen...",
     "mmo.menu.logout": "Abmelden",
+    "mmo.menu.login": "Anmelden",
     "mmo.menu.select_character.title": "Wähle einen Charakter",
     "mmo.menu.select_character.entry_desc": "Rasse: %s",
     "mmo.menu.create_character.title": "Charakter erstellen",

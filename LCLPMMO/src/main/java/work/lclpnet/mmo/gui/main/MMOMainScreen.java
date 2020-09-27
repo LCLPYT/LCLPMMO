@@ -151,7 +151,8 @@ public class MMOMainScreen extends MMOScreen{
 				0xFFFF7070, TextFormatting.RED.getColor());
 		this.addButton(quitButton);
 
-		String logoutText = I18n.format("mmo.menu.logout");
+		boolean loggedIn = LCLPNetwork.isLoggedIn();
+		String logoutText = loggedIn ? I18n.format("mmo.menu.logout") : I18n.format("mmo.menu.login");
 		FancyButton logoutBtn = new FancyButton(
 				this.width - this.font.getStringWidth(logoutText) - 10,
 				this.height - this.font.FONT_HEIGHT - 5,
@@ -159,7 +160,8 @@ public class MMOMainScreen extends MMOScreen{
 				this.font.FONT_HEIGHT + 5,
 				logoutText,
 				b -> {
-					this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
+					if(!loggedIn) this.minecraft.displayGuiScreen(new LoginScreen());
+					else this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
 						if(yes) {
 							LCLPNetwork.logout();
 							this.minecraft.displayGuiScreen(new LoginScreen());
