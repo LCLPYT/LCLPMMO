@@ -22,6 +22,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	protected GenericSelectionList<T, GenericSelectionScreen<T>> selectionList;
 	protected Properties props;
 	protected ResourceLocation background = null;
+	protected T preSelected = null;
 
 	protected GenericSelectionScreen(ITextComponent titleIn, Screen prevScreen) {
 		this(titleIn, prevScreen, new Properties());
@@ -85,7 +86,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	public void updateSelectionList() {
 		this.selectionList = new GenericSelectionList<T, GenericSelectionScreen<T>>(this, this.minecraft, this.width, this.height, 48, props.selectionListHeight.apply(this.height), 36, this::getEntries, () -> {
 			return this.searchField.getText();
-		}, this.selectionList);
+		}, this.selectionList, preSelected);
 		if(background != null) this.selectionList.setBgTexture(background);
 	}
 
@@ -120,7 +121,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	}
 
 	public abstract List<T> getEntries();
-
+	
 	@Override
 	public void setButtonsActive(boolean active) {
 		this.selectButton.active = active;

@@ -46,8 +46,7 @@ public class LCLPMMO {
 		LOGGER.info("LCLPMMO initializing...");
 
 		Config.load();
-		LCLPNetwork.loadAccessToken(success -> {});
-		LCLPNetwork.checkAccessToken();
+		LCLPNetwork.setup();
 		MMOPacketHandler.init();
 		MMOCommands.registerArgumentTypes();
 		

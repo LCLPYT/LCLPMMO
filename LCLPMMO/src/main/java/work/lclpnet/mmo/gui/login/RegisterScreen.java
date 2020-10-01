@@ -86,7 +86,7 @@ public class RegisterScreen extends MMOScreen {
                 if(error == null) {
                     SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
                             new TranslationTextComponent("mmo.menu.register.success"), null);
-                    LoginScreen.resolve(this.minecraft);
+                    LoginScreen.loadUserAndResolve(this.minecraft);
                 }
                 else {
                     registerFailed = false;

@@ -12,6 +12,7 @@ public class RaceSelectionScreen extends GenericSelectionScreen<MMORace>{
 	public RaceSelectionScreen(CharacterCreatorScreen prevScreen) {
 		super(new TranslationTextComponent("mmo.menu.select_race.title"), prevScreen);
 		this.background = BACKGROUND_LOCATION_ALT;
+		this.preSelected = prevScreen.selectedRace;
 	}
 
 	@Override

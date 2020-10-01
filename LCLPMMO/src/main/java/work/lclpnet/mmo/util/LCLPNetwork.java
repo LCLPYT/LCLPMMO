@@ -23,12 +23,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.Config;
+import work.lclpnet.mmo.facade.JsonSerializeable;
 
 public class LCLPNetwork {
 
 	private static String accessToken = null;
 	public static IPrivateBackend BACKEND = IPrivateBackend.NONE;
-	
+
 	public static void loadAccessToken(final Consumer<Boolean> callback) {
 		new Thread(() -> {
 			File f = getAuthFile();
@@ -36,29 +37,29 @@ public class LCLPNetwork {
 				callback.accept(false);
 				return;
 			}
-			
+
 			try(InputStream in = new FileInputStream(f);
 					ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				byte[] buffer = new byte[1024];
 				int read;
 				while((read = in.read(buffer, 0, buffer.length)) != -1) 
 					out.write(buffer, 0, read);
-				
+
 				accessToken = new String(out.toByteArray());
 				callback.accept(true);
+				return;
 			} catch (IOException e) {
 				e.printStackTrace();
 				callback.accept(false);
+				return;
 			}
 		}, "access token loader").start();
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static void setAccessToken(@Nullable String token, final Consumer<Boolean> callback) {
-		Objects.requireNonNull(callback);
-
 		accessToken = token;
-		
+
 		new Thread(() -> {
 			File f = getAuthFile();
 			if(!f.exists()) {
@@ -66,7 +67,7 @@ public class LCLPNetwork {
 					callback.accept(true);
 					return;
 				}
-				
+
 				f.getParentFile().mkdirs();
 				try(OutputStream out = new FileOutputStream(new File(".auth", "_README.txt"))) {
 					out.write(I18n.format("warn.auth.token").getBytes(StandardCharsets.UTF_8));
@@ -79,34 +80,41 @@ public class LCLPNetwork {
 				callback.accept(f.delete());
 				return;
 			}
-			
+
 			try (OutputStream out = new FileOutputStream(f)) {
 				out.write(token.getBytes());
 				callback.accept(true);
+				return;
 			} catch (IOException e) {
 				e.printStackTrace();
 				callback.accept(false);
+				return;
 			}
-		}, "access token saver").start();
+		});
 	}
 
-	public static void checkAccessToken() {
+	public static void checkAccessToken(Consumer<User> callback) {
 		sendRequest("api/auth/user", "GET", null, resp -> {
 			if(!resp.isNoConnection() && resp.getResponseCode() != 200) {
 				if(FMLEnvironment.dist == Dist.CLIENT) setAccessToken(null, b -> {});
 				else throw new IllegalStateException("Server access token is not valid!");
+				callback.accept(null);
+				return;
+			} else {
+				callback.accept(JsonSerializeable.parse(resp.getRawResponse(), User.class));
+				return;
 			}
 		});
 	}
-	
+
 	private static File getAuthFile() {
 		return new File(".auth", "lclpnetwork.token");
 	}
-	
+
 	public static String getAccessToken() {
 		return accessToken;
 	}
-	
+
 	public static void sendRequest(String path, String requestMethod, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(requestMethod);
@@ -134,15 +142,17 @@ public class LCLPNetwork {
 
 				conn.disconnect();
 
-				if (callback != null) callback.accept(response);
+				callback.accept(response);
+				return;
 			} catch (ConnectException e) {
-				if(callback != null) callback.accept(HTTPResponse.NO_CONNECTION);
+				callback.accept(HTTPResponse.NO_CONNECTION);
+				return;
 			} catch (IOException e) {
-				e.printStackTrace();
-			}
+				throw new IllegalStateException(e);
+			}			
 		}, "HTTP Request").start();
 	}
-	
+
 	public static void post(String path, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
 		sendRequest(path, "POST", body, callback);
 	}
@@ -150,10 +160,15 @@ public class LCLPNetwork {
 	public static void logout() {
 		sendRequest("api/auth/revoke-token", "GET", null, null);
 		setAccessToken(null, b -> {});
+		User.reloadUser(null, () -> {});
 	}
 
 	public static boolean isLoggedIn() {
 		return accessToken != null;
+	}
+
+	public static void setup() {
+		LCLPNetwork.loadAccessToken(loaded -> LCLPNetwork.checkAccessToken(user -> User.reloadUser(user, () -> {})));
 	}
 	
 }

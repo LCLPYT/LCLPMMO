@@ -18,8 +18,10 @@ import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.EditableGenericSelectionScreen;
+import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Enqueuer;
 import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.User;
 
 public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCharacter> {
 
@@ -29,21 +31,51 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 		super(new TranslationTextComponent("mmo.menu.select_character.title"), prevScreen);
 		this.characters = Objects.requireNonNull(characters);
 		this.background = BACKGROUND_LOCATION_ALT;
+		
+		if(User.selectedCharacter != null) {
+			for(MMOCharacter character : characters) {
+				if(character.id != null && character.id == User.selectedCharacter.id) {
+					this.preSelected = character;
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
 	public void onSelected(MMOCharacter selected) {
-		System.out.println("SELECTED " + selected.toString());
+		if(selected.id == null) throw new IllegalStateException("Character id is null");
+		
+		JsonObject body = new JsonObject();
+		body.addProperty("characterId", selected.id);
+		
+		LCLPNetwork.post("api/ls5/set-active-character", body, response -> {
+			if(response.isNoConnection()) {
+				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
+						new TranslationTextComponent("mmo.no_internet"),
+						null);
+				return;
+			}
+			else if(response.getResponseCode() == 200) {
+				User.selectedCharacter = selected;
+				Enqueuer.enqueueOnRender(() -> this.minecraft.displayGuiScreen(new MMOMainScreen(false)));
+			} else {
+				ITextComponent reason = new TranslationTextComponent("error.unknown");
+				System.err.println(response);
+				if(response.hasValidationViolations()) {
+					reason = new StringTextComponent(response.getValidationViolations().getFirst());
+				}
+
+				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
+						reason,
+						null);
+			}
+		});
 	}
 
 	@Override
 	public List<MMOCharacter> getEntries() {
 		return characters;
-	}
-
-	@Override
-	protected void init() {
-		super.init();
 	}
 
 	@Override

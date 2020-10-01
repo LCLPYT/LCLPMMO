@@ -3,6 +3,7 @@ package work.lclpnet.mmo.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -32,20 +33,22 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 	private List<T> entries;
 	private Supplier<List<T>> entrySupplier;
 	private ResourceLocation bgTexture = AbstractGui.BACKGROUND_LOCATION;
+	private T preSelected = null;
 
-	public GenericSelectionList(S screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, Supplier<List<T>> entries) {
-		this(screen, mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn, entries, null, null);
+	public GenericSelectionList(S screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, Supplier<List<T>> entries, T preSelected) {
+		this(screen, mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn, entries, null, null, preSelected);
 	}
 
-	public GenericSelectionList(S screen, Minecraft mc, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, Supplier<List<T>> entries, Supplier<String> query, @Nullable GenericSelectionList<T, S> copyFrom) {
+	public GenericSelectionList(S screen, Minecraft mc, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, Supplier<List<T>> entries, Supplier<String> query, @Nullable GenericSelectionList<T, S> copyFrom, T preSelected) {
 		super(mc, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
 		this.screen = screen;
 		this.entrySupplier = entries;
 		if (copyFrom != null) this.entries = copyFrom.entries;
 
+		this.preSelected = preSelected;
 		if(query != null) this.search(query, false);
 	}
-	
+
 	public void setBgTexture(ResourceLocation bgTexture) {
 		this.bgTexture = bgTexture;
 	}
@@ -85,7 +88,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
 		for(T entry : this.entries) {
 			if (entry.getTitle().getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(s) || entry.getUnlocalizedName().toLowerCase(Locale.ROOT).contains(s)) {
-				this.addEntry(new Entry(this, entry));
+				this.addEntry(new Entry(this, entry, preSelected != null && entry.equals(preSelected)));
 			}
 		}
 
@@ -97,6 +100,10 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
 	protected int getMaxScroll() {
 		return Math.max(0, this.getMaxPosition() - (this.y1 - this.y0 - 4));
+	}
+
+	protected int getRowBottom(int p_getRowBottom_1_) {
+		return this.getRowTop(p_getRowBottom_1_) + this.itemHeight;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -191,17 +198,67 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 		RenderSystem.disableBlend();
 	}
 
+	@Override
+	protected void renderList(int p_renderList_1_, int p_renderList_2_, int p_renderList_3_, int p_renderList_4_,
+			float p_renderList_5_) {
+		int i = this.getItemCount();
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+		for(int j = 0; j < i; ++j) {
+			int k = this.getRowTop(j);
+			int l = this.getRowBottom(j);
+			if (l >= this.y0 && k <= this.y1) {
+				int i1 = p_renderList_2_ + j * this.itemHeight + this.headerHeight;
+				int j1 = this.itemHeight - 4;
+				Entry e = this.getEntry(j);
+				int k1 = this.getRowWidth();
+				boolean selItem = this.isSelectedItem(j);
+				if (this.renderSelection && (selItem || e.preSelected)) {
+					int l1 = this.x0 + this.width / 2 - k1 / 2;
+					int i2 = this.x0 + this.width / 2 + k1 / 2;
+					RenderSystem.disableTexture();
+					if(selItem) {
+						float f = this.isFocused() ? 1.0F : 0.5F;
+						RenderSystem.color4f(f, f, f, 1.0F);
+					} else { // preSelected
+						RenderSystem.color4f(0.196F, 0.476F, 0.659F, 1.0F); // rgba(50, 121, 168, 255)
+					}
+					bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+					bufferbuilder.pos((double)l1, (double)(i1 + j1 + 2), 0.0D).endVertex();
+					bufferbuilder.pos((double)i2, (double)(i1 + j1 + 2), 0.0D).endVertex();
+					bufferbuilder.pos((double)i2, (double)(i1 - 2), 0.0D).endVertex();
+					bufferbuilder.pos((double)l1, (double)(i1 - 2), 0.0D).endVertex();
+					tessellator.draw();
+					RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+					bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+					bufferbuilder.pos((double)(l1 + 1), (double)(i1 + j1 + 1), 0.0D).endVertex();
+					bufferbuilder.pos((double)(i2 - 1), (double)(i1 + j1 + 1), 0.0D).endVertex();
+					bufferbuilder.pos((double)(i2 - 1), (double)(i1 - 1), 0.0D).endVertex();
+					bufferbuilder.pos((double)(l1 + 1), (double)(i1 - 1), 0.0D).endVertex();
+					tessellator.draw();
+					RenderSystem.enableTexture();
+				}
+
+				int j2 = this.getRowLeft();
+				e.render(j, k, j2, k1, j1, p_renderList_3_, p_renderList_4_, this.isMouseOver((double)p_renderList_3_, (double)p_renderList_4_) && Objects.equals(this.getEntryAtPosition((double)p_renderList_3_, (double)p_renderList_4_), e), p_renderList_5_);
+			}
+		}
+	}
+
 	public final class Entry extends ExtendedList.AbstractListEntry<GenericSelectionList<T, S>.Entry> {
 
 		private final Minecraft minecraft;
 		private final S screen;
 		private final T entry;
 		private long field_214455_h;
+		protected boolean preSelected = false;
 
-		public Entry(GenericSelectionList<T, S> p_i50631_2_, T entry) {
+		public Entry(GenericSelectionList<T, S> p_i50631_2_, T entry, boolean preSelected) {
 			this.screen = p_i50631_2_.getGuiScreen();
 			this.entry = entry;
 			this.minecraft = Minecraft.getInstance();
+			this.preSelected = preSelected;
 		}
 
 		public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {

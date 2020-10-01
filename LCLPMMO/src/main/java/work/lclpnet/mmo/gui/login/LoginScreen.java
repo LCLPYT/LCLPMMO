@@ -12,6 +12,8 @@ import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
+import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.User;
 
 public class LoginScreen extends MMOScreen {
 
@@ -54,7 +56,7 @@ public class LoginScreen extends MMOScreen {
                 } else if(success) {
                     SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
                             new TranslationTextComponent("mmo.menu.login.login_successful"), null);
-                    resolve(this.minecraft);
+                    loadUserAndResolve(this.minecraft);
                 }
                 else {
                     loginFailed = true;
@@ -80,6 +82,10 @@ public class LoginScreen extends MMOScreen {
         Screen startingScreen = EventListener.getStartingScreen();
         if(startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
         mc.displayGuiScreen(startingScreen);
+    }
+    
+    public static void loadUserAndResolve(Minecraft mc) {
+    	LCLPNetwork.checkAccessToken(user -> User.reloadUser(user, () -> resolve(mc)));
     }
 
     private void changed(String s) {
