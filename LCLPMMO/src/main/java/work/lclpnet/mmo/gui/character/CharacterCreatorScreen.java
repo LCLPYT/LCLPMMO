@@ -22,10 +22,12 @@ public class CharacterCreatorScreen extends MMOScreen{
 	protected String characterName = "";
 	protected CharacterChooserScreen prevScreen;
 	protected MMORace selectedRace = null;
+	protected boolean createFirst = false;
 
-	public CharacterCreatorScreen(CharacterChooserScreen prevScreen) {
+	public CharacterCreatorScreen(CharacterChooserScreen prevScreen, boolean createFirst) {
 		super(new TranslationTextComponent("mmo.menu.create_character.title"));
 		this.prevScreen = prevScreen;
+		this.createFirst = createFirst;
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 			}
 			else if(response.getResponseCode() == 201) {
 				displayToast(new TranslationTextComponent("mmo.menu.create_character.created"));
-				CharacterChooserScreen.updateContentAndShow(this.minecraft, prevScreen.getPrevScreen());
+				CharacterChooserScreen.updateContentAndShow(this.minecraft, prevScreen.getPrevScreen(), createFirst);
 			} else {
 				ITextComponent reason;
 				if(response.hasValidationViolations()) {

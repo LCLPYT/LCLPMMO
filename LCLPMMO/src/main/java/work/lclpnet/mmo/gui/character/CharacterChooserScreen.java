@@ -75,7 +75,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 
 	@Override
 	public void addEntry() {
-		this.minecraft.displayGuiScreen(new CharacterCreatorScreen(this));
+		this.minecraft.displayGuiScreen(new CharacterCreatorScreen(this, characters.isEmpty()));
 	}
 
 	@Override
@@ -126,6 +126,10 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 	}
 
 	public static void updateContentAndShow(final Minecraft mc, Screen prevScreen) {
+		updateContentAndShow(mc, prevScreen, false);
+	}
+	
+	public static void updateContentAndShow(final Minecraft mc, Screen prevScreen, boolean updateActiveCharacter) {
 		final Consumer<List<MMOCharacter>> callback = characters -> {
 			final CharacterChooserScreen guiScreenIn = new CharacterChooserScreen(prevScreen, characters);
 
@@ -146,7 +150,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 					characters.add(JsonSerializeable.cast(e, MMOCharacter.class));
 			});
 
-			if(User.getSelectedCharacter() == null) User.reloadUser(() -> callback.accept(characters));
+			if(User.getSelectedCharacter() == null || updateActiveCharacter) User.reloadUser(() -> callback.accept(characters));
 			else callback.accept(characters);
 		});
 	}
