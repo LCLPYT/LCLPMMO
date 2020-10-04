@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -50,6 +51,16 @@ public class MMOScreen extends Screen{
 		bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0F, (float)p_renderDirtBackground_1_).color(64, 64, 64, 255).endVertex();
 		tessellator.draw();
 		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(this));
+	}
+	
+	public void displayToast(ITextComponent text) {
+		displayToast(text, null);
+	}
+	
+	public void displayToast(ITextComponent upperText, ITextComponent lowerText) {
+		SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
+				upperText, 
+				lowerText);
 	}
 
 }

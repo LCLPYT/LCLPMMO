@@ -1,21 +1,15 @@
 package work.lclpnet.mmo.gui.character;
 
-import java.io.IOException;
-
 import com.google.gson.JsonObject;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.toasts.SystemToast;
-import net.minecraft.client.gui.toasts.ToastGui;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.SaveFormat;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOScreen;
@@ -77,13 +71,10 @@ public class EditCharacterScreen extends MMOScreen{
 
 			LCLPNetwork.post("api/ls5/rename-character", body, response -> {
 				if(response.isNoConnection()) {
-					SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-							new TranslationTextComponent("mmo.menu.edit_character.edit_failed"),
+					displayToast(new TranslationTextComponent("mmo.menu.edit_character.edit_failed"), 
 							new TranslationTextComponent("mmo.no_internet"));
 				} else if(response.getResponseCode() == 200) {
-					SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-							new TranslationTextComponent("mmo.menu.edit_character.edit_success"),
-							null);
+					displayToast(new TranslationTextComponent("mmo.menu.edit_character.edit_success"));
 					CharacterChooserScreen.updateContentAndShow(minecraft, prevScreen);
 				} else {
 					String s = response.getJsonStatusMessage();
@@ -93,8 +84,7 @@ public class EditCharacterScreen extends MMOScreen{
 								.getAsString()
 								.split(" ")[0];
 						
-						SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-								new TranslationTextComponent("mmo.menu.edit_character.name_not_yet_changeable"),
+						displayToast(new TranslationTextComponent("mmo.menu.edit_character.name_not_yet_changeable"),
 								new TranslationTextComponent("mmo.menu.edit_character.name_not_yet_changeable_days", days));
 					} else {
 						System.err.println(response);
@@ -104,37 +94,11 @@ public class EditCharacterScreen extends MMOScreen{
 							reason = new StringTextComponent(response.getValidationViolations().getFirst());
 						}
 						
-						SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-								new TranslationTextComponent("mmo.menu.edit_character.edit_failed"),
-								reason);
+						displayToast(new TranslationTextComponent("mmo.menu.edit_character.edit_failed"), reason);
 					}
 				}
 			});
 		}
-	}
-
-	public static void createBackup(SaveFormat saveFormat, String worldName) {
-		ToastGui toastgui = Minecraft.getInstance().getToastGui();
-		long i = 0L;
-		IOException ioexception = null;
-
-		try {
-			i = saveFormat.createBackup(worldName);
-		} catch (IOException ioexception1) {
-			ioexception = ioexception1;
-		}
-
-		ITextComponent itextcomponent;
-		ITextComponent itextcomponent1;
-		if (ioexception != null) {
-			itextcomponent = new TranslationTextComponent("selectWorld.edit.backupFailed");
-			itextcomponent1 = new StringTextComponent(ioexception.getMessage());
-		} else {
-			itextcomponent = new TranslationTextComponent("selectWorld.edit.backupCreated", worldName);
-			itextcomponent1 = new TranslationTextComponent("selectWorld.edit.backupSize", MathHelper.ceil((double)i / 1048576.0D));
-		}
-
-		toastgui.add(new SystemToast(SystemToast.Type.WORLD_BACKUP, itextcomponent, itextcomponent1));
 	}
 
 	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {

@@ -8,12 +8,15 @@
     "mixins": [
         "common.MixinEntity",
         "common.MixinLivingEntity",
-        "common.MixinPlayerEntity"
+        "common.MixinPlayerEntity",
+        "common.MixinPlayerList",
+        "common.MixinServerLoginNetHandler"
     ],
     "client": [
         "client.MixinMinecraft",
         "client.MixinEntityRendererManager",
-        "client.MixinClientPlayNetHandler"
+        "client.MixinClientPlayNetHandler",
+        "client.MixinPlayerController"
     ],
     "server": [
         "server.MixinDedicatedServer"

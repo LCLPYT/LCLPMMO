@@ -1,6 +1,5 @@
 package work.lclpnet.mmo.util;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,14 +21,40 @@ public class User extends JsonSerializeable{
 		return name;
 	}
 	
+	private static MMOCharacter selectedCharacter;
+	private static User current;
+	
+	public static User getCurrent() {
+		if(FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+		return current;
+	}
+	
+	public static MMOCharacter getSelectedCharacter() {
+		if(FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+		return selectedCharacter;
+	}
+	
+	public static void setCurrent(User current) {
+		if(FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+		User.current = current;
+	}
+	
+	public static void setSelectedCharacter(MMOCharacter selectedCharacter) {
+		if(FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+		User.selectedCharacter = selectedCharacter;
+	}
+	
 	@OnlyIn(Dist.CLIENT)
-	public static MMOCharacter selectedCharacter = null;
-	@OnlyIn(Dist.CLIENT)
-	public static User current = null;
+	public static void reloadUser(Runnable callback) {
+		reloadUser(User.current, callback);
+	}
 	
 	@OnlyIn(Dist.CLIENT)
 	public static void reloadUser(User user, Runnable callback) {
-		if(user == null || FMLEnvironment.dist != Dist.CLIENT) return;
+		if(user == null) {
+			callback.run();
+			return;
+		}
 		
 		User.current = user;
 		
@@ -37,22 +62,33 @@ public class User extends JsonSerializeable{
 		body.addProperty("userId", user.getId());
 		
 		LCLPNetwork.post("api/ls5/get-active-character", body, resp -> {
-			if(resp.isNoConnection()) {
-				User.selectedCharacter = null;
-				callback.run();
-			}
-			else if(resp.getResponseCode() != 200) {
-				System.err.println(resp);
-				User.selectedCharacter = null;
-				callback.run();
-			} else {
-				JsonObject obj = JsonSerializeable.parse(resp.getRawResponse(), JsonObject.class);
-				JsonElement elem = obj.get("extra");
-				if(elem == null || elem.isJsonNull()) User.selectedCharacter = null;
-				else User.selectedCharacter = JsonSerializeable.cast(elem.getAsJsonObject(), MMOCharacter.class);
-				callback.run();
-			}
+			User.selectedCharacter = handleActiveCharacterResponse(resp);
+			callback.run();
 		});
+	}
+	
+	public static MMOCharacter handleActiveCharacterResponse(HTTPResponse resp) {
+		if(resp.isNoConnection()) {
+			return null;
+		}
+		else if(resp.getResponseCode() != 200) {
+			System.err.println(resp);
+			return null;
+		} else {
+			return resp.getExtra(MMOCharacter.class);
+		}
+	}
+
+	public static User handleUserResponse(HTTPResponse resp) {
+		if(resp.isNoConnection()) {
+			return null;
+		}
+		else if(resp.getResponseCode() != 200) {
+			System.err.println(resp);
+			return null;
+		} else {
+			return resp.getExtra(User.class);
+		}
 	}
 	
 }

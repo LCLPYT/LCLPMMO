@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.facade;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -9,6 +11,7 @@ import com.google.gson.JsonObject;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.facade.race.Races;
+import work.lclpnet.mmo.util.NoSerialization;
 
 public class JsonSerializeable {
 
@@ -16,6 +19,19 @@ public class JsonSerializeable {
 
 	static {
 		GsonBuilder builder = new GsonBuilder();
+		
+		builder.addSerializationExclusionStrategy(new ExclusionStrategy() {
+			
+			@Override
+			public boolean shouldSkipField(FieldAttributes f) {
+				return f.getAnnotation(NoSerialization.class) != null;
+			}
+			
+			@Override
+			public boolean shouldSkipClass(Class<?> clazz) {
+				return false;
+			}
+		});
 		
 		JsonDeserializer<MMORace> raceAdapter = (JsonDeserializer<MMORace>) (json, typeOfT, context) -> {
 			JsonObject obj = json.getAsJsonObject();
@@ -32,10 +48,6 @@ public class JsonSerializeable {
 		JsonDeserializer<MMOCharacter> characterAdapter = (JsonDeserializer<MMOCharacter>) (json, typeOfT, context) -> {
 			MMOCharacter c = characterGson.fromJson(json, MMOCharacter.class);
 			c.generateUnlocalizedName();
-			
-			JsonObject obj = json.getAsJsonObject();
-			c.id = obj.get("id").getAsInt();
-			
 			return c;
 		};
 		builder.registerTypeAdapter(MMOCharacter.class, characterAdapter);

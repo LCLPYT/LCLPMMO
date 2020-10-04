@@ -1,7 +1,9 @@
 package work.lclpnet.mmo.gui.login;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -14,9 +16,6 @@ import net.minecraft.util.text.event.ClickEvent;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class RegisterScreen extends MMOScreen {
 
@@ -71,9 +70,7 @@ public class RegisterScreen extends MMOScreen {
 
         this.buttonRegister = this.addButton(new Button(this.width / 2 - 100, 184, 200, 20, I18n.format("mmo.menu.register.register"), (p_213030_1_) -> {
             if(!textFieldPassword.getText().equals(textFieldConfirmPassword.getText())) {
-                SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-                        new TranslationTextComponent("mmo.menu.register.password_mismatch"),
-                        null);
+            	displayToast(new TranslationTextComponent("mmo.menu.register.password_mismatch"));
                 passwordError = true;
                 return;
             }
@@ -84,8 +81,7 @@ public class RegisterScreen extends MMOScreen {
                 this.buttonRegister.active = true;
 
                 if(error == null) {
-                    SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-                            new TranslationTextComponent("mmo.menu.register.success"), null);
+                	displayToast(new TranslationTextComponent("mmo.menu.register.success"));
                     LoginScreen.loadUserAndResolve(this.minecraft);
                 }
                 else {
@@ -107,9 +103,7 @@ public class RegisterScreen extends MMOScreen {
                         registerFailed = true;
                     }
 
-                    SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-                            new TranslationTextComponent("mmo.menu.login.login_failed"),
-                            err);
+                    displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"), err);
                 }
             });
         }));

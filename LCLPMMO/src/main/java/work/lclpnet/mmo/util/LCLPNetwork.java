@@ -28,6 +28,7 @@ import work.lclpnet.mmo.facade.JsonSerializeable;
 public class LCLPNetwork {
 
 	private static String accessToken = null;
+	private static boolean online = false;
 	public static IPrivateBackend BACKEND = IPrivateBackend.NONE;
 
 	public static void loadAccessToken(final Consumer<Boolean> callback) {
@@ -90,19 +91,23 @@ public class LCLPNetwork {
 				callback.accept(false);
 				return;
 			}
-		});
+		}, "access token saver").start();
 	}
 
 	public static void checkAccessToken(Consumer<User> callback) {
 		sendRequest("api/auth/user", "GET", null, resp -> {
-			if(!resp.isNoConnection() && resp.getResponseCode() != 200) {
+			online = !resp.isNoConnection();
+			if(resp.getResponseCode() == 200) {
+				if(FMLEnvironment.dist == Dist.CLIENT) callback.accept(JsonSerializeable.parse(resp.getRawResponse(), User.class));
+				else callback.accept(null);
+			} else {
+				if(resp.isNoConnection()) {
+					callback.accept(null);
+					return;
+				}
 				if(FMLEnvironment.dist == Dist.CLIENT) setAccessToken(null, b -> {});
 				else throw new IllegalStateException("Server access token is not valid!");
 				callback.accept(null);
-				return;
-			} else {
-				callback.accept(JsonSerializeable.parse(resp.getRawResponse(), User.class));
-				return;
 			}
 		});
 	}
@@ -142,10 +147,10 @@ public class LCLPNetwork {
 
 				conn.disconnect();
 
-				callback.accept(response);
+				if(callback != null) callback.accept(response);
 				return;
 			} catch (ConnectException e) {
-				callback.accept(HTTPResponse.NO_CONNECTION);
+				if(callback != null) callback.accept(HTTPResponse.NO_CONNECTION);
 				return;
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
@@ -163,12 +168,19 @@ public class LCLPNetwork {
 		User.reloadUser(null, () -> {});
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public static boolean isLoggedIn() {
-		return accessToken != null;
+		return accessToken != null && User.getCurrent() != null;
+	}
+	
+	public static boolean isOnline() {
+		return online;
 	}
 
-	public static void setup() {
-		LCLPNetwork.loadAccessToken(loaded -> LCLPNetwork.checkAccessToken(user -> User.reloadUser(user, () -> {})));
+	public static void setup(Runnable callback) {
+		LCLPNetwork.loadAccessToken(loaded -> LCLPNetwork.checkAccessToken(user -> {
+			if(FMLEnvironment.dist == Dist.CLIENT) User.reloadUser(user, callback);
+		}));
 	}
 	
 }

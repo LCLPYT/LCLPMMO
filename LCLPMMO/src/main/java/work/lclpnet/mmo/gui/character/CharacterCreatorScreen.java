@@ -1,6 +1,5 @@
 package work.lclpnet.mmo.gui.character;
 
-import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -97,14 +96,11 @@ public class CharacterCreatorScreen extends MMOScreen{
 		
 		LCLPNetwork.post("api/ls5/add-character", character.toJson(), response -> {
 			if(response.isNoConnection()) {
-				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-	                    new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"),
+				displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"),
 	                    new TranslationTextComponent("mmo.no_internet"));
 			}
 			else if(response.getResponseCode() == 201) {
-				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
-						new TranslationTextComponent("mmo.menu.create_character.created"), 
-						null);
+				displayToast(new TranslationTextComponent("mmo.menu.create_character.created"));
 				CharacterChooserScreen.updateContentAndShow(this.minecraft, prevScreen.getPrevScreen());
 			} else {
 				ITextComponent reason;
@@ -116,9 +112,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 					reason = new TranslationTextComponent("error.unknown");
 				}
 				
-				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
-						new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"), 
-						reason);
+				displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"), reason);
 				
 				this.setError(reason.getFormattedText());
 			}

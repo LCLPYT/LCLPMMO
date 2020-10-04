@@ -1,5 +1,12 @@
 package work.lclpnet.mmo.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 
 import com.google.gson.JsonElement;
@@ -7,13 +14,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import work.lclpnet.mmo.facade.JsonSerializeable;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HTTPResponse {
 
@@ -130,6 +130,13 @@ public class HTTPResponse {
 		});
 
 		return (validationViolations = new ValidationViolations(elemErrors));
+	}
+	
+	public <T> T getExtra(Class<T> clazz) {
+		JsonObject obj = JsonSerializeable.parse(rawResponse, JsonObject.class);
+		JsonElement elem = obj.get("extra");
+		if(elem == null || elem.isJsonNull()) return null;
+		else return JsonSerializeable.cast(elem.getAsJsonObject(), clazz);
 	}
 
 	@Override

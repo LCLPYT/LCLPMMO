@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
 import work.lclpnet.mmo.network.msg.MessageMusic;
 import work.lclpnet.mmo.network.msg.MessageRequestMCLink;
 import work.lclpnet.mmo.network.msg.MessageSendMCLinkToken;
@@ -37,6 +38,7 @@ public class MMOPacketHandler {
 		register(MessageMusic.class, new MessageMusic());
 		register(MessageSendMCLinkToken.class, new MessageSendMCLinkToken(), true);
 		register(MessageRequestMCLink.class, new MessageRequestMCLink());
+		register(MessageDisconnectMe.class, new MessageDisconnectMe());
 	}
 
 	private static <T> void register(Class<T> clazz, IMessage<T> msg) {

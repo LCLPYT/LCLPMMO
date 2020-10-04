@@ -2,7 +2,6 @@ package work.lclpnet.mmo.gui.login;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -50,18 +49,15 @@ public class LoginScreen extends MMOScreen {
             authManager.login(textFieldEmail.getText(), textFieldPassword.getText(), success -> {
                 this.buttonLogin.active = true;
                 if(success == null) {
-                    SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-                            new TranslationTextComponent("mmo.menu.login.login_failed"),
+                   displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                             new TranslationTextComponent("mmo.no_internet"));
                 } else if(success) {
-                    SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-                            new TranslationTextComponent("mmo.menu.login.login_successful"), null);
+                    displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
                     loadUserAndResolve(this.minecraft);
                 }
                 else {
                     loginFailed = true;
-                    SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-                            new TranslationTextComponent("mmo.menu.login.login_failed"),
+                    displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                             new TranslationTextComponent("mmo.menu.login.check_credentials"));
                 }
             });

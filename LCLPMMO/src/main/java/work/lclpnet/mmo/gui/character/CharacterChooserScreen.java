@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -31,10 +30,10 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 		super(new TranslationTextComponent("mmo.menu.select_character.title"), prevScreen);
 		this.characters = Objects.requireNonNull(characters);
 		this.background = BACKGROUND_LOCATION_ALT;
-		
-		if(User.selectedCharacter != null) {
+
+		if(User.getSelectedCharacter() != null) {
 			for(MMOCharacter character : characters) {
-				if(character.id != null && character.id == User.selectedCharacter.id) {
+				if(character.id != null && character.id == User.getSelectedCharacter().id) {
 					this.preSelected = character;
 					break;
 				}
@@ -45,19 +44,17 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 	@Override
 	public void onSelected(MMOCharacter selected) {
 		if(selected.id == null) throw new IllegalStateException("Character id is null");
-		
+
 		JsonObject body = new JsonObject();
 		body.addProperty("characterId", selected.id);
-		
+
 		LCLPNetwork.post("api/ls5/set-active-character", body, response -> {
 			if(response.isNoConnection()) {
-				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
-						new TranslationTextComponent("mmo.no_internet"),
-						null);
+				displayToast(new TranslationTextComponent("mmo.no_internet"));
 				return;
 			}
 			else if(response.getResponseCode() == 200) {
-				User.selectedCharacter = selected;
+				User.setSelectedCharacter(selected);
 				Enqueuer.enqueueOnRender(() -> this.minecraft.displayGuiScreen(new MMOMainScreen(false)));
 			} else {
 				ITextComponent reason = new TranslationTextComponent("error.unknown");
@@ -66,9 +63,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 					reason = new StringTextComponent(response.getValidationViolations().getFirst());
 				}
 
-				SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-						reason,
-						null);
+				displayToast(reason);
 			}
 		});
 	}
@@ -98,13 +93,13 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 				body.addProperty("characterId", character.id);
 				LCLPNetwork.sendRequest("api/ls5/delete-character", "DELETE", body, response -> {
 					if(response.isNoConnection()) {
-						SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-								new TranslationTextComponent("mmo.menu.select_character.delete_failed"),
+						displayToast(new TranslationTextComponent("mmo.menu.select_character.delete_failed"),
 								new TranslationTextComponent("mmo.no_internet"));
 					} else if(response.getResponseCode() == 200) {
-						SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-								new TranslationTextComponent("mmo.menu.select_character.delete_success"),
+						displayToast(new TranslationTextComponent("mmo.menu.select_character.delete_success"),
 								null);
+						if(User.getSelectedCharacter() != null && User.getSelectedCharacter().id != null && character.id == User.getSelectedCharacter().id) 
+							User.setSelectedCharacter(null);
 					} else {
 						ITextComponent reason = new TranslationTextComponent("error.unknown");
 						System.err.println(response);
@@ -112,9 +107,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 							reason = new StringTextComponent(response.getValidationViolations().getFirst());
 						}
 
-						SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP,
-								new TranslationTextComponent("mmo.menu.select_character.delete_failed"),
-								reason);
+						displayToast(new TranslationTextComponent("mmo.menu.select_character.delete_failed"), reason);
 					}
 
 					CharacterChooserScreen.updateContentAndShow(minecraft, prevScreen);
@@ -153,7 +146,8 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 					characters.add(JsonSerializeable.cast(e, MMOCharacter.class));
 			});
 
-			callback.accept(characters);
+			if(User.getSelectedCharacter() == null) User.reloadUser(() -> callback.accept(characters));
+			else callback.accept(characters);
 		});
 	}
 

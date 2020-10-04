@@ -46,6 +46,7 @@ import net.minecraftforge.fml.client.gui.screen.ModListScreen;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.gui.FancyButton;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.character.CharacterChooserScreen;
@@ -79,6 +80,7 @@ public class MMOMainScreen extends MMOScreen{
 		ClientPlayNetHandler netHandler = new FakeClientPlayNetHandler(minecraft);
 		ClientWorld world = new FakeWorld(netHandler, new WorldSettings(0, GameType.NOT_SET, true, false, WorldType.DEFAULT));
 		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null);
+		IMMOUser.initMyPlayer(player);
 
 		Field f;
 		DataParameter<Byte> PLAYER_MODEL_FLAG = null;
@@ -160,7 +162,20 @@ public class MMOMainScreen extends MMOScreen{
 				this.font.FONT_HEIGHT + 5,
 				logoutText,
 				b -> {
-					if(!loggedIn) this.minecraft.displayGuiScreen(new LoginScreen());
+					if(!loggedIn) {
+						LCLPNetwork.setup(() -> {
+							if(!LCLPNetwork.isOnline()) {
+								displayToast(new TranslationTextComponent("mmo.no_internet"));
+							} else {
+								if(LCLPNetwork.isLoggedIn()) {
+									displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
+									this.minecraft.displayGuiScreen(new MMOMainScreen(false));
+								} else {
+									this.minecraft.displayGuiScreen(new LoginScreen());									
+								}
+							}
+						});
+					}
 					else this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
 						if(yes) {
 							LCLPNetwork.logout();
