@@ -71,6 +71,10 @@ public class User extends JsonSerializeable{
 		if(resp.isNoConnection()) {
 			return null;
 		}
+		else if(resp.getResponseCode() == 406 && resp.hasJsonStatusMessage() 
+				&& "LCLPServer5.0 is not initialized for this user.".equals(resp.getJsonStatusMessage())) {
+			return null;
+		}
 		else if(resp.getResponseCode() != 200) {
 			System.err.println(resp);
 			return null;

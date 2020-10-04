@@ -114,6 +114,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 				else if(response.hasJsonStatusMessage() && "Too many characters.".equals(response.getJsonStatusMessage())) {
 					reason = new TranslationTextComponent("mmo.menu.create_character.error_too_many");
 				} else {
+					System.err.println(response);
 					reason = new TranslationTextComponent("error.unknown");
 				}
 				
