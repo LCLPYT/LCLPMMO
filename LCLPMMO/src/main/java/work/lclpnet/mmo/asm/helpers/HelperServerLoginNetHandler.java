@@ -7,12 +7,15 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.login.ServerLoginNetHandler;
+import net.minecraft.network.login.server.SLoginSuccessPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.type.IMMOUser;
+import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.AuthHelper;
+import work.lclpnet.mmo.util.User;
 
 public class HelperServerLoginNetHandler {
 
@@ -22,25 +25,38 @@ public class HelperServerLoginNetHandler {
 		if(FMLEnvironment.dist != Dist.CLIENT) return false;
 		
 		if(server instanceof IntegratedServer && ((IntegratedServer) server).isServerOwner(profile)) {
-			if (serverplayerentity != null) {
-				try {
-					AuthHelper.setLoginStateDelayAccept(handler);
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-				ServerPlayerEntity player = server.getPlayerList().createPlayerForUser(loginGameProfile);
-				playerSetter.accept(player);
-				IMMOUser.initMyPlayer(player);
-			} else {
-				ServerPlayerEntity created = server.getPlayerList().createPlayerForUser(loginGameProfile);
-				IMMOUser.initMyPlayer(created);
-				
-				server.getPlayerList().initializeConnectionToPlayer(networkManager, created);
-			}
+			resolve(serverplayerentity, handler, server, loginGameProfile, networkManager, User.getSelectedCharacter(), User.getCurrent(), playerSetter);
 			return true;
 		}
 		
 		return false;
+	}
+	
+	public static void resolve(ServerPlayerEntity serverplayerentity, ServerLoginNetHandler handler, MinecraftServer server,
+			GameProfile loginGameProfile, NetworkManager networkManager, MMOCharacter character, User tmpUser, 
+			Consumer<ServerPlayerEntity> playerSetter) {
+		
+		networkManager.sendPacket(new SLoginSuccessPacket(loginGameProfile));
+		
+		if (serverplayerentity != null) {
+			try {
+				AuthHelper.setLoginStateDelayAccept(handler);
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
+			}
+			ServerPlayerEntity player = server.getPlayerList().createPlayerForUser(loginGameProfile);
+			playerSetter.accept(player);
+			IMMOUser mmo = IMMOUser.getMMOUser(player);
+			mmo.setMMOCharacter(character);
+			mmo.setUser(tmpUser);
+		} else {
+			ServerPlayerEntity created = server.getPlayerList().createPlayerForUser(loginGameProfile);
+			IMMOUser mmo = IMMOUser.getMMOUser(created);
+			mmo.setMMOCharacter(character);
+			mmo.setUser(tmpUser);
+			
+			server.getPlayerList().initializeConnectionToPlayer(networkManager, created);
+		}
 	}
 	
 }

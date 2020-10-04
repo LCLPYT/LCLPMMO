@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -16,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.login.ServerLoginNetHandler;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +27,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
-import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.AuthHelper;
@@ -77,6 +78,9 @@ public class MixinServerLoginNetHandler {
 
 		Consumer<HTTPResponse> charConsumer = charResp -> {
 			if(charResp.isNoConnection()) handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
+			else if(charResp.getResponseCode() == 406) {
+				handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.no_character"));
+			}
 			else if(charResp.getResponseCode() != 200) {
 				handler.disconnect(new StringTextComponent("Internal server error."));
 				System.err.println(charResp);
@@ -84,29 +88,12 @@ public class MixinServerLoginNetHandler {
 			else {
 				MMOCharacter character = charResp.getExtra(MMOCharacter.class);
 				if(character == null) {
-					handler.disconnect(new StringTextComponent("Internal server error."));
-					System.err.println("Character is null.");
+					handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.no_character"));
 					return;
 				}
 				
-				if (serverplayerentity != null) {
-					try {
-						AuthHelper.setLoginStateDelayAccept(handler);
-					} catch (ReflectiveOperationException e) {
-						e.printStackTrace();
-					}
-					this.player = this.server.getPlayerList().createPlayerForUser(this.loginGameProfile);
-					IMMOUser mmo = IMMOUser.getMMOUser(this.player);
-					mmo.setMMOCharacter(character);
-					mmo.setUser(tmpUser);
-				} else {
-					ServerPlayerEntity created = this.server.getPlayerList().createPlayerForUser(this.loginGameProfile);
-					IMMOUser mmo = IMMOUser.getMMOUser(created);
-					mmo.setMMOCharacter(character);
-					mmo.setUser(tmpUser);
-					
-					this.server.getPlayerList().initializeConnectionToPlayer(this.networkManager, created);
-				}
+				HelperServerLoginNetHandler.resolve(serverplayerentity, handler, this.server, loginGameProfile, this.networkManager, 
+						character, this.tmpUser, x -> this.player = x);
 			}
 		};
 
@@ -128,29 +115,45 @@ public class MixinServerLoginNetHandler {
 				
 				JsonObject charBody = new JsonObject();
 				charBody.addProperty("userId", user.getId());
-
+				
 				LCLPNetwork.post("api/ls5/get-active-character", charBody, charConsumer);
 			}
 		};
 
 		LCLPNetwork.post("api/mc/get-user", usrBody, usrResp -> {
 			if(usrResp.isNoConnection()) handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
-			else if(usrResp.getResponseCode() != 200) handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_logged_in"));
+			else if(usrResp.getResponseCode() == 404) {
+				handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_linked"));
+			}
+			else if(usrResp.getResponseCode() != 200) {
+				handler.disconnect(new StringTextComponent("Internal server error."));
+				System.err.println(usrResp);
+			}
 			else {
 				JsonObject obj = JsonSerializeable.parse(usrResp.getRawResponse(), JsonObject.class);
 				JsonElement idElem = obj.get("user_id");
 				if(idElem == null) {
-					handler.disconnect(new StringTextComponent("Internal server error."));
-					System.err.println("'user_id' element not found.");
+					handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_linked"));
 					return;
 				}
 
 				JsonObject idBody = new JsonObject();
 				idBody.addProperty("userId", idElem.getAsInt());
-
+				
 				LCLPNetwork.post("api/auth/user-by-id", idBody, idConsumer);
 			}
 		});
+	}
+	
+	@Redirect(
+			method = "Lnet/minecraft/network/login/ServerLoginNetHandler;tryAcceptPlayer()V",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/network/NetworkManager;sendPacket(Lnet/minecraft/network/IPacket;)V"
+					)
+			)
+	public void onAcceptPlayerRemLoginSuccess(NetworkManager nm, IPacket<?> packet) {
+		// this empty redirect is necessary, because otherwise the user would not see login errors. We will set this later in HelperServerLoginNetHandler.resolve
 	}
 
 }

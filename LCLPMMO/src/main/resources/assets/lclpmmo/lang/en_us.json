@@ -86,5 +86,7 @@
     "multiplayer.disconnect.no_id": "Your minecraft account could not be authenticated!",
     "multiplayer.disconnect.lclpnetwork_down": "LCLPNetwork Auth Servers are currently down.",
     "multiplayer.disconnect.not_logged_in": "You have not yet logged in with LCLPNetwork!",
-    "multiplayer.disconnect.already_linked": "You have already linked your current LCLPNetwork account with another minecraft account! Please Switch to the linked account."
+    "multiplayer.disconnect.already_linked": "You have already linked your current LCLPNetwork account with another minecraft account! Please Switch to the linked account.",
+    "multiplayer.disconnect.no_character": "You must create a character first!",
+    "multiplayer.disconnect.not_linked": "Your minecraft account is not linked with your LCLPNetwork account yet. Please join a LCLPNetwork minecraft server to link them."
 }

@@ -86,5 +86,7 @@
     "multiplayer.disconnect.no_id": "Dein Minecraft-Konto konnte nicht authentifiziert werden!",
     "multiplayer.disconnect.lclpnetwork_down": "Die LCLPNetwork-Authentifizierungs-Server sind im moment nicht erreichbar.",
     "multiplayer.disconnect.not_logged_in": "Du hast dich noch nicht mit LCLPNetwork angemeldet!",
-    "multiplayer.disconnect.already_linked": "Du hast dein momentanes LCLPNetwork-Konto schon mit einem anderen Minecraft-Konto verlinkt! Bitte wechsle dein Konto."
+    "multiplayer.disconnect.already_linked": "Du hast dein momentanes LCLPNetwork-Konto schon mit einem anderen Minecraft-Konto verlinkt! Bitte wechsle dein Konto.",
+    "multiplayer.disconnect.no_character": "Du musst zuerst einen Charakter erstellen!",
+    "multiplayer.disconnect.not_linked": "Du hast dein Minecraft-Konto noch nicht mit deinem LCLPNetwork-Konto verbunden. Bitte trete einem LCLPNetwork-Minecraft-Server bei, um deine Konten zu verbinden."
 }
