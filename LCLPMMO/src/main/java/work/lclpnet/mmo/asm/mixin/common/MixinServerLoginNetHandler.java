@@ -19,10 +19,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.login.ServerLoginNetHandler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
@@ -64,23 +66,11 @@ public class MixinServerLoginNetHandler {
 		
 		ci.cancel();
 
-		if(server instanceof IntegratedServer && ((IntegratedServer) server).isServerOwner(profile)) {
-			if (serverplayerentity != null) {
-				try {
-					AuthHelper.setLoginStateDelayAccept(handler);
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-				this.player = this.server.getPlayerList().createPlayerForUser(this.loginGameProfile);
-				IMMOUser.initMyPlayer(this.player);
-			} else {
-				ServerPlayerEntity created = this.server.getPlayerList().createPlayerForUser(this.loginGameProfile);
-				IMMOUser.initMyPlayer(created);
-				
-				this.server.getPlayerList().initializeConnectionToPlayer(this.networkManager, created);
-			}
+		// If in singleplayer (integrated server)
+		if(FMLEnvironment.dist == Dist.CLIENT && 
+				HelperServerLoginNetHandler.ifOnClient(this.server, profile, serverplayerentity, handler, 
+						this.loginGameProfile, this.networkManager, x -> this.player = x)) 
 			return;
-		}
 		
 		JsonObject usrBody = new JsonObject();
 		usrBody.addProperty("uuid", profile.getId().toString());
