@@ -25,6 +25,7 @@
     "mmo.menu.create_character.choose_race": "Choose a race",
     "mmo.menu.create_character.create": "Create new character",
     "mmo.menu.create_character.error_name_taken": "That name already exists.",
+    "mmo.menu.create_character.error_too_many": "You have too many characters.",
     "mmo.menu.create_character.error_creation_failed": "Creation failed.",
     "mmo.menu.create_character.created": "Character created.",
     "mmo.menu.select_race.title": "Choose your race",

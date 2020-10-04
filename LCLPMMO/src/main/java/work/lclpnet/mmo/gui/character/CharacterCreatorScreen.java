@@ -108,6 +108,9 @@ public class CharacterCreatorScreen extends MMOScreen{
 					ValidationViolations violations = response.getValidationViolations();
 					if(violations.has("name", "The name has already been taken.")) reason = new TranslationTextComponent("mmo.menu.create_character.error_name_taken");
 					else reason = new StringTextComponent(violations.getFirst());
+				} 
+				else if(response.hasJsonStatusMessage() && "Too many characters.".equals(response.getJsonStatusMessage())) {
+					reason = new TranslationTextComponent("mmo.menu.create_character.error_too_many");
 				} else {
 					reason = new TranslationTextComponent("error.unknown");
 				}
