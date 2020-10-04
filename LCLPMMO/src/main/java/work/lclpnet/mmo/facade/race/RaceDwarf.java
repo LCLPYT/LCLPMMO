@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.facade.race;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class RaceDwarf extends MMORace{
@@ -15,9 +14,9 @@ public class RaceDwarf extends MMORace{
 		return new ResourceLocation("textures/item/iron_pickaxe.png");
 	}
 	
-	@Override
+	/*@Override
 	public String getToolTip() {
-		return new StringTextComponent("Dwarf description").getFormattedText();
-	}
+		return new StringTextComponent("Dwarf").getFormattedText();
+	}*/
 
 }
