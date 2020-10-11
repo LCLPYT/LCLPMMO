@@ -16,7 +16,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
-import work.lclpnet.corebase.util.TextComponentHelper;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
@@ -39,7 +38,7 @@ public class RegisterScreen extends MMOScreen {
 
         privPolText = I18n.format("mmo.menu.register.privacy_policy");
         privPol = new StringTextComponent(privPolText);
-        TextComponentHelper.setStyle(privPol, privPol.getStyle()
+        privPol.setStyle(privPol.getStyle()
         		.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/datenschutz"))
         		.setUnderlined(true)
         		.setColor(net.minecraft.util.text.Color.fromTextFormatting(TextFormatting.BLUE)));

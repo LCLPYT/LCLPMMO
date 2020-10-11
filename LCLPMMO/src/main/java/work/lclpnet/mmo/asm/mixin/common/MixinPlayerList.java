@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -10,6 +12,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 
@@ -28,10 +31,10 @@ public class MixinPlayerList {
 					locals = LocalCapture.CAPTURE_FAILHARD,
 					remap = false
 			)
-	public void onRecreatePlayerEntity(ServerPlayerEntity playerIn, boolean conqueredEnd, 
-			CallbackInfoReturnable<ServerPlayerEntity> cir, ServerWorld world, BlockPos blockpos, boolean flag, 
+	public void onRecreatePlayerEntity(ServerPlayerEntity p_232644_1_, boolean p_232644_2_, CallbackInfoReturnable<ServerPlayerEntity> cir, 
+			BlockPos blockpos, float f, boolean flag, ServerWorld serverworld, Optional<Vector3d> optional, ServerWorld serverworld1, 
 			PlayerInteractionManager playerinteractionmanager, ServerPlayerEntity serverplayerentity) {
-		IMMOUser mmoOld = IMMOUser.getMMOUser(playerIn), mmoNew = IMMOUser.getMMOUser(serverplayerentity);
+		IMMOUser mmoOld = IMMOUser.getMMOUser(p_232644_1_), mmoNew = IMMOUser.getMMOUser(serverplayerentity);
 		mmoNew.setMMOCharacter(mmoOld.getMMOCharacter());
 		mmoNew.setUser(mmoOld.getUser());
 	}

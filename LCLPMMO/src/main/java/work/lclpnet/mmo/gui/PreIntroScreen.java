@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.util.ColorHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
@@ -24,6 +25,7 @@ public class PreIntroScreen extends MMOScreen{
 			FADEIN_TIME = 2000,
 			INTRO_LENGTH = 6000;
 	private static final ResourceLocation INTRO_SOUND = new ResourceLocation(LCLPMMO.MODID, DateUtil.isSpecialDay(new Date()) ? "intro_theme_alt" : "intro_theme");
+	private static final int bgColor = ColorHelper.PackedColor.packColor(255, 239, 50, 61);
 	
 	private long firstRenderTime = 0L, firstTitleRenderTime = 0L;
 	private boolean soundPlayed = false;
@@ -49,7 +51,7 @@ public class PreIntroScreen extends MMOScreen{
 			return;
 		}
 
-		if(!renderBG) this.fillGradient(mStack, 0, 0, this.width, this.height, Color.WHITE, Color.WHITE);
+		if(!renderBG) fill(mStack, 0, 0, this.width, this.height, bgColor);
 		else this.renderBackground(mStack);
 
 		float alpha = MathHelper.clamp((System.currentTimeMillis() - firstTitleRenderTime) / (float) FADEIN_TIME, 0F, 1F);

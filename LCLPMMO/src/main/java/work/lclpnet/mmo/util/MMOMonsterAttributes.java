@@ -7,11 +7,17 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import work.lclpnet.mmo.LCLPMMO;
 
+@EventBusSubscriber(bus = Bus.MOD, modid = LCLPMMO.MODID)
 public class MMOMonsterAttributes {
 
-	public static final Attribute SCALE_WIDTH = new RangedAttribute("mmo.scaleWidth", 1D, 0.0D, 127.0D).setShouldWatch(true);
-	public static final Attribute SCALE_HEIGHT = new RangedAttribute("mmo.scaleHeight", 1D, 0.0D, 127.0D).setShouldWatch(true);
+	public static final Attribute SCALE_WIDTH = new RangedAttribute("mmo.scaleWidth", 1D, 0.0D, 127.0D).setRegistryName("mmo.scale_width").setShouldWatch(true);
+	public static final Attribute SCALE_HEIGHT = new RangedAttribute("mmo.scaleHeight", 1D, 0.0D, 127.0D).setRegistryName("mmo.scale_height").setShouldWatch(true);
 
 	public static float getScaleWidth(Entity en) {
 		if(!(en instanceof LivingEntity)) return 1F;
@@ -71,6 +77,14 @@ public class MMOMonsterAttributes {
 
 	public static Vector2f getScales(Entity source) {
 		return new Vector2f(getScaleWidth(source), getScaleHeight(source));
+	}
+	
+	@SubscribeEvent
+	public static void onRegister(RegistryEvent.Register<Attribute> e) {
+		System.out.println(e.getName());
+		System.out.println(e.getRegistry().toString());
+		System.out.println(SCALE_WIDTH.getRegistryName());
+		e.getRegistry().registerAll(SCALE_WIDTH, SCALE_HEIGHT);
 	}
 	
 }
