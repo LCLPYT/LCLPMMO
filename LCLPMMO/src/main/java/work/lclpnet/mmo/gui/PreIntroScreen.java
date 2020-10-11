@@ -2,6 +2,8 @@ package work.lclpnet.mmo.gui;
 
 import java.util.Date;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +39,7 @@ public class PreIntroScreen extends MMOScreen{
 	}
 
 	@Override
-	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
 		if (this.firstRenderTime == 0L) {
 			this.firstRenderTime = System.currentTimeMillis();
 			this.firstTitleRenderTime = firstRenderTime + FADEIN_DELAY;
@@ -47,8 +49,8 @@ public class PreIntroScreen extends MMOScreen{
 			return;
 		}
 
-		if(!renderBG) this.fillGradient(0, 0, this.width, this.height, Color.WHITE, Color.WHITE);
-		else this.renderBackground();
+		if(!renderBG) this.fillGradient(mStack, 0, 0, this.width, this.height, Color.WHITE, Color.WHITE);
+		else this.renderBackground(mStack);
 
 		float alpha = MathHelper.clamp((System.currentTimeMillis() - firstTitleRenderTime) / (float) FADEIN_TIME, 0F, 1F);
 
@@ -59,9 +61,9 @@ public class PreIntroScreen extends MMOScreen{
 		
 		if(alpha > 0.1F) {
 			Color color = new Color(alpha, 85, 255, 85);
-			drawMultiLineCenteredString(this.font, this.title.getFormattedText(), 1.5D, this.width / 2, this.height / 2, color.toARGBInt());
+			drawMultiLineCenteredString(mStack, this.font, this.title, 1.5F, this.width / 2, this.height / 2, color.toARGBInt());
 		}
-		super.render(p_render_1_, p_render_2_, p_render_3_);
+		super.render(mStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

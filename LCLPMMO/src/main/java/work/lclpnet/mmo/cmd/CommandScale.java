@@ -16,10 +16,12 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.EntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.corebase.cmd.CommandBase;
 import work.lclpnet.corebase.cmd.CoreCommands;
 import work.lclpnet.corebase.util.MessageType;
+import work.lclpnet.corebase.util.TextComponentHelper;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.cmd.args.ScaleArgumentType;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
@@ -58,7 +60,9 @@ public class CommandScale extends CommandBase{
 			MMOMonsterAttributes.setScale(en, scale);
 		}
 
-		if(scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).appendSibling(new TranslationTextComponent("cmd.scale.set.no_valid")));
+		if(scaled.isEmpty()) throw new CommandException(TextComponentHelper.appendSibling(
+				(IFormattableTextComponent) LCLPMMO.TEXT.message("", MessageType.ERROR), 
+				new TranslationTextComponent("cmd.scale.set.no_valid")));
 
 		ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", scale, EntitySelector.joinNames(scaled).getString()), false);
 
@@ -75,7 +79,9 @@ public class CommandScale extends CommandBase{
 			MMOMonsterAttributes.setScale(en, 1F);
 		}
 
-		if(scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).appendSibling(new TranslationTextComponent("cmd.scale.set.no_valid")));
+		if(scaled.isEmpty()) throw new CommandException(TextComponentHelper.appendSibling(
+				(IFormattableTextComponent) LCLPMMO.TEXT.message("", MessageType.ERROR), 
+				new TranslationTextComponent("cmd.scale.set.no_valid")));
 
 		ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", 1F, EntitySelector.joinNames(scaled).getString()), false);
 

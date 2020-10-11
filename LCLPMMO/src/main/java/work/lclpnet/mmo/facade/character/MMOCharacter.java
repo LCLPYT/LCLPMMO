@@ -3,10 +3,10 @@ package work.lclpnet.mmo.facade.character;
 import java.util.Locale;
 import java.util.Objects;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.facade.NetworkWriteable;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
@@ -54,7 +54,7 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem{
 	
 	@Override
 	public String getFirstLine() {
-		return new TranslationTextComponent("mmo.menu.select_character.entry_desc", this.race.getTitle().getFormattedText()).getFormattedText();
+		return I18n.format("mmo.menu.select_character.entry_desc", this.race.getTitle().getString());
 	}
 	
 	@Override

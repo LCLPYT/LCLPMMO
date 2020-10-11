@@ -117,7 +117,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 			}
 		}, 
 				new TranslationTextComponent("mmo.menu.select_character.confirm_delete"), 
-				new TranslationTextComponent("mmo.menu.select_character.confirm_delete_desc", character.getTitle().getFormattedText())));
+				new TranslationTextComponent("mmo.menu.select_character.confirm_delete_desc", character.getTitle())));
 	}
 
 	@Override

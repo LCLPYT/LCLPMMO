@@ -21,7 +21,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class ScaleArgumentType implements ArgumentType<ScaleArgumentResult> {
@@ -32,7 +32,7 @@ public class ScaleArgumentType implements ArgumentType<ScaleArgumentResult> {
 		return new ScaleArgumentType();
 	}
 
-	public static Vec2f getVec2f(CommandContext<CommandSource> context, String name, Entity target) throws CommandSyntaxException {
+	public static Vector2f getVec2f(CommandContext<CommandSource> context, String name, Entity target) throws CommandSyntaxException {
 		return context.getArgument(name, ScaleArgumentResult.class).getScale(target);
 	}
 
@@ -59,7 +59,7 @@ public class ScaleArgumentType implements ArgumentType<ScaleArgumentResult> {
 		} else {
 			String s = builder.getRemaining();
 			Collection<ScaleArgumentType.Values> collection = Collections.singleton(ScaleArgumentType.Values.DEFAULT_GLOBAL);
-			return getCompletableFutures(s, collection, builder, Commands.func_212590_a(this::parse));
+			return getCompletableFutures(s, collection, builder, Commands.predicate(this::parse));
 		}
 	}
 

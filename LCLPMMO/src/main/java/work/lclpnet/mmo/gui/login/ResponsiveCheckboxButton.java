@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.gui.login;
 
 import net.minecraft.client.gui.widget.button.CheckboxButton;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.function.Consumer;
 
@@ -8,7 +9,7 @@ public class ResponsiveCheckboxButton extends CheckboxButton {
 
     protected Consumer<Boolean> responder = null;
 
-    public ResponsiveCheckboxButton(int xIn, int yIn, int widthIn, int heightIn, String msg, boolean isChecked) {
+    public ResponsiveCheckboxButton(int xIn, int yIn, int widthIn, int heightIn, ITextComponent msg, boolean isChecked) {
         super(xIn, yIn, widthIn, heightIn, msg, isChecked);
     }
 

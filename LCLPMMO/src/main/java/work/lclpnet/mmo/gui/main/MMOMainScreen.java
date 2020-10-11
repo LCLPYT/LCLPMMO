@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -25,8 +26,8 @@ import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.renderer.RenderSkybox;
 import net.minecraft.client.renderer.RenderSkyboxCube;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.world.ClientWorld.ClientWorldInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.network.datasync.DataParameter;
@@ -34,12 +35,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameType;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldType;
+import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
@@ -74,12 +74,12 @@ public class MMOMainScreen extends MMOScreen{
 		setupButtons();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private void setupEntity() {
 		if(player != null && Minecraft.getInstance().getConnection() != null) return;
 		ClientPlayNetHandler netHandler = new FakeClientPlayNetHandler(minecraft);
-		ClientWorld world = new FakeWorld(netHandler, new WorldSettings(0, GameType.NOT_SET, true, false, WorldType.DEFAULT));
-		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null);
+		ClientWorld world = new FakeWorld(netHandler, new ClientWorldInfo(Difficulty.NORMAL, false, false));
+		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null, false, false);
 		IMMOUser.initMyPlayer(player);
 
 		Field f;
@@ -112,19 +112,19 @@ public class MMOMainScreen extends MMOScreen{
 	}
 
 	private void setupButtons() {
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.singleplayer"), b -> this.minecraft.displayGuiScreen(new WorldSelectionScreen(this))));
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.multiplayer"), b -> {
-			if (this.minecraft.gameSettings.field_230152_Z_) this.minecraft.displayGuiScreen(new MultiplayerScreen(this));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.singleplayer"), b -> this.minecraft.displayGuiScreen(new WorldSelectionScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.multiplayer"), b -> {
+			if (this.minecraft.gameSettings.skipMultiplayerWarning) this.minecraft.displayGuiScreen(new MultiplayerScreen(this));
 			else this.minecraft.displayGuiScreen(new MultiplayerWarningScreen(this));
 		}));
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
-		this.menuButtons.add(new MMOButtonInfo(I18n.format("mmo.menu.btn_create_character"), b -> CharacterChooserScreen.updateContentAndShow(this.minecraft, this)));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("mmo.menu.btn_create_character"), b -> CharacterChooserScreen.updateContentAndShow(this.minecraft, this)));
 	}
 
 	@Override
 	protected void init() {
-		setupEntity();
+		//setupEntity();
 
 		int x = (int) (this.width / 12.8), y = (int) (this.height / 2.8);
 		int width = this.width / 2 - 100, height = this.height / 18;
@@ -137,28 +137,28 @@ public class MMOMainScreen extends MMOScreen{
 
 		int quitY = (int) (this.height * 0.9);
 		int imgBtnY = quitY - (int) (40 * (this.height / 360D));
-
+		
 		this.addButton(new ImageButton(x, imgBtnY, 20, 20, 0, 106, 20, Button.WIDGETS_LOCATION, 256, 256, b -> {
 			this.minecraft.displayGuiScreen(new LanguageScreen(this, this.minecraft.gameSettings, this.minecraft.getLanguageManager()));
-		}, I18n.format("narrator.button.language")));
+		}, new TranslationTextComponent("narrator.button.language")));
 
 		this.addButton(new ImageButton(x + 25, imgBtnY, 20, 20, 0, 0, 20, ACCESSIBILITY_TEXTURES, 32, 64, b -> {
 			this.minecraft.displayGuiScreen(new AccessibilityScreen(this, this.minecraft.gameSettings));
-		}, I18n.format("narrator.button.accessibility")));
+		}, new TranslationTextComponent("narrator.button.accessibility")));
 
 		FancyButton quitButton = new FancyButton(x, quitY, 
 				width, height, 
-				I18n.format("menu.quit"), 
+				new TranslationTextComponent("menu.quit"), 
 				b -> this.minecraft.shutdown(), 
 				0xFFFF7070, TextFormatting.RED.getColor());
 		this.addButton(quitButton);
 
 		boolean loggedIn = LCLPNetwork.isLoggedIn();
-		String logoutText = loggedIn ? I18n.format("mmo.menu.logout") : I18n.format("mmo.menu.login");
+		ITextComponent logoutText = new TranslationTextComponent(loggedIn ? "mmo.menu.logout" : "mmo.menu.login");
 		FancyButton logoutBtn = new FancyButton(
-				this.width - this.font.getStringWidth(logoutText) - 10,
+				this.width - this.font.getStringPropertyWidth(logoutText) - 10, 
 				this.height - this.font.FONT_HEIGHT - 5,
-				this.font.getStringWidth(logoutText) + 5,
+				this.font.getStringPropertyWidth(logoutText) + 5, 
 				this.font.FONT_HEIGHT + 5,
 				logoutText,
 				b -> {
@@ -186,13 +186,13 @@ public class MMOMainScreen extends MMOScreen{
 					}, new TranslationTextComponent("mmo.menu.confirm_logout"), new TranslationTextComponent("mmo.menu.confirm_logout_desc")));
 				},
 				0xFFFF7070, TextFormatting.RED.getColor());
-		logoutBtn.scale = 1D;
+		logoutBtn.scale = 1F;
 		this.addButton(logoutBtn);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
 		if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
 			this.firstRenderTime = Util.milliTime();
 			onStart();
@@ -205,7 +205,7 @@ public class MMOMainScreen extends MMOScreen{
 		RenderSystem.enableBlend();
 		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.showFadeInAnimation ? (float)MathHelper.ceil(MathHelper.clamp(alphaRaw, 0.0F, 1.0F)) : 1.0F);
-		blit(0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
+		blit(mStack, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
 
 		float alpha = this.showFadeInAnimation ? MathHelper.clamp(alphaRaw - 1.0F, 0.0F, 1.0F) : 1.0F;
 		int l = MathHelper.ceil(alpha * 255.0F) << 24;
@@ -213,22 +213,23 @@ public class MMOMainScreen extends MMOScreen{
 			this.minecraft.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 			int padding = (int) (this.width / 21.3);
-			double scale = 1D / (360D / this.height),
-					neg = 1D / scale;
-			GlStateManager.scaled(scale, scale, scale);
-			this.blit(padding, padding, 0, 0, 255, 84);
-			GlStateManager.scaled(neg, neg, neg);
+			float scale = 1F / (360F / this.height);
+			mStack.push();
+			mStack.scale(scale, scale, scale);
+			this.blit(mStack, padding, padding, 0, 0, 255, 84);
+			mStack.pop();
 
-			this.drawPlayerModel(partialTicks, mouseX, mouseY, alpha);
+			//this.drawPlayerModel(partialTicks, mouseX, mouseY, alpha);
 
 			for(Widget widget : this.buttons) {
 				widget.setAlpha(alpha);
 			}
 
-			super.render(mouseX, mouseY, partialTicks);
+			super.render(mStack, mouseX, mouseY, partialTicks);
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	protected void drawPlayerModel(float partialTicks, int mouseX, int mouseY, float alpha) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 		int x = (int) (this.width * 0.8), y = (int) (this.height * 0.8);
@@ -252,15 +253,15 @@ public class MMOMainScreen extends MMOScreen{
 
 	public class MMOButtonInfo {
 
-		public String text;
+		public ITextComponent text;
 		public IPressable onClick;
 		public int color, hoverColor;
 
-		public MMOButtonInfo(String text, IPressable onClick) {
+		public MMOButtonInfo(ITextComponent text, IPressable onClick) {
 			this(text, onClick, TextFormatting.WHITE.getColor(), TextFormatting.YELLOW.getColor());
 		}
 
-		public MMOButtonInfo(String text, IPressable onClick, int color, int hoverColor) {
+		public MMOButtonInfo(ITextComponent text, IPressable onClick, int color, int hoverColor) {
 			this.text = text;
 			this.onClick = onClick;
 			this.color = color;

@@ -32,6 +32,7 @@ public class MMOHorizontalBlock extends MMOBlock{
 		return state.with(DIRECTION, rotation.rotate(state.get(DIRECTION)));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirror) {
 		return state.rotate(mirror.toRotation(state.get(DIRECTION)));

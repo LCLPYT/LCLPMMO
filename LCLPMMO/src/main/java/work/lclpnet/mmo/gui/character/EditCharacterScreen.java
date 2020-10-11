@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.gui.character;
 
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -34,13 +35,13 @@ public class EditCharacterScreen extends MMOScreen{
 
 	protected void init() {
 		this.minecraft.keyboardListener.enableRepeatEvents(true);
-		this.saveButton = this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20, I18n.format("mmo.menu.edit_character.save"), (p_214308_1_) -> {
+		this.saveButton = this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20, new TranslationTextComponent("mmo.menu.edit_character.save"), (p_214308_1_) -> {
 			this.saveChanges();
 		}));
-		this.addButton(new Button(this.width / 2 + 2, this.height / 4 + 144 + 5, 98, 20, I18n.format("gui.cancel"), (p_214306_1_) -> {
+		this.addButton(new Button(this.width / 2 + 2, this.height / 4 + 144 + 5, 98, 20, new TranslationTextComponent("gui.cancel"), (p_214306_1_) -> {
 			this.minecraft.displayGuiScreen(prevScreen);
 		}));
-		this.nameEdit = new TextFieldWidget(this.font, this.width / 2 - 100, 53, 200, 20, I18n.format("mmo.menu.edit_character.edit_name"));
+		this.nameEdit = new TextFieldWidget(this.font, this.width / 2 - 100, 53, 200, 20, new TranslationTextComponent("mmo.menu.edit_character.edit_name"));
 		this.nameEdit.setText(character.getName());
 		this.nameEdit.setResponder((p_214301_1_) -> {
 			String trimmed = p_214301_1_.trim();
@@ -101,12 +102,12 @@ public class EditCharacterScreen extends MMOScreen{
 		}
 	}
 
-	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
-		this.renderBackground();
-		this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 20, 16777215);
-		this.drawString(this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 40, 10526880);
-		this.nameEdit.render(p_render_1_, p_render_2_, p_render_3_);
-		super.render(p_render_1_, p_render_2_, p_render_3_);
+	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(mStack);
+		drawCenteredString(mStack, this.font, this.title, this.width / 2, 20, 16777215);
+		drawString(mStack, this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 40, 10526880);
+		this.nameEdit.render(mStack, mouseX, mouseY, partialTicks);
+		super.render(mStack, mouseX, mouseY, partialTicks);
 	}
 
 }

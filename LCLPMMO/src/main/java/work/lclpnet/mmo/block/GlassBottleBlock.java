@@ -188,7 +188,7 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements
 	}
 
 	@Override
-	public boolean hasTileEntity() {
+	public boolean hasTileEntity(BlockState state) {
 		return true;
 	}
 

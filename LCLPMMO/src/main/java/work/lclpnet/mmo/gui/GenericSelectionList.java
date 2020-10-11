@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -16,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.list.AbstractList;
 import net.minecraft.client.gui.widget.list.ExtendedList;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -62,7 +64,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 	}
 
 	protected boolean isFocused() {
-		return this.screen.getFocused() == this;
+		return this.screen.getListener() == this;
 	}
 
 	public void setSelected(@Nullable GenericSelectionList<T, S>.Entry selected) {
@@ -71,8 +73,8 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 			NarratorChatListener.INSTANCE.say(new TranslationTextComponent("mmo.narrator.selection.selected", selected.entry.getTitle().getString()).getString());
 	}
 
-	protected void moveSelection(int p_moveSelection_1_) {
-		super.moveSelection(p_moveSelection_1_);
+	protected void moveSelection(AbstractList.Ordering p_241219_1_) {
+		this.func_241572_a_(p_241219_1_, (p_241652_0_) -> true);
 		this.screen.setButtonsActive(true);
 	}
 
@@ -122,7 +124,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+	public void render(MatrixStack mStack, int p_render_1_, int p_render_2_, float p_render_3_) {
 		int i = this.getScrollbarPosition();
 		int j = i + 6;
 		Tessellator tessellator = Tessellator.getInstance();
@@ -138,10 +140,10 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 		int k = this.getRowLeft();
 		int l = this.y0 + 4 - (int)this.getScrollAmount();
 		if (this.renderHeader) {
-			this.renderHeader(k, l, tessellator);
+			this.renderHeader(mStack, k, l, tessellator);
 		}
 
-		this.renderList(k, l, p_render_1_, p_render_2_, p_render_3_);
+		this.renderList(mStack, k, l, p_render_1_, p_render_2_, p_render_3_);
 		RenderSystem.disableDepthTest();
 		this.renderHoleBackground(0, this.y0, 255, 255);
 		this.renderHoleBackground(this.y1, this.height, 255, 255);
@@ -191,15 +193,16 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 			tessellator.draw();
 		}
 
-		this.renderDecorations(p_render_1_, p_render_2_);
+		this.renderDecorations(mStack, p_render_1_, p_render_2_);
 		RenderSystem.enableTexture();
 		RenderSystem.shadeModel(7424);
 		RenderSystem.enableAlphaTest();
 		RenderSystem.disableBlend();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	protected void renderList(int p_renderList_1_, int p_renderList_2_, int p_renderList_3_, int p_renderList_4_,
+	protected void renderList(MatrixStack mStack, int p_renderList_1_, int p_renderList_2_, int p_renderList_3_, int p_renderList_4_,
 			float p_renderList_5_) {
 		int i = this.getItemCount();
 		Tessellator tessellator = Tessellator.getInstance();
@@ -241,7 +244,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 				}
 
 				int j2 = this.getRowLeft();
-				e.render(j, k, j2, k1, j1, p_renderList_3_, p_renderList_4_, this.isMouseOver((double)p_renderList_3_, (double)p_renderList_4_) && Objects.equals(this.getEntryAtPosition((double)p_renderList_3_, (double)p_renderList_4_), e), p_renderList_5_);
+				e.render(mStack, j, k, j2, k1, j1, p_renderList_3_, p_renderList_4_, this.isMouseOver((double)p_renderList_3_, (double)p_renderList_4_) && Objects.equals(this.getEntryAtPosition((double)p_renderList_3_, (double)p_renderList_4_), e), p_renderList_5_);
 			}
 		}
 	}
@@ -261,24 +264,25 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 			this.preSelected = preSelected;
 		}
 
-		public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-			this.minecraft.fontRenderer.drawString(this.entry.getTitle().getFormattedText(), (float)(p_render_3_ + 32 + 3), (float)(p_render_2_ + 1), 16777215);
-			this.minecraft.fontRenderer.drawString(this.entry.getFirstLine(), (float)(p_render_3_ + 32 + 3), (float)(p_render_2_ + 9 + 3), 8421504);
-			this.minecraft.fontRenderer.drawString(this.entry.getSecondLine(), (float)(p_render_3_ + 32 + 3), (float)(p_render_2_ + 9 + 9 + 3), 8421504);
+		@SuppressWarnings("deprecation")
+		public void render(MatrixStack mStack, int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
+			this.minecraft.fontRenderer.func_243246_a(mStack, this.entry.getTitle(), (float)(p_render_3_ + 32 + 3), (float)(p_render_2_ + 1), 16777215);
+			this.minecraft.fontRenderer.drawString(mStack, this.entry.getFirstLine(), (float)(p_render_3_ + 32 + 3), (float)(p_render_2_ + 9 + 3), 8421504);
+			this.minecraft.fontRenderer.drawString(mStack, this.entry.getSecondLine(), (float)(p_render_3_ + 32 + 3), (float)(p_render_2_ + 9 + 9 + 3), 8421504);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.minecraft.getTextureManager().bindTexture(this.entry.getIcon() != null ? this.entry.getIcon() : GenericSelectionList.unknownTexture);
 			RenderSystem.enableBlend();
-			AbstractGui.blit(p_render_3_, p_render_2_, 0.0F, 0.0F, 32, 32, 32, 32);
+			AbstractGui.blit(mStack, p_render_3_, p_render_2_, 0.0F, 0.0F, 32, 32, 32, 32);
 			RenderSystem.disableBlend();
 			if (this.minecraft.gameSettings.touchscreen || p_render_8_) {
 				this.minecraft.getTextureManager().bindTexture(GenericSelectionList.selectionTextures);
-				AbstractGui.fill(p_render_3_, p_render_2_, p_render_3_ + 32, p_render_2_ + 32, -1601138544);
+				AbstractGui.fill(mStack, p_render_3_, p_render_2_, p_render_3_ + 32, p_render_2_ + 32, -1601138544);
 				RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 				int j = p_render_6_ - p_render_3_;
 				int i = j < 32 ? 32 : 0;
 
-				if(entry.getToolTip() != null) this.screen.setTooltip(entry.getToolTip());
-				AbstractGui.blit(p_render_3_, p_render_2_, 0.0F, (float) i, 32, 32, 256, 256);
+				if(entry.getToolTip() != null) screen.setTooltip(this.minecraft.fontRenderer.trimStringToWidth(entry.getToolTip(), 175));
+				AbstractGui.blit(mStack, p_render_3_, p_render_2_, 0.0F, (float) i, 32, 32, 256, 256);
 			}
 		}
 

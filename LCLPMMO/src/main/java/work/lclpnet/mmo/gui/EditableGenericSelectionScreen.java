@@ -2,8 +2,8 @@ package work.lclpnet.mmo.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public abstract class EditableGenericSelectionScreen<T extends MMOSelectionItem> extends GenericSelectionScreen<T>{
 
@@ -25,16 +25,16 @@ public abstract class EditableGenericSelectionScreen<T extends MMOSelectionItem>
 
 	@Override
 	protected void init() {
-		this.addButton(new Button(this.width / 2 + 4, this.height - 52, 150, 20, I18n.format("mmo.menu.generic.new"), (p_214326_1_) -> {
+		this.addButton(new Button(this.width / 2 + 4, this.height - 52, 150, 20, new TranslationTextComponent("mmo.menu.generic.new"), (p_214326_1_) -> {
 			addEntry();
 		}));
-		this.editButton = this.addButton(new Button(this.width / 2 - 154, this.height - 28, 72, 20, I18n.format("mmo.menu.generic.edit"), (p_214323_1_) -> {
+		this.editButton = this.addButton(new Button(this.width / 2 - 154, this.height - 28, 72, 20, new TranslationTextComponent("mmo.menu.generic.edit"), (p_214323_1_) -> {
 			this.selectionList.getSelection().ifPresent(entry -> editEntry(entry.getEntry()));
 		}));
-		this.deleteButton = this.addButton(new Button(this.width / 2 - 76, this.height - 28, 72, 20, I18n.format("mmo.menu.generic.delete"), (p_214330_1_) -> {
+		this.deleteButton = this.addButton(new Button(this.width / 2 - 76, this.height - 28, 72, 20, new TranslationTextComponent("mmo.menu.generic.delete"), (p_214330_1_) -> {
 			this.selectionList.getSelection().ifPresent(entry -> deleteEntry(entry.getEntry()));
 		}));
-		this.copyButton = this.addButton(new Button(this.width / 2 + 4, this.height - 28, 72, 20, I18n.format("mmo.menu.generic.duplicate"), (p_214328_1_) -> {
+		this.copyButton = this.addButton(new Button(this.width / 2 + 4, this.height - 28, 72, 20, new TranslationTextComponent("mmo.menu.generic.duplicate"), (p_214328_1_) -> {
 			this.selectionList.getSelection().ifPresent(entry -> copyEntry(entry.getEntry()));
 		}));
 		

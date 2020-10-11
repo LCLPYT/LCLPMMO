@@ -30,8 +30,8 @@ public class GlassBottleTileEntity extends TileEntity{
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState state, CompoundNBT compound) {
+		super.read(state, compound);
 		ItemStackHelper.loadAllItems(compound, items);
 	}
 
@@ -41,10 +41,10 @@ public class GlassBottleTileEntity extends TileEntity{
 		ItemStackUtils.saveAllItemsIncludeEmpty(tag, items);
 		return tag;
 	}
-
+	
 	@Override
-	public void handleUpdateTag(CompoundNBT tag) {
-		super.handleUpdateTag(tag);
+	public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+		super.handleUpdateTag(state, tag);
 		ItemStackHelper.loadAllItems(tag, items);
 	}
 

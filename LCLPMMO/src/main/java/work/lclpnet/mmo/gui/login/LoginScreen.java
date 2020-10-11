@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.gui.login;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -33,18 +35,18 @@ public class LoginScreen extends MMOScreen {
 
     protected void init() {
         this.minecraft.keyboardListener.enableRepeatEvents(true);
-        this.textFieldEmail = new TextFieldWidget(this.font, this.width / 2 - 100, 76, 200, 20, I18n.format("mmo.menu.login.email"));
+        this.textFieldEmail = new TextFieldWidget(this.font, this.width / 2 - 100, 76, 200, 20, new TranslationTextComponent("mmo.menu.login.email"));
         this.textFieldEmail.setFocused2(true);
         this.textFieldEmail.setText("");
         this.textFieldEmail.setResponder(this::changed);
         this.children.add(this.textFieldEmail);
 
-        this.textFieldPassword = new PasswordTextField(this.font, this.width / 2 - 100, 116, 200, 20, I18n.format("mmo.menu.login.password"));
+        this.textFieldPassword = new PasswordTextField(this.font, this.width / 2 - 100, 116, 200, 20, new TranslationTextComponent("mmo.menu.login.password"));
         this.textFieldPassword.setText("");
         this.textFieldPassword.setResponder(this::changed);
         this.children.add(this.textFieldPassword);
 
-        this.buttonLogin = this.addButton(new Button(this.width / 2 - 100, 146, 200, 20, I18n.format("mmo.menu.login.login"), (p_213030_1_) -> {
+        this.buttonLogin = this.addButton(new Button(this.width / 2 - 100, 146, 200, 20, new TranslationTextComponent("mmo.menu.login.login"), (p_213030_1_) -> {
             this.buttonLogin.active = false;
             authManager.login(textFieldEmail.getText(), textFieldPassword.getText(), success -> {
                 this.buttonLogin.active = true;
@@ -63,11 +65,11 @@ public class LoginScreen extends MMOScreen {
             });
         }));
 
-        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20, I18n.format("mmo.menu.login.register"), (p_213031_1_) -> {
+        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20, new TranslationTextComponent("mmo.menu.login.register"), (p_213031_1_) -> {
             this.minecraft.displayGuiScreen(new RegisterScreen());
         }));
 
-        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20, I18n.format("mmo.menu.login.play_offline"), (p_213029_1_) -> {
+        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20, new TranslationTextComponent("mmo.menu.login.play_offline"), (p_213029_1_) -> {
             resolve(this.minecraft);
         }));
 
@@ -104,21 +106,22 @@ public class LoginScreen extends MMOScreen {
     }
 
     @Override
-    public void removed() {
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+    public void onClose() {
+    	super.onClose();
+    	this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
-        this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 17, 16777215);
-        this.drawCenteredString(this.font, I18n.format("mmo.menu.login.desc"), this.width / 2, 34, 10526880);
-        this.drawString(this.font, I18n.format("mmo.menu.login.email"), this.width / 2 - 100, 63, loginFailed ? Color.RED : 10526880);
-        this.drawString(this.font, I18n.format("mmo.menu.login.password"), this.width / 2 - 100, 104, loginFailed ? Color.RED : 10526880);
-        this.drawString(this.font, I18n.format("mmo.menu.login.no_acc"), this.width / 2 - 100, this.height / 4 + 96 + 18 - 2, 10526880);
-        this.textFieldEmail.render(p_render_1_, p_render_2_, p_render_3_);
-        this.textFieldPassword.render(p_render_1_, p_render_2_, p_render_3_);
-        super.render(p_render_1_, p_render_2_, p_render_3_);
+    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(mStack);
+        drawCenteredString(mStack, this.font, this.title, this.width / 2, 17, 16777215);
+        drawCenteredString(mStack, this.font, I18n.format("mmo.menu.login.desc"), this.width / 2, 34, 10526880);
+        drawString(mStack, this.font, I18n.format("mmo.menu.login.email"), this.width / 2 - 100, 63, loginFailed ? Color.RED : 10526880);
+        drawString(mStack, this.font, I18n.format("mmo.menu.login.password"), this.width / 2 - 100, 104, loginFailed ? Color.RED : 10526880);
+        drawString(mStack, this.font, I18n.format("mmo.menu.login.no_acc"), this.width / 2 - 100, this.height / 4 + 96 + 18 - 2, 10526880);
+        this.textFieldEmail.render(mStack, mouseX, mouseY, partialTicks);
+        this.textFieldPassword.render(mStack, mouseX, mouseY, partialTicks);
+        super.render(mStack, mouseX, mouseY, partialTicks);
     }
 
 }

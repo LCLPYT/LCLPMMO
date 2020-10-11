@@ -3,20 +3,21 @@ package work.lclpnet.mmo.gui;
 import java.util.List;
 import java.util.function.Function;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends MMOScreen implements GenericSelectionSetup<T> {
 
 	protected final Screen prevScreen;
-	protected String tooltip;
+	private List<IReorderingProcessor> tooltip;
 	protected Button selectButton;
 	protected TextFieldWidget searchField;
 	protected GenericSelectionList<T, GenericSelectionScreen<T>> selectionList;
@@ -47,7 +48,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	@Override
 	protected void init() {
 		this.minecraft.keyboardListener.enableRepeatEvents(true);
-		this.searchField = new TextFieldWidget(this.font, this.width / 2 - 100, 22, 200, 20, this.searchField, I18n.format("mmo.menu.generic.search"));
+		this.searchField = new TextFieldWidget(this.font, this.width / 2 - 100, 22, 200, 20, this.searchField, new TranslationTextComponent("mmo.menu.generic.search"));
 		this.searchField.setResponder((p_214329_1_) -> {
 			this.selectionList.search(() -> {
 				return p_214329_1_;
@@ -62,7 +63,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 				this.props.selBtnPosY.apply(this.height), 
 				this.props.selBtnWidth.apply(this.width), 
 				this.props.selBtnHeight.apply(this.height), 
-				I18n.format("mmo.menu.generic.choose"), clicked -> {
+				new TranslationTextComponent("mmo.menu.generic.choose"), clicked -> {
 					this.selectionList.getSelection().ifPresent(GenericSelectionList.Entry::onSelect);
 				});
 
@@ -73,7 +74,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 				this.props.cancelBtnPosY.apply(this.height), 
 				this.props.cancelBtnWidth.apply(this.width), 
 				this.props.cancelBtnHeight.apply(this.height), 
-				I18n.format("gui.cancel"), (p_214326_1_) -> {
+				new TranslationTextComponent("gui.cancel"), (p_214326_1_) -> {
 					this.minecraft.displayGuiScreen(this.prevScreen);
 				});
 
@@ -96,27 +97,29 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	}
 
 	@Override
-	public void onClose() {
+	public void closeScreen() {
 		this.minecraft.displayGuiScreen(this.prevScreen);
 	}
-
+	
 	@Override
 	public boolean charTyped(char c, int i) {
 		return this.searchField.charTyped(c, i);
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		if(background == null) this.renderBackground();
+	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+		if(background == null) this.renderBackground(mStack);
 		else this.renderBackgroundTexture(background);
 		
 		this.tooltip = null;
-		this.selectionList.render(mouseX, mouseY, partialTicks);
-		this.searchField.render(mouseX, mouseY, partialTicks);
-		this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 8, 16777215);
-		super.render(mouseX, mouseY, partialTicks);
+		this.selectionList.render(mStack, mouseX, mouseY, partialTicks);
+		this.searchField.render(mStack, mouseX, mouseY, partialTicks);
+		AbstractGui.drawCenteredString(mStack, this.font, this.title, this.width / 2, 8, 16777215);
+		
+		super.render(mStack, mouseX, mouseY, partialTicks);
+		
 		if (this.tooltip != null) {
-			this.renderTooltip(Lists.newArrayList(Splitter.on("\n").split(this.tooltip)), mouseX, mouseY);
+			this.renderTooltip(mStack, tooltip, mouseX, mouseY);
 		}
 	}
 
@@ -128,7 +131,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	}
 
 	@Override
-	public void setTooltip(String tooltip) {
+	public void setTooltip(List<IReorderingProcessor> tooltip) {
 		this.tooltip = tooltip;
 	}
 	

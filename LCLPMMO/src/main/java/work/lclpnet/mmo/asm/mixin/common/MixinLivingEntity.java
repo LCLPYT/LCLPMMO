@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap.MutableAttribute;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.MathHelper;
@@ -20,21 +22,23 @@ import work.lclpnet.mmo.util.MMOMonsterAttributes;
 public class MixinLivingEntity {
 
 	@Inject(
-			method = "Lnet/minecraft/entity/LivingEntity;registerAttributes()V",
-			at = @At("TAIL")
+			method = "Lnet/minecraft/entity/LivingEntity;registerAttributes()Lnet/minecraft/entity/ai/attributes/AttributeModifierMap$MutableAttribute;",
+			at = @At("RETURN"),
+			cancellable = true
 			)
-	protected void onRegisterAttributes(CallbackInfo ci) {
-		LivingEntity livingEntity = (LivingEntity) ((Object) this);
-		livingEntity.getAttributes().registerAttribute(MMOMonsterAttributes.SCALE_WIDTH);
-		livingEntity.getAttributes().registerAttribute(MMOMonsterAttributes.SCALE_HEIGHT);
+	private static void onRegisterAttributes(CallbackInfoReturnable<AttributeModifierMap.MutableAttribute> cir) {
+		MutableAttribute ma = cir.getReturnValue();
+		cir.setReturnValue(ma
+				.createMutableAttribute(MMOMonsterAttributes.SCALE_WIDTH)
+				.createMutableAttribute(MMOMonsterAttributes.SCALE_HEIGHT));
+		cir.cancel();
 	}
 	
 	@Inject(
 			method = "Lnet/minecraft/entity/LivingEntity;readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/entity/SharedMonsterAttributes;readAttributes("
-							+ "Lnet/minecraft/entity/ai/attributes/AbstractAttributeMap;"
+					target = "Lnet/minecraft/entity/ai/attributes/AttributeModifierManager;deserialize("
 							+ "Lnet/minecraft/nbt/ListNBT;"
 							+ ")V",
 							shift = Shift.AFTER

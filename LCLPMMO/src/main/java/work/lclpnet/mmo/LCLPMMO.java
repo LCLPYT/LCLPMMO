@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,9 +19,9 @@ import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.event.AttributeListener;
 import work.lclpnet.mmo.event.EventListener;
 import work.lclpnet.mmo.network.MMOPacketHandler;
-import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.ColorHandler;
 import work.lclpnet.mmo.util.EnvironmentUtils;
+import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.RenderLayerHandler;
 
 @Mod(LCLPMMO.MODID)
@@ -58,7 +59,11 @@ public class LCLPMMO {
 	@SubscribeEvent
 	public void serverStart(final FMLServerStartingEvent e) {
 		LOGGER.info("LCLPMMO server starting...");
-		MMOCommands.registerCommands(e.getCommandDispatcher());
+	}
+	
+	@SubscribeEvent
+	public void onRegisterCommands(RegisterCommandsEvent e) {
+		MMOCommands.registerCommands(e.getDispatcher(), e.getEnvironment());
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent e) {

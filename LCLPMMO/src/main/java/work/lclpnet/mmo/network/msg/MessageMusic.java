@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -68,7 +69,7 @@ public class MessageMusic implements IMessage<MessageMusic>{
 	}
 	
 	public void handleMusic(MessageMusic msg) {
-		final Consumer<ITextComponent> feedback = text -> Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.SYSTEM, text);
+		final Consumer<ITextComponent> feedback = text -> Minecraft.getInstance().ingameGUI.func_238450_a_(ChatType.SYSTEM, text, Util.DUMMY_UUID);
 		
 		switch (msg.action) {
 		case PLAY:

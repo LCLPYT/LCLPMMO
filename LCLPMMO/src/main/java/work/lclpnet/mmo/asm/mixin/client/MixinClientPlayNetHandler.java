@@ -16,9 +16,9 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
-import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifierManager;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.network.play.server.SEntityPropertiesPacket;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.asm.type.IMMOUser;
@@ -38,15 +38,15 @@ public class MixinClientPlayNetHandler {
 					+ ")V",
 					at = @At(
 							value = "INVOKE",
-							target = "Lnet/minecraft/entity/ai/attributes/IAttributeInstance;setBaseValue(D)V",
+							target = "Lnet/minecraft/entity/ai/attributes/ModifiableAttributeInstance;setBaseValue(D)V",
 							shift = Shift.AFTER
 							),
 					locals = LocalCapture.CAPTURE_FAILHARD
 			)
 	public void onSetBaseValue(SEntityPropertiesPacket packetIn, CallbackInfo ci, 
-			Entity entity, AbstractAttributeMap abstractattributemap, Iterator<SEntityPropertiesPacket> iterator, 
-			SEntityPropertiesPacket.Snapshot sentitypropertiespacket$snapshot, IAttributeInstance iattributeinstance) {
-		IAttribute attr = iattributeinstance.getAttribute();
+			Entity entity, AttributeModifierManager abstractattributemap, Iterator<SEntityPropertiesPacket> iterator, 
+			SEntityPropertiesPacket.Snapshot sentitypropertiespacket$snapshot, ModifiableAttributeInstance iattributeinstance) {
+		Attribute attr = iattributeinstance.getAttribute();
 		if(attr.equals(MMOMonsterAttributes.SCALE_HEIGHT) || attr.equals(MMOMonsterAttributes.SCALE_WIDTH)) entity.recalculateSize();
 	}
 

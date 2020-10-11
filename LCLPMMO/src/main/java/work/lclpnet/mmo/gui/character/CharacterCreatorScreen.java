@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.gui.character;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -15,7 +17,7 @@ import work.lclpnet.mmo.util.ValidationViolations;
 
 public class CharacterCreatorScreen extends MMOScreen{
 
-	protected String error = null;
+	protected ITextComponent error = null;
 	protected Button btnRaceSel;
 	protected Button btnCreateCharacter;
 	protected TextFieldWidget characterNameField;
@@ -33,7 +35,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 	@Override
 	protected void init() {
 		this.minecraft.keyboardListener.enableRepeatEvents(true);
-		this.characterNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, I18n.format("mmo.menu.create_character.character_name"));
+		this.characterNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, new TranslationTextComponent("mmo.menu.create_character.character_name"));
 		this.characterNameField.setText(this.characterName);
 		this.characterNameField.setResponder((p_214319_1_) -> {
 			this.characterName = p_214319_1_.trim();
@@ -41,14 +43,14 @@ public class CharacterCreatorScreen extends MMOScreen{
 		});
 		this.children.add(this.characterNameField);
 
-		this.btnRaceSel = this.addButton(new Button(this.width / 2 - 75, 110, 150, 20, I18n.format("mmo.menu.create_character.choose_race"), (p_214321_1_) -> {
+		this.btnRaceSel = this.addButton(new Button(this.width / 2 - 75, 110, 150, 20, new TranslationTextComponent("mmo.menu.create_character.choose_race"), (p_214321_1_) -> {
 			this.minecraft.displayGuiScreen(new RaceSelectionScreen(this));
 		}));
-		this.btnCreateCharacter = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("mmo.menu.create_character.create"), (p_214318_1_) -> {
+		this.btnCreateCharacter = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, new TranslationTextComponent("mmo.menu.create_character.create"), (p_214318_1_) -> {
 			this.createCharacter();
 		}));
 		this.btnCreateCharacter.active = !this.characterName.isEmpty();
-		this.addButton(new Button(this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel"), (p_214317_1_) -> {
+		this.addButton(new Button(this.width / 2 + 5, this.height - 28, 150, 20, new TranslationTextComponent("gui.cancel"), (p_214317_1_) -> {
 			this.minecraft.displayGuiScreen(this.prevScreen);
 		}));
 
@@ -61,26 +63,29 @@ public class CharacterCreatorScreen extends MMOScreen{
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackgroundTexture(BACKGROUND_LOCATION_ALT);
-		this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 20, -1);
+		drawCenteredString(mStack, this.font, this.title, this.width / 2, 20, -1);
 		
-		this.drawString(this.font, I18n.format("mmo.menu.create_character.character_name"), this.width / 2 - 100, 47, -6250336);
-		this.characterNameField.render(mouseX, mouseY, partialTicks);
-		if(error != null) this.drawString(this.font, error, this.width / 2 - 100, 85, Colors.RED.toARGBInt());
+		drawString(mStack, this.font, I18n.format("mmo.menu.create_character.character_name"), this.width / 2 - 100, 47, -6250336);
+		this.characterNameField.render(mStack, mouseX, mouseY, partialTicks);
+		if(error != null) 
+			drawString(mStack, this.font, error, this.width / 2 - 100, 85, Colors.RED.toARGBInt());
 		
-		this.drawString(this.font, I18n.format("mmo.menu.create_character.choose_race_label"),this.width / 2 - 75, 98, -6250336);
-		if(this.selectedRace != null) this.btnRaceSel.setMessage(String.format("\u270E %s", this.selectedRace.getTitle().getFormattedText()));
+		drawString(mStack, this.font, I18n.format("mmo.menu.create_character.choose_race_label"),this.width / 2 - 75, 98, -6250336);
+		if(this.selectedRace != null) 
+			this.btnRaceSel.setMessage(new StringTextComponent(String.format("\u270E %s", this.selectedRace.getTitle().getString())));
 		
-		super.render(mouseX, mouseY, partialTicks);
+		super.render(mStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public void removed() {
+	public void onClose() {
+		super.onClose();
 		this.minecraft.keyboardListener.enableRepeatEvents(false);
 	}
-
-	public void setError(String error) {
+	
+	public void setError(ITextComponent error) {
 		this.error = error;
 	}
 
@@ -120,7 +125,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 				
 				displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"), reason);
 				
-				this.setError(reason.getFormattedText());
+				this.setError(reason);
 			}
 		});
 	}

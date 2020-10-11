@@ -4,7 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.Vector2f;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
 
 public class ScaleArgumentResult {
@@ -16,9 +16,9 @@ public class ScaleArgumentResult {
 		this.y = y;
 	}
 
-	public Vec2f getScale(Entity source) {
-		Vec2f vec3d = MMOMonsterAttributes.getScales(source);
-		return new Vec2f(this.x.get(vec3d.x), this.y.get(vec3d.y));
+	public Vector2f getScale(Entity source) {
+		Vector2f vec3d = MMOMonsterAttributes.getScales(source);
+		return new Vector2f(this.x.get(vec3d.x), this.y.get(vec3d.y));
 	}
 
 	public boolean isXRelative() {

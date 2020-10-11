@@ -3,16 +3,20 @@ package work.lclpnet.mmo.gui.login;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
+import work.lclpnet.corebase.util.TextComponentHelper;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
@@ -28,16 +32,17 @@ public class RegisterScreen extends MMOScreen {
     private ResponsiveCheckboxButton checkbox;
     private final String privPolText;
     private final int privPolX = 10, privPolY = 10;
-    private final ITextComponent privPol;
+    private final IFormattableTextComponent privPol;
 
     public RegisterScreen() {
         super(new TranslationTextComponent("mmo.menu.register.title"));
 
         privPolText = I18n.format("mmo.menu.register.privacy_policy");
         privPol = new StringTextComponent(privPolText);
-        privPol.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/datenschutz"));
-        privPol.getStyle().setUnderlined(true);
-        privPol.getStyle().setColor(TextFormatting.BLUE);
+        TextComponentHelper.setStyle(privPol, privPol.getStyle()
+        		.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/datenschutz"))
+        		.setUnderlined(true)
+        		.setColor(net.minecraft.util.text.Color.fromTextFormatting(TextFormatting.BLUE)));
     }
 
     public void tick() {
@@ -48,27 +53,27 @@ public class RegisterScreen extends MMOScreen {
 
     protected void init() {
         this.minecraft.keyboardListener.enableRepeatEvents(true);
-        this.textFieldEmail = new TextFieldWidget(this.font, this.width / 2 - 100, 56, 200, 20, I18n.format("mmo.menu.register.email"));
+        this.textFieldEmail = new TextFieldWidget(this.font, this.width / 2 - 100, 56, 200, 20, new TranslationTextComponent("mmo.menu.register.email"));
         this.textFieldEmail.setFocused2(true);
         this.textFieldEmail.setText("");
         this.textFieldEmail.setResponder(this::changed);
         this.children.add(this.textFieldEmail);
 
-        this.textFieldPassword = new PasswordTextField(this.font, this.width / 2 - 100, 96, 200, 20, I18n.format("mmo.menu.register.password"));
+        this.textFieldPassword = new PasswordTextField(this.font, this.width / 2 - 100, 96, 200, 20, new TranslationTextComponent("mmo.menu.register.password"));
         this.textFieldPassword.setText("");
         this.textFieldPassword.setResponder(this::changed);
         this.children.add(this.textFieldPassword);
 
-        this.textFieldConfirmPassword = new PasswordTextField(this.font, this.width / 2 - 100, 136, 200, 20, I18n.format("mmo.menu.register.password_confirm"));
+        this.textFieldConfirmPassword = new PasswordTextField(this.font, this.width / 2 - 100, 136, 200, 20, new TranslationTextComponent("mmo.menu.register.password_confirm"));
         this.textFieldConfirmPassword.setText("");
         this.textFieldConfirmPassword.setResponder(this::changed);
         this.children.add(this.textFieldConfirmPassword);
 
-        this.checkbox = new ResponsiveCheckboxButton(this.width / 2 - 100, 160, 150, 20, I18n.format("mmo.menu.register.accept"), false);
+        this.checkbox = new ResponsiveCheckboxButton(this.width / 2 - 100, 160, 150, 20, new TranslationTextComponent("mmo.menu.register.accept"), false);
         this.checkbox.setResponder(this::changed);
         this.addButton(checkbox);
 
-        this.buttonRegister = this.addButton(new Button(this.width / 2 - 100, 184, 200, 20, I18n.format("mmo.menu.register.register"), (p_213030_1_) -> {
+        this.buttonRegister = this.addButton(new Button(this.width / 2 - 100, 184, 200, 20, new TranslationTextComponent("mmo.menu.register.register"), (p_213030_1_) -> {
             if(!textFieldPassword.getText().equals(textFieldConfirmPassword.getText())) {
             	displayToast(new TranslationTextComponent("mmo.menu.register.password_mismatch"));
                 passwordError = true;
@@ -108,7 +113,7 @@ public class RegisterScreen extends MMOScreen {
             });
         }));
 
-        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20, I18n.format("mmo.menu.register.login"), (p_213029_1_) -> {
+        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20, new TranslationTextComponent("mmo.menu.register.login"), (p_213029_1_) -> {
             this.minecraft.displayGuiScreen(new LoginScreen());
         }));
 
@@ -140,24 +145,25 @@ public class RegisterScreen extends MMOScreen {
     }
 
     @Override
-    public void removed() {
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+    public void onClose() {
+    	super.onClose();
+    	this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
-
+    
     @Override
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
-        this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 17, 16777215);
-        this.drawString(this.font, I18n.format("mmo.menu.login.email"), this.width / 2 - 100, 44, registerFailed | mailError ? Color.RED : 10526880);
-        this.drawString(this.font, I18n.format("mmo.menu.login.password"), this.width / 2 - 100, 84, registerFailed || passwordError ? Color.RED : 10526880);
-        this.drawString(this.font, I18n.format("mmo.menu.register.password_confirm"), this.width / 2 - 100, 124, registerFailed || passwordError ? Color.RED : 10526880);
+    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(mStack);
+        drawCenteredString(mStack, this.font, this.title, this.width / 2, 17, 16777215);
+        drawString(mStack, this.font, I18n.format("mmo.menu.login.email"), this.width / 2 - 100, 44, registerFailed | mailError ? Color.RED : 10526880);
+        drawString(mStack, this.font, I18n.format("mmo.menu.login.password"), this.width / 2 - 100, 84, registerFailed || passwordError ? Color.RED : 10526880);
+        drawString(mStack, this.font, I18n.format("mmo.menu.register.password_confirm"), this.width / 2 - 100, 124, registerFailed || passwordError ? Color.RED : 10526880);
 
-        this.font.drawStringWithShadow(privPol.getFormattedText(), privPolX, privPolY, 0xFFFFFF);
+        this.font.func_243246_a(mStack, privPol, privPolX, privPolY, 0xFFFFFF); // func_243246_a = drawStringWithShadow
 
-        this.textFieldEmail.render(p_render_1_, p_render_2_, p_render_3_);
-        this.textFieldPassword.render(p_render_1_, p_render_2_, p_render_3_);
-        this.textFieldConfirmPassword.render(p_render_1_, p_render_2_, p_render_3_);
-        super.render(p_render_1_, p_render_2_, p_render_3_);
+        this.textFieldEmail.render(mStack, mouseX, mouseY, partialTicks);
+        this.textFieldPassword.render(mStack, mouseX, mouseY, partialTicks);
+        this.textFieldConfirmPassword.render(mStack, mouseX, mouseY, partialTicks);
+        super.render(mStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
