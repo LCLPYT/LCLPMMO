@@ -105,7 +105,7 @@ public class EditCharacterScreen extends MMOScreen{
 	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(mStack);
 		drawCenteredString(mStack, this.font, this.title, this.width / 2, 20, 16777215);
-		drawString(mStack, this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 40, 10526880);
+		drawString(mStack, this.font, I18n.format("mmo.menu.edit_character.edit_name"), this.width / 2 - 100, 40, 10526880);
 		this.nameEdit.render(mStack, mouseX, mouseY, partialTicks);
 		super.render(mStack, mouseX, mouseY, partialTicks);
 	}

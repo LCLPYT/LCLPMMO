@@ -90,12 +90,19 @@ public class MMOMainScreen extends MMOScreen{
 	}
 
 	private void setupButtons() {
-		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.singleplayer"), b -> this.minecraft.displayGuiScreen(new WorldSelectionScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.singleplayer"), b -> {
+			displayToast(new StringTextComponent("Hello World"), new StringTextComponent("Lorem ipsum dolor"));
+			this.minecraft.displayGuiScreen(new WorldSelectionScreen(this)); 
+		}));
 		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.multiplayer"), b -> {
+			displayToast(new StringTextComponent("Hello World"), new StringTextComponent("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut l"));
 			if (this.minecraft.gameSettings.skipMultiplayerWarning) this.minecraft.displayGuiScreen(new MultiplayerScreen(this));
 			else this.minecraft.displayGuiScreen(new MultiplayerWarningScreen(this));
 		}));
-		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("fml.menu.mods"), b -> this.minecraft.displayGuiScreen(new ModListScreen(this))));
+		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("fml.menu.mods"), b -> {
+			displayToast(new StringTextComponent("Hello World"), null);
+			this.minecraft.displayGuiScreen(new ModListScreen(this));
+		}));
 		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.options"), b -> this.minecraft.displayGuiScreen(new OptionsScreen(this, this.minecraft.gameSettings))));
 		this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("mmo.menu.btn_create_character"), b -> CharacterChooserScreen.updateContentAndShow(this.minecraft, this)));
 	}

@@ -16,7 +16,8 @@
         "client.MixinMinecraft",
         "client.MixinEntityRendererManager",
         "client.MixinClientPlayNetHandler",
-        "client.MixinPlayerController"
+        "client.MixinPlayerController",
+        "client.MixinSystemToast"
     ],
     "server": [
         "server.MixinDedicatedServer"

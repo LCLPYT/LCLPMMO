@@ -1,11 +1,18 @@
 package work.lclpnet.mmo.gui;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.toasts.SystemToast;
+import net.minecraft.client.gui.toasts.ToastGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -66,9 +73,43 @@ public class MMOScreen extends Screen{
 	}
 
 	public void displayToast(ITextComponent upperText, ITextComponent lowerText) {
-		SystemToast.addOrUpdate(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
+		addOrUpdateMultiline(this.minecraft.getToastGui(), SystemToast.Type.WORLD_BACKUP, 
 				upperText, 
 				lowerText);
 	}
+	
+	public static void addOrUpdateMultiline(ToastGui toastGui, SystemToast.Type type, ITextComponent title, @Nullable ITextComponent subtitle) {
+		SystemToast systemtoast = toastGui.getToast(SystemToast.class, type);
+		if (systemtoast == null) {
+			SystemToast toast;
+			if(subtitle == null) toast = new SystemToast(type, title, subtitle);
+			else {
+				FontRenderer fontrenderer = toastGui.getMinecraft().fontRenderer;
+				List<IReorderingProcessor> list = fontrenderer.trimStringToWidth(subtitle, 160);
+				int i = Math.max(160, list.stream().mapToInt(fontrenderer::func_243245_a).max().orElse(160));
+				toast = new SystemToast(type, title, list, i <= 160 ? i : i + 30);
+			}
+			toastGui.add(toast);
+		} else {
+			setSystemToastTextMultiline(systemtoast, title, subtitle);
+		}
+	}
 
+	public static void setSystemToastTextMultiline(SystemToast systemtoast, ITextComponent title, @Nullable ITextComponent subtitle) {
+		systemtoast.title = title;
+		systemtoast.newDisplay = true;
+		
+		if(subtitle == null) {
+			systemtoast.field_238531_e_ = ImmutableList.of();
+			systemtoast.field_238532_h_ = 160;
+		} else {
+			FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+			List<IReorderingProcessor> list = fontRenderer.trimStringToWidth(subtitle, 200);
+			int i = Math.max(160, list.stream().mapToInt(fontRenderer::func_243245_a).max().orElse(160));
+			
+			systemtoast.field_238531_e_ = list;
+			systemtoast.field_238532_h_ = i <= 160 ? i : i + 30;
+		}
+	}
+	
 }
