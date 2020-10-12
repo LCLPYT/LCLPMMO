@@ -7,6 +7,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.login.ServerLoginNetHandler;
+import net.minecraft.network.login.ServerLoginNetHandler.State;
 import net.minecraft.network.login.server.SLoginSuccessPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -14,7 +15,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.util.AuthHelper;
 import work.lclpnet.mmo.util.User;
 
 public class HelperServerLoginNetHandler {
@@ -39,11 +39,8 @@ public class HelperServerLoginNetHandler {
 		networkManager.sendPacket(new SLoginSuccessPacket(loginGameProfile));
 		
 		if (serverplayerentity != null) {
-			try {
-				AuthHelper.setLoginStateDelayAccept(handler);
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
+			handler.currentLoginState = State.DELAY_ACCEPT;
+			
 			ServerPlayerEntity player = server.getPlayerList().createPlayerForUser(loginGameProfile);
 			playerSetter.accept(player);
 			IMMOUser mmo = IMMOUser.getMMOUser(player);

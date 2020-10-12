@@ -29,7 +29,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.util.AuthHelper;
 import work.lclpnet.mmo.util.HTTPResponse;
 import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.User;
@@ -63,7 +62,7 @@ public class MixinServerLoginNetHandler {
 			)
 	public void onAcceptPlayer(CallbackInfo ci, ITextComponent itextcomponent, final ServerPlayerEntity serverplayerentity) {
 		final ServerLoginNetHandler handler = (ServerLoginNetHandler) (Object) this;
-		final GameProfile profile = AuthHelper.getGameProfile(handler);
+		final GameProfile profile = handler.loginGameProfile != null ? (handler.loginGameProfile.getId() != null ? handler.loginGameProfile : null) : null;
 		
 		ci.cancel();
 

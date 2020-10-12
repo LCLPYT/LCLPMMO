@@ -1,6 +1,5 @@
 package work.lclpnet.mmo.gui.main;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +42,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.gui.FancyButton;
@@ -74,7 +71,6 @@ public class MMOMainScreen extends MMOScreen{
 		setupButtons();
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
 	private void setupEntity() {
 		if(player != null && Minecraft.getInstance().getConnection() != null) return;
 		ClientPlayNetHandler netHandler = new FakeClientPlayNetHandler(minecraft);
@@ -82,30 +78,12 @@ public class MMOMainScreen extends MMOScreen{
 		player = new ClientPlayerEntity(minecraft, world, netHandler, null, null, false, false);
 		IMMOUser.initMyPlayer(player);
 
-		Field f;
-		DataParameter<Byte> PLAYER_MODEL_FLAG = null;
-		try {
-			f = ObfuscationReflectionHelper.findField(PlayerEntity.class, "field_184827_bp");
-		} catch (UnableToFindFieldException e) {
-			e.printStackTrace();
-			f = null;
-		}
+		DataParameter<Byte> PLAYER_MODEL_FLAG = PlayerEntity.PLAYER_MODEL_FLAG;
+		int modelParts = 0;
+		for (PlayerModelPart part : minecraft.gameSettings.getModelParts())
+			modelParts |= part.getPartMask();
 
-		if(f != null) {
-			try {
-				f.setAccessible(true);
-				Object o = f.get(null);
-				PLAYER_MODEL_FLAG = (DataParameter<Byte>) o;
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-
-			int modelParts = 0;
-			for (PlayerModelPart part : minecraft.gameSettings.getModelParts())
-				modelParts |= part.getPartMask();
-
-			if(PLAYER_MODEL_FLAG != null) player.getDataManager().set(PLAYER_MODEL_FLAG, (byte) modelParts);
-		}
+		if(PLAYER_MODEL_FLAG != null) player.getDataManager().set(PLAYER_MODEL_FLAG, (byte) modelParts);
 
 		minecraft.player = player;
 		minecraft.getRenderManager().cacheActiveRenderInfo(world, minecraft.gameRenderer.getActiveRenderInfo(), player);
@@ -124,7 +102,7 @@ public class MMOMainScreen extends MMOScreen{
 
 	@Override
 	protected void init() {
-		//setupEntity();
+		setupEntity();
 
 		int x = (int) (this.width / 12.8), y = (int) (this.height / 2.8);
 		int width = this.width / 2 - 100, height = this.height / 18;
@@ -137,7 +115,7 @@ public class MMOMainScreen extends MMOScreen{
 
 		int quitY = (int) (this.height * 0.9);
 		int imgBtnY = quitY - (int) (40 * (this.height / 360D));
-		
+
 		this.addButton(new ImageButton(x, imgBtnY, 20, 20, 0, 106, 20, Button.WIDGETS_LOCATION, 256, 256, b -> {
 			this.minecraft.displayGuiScreen(new LanguageScreen(this, this.minecraft.gameSettings, this.minecraft.getLanguageManager()));
 		}, new TranslationTextComponent("narrator.button.language")));
@@ -189,7 +167,7 @@ public class MMOMainScreen extends MMOScreen{
 		logoutBtn.scale = 1F;
 		this.addButton(logoutBtn);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
@@ -219,7 +197,7 @@ public class MMOMainScreen extends MMOScreen{
 			this.blit(mStack, padding, padding, 0, 0, 255, 84);
 			mStack.pop();
 
-			//this.drawPlayerModel(partialTicks, mouseX, mouseY, alpha);
+			this.drawPlayerModel(partialTicks, mouseX, mouseY, alpha);
 
 			for(Widget widget : this.buttons) {
 				widget.setAlpha(alpha);
