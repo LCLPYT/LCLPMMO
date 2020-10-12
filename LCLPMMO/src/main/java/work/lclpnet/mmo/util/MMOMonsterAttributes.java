@@ -81,9 +81,6 @@ public class MMOMonsterAttributes {
 	
 	@SubscribeEvent
 	public static void onRegister(RegistryEvent.Register<Attribute> e) {
-		System.out.println(e.getName());
-		System.out.println(e.getRegistry().toString());
-		System.out.println(SCALE_WIDTH.getRegistryName());
 		e.getRegistry().registerAll(SCALE_WIDTH, SCALE_HEIGHT);
 	}
 	

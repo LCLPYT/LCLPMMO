@@ -28,8 +28,7 @@ public class MixinPlayerList {
 							value = "INVOKE",
 							target = "Lnet/minecraft/entity/player/ServerPlayerEntity;copyFrom(Lnet/minecraft/entity/player/ServerPlayerEntity;Z)V"
 							),
-					locals = LocalCapture.CAPTURE_FAILHARD,
-					remap = false
+					locals = LocalCapture.CAPTURE_FAILHARD
 			)
 	public void onRecreatePlayerEntity(ServerPlayerEntity p_232644_1_, boolean p_232644_2_, CallbackInfoReturnable<ServerPlayerEntity> cir, 
 			BlockPos blockpos, float f, boolean flag, ServerWorld serverworld, Optional<Vector3d> optional, ServerWorld serverworld1, 

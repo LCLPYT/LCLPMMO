@@ -13,6 +13,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import work.lclpnet.corebase.util.Randoms;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Color;
@@ -24,7 +25,7 @@ public class PreIntroScreen extends MMOScreen{
 	private static final long FADEIN_DELAY = 2000,
 			FADEIN_TIME = 2000,
 			INTRO_LENGTH = 6000;
-	private static final ResourceLocation INTRO_SOUND = new ResourceLocation(LCLPMMO.MODID, DateUtil.isSpecialDay(new Date()) ? "intro_theme_alt" : "intro_theme");
+	private static final ResourceLocation INTRO_SOUND = new ResourceLocation(LCLPMMO.MODID, DateUtil.isSpecialDay(new Date()) || Randoms.randomOperation(0.002F) ? "intro_theme_alt" : "intro_theme");
 	private static final int bgColor = ColorHelper.PackedColor.packColor(255, 239, 50, 61);
 	
 	private long firstRenderTime = 0L, firstTitleRenderTime = 0L;

@@ -46,7 +46,6 @@ public class MixinSystemToast {
 									+ ")V",
 									shift = Shift.AFTER
 							),
-					remap = false,
 					cancellable = true
 			)
 	public void afterBlit(MatrixStack mStack, ToastGui toastGui, long delta, CallbackInfoReturnable<Visibility> cir) {
