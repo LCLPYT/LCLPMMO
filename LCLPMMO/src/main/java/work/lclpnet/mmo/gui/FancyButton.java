@@ -6,19 +6,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.audio.MMOSoundEvents;
 
 @OnlyIn(Dist.CLIENT)
 public class FancyButton extends Button{
 
-	public static final ResourceLocation LOCATION_HOVER = new ResourceLocation(LCLPMMO.MODID, "ui.button.hover");
 	private int fontColor, hoverFontColor;
 	private boolean hover = false;
 	public float scale = 1.5F;
@@ -62,7 +59,7 @@ public class FancyButton extends Button{
 	}
 
 	public void onHover() {
-		Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(new SoundEvent(LOCATION_HOVER), 1F));
+		Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MMOSoundEvents.UI_BUTTON_HOVER, 1F));
 	}
 
 	public void onHoverEnd() {

@@ -16,4 +16,13 @@ public class MMONames {
 		
 	}
 	
+	public static class Sound {
+		
+		public static final String MUSIC_LS5 = MODID + ":music.ls5",
+				INTRO_THEME = MODID + ":intro_theme",
+				INTRO_THEME_ALT = MODID + ":intro_theme_alt",
+				UI_BUTTON_HOVER = MODID + ":ui.button.hover";
+		
+	}
+	
 }

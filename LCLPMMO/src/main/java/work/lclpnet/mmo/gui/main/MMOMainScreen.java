@@ -8,7 +8,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AccessibilityScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -31,7 +30,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -56,8 +54,7 @@ public class MMOMainScreen extends MMOScreen{
 	public static final RenderSkyboxCube PANORAMA_RESOURCES = new RenderSkyboxCube(new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama"));
 	private static final ResourceLocation PANORAMA_OVERLAY_TEXTURES = new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/panorama_overlay.png"),
 			MINECRAFT_TITLE_TEXTURES = new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/title.png"),
-			ACCESSIBILITY_TEXTURES = new ResourceLocation("textures/gui/accessibility.png"),
-			THEME_MUSIC = new ResourceLocation(LCLPMMO.MODID, "music.ls5");
+			ACCESSIBILITY_TEXTURES = new ResourceLocation("textures/gui/accessibility.png");
 	private final RenderSkybox panorama = new RenderSkybox(PANORAMA_RESOURCES);
 	private boolean showFadeInAnimation;
 	private long firstRenderTime = 0L;
@@ -173,7 +170,7 @@ public class MMOMainScreen extends MMOScreen{
 	public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
 		if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
 			this.firstRenderTime = Util.milliTime();
-			onStart();
+			this.minecraft.getMusicTicker().timeUntilNextMusic = 0;
 		}
 
 		float alphaRaw = this.showFadeInAnimation ? (float)(Util.milliTime() - this.firstRenderTime) / 1000.0F : 1.0F;
@@ -218,10 +215,6 @@ public class MMOMainScreen extends MMOScreen{
 		RenderSystem.translatef(0F, 0F, 60F);
 		InventoryScreen.drawEntityOnScreen(x, y, scale, (float)(x) - mouseX, (float)(y - 50) - mouseY, player);
 		RenderSystem.translated(0F, 0F, -60F);
-	}
-
-	private void onStart() {
-		minecraft.getSoundHandler().play(SimpleSound.music(new SoundEvent(THEME_MUSIC)));
 	}
 
 	@Override

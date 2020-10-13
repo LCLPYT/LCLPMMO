@@ -3,7 +3,7 @@
         "sounds": [{
             "name": "lclpmmo:intro_theme",
             "stream": false,
-            "weight": 1000
+            "weight": 500
         },
         {
             "name": "lclpmmo:intro_theme_alt",

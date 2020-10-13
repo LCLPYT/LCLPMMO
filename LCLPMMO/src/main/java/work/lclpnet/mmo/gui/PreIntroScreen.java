@@ -13,11 +13,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import work.lclpnet.corebase.util.Randoms;
-import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.DateUtil;
+import work.lclpnet.mmo.util.MMONames;
 
 @OnlyIn(Dist.CLIENT)
 public class PreIntroScreen extends MMOScreen{
@@ -25,9 +24,8 @@ public class PreIntroScreen extends MMOScreen{
 	private static final long FADEIN_DELAY = 2000,
 			FADEIN_TIME = 2000,
 			INTRO_LENGTH = 6000;
-	private static final ResourceLocation INTRO_SOUND = new ResourceLocation(LCLPMMO.MODID, DateUtil.isSpecialDay(new Date()) || Randoms.randomOperation(0.002F) ? "intro_theme_alt" : "intro_theme");
 	private static final int bgColor = ColorHelper.PackedColor.packColor(255, 239, 50, 61);
-	
+
 	private long firstRenderTime = 0L, firstTitleRenderTime = 0L;
 	private boolean soundPlayed = false;
 	public boolean renderBG = false;
@@ -59,9 +57,11 @@ public class PreIntroScreen extends MMOScreen{
 
 		if(!soundPlayed && System.currentTimeMillis() - firstRenderTime > FADEIN_DELAY) {
 			soundPlayed = true;
-			minecraft.getSoundHandler().play(new SimpleSound(INTRO_SOUND, SoundCategory.RECORDS, 1F, 1F, false, 0, AttenuationType.NONE, 0F, 0F, 0F, true));
+			ResourceLocation rl = new ResourceLocation(DateUtil.isSpecialDay(new Date()) ? 
+					MMONames.Sound.INTRO_THEME_ALT : MMONames.Sound.INTRO_THEME);
+			minecraft.getSoundHandler().play(new SimpleSound(rl, SoundCategory.RECORDS, 1F, 1F, false, 0, AttenuationType.NONE, 0F, 0F, 0F, true));
 		}
-		
+
 		if(alpha > 0.1F) {
 			Color color = new Color(alpha, 85, 255, 85);
 			drawMultiLineCenteredString(mStack, this.font, this.title, 1.5F, this.width / 2, this.height / 2, color.toARGBInt());

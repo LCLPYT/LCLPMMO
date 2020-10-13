@@ -9,12 +9,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.BackgroundMusicSelector;
-import net.minecraft.client.audio.BackgroundMusicTracks;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.gui.main.FakeWorld;
+import work.lclpnet.mmo.audio.MMOBackgroundMusicTracks;
 
 @Mixin(Minecraft.class)
 @OnlyIn(Dist.CLIENT)
@@ -22,6 +22,8 @@ public class MixinMinecraft {
 
 	@Shadow
 	public ClientPlayerEntity player;
+	@Shadow
+	public ClientWorld world;
 	
 	@Inject(method = "<init>*", at = @At("RETURN"))
 	public void onInitEnd(CallbackInfo callbackInfo) {
@@ -34,9 +36,10 @@ public class MixinMinecraft {
 			cancellable = true
 			)
 	public void onGetBackgroundMusicSelector(CallbackInfoReturnable<BackgroundMusicSelector> cir) {
-		if(this.player != null && this.player.world instanceof FakeWorld) {
-			cir.setReturnValue(BackgroundMusicTracks.MAIN_MENU_MUSIC);
+		if(this.world == null) { // while not joined a world
+			cir.setReturnValue(MMOBackgroundMusicTracks.MAIN_MENU_MUSIC);
 			cir.cancel();
+			return;
 		}
 	}
 	
