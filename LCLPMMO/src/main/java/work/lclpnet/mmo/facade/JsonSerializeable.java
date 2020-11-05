@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.facade;
 
+import java.io.IOException;
+
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -7,8 +9,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import work.lclpnet.mmo.facade.character.MMOCharacter;
+import work.lclpnet.mmo.facade.quest.Quest;
+import work.lclpnet.mmo.facade.quest.Quests;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.facade.race.Races;
 import work.lclpnet.mmo.util.NoSerialization;
@@ -24,7 +31,10 @@ public class JsonSerializeable {
 			
 			@Override
 			public boolean shouldSkipField(FieldAttributes f) {
-				return f.getAnnotation(NoSerialization.class) != null;
+				NoSerialization annotation = f.getAnnotation(NoSerialization.class);
+				if(annotation == null) return false;
+				
+				return annotation.in().isApplicable();
 			}
 			
 			@Override
@@ -52,9 +62,23 @@ public class JsonSerializeable {
 		};
 		builder.registerTypeAdapter(MMOCharacter.class, characterAdapter);
 		
+		builder.registerTypeAdapter(Quest.class, new TypeAdapter<Quest>() {
+
+			@Override
+			public void write(JsonWriter out, Quest value) throws IOException {
+				out.value(value == null ? null : value.getIdentifier());
+			}
+
+			@Override
+			public Quest read(JsonReader in) throws IOException {
+				String ident = in.nextString();
+				return Quests.getQuestByIdentifier(ident);
+			}
+		});
+		
 		gson = builder.create();
 	}
-
+	
 	@Override
 	public String toString() {
 		return stringify(this);

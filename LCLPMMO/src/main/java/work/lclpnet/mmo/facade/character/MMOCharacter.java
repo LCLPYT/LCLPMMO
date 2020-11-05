@@ -2,14 +2,17 @@ package work.lclpnet.mmo.facade.character;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import work.lclpnet.mmo.facade.NetworkWriteable;
+import work.lclpnet.mmo.facade.quest.QuestBook;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
+import work.lclpnet.mmo.util.DistSpecifier;
 import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.NoSerialization;
 
@@ -22,11 +25,14 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem{
 	protected transient String unlocalizedName;
 	protected final String name;
 	protected final MMORace race;
+	@NoSerialization(in = DistSpecifier.CLIENT)
+	public QuestBook questBook = null; // TODO make protected when debug finished
 	
-	public MMOCharacter(String name, MMORace race) {
+	public MMOCharacter(String name, MMORace race, QuestBook questBook) {
 		this.name = Objects.requireNonNull(name); // maybe add CharMatcher.ascii().matchesAllOf(name);
 		generateUnlocalizedName();
 		this.race = Objects.requireNonNull(race);
+		this.questBook = Optional.ofNullable(questBook).orElse(new QuestBook());
 	}
 
 	public void generateUnlocalizedName() {
@@ -40,6 +46,10 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem{
 	
 	public MMORace getRace() {
 		return race;
+	}
+	
+	public QuestBook getQuestBook() {
+		return questBook;
 	}
 	
 	@Override

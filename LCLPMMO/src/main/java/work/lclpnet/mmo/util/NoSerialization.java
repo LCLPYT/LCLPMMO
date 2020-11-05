@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface NoSerialization {
 
+	DistSpecifier in() default DistSpecifier.ALL;
+
 }
