@@ -15,7 +15,6 @@ import work.lclpnet.mmo.facade.quest.Quest;
 import work.lclpnet.mmo.facade.quest.QuestBook;
 import work.lclpnet.mmo.facade.quest.QuestState;
 import work.lclpnet.mmo.facade.quest.QuestStep;
-import work.lclpnet.mmo.facade.quest.Quests;
 import work.lclpnet.mmo.util.Color;
 
 public class QuestOverlay {
@@ -27,18 +26,10 @@ public class QuestOverlay {
 		if(character == null) return;
 
 		QuestBook questBook = character.getData().getQuestBook();
-		//if(questBook == null) return; TODO undo
-		if(questBook == null) {
-			character.getData().questBook = new QuestBook();
-			return;
-		}
+		if(questBook == null) return;
 
 		QuestState current = questBook.getCurrentQuest();
-		//if(quest == null) return; TODO undo
-		if(current == null) {
-			questBook.setCurrentQuest(Quests.getNullableQuestByIdentifier("start").newState());
-			return;
-		}
+		if(current == null) return;
 
 		mStack.push();
 		float scale = 1F;
@@ -61,9 +52,9 @@ public class QuestOverlay {
 			y += mc.fontRenderer.FONT_HEIGHT;
 		}
 
-		QuestStep currentStep = currentQuest.getSequence().get(current.getStep());
 		y += 1; // margin
 
+		QuestStep currentStep = currentQuest.getSequence().get(current.getStep());
 		IFormattableTextComponent questDescription = new TranslationTextComponent(String.format("mmo.quest.%s.step.%s", currentQuest.getIdentifier(), currentStep.getSubIdentifier()));
 
 		for (IReorderingProcessor s : mc.fontRenderer.trimStringToWidth(questDescription, width)) {

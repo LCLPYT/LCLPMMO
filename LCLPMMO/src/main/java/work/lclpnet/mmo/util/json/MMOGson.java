@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import work.lclpnet.mmo.facade.character.MMOCharacter;
+import work.lclpnet.mmo.facade.quest.Quest;
 import work.lclpnet.mmo.facade.race.MMORace;
 
 public class MMOGson {
@@ -12,6 +13,7 @@ public class MMOGson {
 			.addSerializationExclusionStrategy(new NoSerialization.Strategy())
 			.registerTypeAdapter(MMORace.class, MMORace.Adapter.INSTANCE)
 			.registerTypeAdapter(MMOCharacter.class, new MMOCharacter.Adapter())
+			.registerTypeAdapter(Quest.class, new Quest.Adapter())
 			.create();
 
 }

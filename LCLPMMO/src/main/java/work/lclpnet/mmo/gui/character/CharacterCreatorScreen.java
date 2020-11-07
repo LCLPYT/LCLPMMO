@@ -100,7 +100,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 	public void createCharacter() {
 		if(!validate()) return;
 		
-		MMOCharacter character = new MMOCharacter(this.characterName, this.selectedRace, new DynamicCharacterData());
+		MMOCharacter character = new MMOCharacter(this.characterName, this.selectedRace, DynamicCharacterData.empty());
 		
 		LCLPNetwork.post("api/ls5/add-character", character.toJson(), response -> {
 			if(response.isNoConnection()) {

@@ -38,7 +38,7 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
 		this.name = Objects.requireNonNull(name); // maybe add CharMatcher.ascii().matchesAllOf(name);
 		generateUnlocalizedName();
 		this.race = Objects.requireNonNull(race);
-		this.data = Optional.ofNullable(data).orElse(new DynamicCharacterData());
+		this.data = Optional.ofNullable(data).orElse(DynamicCharacterData.empty());
 	}
 
 	public void generateUnlocalizedName() {
@@ -107,7 +107,7 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
 		public MMOCharacter read(JsonObject json) throws IOException {
 			String name = json.get("name").getAsString();
 			MMORace race = MMORace.Adapter.INSTANCE.fromJsonObject(json.getAsJsonObject("race"));
-			DynamicCharacterData data = null;
+			DynamicCharacterData data = DynamicCharacterData.empty(); //TODO 
 			
 			MMOCharacter character = new MMOCharacter(name, race, data);
 			
