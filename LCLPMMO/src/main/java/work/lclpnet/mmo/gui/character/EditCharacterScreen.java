@@ -14,7 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOScreen;
-import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 public class EditCharacterScreen extends MMOScreen{
 

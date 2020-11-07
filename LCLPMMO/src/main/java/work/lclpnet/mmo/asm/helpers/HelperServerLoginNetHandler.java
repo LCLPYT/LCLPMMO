@@ -14,8 +14,8 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.type.IMMOUser;
+import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.util.User;
 
 public class HelperServerLoginNetHandler {
 

@@ -9,12 +9,12 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.event.EventListener;
+import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
-import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
-import work.lclpnet.mmo.util.LCLPNetwork;
-import work.lclpnet.mmo.util.User;
+import work.lclpnet.mmo.util.network.AuthManager;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 public class LoginScreen extends MMOScreen {
 

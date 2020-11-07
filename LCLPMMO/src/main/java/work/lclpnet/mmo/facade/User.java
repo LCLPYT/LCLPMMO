@@ -1,14 +1,15 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.facade;
 
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
+import work.lclpnet.mmo.util.network.HTTPResponse;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
-public class User extends JsonSerializeable{
+public class User extends JsonSerializeable {
 
 	private int id;
 	private String name;

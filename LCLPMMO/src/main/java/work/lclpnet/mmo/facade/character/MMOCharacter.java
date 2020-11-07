@@ -18,9 +18,9 @@ import work.lclpnet.mmo.facade.NetworkWriteable;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
 import work.lclpnet.mmo.util.DistSpecifier;
-import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 import work.lclpnet.mmo.util.json.NoSerialization;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
 

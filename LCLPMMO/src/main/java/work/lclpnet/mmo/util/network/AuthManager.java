@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.util.network;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

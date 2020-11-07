@@ -11,7 +11,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.MMOPacketHandler;
-import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 public class MessageRequestMCLink implements IMessage<MessageRequestMCLink>{
 

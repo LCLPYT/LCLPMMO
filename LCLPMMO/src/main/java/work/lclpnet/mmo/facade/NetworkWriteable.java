@@ -2,7 +2,7 @@ package work.lclpnet.mmo.facade;
 
 import java.util.function.Consumer;
 
-import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 public abstract class NetworkWriteable extends JsonSerializeable {
 

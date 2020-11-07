@@ -28,10 +28,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
 import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.util.HTTPResponse;
-import work.lclpnet.mmo.util.LCLPNetwork;
-import work.lclpnet.mmo.util.User;
+import work.lclpnet.mmo.util.network.HTTPResponse;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 @Mixin(ServerLoginNetHandler.class)
 public class MixinServerLoginNetHandler {

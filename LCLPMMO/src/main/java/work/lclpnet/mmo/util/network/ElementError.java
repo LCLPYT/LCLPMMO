@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.util.network;
 
 import java.util.List;
 import java.util.Objects;

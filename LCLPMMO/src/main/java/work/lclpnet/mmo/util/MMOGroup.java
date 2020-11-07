@@ -1,4 +1,4 @@
-package work.lclpnet.mmo;
+package work.lclpnet.mmo.util;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

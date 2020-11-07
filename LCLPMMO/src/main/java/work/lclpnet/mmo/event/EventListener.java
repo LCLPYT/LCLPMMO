@@ -19,7 +19,7 @@ import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Enqueuer;
-import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
 public class EventListener {

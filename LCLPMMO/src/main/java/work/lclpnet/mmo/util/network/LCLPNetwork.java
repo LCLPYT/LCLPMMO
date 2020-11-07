@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.util.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,6 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.User;
 
 public class LCLPNetwork {
 

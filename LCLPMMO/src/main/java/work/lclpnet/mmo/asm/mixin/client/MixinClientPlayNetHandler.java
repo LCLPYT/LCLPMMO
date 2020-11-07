@@ -22,12 +22,12 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.network.play.server.SEntityPropertiesPacket;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.asm.type.IMMOUser;
+import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
-import work.lclpnet.mmo.util.LCLPNetwork;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
-import work.lclpnet.mmo.util.User;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 @Mixin(ClientPlayNetHandler.class)
 public class MixinClientPlayNetHandler {

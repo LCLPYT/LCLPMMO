@@ -9,9 +9,9 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import work.lclpnet.mmo.asm.type.IMMOUser;
+import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
-import work.lclpnet.mmo.util.User;
 
 @Mixin(PlayerEntity.class)
 public class MixinPlayerEntity implements IMMOUser{

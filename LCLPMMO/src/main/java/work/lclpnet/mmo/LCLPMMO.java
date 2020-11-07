@@ -26,8 +26,9 @@ import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.util.ColorHandler;
 import work.lclpnet.mmo.util.EnvironmentUtils;
-import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.MMOGroup;
 import work.lclpnet.mmo.util.RenderLayerHandler;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 @Mod(LCLPMMO.MODID)
 public class LCLPMMO {

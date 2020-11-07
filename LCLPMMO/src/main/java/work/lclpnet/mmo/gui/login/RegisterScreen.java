@@ -17,8 +17,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import work.lclpnet.mmo.gui.MMOScreen;
-import work.lclpnet.mmo.util.AuthManager;
 import work.lclpnet.mmo.util.Color;
+import work.lclpnet.mmo.util.network.AuthManager;
 
 public class RegisterScreen extends MMOScreen {
 

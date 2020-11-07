@@ -13,8 +13,8 @@ import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.Colors;
-import work.lclpnet.mmo.util.LCLPNetwork;
-import work.lclpnet.mmo.util.ValidationViolations;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
+import work.lclpnet.mmo.util.network.ValidationViolations;
 
 public class CharacterCreatorScreen extends MMOScreen{
 

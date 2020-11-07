@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.quest.Quest;
 import work.lclpnet.mmo.facade.quest.QuestBook;
@@ -16,7 +17,6 @@ import work.lclpnet.mmo.facade.quest.QuestState;
 import work.lclpnet.mmo.facade.quest.QuestStep;
 import work.lclpnet.mmo.facade.quest.Quests;
 import work.lclpnet.mmo.util.Color;
-import work.lclpnet.mmo.util.User;
 
 public class QuestOverlay {
 

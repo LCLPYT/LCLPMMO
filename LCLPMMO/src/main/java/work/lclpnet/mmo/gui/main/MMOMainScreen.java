@@ -46,7 +46,7 @@ import work.lclpnet.mmo.gui.FancyButton;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.character.CharacterChooserScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
-import work.lclpnet.mmo.util.LCLPNetwork;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 @OnlyIn(Dist.CLIENT)
 public class MMOMainScreen extends MMOScreen{
