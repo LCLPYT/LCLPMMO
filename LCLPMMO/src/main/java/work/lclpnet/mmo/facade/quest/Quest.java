@@ -14,37 +14,42 @@ public class Quest {
 
 	private String identifier;
 	private List<QuestStep> sequence;
-	
+
 	Quest(String identifier, List<QuestStep> sequence) {
 		this.identifier = Objects.requireNonNull(identifier);
 		this.sequence = Objects.requireNonNull(sequence);
 		if(this.sequence.isEmpty()) throw new IllegalArgumentException("The quest sequence must consist of at least one step.");
 	}
-	
+
 	public String getIdentifier() {
 		return identifier;
 	}
-	
+
 	public List<QuestStep> getSequence() {
 		return sequence;
 	}
-	
+
 	public QuestState newState() {
 		return new QuestState(this);
 	}
-	
+
 	@Override
 	public String toString() {
 		return JsonSerializeable.stringify(this);
 	}
-	
+
 	public static class Adapter extends EasyTypeAdapter<Quest> {
+
+		public Adapter() {
+			super(Quest.class);
+		}
 
 		@Override
 		public void write(JsonWriter out, Quest value) throws IOException {
 			out.beginObject();
-			out.name("identifier");
-			out.value(value.identifier);
+
+			addField("identifier", out, w -> w.value(value.identifier));
+
 			out.endObject();
 		}
 
@@ -53,7 +58,7 @@ public class Quest {
 			String identifier = json.get("identifier").getAsString();
 			return Quests.getQuestByIdentifier(identifier);
 		}
-		
+
 	}
-	
+
 }

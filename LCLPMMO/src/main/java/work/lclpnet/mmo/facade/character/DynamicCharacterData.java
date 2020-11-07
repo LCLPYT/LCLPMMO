@@ -5,7 +5,7 @@ import work.lclpnet.mmo.facade.quest.QuestBook;
 
 public class DynamicCharacterData extends DynamicData {
 
-	public QuestBook questBook; // TODO make protected when debug finished
+	private QuestBook questBook;
 	
 	public DynamicCharacterData(QuestBook questBook) {
 		this.questBook = questBook;

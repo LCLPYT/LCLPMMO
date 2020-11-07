@@ -14,35 +14,36 @@ public class MMORace extends JsonSerializeable implements MMOSelectionItem {
 
 	private final String unlocalizedName;
 	private transient ITextComponent title;
-	
+
 	MMORace(String unlocalizedName, ITextComponent title) {
 		this.unlocalizedName = unlocalizedName;
 		this.title = title;
 	}
-	
+
 	@Override
 	public String getUnlocalizedName() {
 		return unlocalizedName;
 	}
-	
+
 	@Override
 	public ITextComponent getTitle() {
 		return title;
 	}
-	
+
 	public static class Adapter extends EasyTypeAdapter<MMORace> {
 
 		public static final Adapter INSTANCE = new Adapter();
-		
-		protected Adapter() {}
-		
+
+		protected Adapter() {
+			super(MMORace.class);
+		}
+
 		@Override
 		public void write(JsonWriter out, MMORace value) throws IOException {
 			out.beginObject();
-			
-			out.name("unlocalizedName");
-			out.value(value.unlocalizedName);
-			
+
+			addField("unlocalizedName", out, w -> w.value(value.unlocalizedName));
+
 			out.endObject();
 		}
 
@@ -55,7 +56,7 @@ public class MMORace extends JsonSerializeable implements MMOSelectionItem {
 			String unlocalizedName = json.get("unlocalizedName").getAsString();
 			return Races.getByName(unlocalizedName);
 		}
-		
+
 	}
-	
+
 }
