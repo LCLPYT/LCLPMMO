@@ -2,6 +2,7 @@ package work.lclpnet.mmo.facade.race;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Races {
 
@@ -14,7 +15,7 @@ public class Races {
 	
 	private static MMORace register(MMORace race) {
 		if(!races.stream().map(MMORace::toString).noneMatch(race.getUnlocalizedName()::equals)) 
-			throw new IllegalArgumentException(String.format("Race with name %s already registered.", race.getUnlocalizedName()));
+			throw new IllegalArgumentException(String.format("Race with name '%s' already registered.", race.getUnlocalizedName()));
 		
 		races.add(race);
 		return race;
@@ -28,7 +29,15 @@ public class Races {
 		return races.stream()
 				.filter(r -> r.getUnlocalizedName().equalsIgnoreCase(unlocalizedName))
 				.findFirst()
-				.orElse(null);
+				.orElseThrow(() -> new NoSuchElementException(String.format("Race with name '%s' is not registered.", unlocalizedName)));
+	}
+	
+	public static MMORace getNullableByName(String unlocalizedName) {
+		try {
+			return getByName(unlocalizedName);
+		} catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 	
 }

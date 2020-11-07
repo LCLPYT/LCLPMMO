@@ -26,10 +26,10 @@ public class QuestOverlay {
 		MMOCharacter character = User.getSelectedCharacter();
 		if(character == null) return;
 
-		QuestBook questBook = character.getQuestBook();
+		QuestBook questBook = character.getData().getQuestBook();
 		//if(questBook == null) return; TODO undo
 		if(questBook == null) {
-			character.questBook = new QuestBook();
+			character.getData().questBook = new QuestBook();
 			return;
 		}
 

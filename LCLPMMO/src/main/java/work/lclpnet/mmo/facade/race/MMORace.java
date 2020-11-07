@@ -1,10 +1,16 @@
 package work.lclpnet.mmo.facade.race;
 
+import java.io.IOException;
+
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+
 import net.minecraft.util.text.ITextComponent;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
+import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
-public class MMORace extends JsonSerializeable implements MMOSelectionItem{
+public class MMORace extends JsonSerializeable implements MMOSelectionItem {
 
 	private final String unlocalizedName;
 	private transient ITextComponent title;
@@ -22,6 +28,34 @@ public class MMORace extends JsonSerializeable implements MMOSelectionItem{
 	@Override
 	public ITextComponent getTitle() {
 		return title;
+	}
+	
+	public static class Adapter extends EasyTypeAdapter<MMORace> {
+
+		public static final Adapter INSTANCE = new Adapter();
+		
+		protected Adapter() {}
+		
+		@Override
+		public void write(JsonWriter out, MMORace value) throws IOException {
+			out.beginObject();
+			
+			out.name("unlocalizedName");
+			out.value(value.unlocalizedName);
+			
+			out.endObject();
+		}
+
+		@Override
+		public MMORace read(JsonObject json) throws IOException {
+			return fromJsonObject(json);
+		}
+
+		public MMORace fromJsonObject(JsonObject json) {
+			String unlocalizedName = json.get("unlocalizedName").getAsString();
+			return Races.getByName(unlocalizedName);
+		}
+		
 	}
 	
 }

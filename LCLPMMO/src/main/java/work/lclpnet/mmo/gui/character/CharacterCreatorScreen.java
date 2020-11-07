@@ -8,8 +8,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import work.lclpnet.mmo.facade.character.DynamicCharacterData;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.facade.quest.QuestBook;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.Colors;
@@ -100,7 +100,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 	public void createCharacter() {
 		if(!validate()) return;
 		
-		MMOCharacter character = new MMOCharacter(this.characterName, this.selectedRace, new QuestBook());
+		MMOCharacter character = new MMOCharacter(this.characterName, this.selectedRace, new DynamicCharacterData());
 		
 		LCLPNetwork.post("api/ls5/add-character", character.toJson(), response -> {
 			if(response.isNoConnection()) {
