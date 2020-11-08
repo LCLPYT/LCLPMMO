@@ -156,7 +156,6 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact deobfJar
             artifact reobfArtifact
             artifact sourcesJar
         }
