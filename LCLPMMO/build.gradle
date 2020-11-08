@@ -15,6 +15,7 @@ plugins {
     id 'org.ajoberstar.grgit' version '3.1.1'
 }
 
+apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
@@ -188,6 +189,11 @@ tasks.build.dependsOn('sourcesJar', 'deobfJar')
 artifacts {
     archives deobfJar
     archives sourcesJar
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
 }
 
 processResources {
