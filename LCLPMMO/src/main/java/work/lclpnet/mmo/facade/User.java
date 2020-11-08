@@ -1,5 +1,8 @@
 package work.lclpnet.mmo.facade;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,6 +45,8 @@ public class User extends JsonSerializeable {
 	
 	public static void setSelectedCharacter(MMOCharacter selectedCharacter) {
 		if(FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+		System.out.println(selectedCharacter.getData().encryptToString());
+		System.out.println(Base64.getDecoder().decode(selectedCharacter.getData().encryptToString().getBytes(StandardCharsets.UTF_8)).length);
 		User.selectedCharacter = selectedCharacter;
 	}
 	
@@ -61,6 +66,7 @@ public class User extends JsonSerializeable {
 		
 		JsonObject body = new JsonObject();
 		body.addProperty("userId", user.getId());
+		body.addProperty("fetchData", true);
 		
 		LCLPNetwork.post("api/ls5/get-active-character", body, resp -> {
 			User.selectedCharacter = handleActiveCharacterResponse(resp);

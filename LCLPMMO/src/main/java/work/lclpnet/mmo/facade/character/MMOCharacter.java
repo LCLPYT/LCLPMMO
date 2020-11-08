@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
@@ -12,7 +14,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import work.lclpnet.mmo.facade.NetworkWriteable;
+import work.lclpnet.mmo.facade.NetworkSaveable;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
 import work.lclpnet.mmo.util.DistSpecifier;
@@ -20,7 +22,7 @@ import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 import work.lclpnet.mmo.util.json.NoSerialization;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
-public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
+public class MMOCharacter extends NetworkSaveable implements MMOSelectionItem {
 
 	@NoSerialization
 	public Integer id = null;
@@ -78,7 +80,20 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
 
 	@Override
 	protected String getSavePath() {
-		return LCLPNetwork.BACKEND.getCharacterSavePath();
+		return LCLPNetwork.BACKEND.getCharacterDataSavePath();
+	}
+	
+	@Override
+	public void save(Consumer<Boolean> callback) {
+		if(this.id == null || this.data == null) {
+			callback.accept(false);
+			return;
+		}
+		JsonObject body = new JsonObject();
+		body.addProperty("characterId", this.id);
+		body.addProperty("data", this.data.encryptToString());
+		
+		postSave(getSavePath(), body, callback);
 	}
 
 	public static class Adapter extends EasyTypeAdapter<MMOCharacter> {
@@ -97,7 +112,7 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
 			addField("unlocalizedName", out, w -> w.value(value.unlocalizedName)); // DEBUG ONLY
 			addField("race", out, w -> MMORace.Adapter.INSTANCE.write(w, value.race));
 			addField("data", out, w -> w.value(value.data.encryptToString()));
-			
+
 			out.endObject();
 		}
 
@@ -107,8 +122,13 @@ public class MMOCharacter extends NetworkWriteable implements MMOSelectionItem {
 			MMORace race = MMORace.Adapter.INSTANCE.fromJsonObject(json.getAsJsonObject("race"));
 			DynamicCharacterData data = null;
 			if(json.has("data")) {
-				String base64 = json.get("data").getAsString();
-				data = DynamicCharacterData.decodeFromString(base64, DynamicCharacterData.class);
+				JsonElement e = json.get("data");
+				if(e == null || e.isJsonNull()) data = DynamicCharacterData.empty();
+				else {
+					String base64 = e.getAsString();
+					if(base64 == null || base64.isEmpty()) data = DynamicCharacterData.empty();
+					else data = DynamicCharacterData.decodeFromString(base64, DynamicCharacterData.class);
+				}
 			}
 			if(data == null) data = DynamicCharacterData.empty();
 

@@ -114,6 +114,7 @@ public class MixinServerLoginNetHandler {
 				
 				JsonObject charBody = new JsonObject();
 				charBody.addProperty("userId", user.getId());
+				charBody.addProperty("fetchData", true);
 				
 				LCLPNetwork.post("api/ls5/get-active-character", charBody, charConsumer);
 			}
