@@ -58,6 +58,8 @@
     "mmo.menu.generic.edit": "Edit",
     "mmo.menu.generic.delete": "Delete",
     "mmo.menu.generic.duplicate": "Duplicate",
+    "mmo.screen.tutorial.title": "Tutorial",
+    "mmo.screen.tutorial.start": "Start",
     "mmo.race.human.title": "Human",
     "mmo.race.dwarf.title": "Dwarf",
     "mmo.no_internet": "No server connection.",

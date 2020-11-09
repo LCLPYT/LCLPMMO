@@ -67,7 +67,7 @@ minecraft {
 
             environment("PULSE_RUNTIME_PATH", "/run/user/1000/pulse") // Required to hear sound in some distributions (using pulse audio)
             
-            args '--mixin', 'mixins.lclpmmo.json'
+            args '--mixin', 'mixins.lclpmmo.json', '--mixin', 'mixins.corebase.json'
 
             mods {
                 lclpmmo {
@@ -90,7 +90,7 @@ minecraft {
             property "mixin.debug", "true"
             property "mixin.env.shiftByViolation", "ignore"
             
-            args '--mixin', 'mixins.lclpmmo.json'
+            args '--mixin', 'mixins.lclpmmo.json', '--mixin', 'mixins.corebase.json'
 
             mods {
                 lclpmmo {

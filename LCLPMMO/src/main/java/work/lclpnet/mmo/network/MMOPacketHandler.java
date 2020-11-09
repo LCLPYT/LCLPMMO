@@ -16,6 +16,8 @@ import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
 import work.lclpnet.mmo.network.msg.MessageMusic;
 import work.lclpnet.mmo.network.msg.MessageRequestMCLink;
 import work.lclpnet.mmo.network.msg.MessageSendMCLinkToken;
+import work.lclpnet.mmo.network.msg.MessageShowTutorialScreen;
+import work.lclpnet.mmo.network.msg.MessageTutorial;
 
 @EventBusSubscriber(bus = Bus.FORGE, modid = LCLPMMO.MODID)
 public class MMOPacketHandler {
@@ -39,6 +41,8 @@ public class MMOPacketHandler {
 		register(MessageSendMCLinkToken.class, new MessageSendMCLinkToken(), true);
 		register(MessageRequestMCLink.class, new MessageRequestMCLink());
 		register(MessageDisconnectMe.class, new MessageDisconnectMe());
+		register(MessageShowTutorialScreen.class, new MessageShowTutorialScreen());
+		register(MessageTutorial.class, new MessageTutorial());
 	}
 
 	private static <T> void register(Class<T> clazz, IMessage<T> msg) {

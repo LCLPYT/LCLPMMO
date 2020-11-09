@@ -18,6 +18,7 @@ import work.lclpnet.mmo.audio.MusicSystem;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
+import work.lclpnet.mmo.network.msg.MessageShowTutorialScreen;
 import work.lclpnet.mmo.util.Enqueuer;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
@@ -42,7 +43,7 @@ public class EventListener {
 		startup = false;
 		return screen;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onRenderTick(RenderTickEvent e) {
@@ -51,8 +52,21 @@ public class EventListener {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
+	public static void onGuiClose(GuiOpenEvent e) {
+		if(e.getGui() != null) return;
+		
+		System.out.println("CLOSE");
+
+		MessageShowTutorialScreen.ClientCache.needCache = false;
+		if(MessageShowTutorialScreen.ClientCache.cached != null) 
+			Enqueuer.enqueueOnRender(MessageShowTutorialScreen.ClientCache.cached::showTutorialScreen);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
 	public static void onWorldLeave(WorldEvent.Unload e) {
+		MessageShowTutorialScreen.ClientCache.needCache = true;
 		MusicSystem.stopAllSound(x -> {});
 	}
-	
+
 }
