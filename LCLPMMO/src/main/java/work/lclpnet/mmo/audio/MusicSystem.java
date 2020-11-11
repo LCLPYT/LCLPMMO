@@ -18,6 +18,7 @@ import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -35,7 +36,17 @@ import work.lclpnet.mmo.util.YoutubeDL;
 public class MusicSystem {
 
 	private static final Map<String, MusicInstance> playing = new HashMap<>();
+	private static SoundEvent enqueuedBackgroundMusic = null;
 
+	public static void playBackgroundMusic(SoundEvent sound) {
+		enqueuedBackgroundMusic = sound;
+	}
+
+	
+	public static SoundEvent getEnqueuedBackgroundMusic() {
+		return enqueuedBackgroundMusic;
+	}
+	
 	public static void play(String path, Consumer<ITextComponent> feedback) {
 		play(getMusicFile(path), feedback);
 	}

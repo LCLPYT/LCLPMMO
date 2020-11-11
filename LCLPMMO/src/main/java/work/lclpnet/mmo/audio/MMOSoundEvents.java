@@ -18,6 +18,8 @@ public class MMOSoundEvents {
 	private static final List<SoundEvent> SOUNDS = new ArrayList<>();
 	
 	public static final SoundEvent MUSIC_LS5 = register(Sound.MUSIC_LS5),
+			MUSIC_TUTORIAL_01 = register(Sound.MUSIC_TUTORIAL_01),
+		    MUSIC_TUTORIAL_02 = register(Sound.MUSIC_TUTORIAL_02),
 			INTRO_THEME = register(Sound.INTRO_THEME),
 			INTRO_THEME_ALT = register(Sound.INTRO_THEME_ALT),
 			UI_BUTTON_HOVER = register(Sound.UI_BUTTON_HOVER);

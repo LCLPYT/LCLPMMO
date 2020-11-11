@@ -2,10 +2,13 @@ package work.lclpnet.mmo.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.OptionsSoundsScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -17,6 +20,7 @@ import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
+import work.lclpnet.mmo.gui.login.ResponsiveCheckboxButton;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.network.msg.MessageShowTutorialScreen;
 import work.lclpnet.mmo.util.Enqueuer;
@@ -55,8 +59,6 @@ public class EventListener {
 	public static void onGuiClose(GuiOpenEvent e) {
 		if(e.getGui() != null) return;
 		
-		System.out.println("CLOSE");
-
 		MessageShowTutorialScreen.ClientCache.needCache = false;
 		if(MessageShowTutorialScreen.ClientCache.cached != null) 
 			Enqueuer.enqueueOnRender(MessageShowTutorialScreen.ClientCache.cached::showTutorialScreen);
@@ -69,4 +71,15 @@ public class EventListener {
 		MusicSystem.stopAllSound(x -> {});
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void onSoundSettingsScreen(InitGuiEvent e) {
+        Screen gui = e.getGui();
+        if(!(gui instanceof OptionsSoundsScreen)) return;
+        
+		ResponsiveCheckboxButton checkbox = new ResponsiveCheckboxButton(10, 10, 150, 20, new TranslationTextComponent("options_screen.audio.only_mmo"), Config.isMinecraftMusicDisabled());
+        checkbox.setResponder(Config::setMinecraftMusicDisabled);
+		e.addWidget(checkbox);
+	}
+	
 }

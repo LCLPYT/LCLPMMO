@@ -31,5 +31,19 @@
             "stream": true,
             "volume": 0.5
         }]
+    },
+    "music.tutorial_01": {
+        "sounds": [{
+            "name": "lclpmmo:music/tutorial_01",
+            "stream": true,
+            "volume": 1
+        }]
+    },
+    "music.tutorial_02": {
+        "sounds": [{
+            "name": "lclpmmo:music/tutorial_02",
+            "stream": true,
+            "volume": 0.9
+        }]
     }
 }

@@ -33,7 +33,9 @@ public class MessageDisconnectMe implements IMessage<MessageDisconnectMe> {
 
 	@Override
 	public void handle(MessageDisconnectMe message, Supplier<Context> supplier) {
+		supplier.get().setPacketHandled(true);
 		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
+		
 		ServerPlayerEntity sender = supplier.get().getSender();
 		supplier.get().enqueueWork(() -> {
 			sender.connection.disconnect(msg);

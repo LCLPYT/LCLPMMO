@@ -14,16 +14,18 @@ public class Config {
 	private static FileConfig config = null;
 	private static Map<String, Object> register = new HashMap<>();
 	
-	public static final String KEY_SKIP_INTRO = "misc.skip-intro";
-	public static final String KEY_NETWORK_STAGING = "network.staging";
-	public static final String KEY_NETWORK_HOST_STAGING = "network.host-staging";
-	public static final String KEY_NETWORK_HOST_LIVE = "network.host-live";
+	public static final String KEY_SKIP_INTRO = "misc.skip-intro",
+			KEY_NETWORK_STAGING = "network.staging",
+			KEY_NETWORK_HOST_STAGING = "network.host-staging",
+			KEY_NETWORK_HOST_LIVE = "network.host-live",
+			KEY_MINECRAFT_MUSIC_DISABLED = "game.disable-minecraft-music";
 	
 	static {
 		register.put(KEY_SKIP_INTRO, false);
 		register.put(KEY_NETWORK_STAGING, false);
 		register.put(KEY_NETWORK_HOST_STAGING, "http://localhost:8000");
 		register.put(KEY_NETWORK_HOST_LIVE, "https://lclpnet.work");
+		register.put(KEY_MINECRAFT_MUSIC_DISABLED, false);
 	}
 	
 	public static void load() {
@@ -122,6 +124,14 @@ public class Config {
 	
 	public static String getEffectiveHost() {
 		return isNetworkStagingMode() ? getHostStaging() : getHostLive();
+	}
+	
+	public static void setMinecraftMusicDisabled(boolean disabled) {
+		set(KEY_MINECRAFT_MUSIC_DISABLED, disabled);
+	}
+	
+	public static boolean isMinecraftMusicDisabled() {
+		return get(KEY_MINECRAFT_MUSIC_DISABLED);
 	}
 	
 }

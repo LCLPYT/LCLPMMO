@@ -13,6 +13,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
+import work.lclpnet.mmo.network.msg.MessageMMOMusic;
 import work.lclpnet.mmo.network.msg.MessageMusic;
 import work.lclpnet.mmo.network.msg.MessageRequestMCLink;
 import work.lclpnet.mmo.network.msg.MessageSendMCLinkToken;
@@ -43,6 +44,7 @@ public class MMOPacketHandler {
 		register(MessageDisconnectMe.class, new MessageDisconnectMe());
 		register(MessageShowTutorialScreen.class, new MessageShowTutorialScreen());
 		register(MessageTutorial.class, new MessageTutorial());
+		register(MessageMMOMusic.class, new MessageMMOMusic());
 	}
 
 	private static <T> void register(Class<T> clazz, IMessage<T> msg) {

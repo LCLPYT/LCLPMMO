@@ -60,6 +60,7 @@
     "mmo.menu.generic.duplicate": "Duplizieren",
     "mmo.screen.tutorial.title": "Tutorial",
     "mmo.screen.tutorial.start": "Start",
+    "options_screen.audio.only_mmo": "Nur LCLPMMO Musik",
     "mmo.race.human.title": "Mensch",
     "mmo.race.dwarf.title": "Zwerg",
     "mmo.no_internet": "Keine Serververbindung.",

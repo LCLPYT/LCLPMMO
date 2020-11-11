@@ -36,6 +36,8 @@ public class MessageTutorial implements IMessage<MessageTutorial> {
 
 	@Override
 	public void handle(MessageTutorial message, Supplier<Context> supplier) {
+		supplier.get().setPacketHandled(true);
+		
 		if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) message.handleServer(supplier);
 		else if(FMLEnvironment.dist == Dist.CLIENT) message.handleClient(supplier);
 	}
@@ -44,7 +46,7 @@ public class MessageTutorial implements IMessage<MessageTutorial> {
 	private void handleServer(Supplier<Context> supplier) {
 		switch (this.type) {
 		case START_TUTORIAL:
-			MinecraftForge.EVENT_BUS.post(new TutorialStartEvent());
+			MinecraftForge.EVENT_BUS.post(new TutorialStartEvent(supplier.get().getSender()));
 			MMOPacketHandler.INSTANCE.reply(new MessageTutorial(Type.ACKNOCKLEDGE_START), supplier.get());
 			break;
 
@@ -57,7 +59,7 @@ public class MessageTutorial implements IMessage<MessageTutorial> {
 	private void handleClient(Supplier<Context> supplier) {
 		switch (this.type) {
 		case ACKNOCKLEDGE_START:
-			MinecraftForge.EVENT_BUS.post(new TutorialStartEvent());
+			MinecraftForge.EVENT_BUS.post(new TutorialStartEvent(null));
 			Minecraft.getInstance().displayGuiScreen(null);
 			break;
 
