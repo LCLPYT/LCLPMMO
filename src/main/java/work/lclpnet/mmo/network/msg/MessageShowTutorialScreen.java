@@ -9,9 +9,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.gui.TutorialScreen;
-import work.lclpnet.mmo.network.IMessage;
+import work.lclpnet.mmo.network.IMessageSerializer;
 
-public class MessageShowTutorialScreen implements IMessage<MessageShowTutorialScreen> {
+public class MessageShowTutorialScreen {
 
 	private boolean skip = false;
 
@@ -19,24 +19,6 @@ public class MessageShowTutorialScreen implements IMessage<MessageShowTutorialSc
 
 	public MessageShowTutorialScreen(boolean skip) {
 		this.skip = skip;
-	}
-
-	@Override
-	public void encode(MessageShowTutorialScreen message, PacketBuffer buffer) {
-		buffer.writeBoolean(message.skip);
-	}
-
-	@Override
-	public MessageShowTutorialScreen decode(PacketBuffer buffer) {
-		boolean skip = buffer.readBoolean();
-		return new MessageShowTutorialScreen(skip);
-	}
-
-	@Override
-	public void handle(MessageShowTutorialScreen message, Supplier<Context> supplier) {
-		supplier.get().setPacketHandled(true);
-		if(FMLEnvironment.dist == Dist.CLIENT) 
-			message.showTutorialScreen();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -54,6 +36,28 @@ public class MessageShowTutorialScreen implements IMessage<MessageShowTutorialSc
 		public static MessageShowTutorialScreen cached = null;
 		public static boolean needCache = true;
 
+	}
+	
+	public static class Serializer implements IMessageSerializer<MessageShowTutorialScreen> {
+		
+		@Override
+		public void encode(MessageShowTutorialScreen message, PacketBuffer buffer) {
+			buffer.writeBoolean(message.skip);
+		}
+
+		@Override
+		public MessageShowTutorialScreen decode(PacketBuffer buffer) {
+			boolean skip = buffer.readBoolean();
+			return new MessageShowTutorialScreen(skip);
+		}
+
+		@Override
+		public void handle(MessageShowTutorialScreen message, Supplier<Context> supplier) {
+			supplier.get().setPacketHandled(true);
+			if(FMLEnvironment.dist == Dist.CLIENT) 
+				message.showTutorialScreen();
+		}
+		
 	}
 
 }

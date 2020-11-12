@@ -18,7 +18,8 @@
         "client.MixinClientPlayNetHandler",
         "client.MixinPlayerController",
         "client.MixinSystemToast",
-        "client.MixinMusicTicker"
+        "client.MixinMusicTicker",
+        "client.MixinGameSettings"
     ],
     "server": [
         "server.MixinDedicatedServer"

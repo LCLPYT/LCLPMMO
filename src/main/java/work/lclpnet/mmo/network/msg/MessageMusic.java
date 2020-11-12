@@ -17,9 +17,9 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
-import work.lclpnet.mmo.network.IMessage;
+import work.lclpnet.mmo.network.IMessageSerializer;
 
-public class MessageMusic implements IMessage<MessageMusic>{
+public class MessageMusic {
 
 	public MusicAction action;
 	public String file;
@@ -45,55 +45,32 @@ public class MessageMusic implements IMessage<MessageMusic>{
 		this.volume = volume;
 	}
 	
-	@Override
-	public void encode(MessageMusic message, PacketBuffer buffer) {
-		buffer.writeEnumValue(message.action);
-		buffer.writeString(message.file);
-		buffer.writeFloat(message.volume);
-	}
-
-	@Override
-	public MessageMusic decode(PacketBuffer buffer) {
-		MusicAction action = buffer.readEnumValue(MusicAction.class);
-		String file = buffer.readString();
-		float volume = buffer.readFloat();
-		return new MessageMusic(action, file, volume);
-	}
-
-	@Override
-	public void handle(MessageMusic message, Supplier<Context> supplier) {
-		supplier.get().enqueueWork(() -> {
-			handleMusic(message);
-		});
-		supplier.get().setPacketHandled(true);
-	}
-	
-	public void handleMusic(MessageMusic msg) {
+	public void handleMusic() {
 		final Consumer<ITextComponent> feedback = text -> Minecraft.getInstance().ingameGUI.func_238450_a_(ChatType.SYSTEM, text, Util.DUMMY_UUID);
 		
-		switch (msg.action) {
+		switch (action) {
 		case PLAY:
-			MusicSystem.play(msg.file, feedback);
+			MusicSystem.play(file, feedback);
 			break;
 		case PLAY_YT:
-			if(msg.file.startsWith("url:")) {
+			if(file.startsWith("url:")) {
 				try {
-					new URL(msg.file);
-					MusicSystem.playYtUrl(msg.file.substring("url:".length()), feedback);
+					new URL(file);
+					MusicSystem.playYtUrl(file.substring("url:".length()), feedback);
 				} catch (MalformedURLException e) {
 					feedback.accept(LCLPMMO.TEXT.message(I18n.format("url.malformed"), MessageType.ERROR));
 				}
 			}
-			else if(msg.file.startsWith("search:")) MusicSystem.playYtSearch(msg.file.substring("search:".length()), feedback);
-			else if(msg.file.startsWith("downloaded:")) MusicSystem.playDownloaded(msg.file.substring("downloaded:".length()), feedback);
+			else if(file.startsWith("search:")) MusicSystem.playYtSearch(file.substring("search:".length()), feedback);
+			else if(file.startsWith("downloaded:")) MusicSystem.playDownloaded(file.substring("downloaded:".length()), feedback);
 			break;
 		case VOLUME:
-			if(msg.file.isEmpty()) MusicSystem.setOverallVolume(msg.volume, feedback);
-			else MusicSystem.setVolume(msg.file, msg.volume, feedback);
+			if(file.isEmpty()) MusicSystem.setOverallVolume(volume, feedback);
+			else MusicSystem.setVolume(file, volume, feedback);
 			break;
 		case STOP:
-			if(msg.file.isEmpty()) MusicSystem.stopAllSound(feedback);
-			else MusicSystem.stopSound(msg.file, feedback);
+			if(file.isEmpty()) MusicSystem.stopAllSound(feedback);
+			else MusicSystem.stopSound(file, feedback);
 			break;
 
 		default:
@@ -108,6 +85,33 @@ public class MessageMusic implements IMessage<MessageMusic>{
 	
 	public static enum MusicAction {
 		PLAY, PLAY_YT, VOLUME, STOP
+	}
+	
+	public static class Serializer implements IMessageSerializer<MessageMusic> {
+		
+		@Override
+		public void encode(MessageMusic message, PacketBuffer buffer) {
+			buffer.writeEnumValue(message.action);
+			buffer.writeString(message.file);
+			buffer.writeFloat(message.volume);
+		}
+
+		@Override
+		public MessageMusic decode(PacketBuffer buffer) {
+			MusicAction action = buffer.readEnumValue(MusicAction.class);
+			String file = buffer.readString();
+			float volume = buffer.readFloat();
+			return new MessageMusic(action, file, volume);
+		}
+
+		@Override
+		public void handle(MessageMusic message, Supplier<Context> supplier) {
+			supplier.get().enqueueWork(() -> {
+				message.handleMusic();
+			});
+			supplier.get().setPacketHandled(true);
+		}
+		
 	}
 	
 }

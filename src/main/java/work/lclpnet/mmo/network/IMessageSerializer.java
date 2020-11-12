@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public interface IMessage<T> {
+public interface IMessageSerializer<T> {
 
 	void encode(T message, PacketBuffer buffer);
 	

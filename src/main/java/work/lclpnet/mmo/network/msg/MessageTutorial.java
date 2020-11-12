@@ -10,10 +10,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.event.custom.TutorialStartEvent;
-import work.lclpnet.mmo.network.IMessage;
+import work.lclpnet.mmo.network.IMessageSerializer;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 
-public class MessageTutorial implements IMessage<MessageTutorial> {
+public class MessageTutorial {
 
 	private Type type;
 	
@@ -21,25 +21,6 @@ public class MessageTutorial implements IMessage<MessageTutorial> {
 	
 	public MessageTutorial(Type type) {
 		this.type = type;
-	}
-	
-	@Override
-	public void encode(MessageTutorial message, PacketBuffer buffer) {
-		buffer.writeEnumValue(message.type);
-	}
-
-	@Override
-	public MessageTutorial decode(PacketBuffer buffer) {
-		Type type = buffer.readEnumValue(Type.class);
-		return new MessageTutorial(type);
-	}
-
-	@Override
-	public void handle(MessageTutorial message, Supplier<Context> supplier) {
-		supplier.get().setPacketHandled(true);
-		
-		if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) message.handleServer(supplier);
-		else if(FMLEnvironment.dist == Dist.CLIENT) message.handleClient(supplier);
 	}
 	
 	@OnlyIn(Dist.DEDICATED_SERVER)
@@ -71,6 +52,29 @@ public class MessageTutorial implements IMessage<MessageTutorial> {
 	public static enum Type {
 		START_TUTORIAL,
 		ACKNOCKLEDGE_START
+	}
+	
+	public static class Serializer implements IMessageSerializer<MessageTutorial> {
+		
+		@Override
+		public void encode(MessageTutorial message, PacketBuffer buffer) {
+			buffer.writeEnumValue(message.type);
+		}
+
+		@Override
+		public MessageTutorial decode(PacketBuffer buffer) {
+			Type type = buffer.readEnumValue(Type.class);
+			return new MessageTutorial(type);
+		}
+
+		@Override
+		public void handle(MessageTutorial message, Supplier<Context> supplier) {
+			supplier.get().setPacketHandled(true);
+			
+			if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) message.handleServer(supplier);
+			else if(FMLEnvironment.dist == Dist.CLIENT) message.handleClient(supplier);
+		}
+		
 	}
 
 }

@@ -23,12 +23,12 @@ import work.lclpnet.mmo.network.msg.MessageTutorial;
 @EventBusSubscriber(bus = Bus.FORGE, modid = LCLPMMO.MODID)
 public class MMOPacketHandler {
 
-	private static final String PROTOCOL_VERSION = "1";
+	private static final String PROTOCOL_VERSION = "2";
 	public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(LCLPMMO.MODID, "main");
 	public static SimpleChannel INSTANCE = null;
 	private static int nextId = 0;
 
-	private static Map<Integer, Pair<Class<?>, IMessage<?>>> recordedMSG = new HashMap<>();
+	private static Map<Integer, Pair<Class<?>, IMessageSerializer<?>>> recordedMSG = new HashMap<>();
 
 	public static void init() {
 		INSTANCE = NetworkRegistry.newSimpleChannel(
@@ -38,20 +38,20 @@ public class MMOPacketHandler {
 				PROTOCOL_VERSION::equals
 				);
 
-		register(MessageMusic.class, new MessageMusic());
-		register(MessageSendMCLinkToken.class, new MessageSendMCLinkToken(), true);
-		register(MessageRequestMCLink.class, new MessageRequestMCLink());
-		register(MessageDisconnectMe.class, new MessageDisconnectMe());
-		register(MessageShowTutorialScreen.class, new MessageShowTutorialScreen());
-		register(MessageTutorial.class, new MessageTutorial());
-		register(MessageMMOMusic.class, new MessageMMOMusic());
+		register(MessageMusic.class, new MessageMusic.Serializer());
+		register(MessageSendMCLinkToken.class, new MessageSendMCLinkToken.Serializer(), true);
+		register(MessageRequestMCLink.class, new MessageRequestMCLink.Serializer());
+		register(MessageDisconnectMe.class, new MessageDisconnectMe.Serializer());
+		register(MessageShowTutorialScreen.class, new MessageShowTutorialScreen.Serializer());
+		register(MessageTutorial.class, new MessageTutorial.Serializer());
+		register(MessageMMOMusic.class, new MessageMMOMusic.Serializer());
 	}
 
-	private static <T> void register(Class<T> clazz, IMessage<T> msg) {
+	private static <T> void register(Class<T> clazz, IMessageSerializer<T> msg) {
 		register(clazz, msg, false);
 	}
 
-	private static <T> void register(Class<T> clazz, IMessage<T> msg, boolean record) {
+	private static <T> void register(Class<T> clazz, IMessageSerializer<T> msg, boolean record) {
 		int id = nextId++;
 		INSTANCE.registerMessage(
 				id, 
@@ -62,9 +62,9 @@ public class MMOPacketHandler {
 		if(record) recordedMSG.put(id, Pair.of(clazz, msg));
 	}
 
-	public static Pair<Class<?>, IMessage<?>> getRecordedMsg(PacketBuffer pb) {
+	public static Pair<Class<?>, IMessageSerializer<?>> getRecordedMsg(PacketBuffer pb) {
 		int id = pb.readByte();
-		Pair<Class<?>, IMessage<?>> msg = recordedMSG.get(id);
+		Pair<Class<?>, IMessageSerializer<?>> msg = recordedMSG.get(id);
 		return msg;
 	}
 	

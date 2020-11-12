@@ -37,11 +37,27 @@ public class MusicSystem {
 
 	private static final Map<String, MusicInstance> playing = new HashMap<>();
 	private static SoundEvent enqueuedBackgroundMusic = null;
+	private static SoundEvent lastBackgroundMusic = null;
+	private static boolean loopBackgroundMusic = false;
 
+	public static SoundEvent getLastBackgroundMusic() {
+		return lastBackgroundMusic;
+	}
+	
 	public static void playBackgroundMusic(SoundEvent sound) {
+		if(enqueuedBackgroundMusic != null && sound == null) lastBackgroundMusic = enqueuedBackgroundMusic;
+		else lastBackgroundMusic = null;
+		
 		enqueuedBackgroundMusic = sound;
 	}
-
+	
+	public static boolean isLoopBackgroundMusic() {
+		return loopBackgroundMusic;
+	}
+	
+	public static void setLoopBackgroundMusic(boolean loopBackgroundMusic) {
+		MusicSystem.loopBackgroundMusic = loopBackgroundMusic;
+	}
 	
 	public static SoundEvent getEnqueuedBackgroundMusic() {
 		return enqueuedBackgroundMusic;

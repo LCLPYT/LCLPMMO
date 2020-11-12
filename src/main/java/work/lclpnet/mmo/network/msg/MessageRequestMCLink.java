@@ -9,43 +9,47 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import work.lclpnet.mmo.network.IMessage;
+import work.lclpnet.mmo.network.IMessageSerializer;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
-public class MessageRequestMCLink implements IMessage<MessageRequestMCLink>{
+public class MessageRequestMCLink {
 
 	public MessageRequestMCLink() {}
 
-	@Override
-	public void encode(MessageRequestMCLink message, PacketBuffer buffer) {}
-
-	@Override
-	public MessageRequestMCLink decode(PacketBuffer buffer) {
-		return new MessageRequestMCLink();
-	}
-
-	@Override
-	public void handle(MessageRequestMCLink message, Supplier<Context> supplier) {
-		supplier.get().setPacketHandled(true);
+	public static class Serializer implements IMessageSerializer<MessageRequestMCLink> {
 		
-		if(FMLEnvironment.dist != Dist.CLIENT) return;
-		
-		LCLPNetwork.post("api/auth/request-mclink-token", null, response -> {
-			String token;
-			try {
-				if (response.isNoConnection() || response.getResponseCode() != 201) throw new IllegalStateException();
+		@Override
+		public void encode(MessageRequestMCLink message, PacketBuffer buffer) {}
 
-				token = new Gson()
-						.fromJson(response.getRawResponse(), JsonObject.class)
-						.get("token")
-						.getAsString();
-			} catch (Exception e) {
-				token = null;
-			}
+		@Override
+		public MessageRequestMCLink decode(PacketBuffer buffer) {
+			return new MessageRequestMCLink();
+		}
+
+		@Override
+		public void handle(MessageRequestMCLink message, Supplier<Context> supplier) {
+			supplier.get().setPacketHandled(true);
 			
-			MMOPacketHandler.INSTANCE.reply(new MessageSendMCLinkToken(token), supplier.get());
-		});
+			if(FMLEnvironment.dist != Dist.CLIENT) return;
+			
+			LCLPNetwork.post("api/auth/request-mclink-token", null, response -> {
+				String token;
+				try {
+					if (response.isNoConnection() || response.getResponseCode() != 201) throw new IllegalStateException();
+
+					token = new Gson()
+							.fromJson(response.getRawResponse(), JsonObject.class)
+							.get("token")
+							.getAsString();
+				} catch (Exception e) {
+					token = null;
+				}
+				
+				MMOPacketHandler.INSTANCE.reply(new MessageSendMCLinkToken(token), supplier.get());
+			});
+		}
+		
 	}
 	
 }
