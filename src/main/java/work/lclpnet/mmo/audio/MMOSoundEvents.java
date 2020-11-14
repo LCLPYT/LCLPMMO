@@ -22,7 +22,11 @@ public class MMOSoundEvents {
 		    MUSIC_TUTORIAL_02 = register(Sound.MUSIC_TUTORIAL_02),
 			INTRO_THEME = register(Sound.INTRO_THEME),
 			INTRO_THEME_ALT = register(Sound.INTRO_THEME_ALT),
-			UI_BUTTON_HOVER = register(Sound.UI_BUTTON_HOVER);
+			UI_BUTTON_HOVER = register(Sound.UI_BUTTON_HOVER),
+			ENTITY_PIXIE_HURT = register(Sound.ENTITY_PIXIE_HURT),
+			ENTITY_PIXIE_DEATH = register(Sound.ENTITY_PIXIE_DEATH),
+			ENTITY_PIXIE_AMBIENT = register(Sound.ENTITY_PIXIE_AMBIENT),
+			ENTITY_PIXIE_SAY = register(Sound.ENTITY_PIXIE_SAY);
 	
 	private static SoundEvent register(String name)
     {

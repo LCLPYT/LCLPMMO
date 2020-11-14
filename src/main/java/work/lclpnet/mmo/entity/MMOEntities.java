@@ -1,0 +1,43 @@
+package work.lclpnet.mmo.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.world.World;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.util.MMONames;
+
+@EventBusSubscriber(bus = Bus.MOD, modid = LCLPMMO.MODID)
+public class MMOEntities {
+
+	private static final List<EntityType<?>> ENTITY_TYPES = new ArrayList<>();
+
+	public static final EntityType<PixieEntity> PIXIE = build(MMONames.Entity.PIXIE, PixieEntity::new, 0.4F, 0.3F);
+
+	private static <T extends Entity> EntityType<T> build(String name, Function<World, T> function, float width, float height) {
+		EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.CREATURE).size(width, height).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(name);
+		type.setRegistryName(name);
+		ENTITY_TYPES.add(type);
+		return type;
+	}
+
+	@SubscribeEvent
+	public static void registerTypes(final RegistryEvent.Register<EntityType<?>> event) {
+		ENTITY_TYPES.forEach(event.getRegistry()::register);
+		ENTITY_TYPES.clear();
+	}
+	
+    public static void registerEntityTypeAttributes() {
+        GlobalEntityTypeAttributes.put(PIXIE, PixieEntity.prepareAttributes().create());
+    }
+
+}

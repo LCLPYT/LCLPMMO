@@ -18,12 +18,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.corebase.util.ComponentSupplier;
 import work.lclpnet.mmo.cmd.MMOCommands;
+import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.event.AttributeListener;
 import work.lclpnet.mmo.event.EventListener;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.network.MMOPacketHandler;
+import work.lclpnet.mmo.render.ClientRenderHandler;
 import work.lclpnet.mmo.util.ColorHandler;
 import work.lclpnet.mmo.util.EnvironmentUtils;
 import work.lclpnet.mmo.util.MMOGroup;
@@ -57,6 +59,7 @@ public class LCLPMMO {
 		LCLPNetwork.setup(() -> {});
 		MMOPacketHandler.init();
 		MMOCommands.registerArgumentTypes();
+		MMOEntities.registerEntityTypeAttributes();
 		
 		if(FMLEnvironment.dist == Dist.CLIENT) EnvironmentUtils.deleteTmpDir();
 		
@@ -76,6 +79,7 @@ public class LCLPMMO {
 	private void clientSetup(final FMLClientSetupEvent e) {
 		RenderLayerHandler.init();
 		ColorHandler.init();
+		ClientRenderHandler.setup();
 	}
 	
 	public void onIMCEnqueue(InterModEnqueueEvent e) {

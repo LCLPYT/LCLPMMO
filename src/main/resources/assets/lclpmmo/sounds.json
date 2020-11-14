@@ -32,6 +32,55 @@
             "volume": 0.5
         }]
     },
+    "entity.pixie.hurt": {
+        "sounds": [{
+            "name": "lclpmmo:entity/pixie/pixie_hurt1",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/pixie/pixie_hurt2",
+            "stream": false
+        }]
+    },
+    "entity.pixie.death": {
+        "sounds": [{
+            "name": "lclpmmo:entity/pixie/pixie_death",
+            "stream": false
+        }]
+    },
+    "entity.pixie.ambient": {
+        "sounds": [{
+            "name": "lclpmmo:entity/pixie/pixie_ambient1",
+            "stream": false,
+            "volume": 0.5
+        },
+        {
+            "name": "lclpmmo:entity/pixie/pixie_ambient2",
+            "stream": false,
+            "volume": 0.5
+        },
+        {
+            "name": "lclpmmo:entity/pixie/pixie_ambient3",
+            "stream": false,
+            "volume": 0.5
+        },
+        {
+            "name": "lclpmmo:entity/pixie/pixie_ambient4",
+            "stream": false,
+            "volume": 0.5
+        }]
+    },
+    "entity.pixie.say": {
+        "sounds": [{
+            "name": "lclpmmo:entity/pixie/pixie_say1",
+            "stream": false,
+            "volume": 0.8
+        },
+        {
+            "name": "lclpmmo:entity/pixie/pixie_say2",
+            "stream": false
+        }]
+    },
     "music.tutorial_01": {
         "sounds": [{
             "name": "lclpmmo:music/tutorial_01",
