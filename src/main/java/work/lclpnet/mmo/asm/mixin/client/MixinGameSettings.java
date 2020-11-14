@@ -20,7 +20,6 @@ public class MixinGameSettings {
 			at = @At("TAIL")
 			)
 	public void onLoadOptions(CallbackInfo ci) {
-		System.out.println("GAMMA: " + gamma);
 		this.gamma = MathHelper.clamp(this.gamma, 0D, 1D);
 	}
 	
