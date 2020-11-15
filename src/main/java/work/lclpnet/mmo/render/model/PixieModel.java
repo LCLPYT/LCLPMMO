@@ -63,7 +63,7 @@ public class PixieModel extends SegmentedModel<PixieEntity> {
 			float netHeadYaw, float headPitch) {
 		boolean onGroundMotionless = entityIn.isOnGround() && entityIn.getMotion().lengthSquared() < 1.0E-2D;
 		if (!onGroundMotionless) {
-			float f = ageInTicks * 0.7F;
+			float f = ageInTicks;
 			float pi = (float) Math.PI;
 			float rot = MathHelper.cos(f) * pi;
 			

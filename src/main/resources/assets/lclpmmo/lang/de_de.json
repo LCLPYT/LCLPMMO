@@ -98,5 +98,10 @@
     "multiplayer.disconnect.not_logged_in": "Du hast dich noch nicht mit LCLPNetwork angemeldet!",
     "multiplayer.disconnect.already_linked": "Du hast dein momentanes LCLPNetwork-Konto schon mit einem anderen Minecraft-Konto verlinkt! Bitte wechsle dein Konto.",
     "multiplayer.disconnect.no_character": "Du musst zuerst einen Charakter erstellen!",
-    "multiplayer.disconnect.not_linked": "Du hast dein Minecraft-Konto noch nicht mit deinem LCLPNetwork-Konto verbunden. Bitte trete einem LCLPNetwork-Minecraft-Server bei, um deine Konten zu verbinden."
+    "multiplayer.disconnect.not_linked": "Du hast dein Minecraft-Konto noch nicht mit deinem LCLPNetwork-Konto verbunden. Bitte trete einem LCLPNetwork-Minecraft-Server bei, um deine Konten zu verbinden.",
+    "entity.lclpmmo.pixie": "Pixie",
+    "subtitle.entity.pixie.hurt": "Pixie nimmt Schaden",
+    "subtitle.entity.pixie.ambient": "Pixie schimmert",
+    "subtitle.entity.pixie.death": "Pixie stirbt",
+    "subtitle.entity.pixie.say": "Pixie spricht"
 }

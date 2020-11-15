@@ -40,13 +40,15 @@
         {
             "name": "lclpmmo:entity/pixie/pixie_hurt2",
             "stream": false
-        }]
+        }],
+        "subtitle": "subtitle.entity.pixie.hurt"
     },
     "entity.pixie.death": {
         "sounds": [{
             "name": "lclpmmo:entity/pixie/pixie_death",
             "stream": false
-        }]
+        }],
+        "subtitle": "subtitle.entity.pixie.death"
     },
     "entity.pixie.ambient": {
         "sounds": [{
@@ -68,7 +70,8 @@
             "name": "lclpmmo:entity/pixie/pixie_ambient4",
             "stream": false,
             "volume": 0.5
-        }]
+        }],
+        "subtitle": "subtitle.entity.pixie.ambient"
     },
     "entity.pixie.say": {
         "sounds": [{
@@ -79,7 +82,8 @@
         {
             "name": "lclpmmo:entity/pixie/pixie_say2",
             "stream": false
-        }]
+        }],
+        "subtitle": "subtitle.entity.pixie.say"
     },
     "music.tutorial_01": {
         "sounds": [{
