@@ -82,13 +82,11 @@ public class EventListener {
 		e.addWidget(checkbox);
 	}
 	
-	/*@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onEntityInteract(EntityInteract e) {
-		Entity en = e.getTarget();
-		if(!(en instanceof LivingEntity)) return;
-		LivingEntity le = (LivingEntity) en;
-		Minecraft.getInstance().displayGuiScreen(new DialogScreen<>(true, le));
+	/*@SubscribeEvent
+	public static void onServerChat(ServerChatEvent e) {
+		ServerPlayerEntity p = e.getPlayer();
+		DialogData data = new DialogData(Arrays.asList(new DialogFragment("Hello, Gordon!")));
+		MMOPacketHandler.INSTANCE.sendTo(new MessageDialog(p.getEntityId(), data), p.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 	}*/
 	
 }

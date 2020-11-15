@@ -17,15 +17,14 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
+import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
 
-public class MessageMusic {
+public class MessageMusic implements IMessage {
 
 	public MusicAction action;
 	public String file;
 	public float volume;
-	
-	public MessageMusic() {} //Empty constructor for IMessage
 	
 	public MessageMusic(MusicAction action) {
 		this(action, "", -1F);
@@ -43,6 +42,11 @@ public class MessageMusic {
 		this.action = action;
 		this.file = file;
 		this.volume = volume;
+	}
+	
+	@Override
+	public void handle(Supplier<Context> ctx) {
+		ctx.get().enqueueWork(this::handleMusic);		
 	}
 	
 	public void handleMusic() {
@@ -104,14 +108,6 @@ public class MessageMusic {
 			return new MessageMusic(action, file, volume);
 		}
 
-		@Override
-		public void handle(MessageMusic message, Supplier<Context> supplier) {
-			supplier.get().enqueueWork(() -> {
-				message.handleMusic();
-			});
-			supplier.get().setPacketHandled(true);
-		}
-		
 	}
 	
 }

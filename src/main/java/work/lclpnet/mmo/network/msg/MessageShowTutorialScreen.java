@@ -9,13 +9,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.gui.TutorialScreen;
+import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
 
-public class MessageShowTutorialScreen {
+public class MessageShowTutorialScreen implements IMessage {
 
 	private boolean skip = false;
-
-	public MessageShowTutorialScreen() {}
 
 	public MessageShowTutorialScreen(boolean skip) {
 		this.skip = skip;
@@ -30,6 +29,11 @@ public class MessageShowTutorialScreen {
 		}
 	}
 
+	@Override
+	public void handle(Supplier<Context> ctx) {
+		if(FMLEnvironment.dist == Dist.CLIENT) showTutorialScreen();
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	public static class ClientCache {
 
@@ -37,9 +41,9 @@ public class MessageShowTutorialScreen {
 		public static boolean needCache = true;
 
 	}
-	
+
 	public static class Serializer implements IMessageSerializer<MessageShowTutorialScreen> {
-		
+
 		@Override
 		public void encode(MessageShowTutorialScreen message, PacketBuffer buffer) {
 			buffer.writeBoolean(message.skip);
@@ -51,13 +55,6 @@ public class MessageShowTutorialScreen {
 			return new MessageShowTutorialScreen(skip);
 		}
 
-		@Override
-		public void handle(MessageShowTutorialScreen message, Supplier<Context> supplier) {
-			supplier.get().setPacketHandled(true);
-			if(FMLEnvironment.dist == Dist.CLIENT) 
-				message.showTutorialScreen();
-		}
-		
 	}
 
 }

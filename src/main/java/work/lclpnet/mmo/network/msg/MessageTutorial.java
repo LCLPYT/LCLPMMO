@@ -10,14 +10,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.event.custom.TutorialStartEvent;
+import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 
-public class MessageTutorial {
+public class MessageTutorial implements IMessage {
 
 	private Type type;
-	
-	public MessageTutorial() {}
 	
 	public MessageTutorial(Type type) {
 		this.type = type;
@@ -49,6 +48,12 @@ public class MessageTutorial {
 		}
 	}
 	
+	@Override
+	public void handle(Supplier<Context> ctx) {
+		if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) handleServer(ctx);
+		else if(FMLEnvironment.dist == Dist.CLIENT) handleClient(ctx);		
+	}
+	
 	public static enum Type {
 		START_TUTORIAL,
 		ACKNOCKLEDGE_START
@@ -67,14 +72,6 @@ public class MessageTutorial {
 			return new MessageTutorial(type);
 		}
 
-		@Override
-		public void handle(MessageTutorial message, Supplier<Context> supplier) {
-			supplier.get().setPacketHandled(true);
-			
-			if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) message.handleServer(supplier);
-			else if(FMLEnvironment.dist == Dist.CLIENT) message.handleClient(supplier);
-		}
-		
 	}
 
 }

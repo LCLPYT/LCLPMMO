@@ -8,16 +8,23 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
 
-public class MessageDisconnectMe {
+public class MessageDisconnectMe implements IMessage {
 
 	private ITextComponent msg;
 	
-	public MessageDisconnectMe() {}
-	
 	public MessageDisconnectMe(ITextComponent message) {
 		this.msg = message;
+	}
+	
+	@Override
+	public void handle(Supplier<Context> supplier) {
+		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
+		
+		ServerPlayerEntity sender = supplier.get().getSender();
+		supplier.get().enqueueWork(() -> sender.connection.disconnect(this.msg));
 	}
 	
 	public static class Serializer implements IMessageSerializer<MessageDisconnectMe> {
@@ -31,17 +38,6 @@ public class MessageDisconnectMe {
 		public MessageDisconnectMe decode(PacketBuffer buffer) {
 			ITextComponent msg = buffer.readTextComponent();
 			return new MessageDisconnectMe(msg);
-		}
-
-		@Override
-		public void handle(MessageDisconnectMe message, Supplier<Context> supplier) {
-			supplier.get().setPacketHandled(true);
-			if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
-			
-			ServerPlayerEntity sender = supplier.get().getSender();
-			supplier.get().enqueueWork(() -> {
-				sender.connection.disconnect(message.msg);
-			});
 		}
 		
 	}

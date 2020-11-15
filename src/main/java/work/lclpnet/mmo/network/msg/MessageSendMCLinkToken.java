@@ -11,9 +11,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.event.custom.MCLinkTokenReceivedEvent;
+import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
 
-public class MessageSendMCLinkToken {
+public class MessageSendMCLinkToken implements IMessage {
 
 	private static final Map<Context, ServerLoginNetHandler> handlers = new HashMap<>();
 
@@ -23,18 +24,22 @@ public class MessageSendMCLinkToken {
 
 	private String token;
 
-	public MessageSendMCLinkToken() {}
-
 	public MessageSendMCLinkToken(String token) {
 		this.token = token;
 	}
 
-	public String getToken() {
-		return token;
+	@Override
+	public void handle(Supplier<Context> ctx) {
+		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
+
+		final ServerLoginNetHandler handler = handlers.remove(ctx.get());
+		if(handler == null) throw new IllegalStateException("Sender might not be null!");
+
+		MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(handler, this.token));
 	}
-	
+
 	public static class Serializer implements IMessageSerializer<MessageSendMCLinkToken> {
-		
+
 		@Override
 		public void encode(MessageSendMCLinkToken message, PacketBuffer pb) {
 			boolean nonNull = message.token != null;
@@ -49,18 +54,6 @@ public class MessageSendMCLinkToken {
 			return new MessageSendMCLinkToken(token);
 		}
 
-		@Override
-		public void handle(MessageSendMCLinkToken message, Supplier<Context> supplier) {
-			supplier.get().setPacketHandled(true);
-
-			if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
-
-			final ServerLoginNetHandler handler = handlers.remove(supplier.get());
-			if(handler == null) throw new IllegalStateException("Sender might not be null!");
-
-			MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(handler, message.getToken()));
-		}
-		
 	}
 
 }

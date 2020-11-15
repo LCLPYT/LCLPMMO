@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.network.msg.MessageDialog;
 import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
 import work.lclpnet.mmo.network.msg.MessageMMOMusic;
 import work.lclpnet.mmo.network.msg.MessageMusic;
@@ -45,13 +46,14 @@ public class MMOPacketHandler {
 		register(MessageShowTutorialScreen.class, new MessageShowTutorialScreen.Serializer());
 		register(MessageTutorial.class, new MessageTutorial.Serializer());
 		register(MessageMMOMusic.class, new MessageMMOMusic.Serializer());
+		register(MessageDialog.class, new MessageDialog.Serializer());
 	}
 
-	private static <T> void register(Class<T> clazz, IMessageSerializer<T> msg) {
+	private static <T extends IMessage> void register(Class<T> clazz, IMessageSerializer<T> msg) {
 		register(clazz, msg, false);
 	}
 
-	private static <T> void register(Class<T> clazz, IMessageSerializer<T> msg, boolean record) {
+	private static <T extends IMessage> void register(Class<T> clazz, IMessageSerializer<T> msg, boolean record) {
 		int id = nextId++;
 		INSTANCE.registerMessage(
 				id, 
