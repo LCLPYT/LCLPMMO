@@ -25,7 +25,7 @@ import work.lclpnet.mmo.util.MMONames;
 public class MMOBlocks {
 
 	private static final List<Block> BLOCKS = new ArrayList<>();
-	private static final List<Item> ITEMS = new ArrayList<>();
+	private static final List<Item> BLOCK_ITEMS = new ArrayList<>();
 
 	public static final Block GLASS_BOTTLE = register(MMONames.Block.GLASS_BOTTLE, new GlassBottleBlock(Block.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).sound(SoundType.GLASS).notSolid().doesNotBlockMovement()));
 
@@ -48,7 +48,7 @@ public class MMOBlocks {
 			Item item = function.apply(block);
 			if(item != null) {
 				item.setRegistryName(name);
-				ITEMS.add(item);
+				BLOCK_ITEMS.add(item);
 			}
 		}
 		return block;
@@ -62,8 +62,8 @@ public class MMOBlocks {
 
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> event) {
-		ITEMS.forEach(event.getRegistry()::register);
-		ITEMS.clear();
+		BLOCK_ITEMS.forEach(event.getRegistry()::register);
+		BLOCK_ITEMS.clear();
 	}
 
 }

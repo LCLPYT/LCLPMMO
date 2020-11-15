@@ -21,9 +21,9 @@ public class MMOEntities {
 
 	private static final List<EntityType<?>> ENTITY_TYPES = new ArrayList<>();
 
-	public static final EntityType<PixieEntity> PIXIE = build(MMONames.Entity.PIXIE, PixieEntity::new, 0.4F, 0.3F);
+	public static final EntityType<PixieEntity> PIXIE = register(MMONames.Entity.PIXIE, PixieEntity::new, 0.4F, 0.3F);
 
-	private static <T extends Entity> EntityType<T> build(String name, Function<World, T> function, float width, float height) {
+	private static <T extends Entity> EntityType<T> register(String name, Function<World, T> function, float width, float height) {
 		EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.CREATURE).size(width, height).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(name);
 		type.setRegistryName(name);
 		ENTITY_TYPES.add(type);

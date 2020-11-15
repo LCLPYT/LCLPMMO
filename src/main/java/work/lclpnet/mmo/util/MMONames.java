@@ -8,6 +8,12 @@ public class MMONames {
 		return String.format("%s:%s", LCLPMMO.MODID, location);
 	}
 	
+	public static class Item {
+		
+		public static final String PIXIE_SPAWN_EGG = loc("pixie_spawn_egg");
+		
+	}
+	
 	public static class Block {
 		
 		public static final String GLASS_BOTTLE = loc("glass_bottle");
