@@ -60,6 +60,7 @@
     "mmo.menu.generic.duplicate": "Duplicate",
     "mmo.screen.tutorial.title": "Tutorial",
     "mmo.screen.tutorial.start": "Start",
+    "mmo.screen.dialog.title": "Dialog",
     "tutorial.not_free": "You may not move to far from the tutorial. Complete it to be free.",
     "options_screen.audio.only_mmo": "LCLPMMO music only",
     "mmo.race.human.title": "Human",

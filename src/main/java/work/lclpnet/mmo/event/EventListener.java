@@ -82,4 +82,13 @@ public class EventListener {
 		e.addWidget(checkbox);
 	}
 	
+	/*@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void onEntityInteract(EntityInteract e) {
+		Entity en = e.getTarget();
+		if(!(en instanceof LivingEntity)) return;
+		LivingEntity le = (LivingEntity) en;
+		Minecraft.getInstance().displayGuiScreen(new DialogScreen<>(true, le));
+	}*/
+	
 }
