@@ -14,10 +14,15 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.FlyingMovementController;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.LookAtWithoutMovingGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.IFlyingAnimal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -35,6 +40,13 @@ import work.lclpnet.mmo.audio.MMOSoundEvents;
 
 public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 
+	public static final DataParameter<Boolean> TUTORIAL = EntityDataManager.createKey(PixieEntity.class, DataSerializers.BOOLEAN);
+	private PanicGoal panicGoal;
+	private WanderGoal wanderGoal;
+	private SwimGoal swimGoal;
+	private LookAtWithoutMovingGoal tutorialLookGoal;
+	private Vector3d target = null;
+
 	public PixieEntity(World worldIn) {
 		super(MMOEntities.PIXIE, worldIn);
 		this.moveController = new FlyingMovementController(this, 20, true);
@@ -48,13 +60,43 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(0, new PanicGoal(this, 1.25D));
-		this.goalSelector.addGoal(8, new WanderGoal());
-		this.goalSelector.addGoal(9, new SwimGoal(this));
-//		this.goalSelector.addGoal(9, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 4.0F, 1.0F));
-//		this.goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
+		this.goalSelector.addGoal(99, new WanderToGoal());
+		registerDynamicPixieGoals();
 	}
 
+	private void registerDynamicPixieGoals() {
+		if(panicGoal == null) this.goalSelector.addGoal(0, panicGoal = new PanicGoal(this, 1.25D));
+		if(wanderGoal == null) this.goalSelector.addGoal(8, wanderGoal = new WanderGoal());
+		if(swimGoal == null) this.goalSelector.addGoal(9, swimGoal = new SwimGoal(this));
+	}
+	
+	private void registerTutorialGoals() {
+//		setTarget(new Vector3d(0.5D, 75, 0.5D));
+		if(tutorialLookGoal == null) this.goalSelector.addGoal(5, tutorialLookGoal = new LookAtWithoutMovingGoal(this, PlayerEntity.class, 10.0F, 1.0F));
+	}
+	
+	private void unregisterPixieGoals() {
+		if(panicGoal != null) this.goalSelector.removeGoal(panicGoal);
+		if(wanderGoal != null) this.goalSelector.removeGoal(wanderGoal);
+		if(swimGoal != null) this.goalSelector.removeGoal(swimGoal);
+		
+		panicGoal = null;
+		wanderGoal = null;
+		swimGoal = null;
+	}
+	
+	private void unregisterTutorialGoals() {
+		if(tutorialLookGoal != null) this.goalSelector.removeGoal(tutorialLookGoal);
+		
+		tutorialLookGoal = null;
+	}
+
+	@Override
+	protected void registerData() {
+		super.registerData();
+		this.dataManager.register(TUTORIAL, false);
+	}
+	
 	protected PathNavigator createNavigator(World worldIn) {
 		FlyingPathNavigator flyingpathnavigator = new FlyingPathNavigator(this, worldIn) {
 
@@ -118,23 +160,105 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 	private void addParticle(World worldIn, double p_226397_2_, double p_226397_4_, double p_226397_6_, double p_226397_8_, double posY, IParticleData particleData) {
 		worldIn.addParticle(particleData, MathHelper.lerp(worldIn.rand.nextDouble(), p_226397_2_, p_226397_4_), posY, MathHelper.lerp(worldIn.rand.nextDouble(), p_226397_6_, p_226397_8_), 0.0D, 0.0D, 0.0D);
 	}
-	
+
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
 		return false;
 	}
-	
+
 	@Override
 	protected int getExperiencePoints(PlayerEntity player) {
 		return 1 + this.world.rand.nextInt(2);
 	}
+
+	public boolean isTutorialPixie() {
+		return this.dataManager.get(TUTORIAL);
+	}
+
+	public void setTutorialPixie(boolean tutorialPixie) {
+		this.dataManager.set(TUTORIAL, tutorialPixie);
+		if(tutorialPixie) {
+			unregisterPixieGoals();
+			registerTutorialGoals();
+		}
+		else {
+			unregisterTutorialGoals();
+			registerDynamicPixieGoals();
+		}
+	}
 	
+	public void setTarget(Vector3d target) {
+		this.target = target;
+	}
+	
+	public Vector3d getTarget() {
+		return target;
+	}
+	
+	@Override
+	public void writeAdditional(CompoundNBT compound) {
+		super.writeAdditional(compound);
+		compound.putBoolean("Tutorial", this.isTutorialPixie());
+	}
+	
+	@Override
+	public void readAdditional(CompoundNBT compound) {
+		super.readAdditional(compound);
+		setTutorialPixie(compound.getBoolean("Tutorial"));
+	}
+
 	public static AttributeModifierMap.MutableAttribute prepareAttributes() {
 		return MobEntity.func_233666_p_()
 				.createMutableAttribute(Attributes.MAX_HEALTH, 8D)
 				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.7D)
 				.createMutableAttribute(Attributes.FLYING_SPEED, 0.6D)
 				.createMutableAttribute(Attributes.FOLLOW_RANGE, 48D);
+	}
+	
+	class WanderToGoal extends Goal {
+
+		WanderToGoal() {
+			this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+		
+		@Override
+		public boolean shouldExecute() {
+			return PixieEntity.this.target != null && squareDistanceToTarget() > 0.75D * 0.75D;
+		}
+
+		private double squareDistanceToTarget() {
+			return PixieEntity.this.target.squareDistanceTo(PixieEntity.this.getPositionVec());
+		}
+		
+		private double ySquareDistanceToTarget() {
+			double dy = PixieEntity.this.target.y - PixieEntity.this.getPositionVec().y;
+			return dy * dy;
+		}
+		
+		private double xzSquareDistanceToTarget() {
+			Vector3d v = PixieEntity.this.getPositionVec();
+			double dx = PixieEntity.this.target.x - v.x,
+					dz = PixieEntity.this.target.z - v.z;
+			return dx * dx + dz * dz;
+		}
+		
+		@Override
+		public boolean shouldContinueExecuting() {
+			return PixieEntity.this.target != null && PixieEntity.this.navigator.hasPath();
+		}
+		
+		public void startExecuting() {
+			Vector3d vector3d = this.getTargetLocation();
+			if (vector3d != null) {
+				double speed = ySquareDistanceToTarget() < 16D && xzSquareDistanceToTarget() < 4D ? 0.3D : 0.6D; // go slower when near to the target
+				PixieEntity.this.navigator.setPath(PixieEntity.this.navigator.getPathToPos(new BlockPos(vector3d), 0), speed);
+			}
+		}
+		
+		protected Vector3d getTargetLocation() {
+			return PixieEntity.this.target;
+		}
+		
 	}
 
 	class WanderGoal extends Goal {
@@ -161,13 +285,13 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 		 * Execute a one shot task or start executing a continuous task
 		 */
 		public void startExecuting() {
-			Vector3d vector3d = this.getRandomLocation();
+			Vector3d vector3d = this.getTargetLocation();
 			if (vector3d != null) 
-				PixieEntity.this.navigator.setPath(PixieEntity.this.navigator.getPathToPos(new BlockPos(vector3d), 1), 0.6D);
+				PixieEntity.this.navigator.setPath(PixieEntity.this.navigator.getPathToPos(new BlockPos(vector3d), 0), 0.6D);
 		}
 
 		@Nullable
-		private Vector3d getRandomLocation() {
+		protected Vector3d getTargetLocation() {
 			Vector3d vector3d = PixieEntity.this.getLook(0.0F);
 			Vector3d vector3d2 = RandomPositionGenerator.findAirTarget(PixieEntity.this, 8, 7, vector3d, (float) Math.PI / 2F, 2, 1);
 			return vector3d2 != null ? vector3d2 : RandomPositionGenerator.findGroundTarget(PixieEntity.this, 8, 4, -2, vector3d, Math.PI / 2D);
