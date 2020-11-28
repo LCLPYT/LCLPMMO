@@ -47,4 +47,10 @@ public class MMONames {
 		
 	}
 	
+	public static class DataSerializer {
+		
+		public static final String VECTOR_3D = loc("vec3d");
+		
+	}
+	
 }
