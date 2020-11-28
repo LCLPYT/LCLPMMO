@@ -10,7 +10,8 @@
         "common.MixinLivingEntity",
         "common.MixinPlayerEntity",
         "common.MixinPlayerList",
-        "common.MixinServerLoginNetHandler"
+        "common.MixinServerLoginNetHandler",
+        "common.MixinTrackedEntity"
     ],
     "client": [
         "client.MixinMinecraft",

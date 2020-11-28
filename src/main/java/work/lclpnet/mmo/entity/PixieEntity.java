@@ -6,19 +6,25 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.INPC;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.FlyingMovementController;
+import net.minecraft.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtWithoutMovingGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.IFlyingAnimal;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -36,14 +42,16 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
 
-public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
+public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, ILimitTracking {
 
 	public static final DataParameter<Boolean> TUTORIAL = EntityDataManager.createKey(PixieEntity.class, DataSerializers.BOOLEAN);
 	private PanicGoal panicGoal;
 	private WanderGoal wanderGoal;
 	private SwimGoal swimGoal;
+	private FollowOwnerGoal followOwnerGoal;
 	private LookAtWithoutMovingGoal tutorialLookGoal;
 	private Vector3d target = null;
 
@@ -68,10 +76,11 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 		if(panicGoal == null) this.goalSelector.addGoal(0, panicGoal = new PanicGoal(this, 1.25D));
 		if(wanderGoal == null) this.goalSelector.addGoal(8, wanderGoal = new WanderGoal());
 		if(swimGoal == null) this.goalSelector.addGoal(9, swimGoal = new SwimGoal(this));
+		if(followOwnerGoal == null) this.goalSelector.addGoal(8, followOwnerGoal = new FollowOwnerGoal(this, 1F, 10F, 2F, true));
 	}
 	
 	private void registerTutorialGoals() {
-//		setTarget(new Vector3d(0.5D, 75, 0.5D));
+		setTarget(new Vector3d(0.5D, 75, 0.5D));
 		if(tutorialLookGoal == null) this.goalSelector.addGoal(5, tutorialLookGoal = new LookAtWithoutMovingGoal(this, PlayerEntity.class, 10.0F, 1.0F));
 	}
 	
@@ -79,10 +88,12 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 		if(panicGoal != null) this.goalSelector.removeGoal(panicGoal);
 		if(wanderGoal != null) this.goalSelector.removeGoal(wanderGoal);
 		if(swimGoal != null) this.goalSelector.removeGoal(swimGoal);
+		if(followOwnerGoal != null) this.goalSelector.removeGoal(followOwnerGoal);
 		
 		panicGoal = null;
 		wanderGoal = null;
 		swimGoal = null;
+		followOwnerGoal = null;
 	}
 	
 	private void unregisterTutorialGoals() {
@@ -146,7 +157,32 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 	@Override
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
+	
+	@Override
+	public AgeableEntity func_241840_a(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
+		return null;
+	}
+	
+	@Override
+	public boolean canMateWith(AnimalEntity otherAnimal) {
+		return false;
+	}
+	
+	@Override
+	public boolean isBreedingItem(ItemStack stack) {
+		return false;
+	}
 
+	@Override
+	public boolean isChild() {
+		return false;
+	}
+	
+	@Override
+	public boolean shouldBeTrackedBy(ServerPlayerEntity player) {
+		return this.isTamed() && this.isTutorialPixie() ? this.isOwner(player) : true;
+	}
+	
 	@Override
 	public void tick() {
 		super.tick();
@@ -245,6 +281,19 @@ public class PixieEntity extends CreatureEntity implements INPC, IFlyingAnimal {
 		@Override
 		public boolean shouldContinueExecuting() {
 			return PixieEntity.this.target != null && PixieEntity.this.navigator.hasPath();
+		}
+		
+		@Override
+		public void tick() {
+			LivingEntity owner = PixieEntity.this.getOwner();
+			if(owner == null) return;
+			
+			if(owner.getPositionVec().squareDistanceTo(PixieEntity.this.getPositionVec()) > 225D) {
+				PixieEntity.this.navigator.setPath(null, 0D);
+				PixieEntity.this.lookController.setLookPosition(owner.getPositionVec());
+			}
+			else if(!PixieEntity.this.navigator.hasPath())
+				startExecuting();
 		}
 		
 		public void startExecuting() {
