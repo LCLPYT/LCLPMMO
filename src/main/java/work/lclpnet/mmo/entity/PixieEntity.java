@@ -80,7 +80,6 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 	
 	private void registerTutorialGoals() {
-		setTarget(new Vector3d(0.5D, 75, 0.5D));
 		if(tutorialLookGoal == null) this.goalSelector.addGoal(5, tutorialLookGoal = new LookAtWithoutMovingGoal(this, PlayerEntity.class, 10.0F, 1.0F));
 	}
 	
@@ -200,6 +199,16 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
 		return false;
+	}
+	
+	@Override
+	public boolean canBeCollidedWith() {
+		return super.canBeCollidedWith() && !this.isTutorialPixie();
+	}
+	
+	@Override
+	public boolean canBePushed() {
+		return super.canBePushed() && !this.isTutorialPixie();
 	}
 
 	@Override

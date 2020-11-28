@@ -69,6 +69,8 @@ public class EventListener {
 	public static void onWorldLeave(WorldEvent.Unload e) {
 		MessageShowTutorialScreen.ClientCache.needCache = true;
 		MusicSystem.stopAllSound(x -> {});
+		MusicSystem.setLoopBackgroundMusic(false);
+		MusicSystem.playBackgroundMusic(null);
 	}
 
 	@OnlyIn(Dist.CLIENT)
