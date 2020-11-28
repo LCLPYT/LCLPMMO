@@ -52,7 +52,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	public static final DataParameter<Boolean> TUTORIAL = EntityDataManager.createKey(PixieEntity.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Vector3d> TARGET = EntityDataManager.createKey(PixieEntity.class, MMODataSerializers.VECTOR_3D);
 	public static final DataParameter<Boolean> STRICT_TARGET = EntityDataManager.createKey(PixieEntity.class, DataSerializers.BOOLEAN);
-	
+
 	private PanicGoal panicGoal;
 	private WanderGoal wanderGoal;
 	private SwimGoal swimGoal;
@@ -191,6 +191,15 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	@Override
 	public void tick() {
 		super.tick();
+		if(!this.world.isRemote && this.isStrictTarget()) {
+			double sqDis = squareDistanceToTarget();
+			if(sqDis >= 0.06D && sqDis <= 1D) {
+				this.navigator.setPath(null, 0D);
+				this.setVelocity(0D, 0D, 0D);
+				Vector3d tar = this.getTarget();
+				EntityHelper.teleport(this, (ServerWorld) this.world, tar.x, tar.y, tar.z, this.rotationYaw, this.rotationPitch);
+			}
+		}
 		if (this.rand.nextFloat() < 0.1F) {
 			for(int i = 0; i < this.rand.nextInt(2) + 1; ++i) {
 				this.addParticle(this.world, this.getPosX() - (double)0.3F, this.getPosX() + (double)0.3F, this.getPosZ() - (double)0.3F, this.getPosZ() + (double)0.3F, this.getPosYHeight(0.5D), new BlockParticleData(ParticleTypes.FALLING_DUST, Blocks.DIAMOND_BLOCK.getDefaultState()));
@@ -221,7 +230,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	protected int getExperiencePoints(PlayerEntity player) {
 		return 1 + this.world.rand.nextInt(2);
 	}
-	
+
 	public boolean isTutorialPixie() {
 		return this.dataManager.get(TUTORIAL);
 	}
@@ -245,20 +254,24 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	public Vector3d getTarget() {
 		return this.dataManager.get(TARGET);
 	}
-	
+
 	public void setStrictTarget(boolean strictTarget) {
 		this.dataManager.set(STRICT_TARGET, strictTarget);
 	}
-	
+
 	public boolean isStrictTarget() {
 		return this.dataManager.get(STRICT_TARGET);
+	}
+
+	public double squareDistanceToTarget() {
+		return this.getTarget().squareDistanceTo(this.getPositionVec());
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Tutorial", this.isTutorialPixie());
-		
+
 		Vector3d tar = this.getTarget();
 		compound.putBoolean("HasTarget", tar != null);
 		if(tar != null) {
@@ -266,19 +279,22 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 			compound.putDouble("TargetY", tar.y);
 			compound.putDouble("TargetZ", tar.z);
 		}
+		compound.putBoolean("StrictTarget", this.isStrictTarget());
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		setTutorialPixie(compound.getBoolean("Tutorial"));
-		
+
 		if(compound.getBoolean("HasTarget")) {
 			double tx = compound.getDouble("TargetX");
 			double ty = compound.getDouble("TargetY");
 			double tz = compound.getDouble("TargetZ");
 			setTarget(new Vector3d(tx, ty, tz));
 		}
+
+		setStrictTarget(compound.getBoolean("StrictTarget"));
 	}
 
 	public static AttributeModifierMap.MutableAttribute prepareAttributes() {
@@ -303,10 +319,6 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 			return PixieEntity.this.getTarget() != null && squareDistanceToTarget() > 0.75D * 0.75D;
 		}
 
-		private double squareDistanceToTarget() {
-			return PixieEntity.this.getTarget().squareDistanceTo(PixieEntity.this.getPositionVec());
-		}
-
 		private double ySquareDistanceToTarget() {
 			double dy = PixieEntity.this.getTarget().y - PixieEntity.this.getPositionVec().y;
 			return dy * dy;
@@ -327,13 +339,6 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		@Override
 		public void tick() {
 			PixieEntity pixie = PixieEntity.this;
-			if(pixie.isStrictTarget() && squareDistanceToTarget() < 0.25D) {
-				pixie.navigator.setPath(null, 0D);
-				pixie.setVelocity(0D, 0D, 0D);
-				Vector3d tar = pixie.getTarget();
-				EntityHelper.teleport(pixie, (ServerWorld) pixie.world, tar.x, tar.y, tar.z, pixie.rotationYaw, pixie.rotationPitch);
-				pixie.setVelocity(0D, 0D, 0D);
-			}
 
 			LivingEntity owner = pixie.getOwner();
 			if(owner != null) {
