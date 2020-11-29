@@ -5,10 +5,14 @@ import java.util.Map;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
@@ -68,6 +72,15 @@ public class MMOPacketHandler {
 		int id = pb.readByte();
 		Pair<Class<?>, IMessageSerializer<?>> msg = recordedMSG.get(id);
 		return msg;
+	}
+	
+	public static void sendToClient(ServerPlayerEntity player, IMessage msg) {
+		MMOPacketHandler.INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static void sendToServer(IMessage msg) {
+		MMOPacketHandler.INSTANCE.sendToServer(msg);
 	}
 	
 }

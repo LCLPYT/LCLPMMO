@@ -195,7 +195,6 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 			double sqDis = squareDistanceToTarget();
 			if(sqDis >= 0.06D && sqDis <= 1D) {
 				this.navigator.setPath(null, 0D);
-				this.setVelocity(0D, 0D, 0D);
 				Vector3d tar = this.getTarget();
 				EntityHelper.teleport(this, (ServerWorld) this.world, tar.x, tar.y, tar.z, this.rotationYaw, this.rotationPitch);
 			}
