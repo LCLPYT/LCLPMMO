@@ -27,6 +27,7 @@ import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.render.ClientRenderHandler;
 import work.lclpnet.mmo.util.ColorHandler;
+import work.lclpnet.mmo.util.Discord;
 import work.lclpnet.mmo.util.EnvironmentUtils;
 import work.lclpnet.mmo.util.MMOGroup;
 import work.lclpnet.mmo.util.RenderLayerHandler;
@@ -77,9 +78,14 @@ public class LCLPMMO {
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent e) {
+		LOGGER.info("LCLPMMO client starting...");
+		
 		RenderLayerHandler.init();
 		ColorHandler.init();
 		ClientRenderHandler.setup();
+		
+		boolean FORCE_DISABLE = true; // TODO remove in release
+		if(!FORCE_DISABLE && Config.enableDiscordIntegration()) Discord.initRPC();
 	}
 	
 	public void onIMCEnqueue(InterModEnqueueEvent e) {

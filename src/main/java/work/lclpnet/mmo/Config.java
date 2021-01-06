@@ -15,6 +15,7 @@ public class Config {
 	private static Map<String, Object> register = new HashMap<>();
 	
 	public static final String KEY_SKIP_INTRO = "misc.skip-intro",
+			KEY_DISCORD_INTEGRATION = "misc.enable-discord-integration",
 			KEY_NETWORK_STAGING = "network.staging",
 			KEY_NETWORK_HOST_STAGING = "network.host-staging",
 			KEY_NETWORK_HOST_LIVE = "network.host-live",
@@ -22,6 +23,7 @@ public class Config {
 	
 	static {
 		register.put(KEY_SKIP_INTRO, false);
+		register.put(KEY_DISCORD_INTEGRATION, true);
 		register.put(KEY_NETWORK_STAGING, false);
 		register.put(KEY_NETWORK_HOST_STAGING, "http://localhost:8000");
 		register.put(KEY_NETWORK_HOST_LIVE, "https://lclpnet.work");
@@ -96,6 +98,14 @@ public class Config {
 	
 	public static void setSkipIntro(boolean skip) {
 		set(KEY_SKIP_INTRO, skip);
+	}
+	
+	public static boolean enableDiscordIntegration() {
+		return get(KEY_DISCORD_INTEGRATION);
+	}
+	
+	public static void setEnableDiscordIntegration(boolean enable) {
+		set(KEY_DISCORD_INTEGRATION, enable);
 	}
 	
 	public static boolean isNetworkStagingMode() {

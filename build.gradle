@@ -13,6 +13,7 @@ buildscript {
 
 plugins {
     id 'org.ajoberstar.grgit' version '3.1.1'
+    id 'com.github.johnrengelman.shadow' version '1.2.4'
 }
 
 apply plugin: 'java'
@@ -125,12 +126,30 @@ mixin {
 
 repositories {
     maven { url = "https://repo.spongepowered.org/maven" }
+    jcenter()
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.3-34.1.10'
     implementation "org.spongepowered:mixin:0.8"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'club.minnced:java-discord-rpc:2.0.2'
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('club.minnced:java-discord-rpc:.*'))
+        include(dependency('club.minnced:discord-rpc-release:.*'))
+    }
+
+    // Relocate to prevent conflicts with other mods that include it
+    relocate 'club.minnced.discord.rpc', 'work.lclpnet.mmo.club.minnced.discord.rpc'
+
+    classifier = '' // Replace the default JAR
+}
+
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
 }
 
 jar {
@@ -183,7 +202,7 @@ task deobfJar(type: Jar) { // Generate deobfuscated
     from sourceSets.main.output
     classifier = 'deobf'
 }
-tasks.build.dependsOn('sourcesJar', 'deobfJar')
+tasks.build.dependsOn('sourcesJar', 'deobfJar', 'shadowJar')
 
 artifacts {
     archives deobfJar
