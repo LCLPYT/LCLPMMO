@@ -1,5 +1,9 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,10 +16,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import work.lclpnet.mmo.asm.type.IMMOEntity;
+import work.lclpnet.mmo.util.ClickListener;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
 
 @Mixin(Entity.class)
-public class MixinEntity {
+public class MixinEntity implements IMMOEntity<Entity> {
 
 	@Shadow
 	@Final
@@ -43,6 +49,35 @@ public class MixinEntity {
 		if(scaleHeight <= 1F || !((Object) this instanceof PlayerEntity)) return;
 		cir.setReturnValue(cir.getReturnValue() * scaleHeight);
 		cir.cancel();
+	}
+	
+	private Map<String, ClickListener<Entity>> clickListeners = new HashMap<>();
+
+	@Override
+	public void addClickListener(String id, ClickListener<Entity> listener) {
+		Objects.requireNonNull(id);
+		if(listener == null) removeClickListener(id);
+		
+		if(clickListeners.containsKey(id)) throw new IllegalArgumentException("Listener with that id already exists.");
+		
+		clickListeners.put(id, listener);
+	}
+
+	@Override
+	public void removeClickListener(String id) {
+		clickListeners.remove(Objects.requireNonNull(id));
+	}
+
+	@Override
+	public void removeAllClickListeners() {
+		clickListeners.clear();
+	}
+
+	@Override
+	public boolean onClick(PlayerEntity clicker) {
+		return clickListeners.values().stream()
+				.map(consumer -> consumer.onClick((Entity) (Object) this, clicker))
+				.anyMatch(b -> b);
 	}
 	
 }
