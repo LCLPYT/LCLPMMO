@@ -54,22 +54,22 @@
         "sounds": [{
             "name": "lclpmmo:entity/pixie/pixie_ambient1",
             "stream": false,
-            "volume": 0.5
+            "volume": 0.8
         },
         {
             "name": "lclpmmo:entity/pixie/pixie_ambient2",
             "stream": false,
-            "volume": 0.5
+            "volume": 0.8
         },
         {
             "name": "lclpmmo:entity/pixie/pixie_ambient3",
             "stream": false,
-            "volume": 0.5
+            "volume": 0.8
         },
         {
             "name": "lclpmmo:entity/pixie/pixie_ambient4",
             "stream": false,
-            "volume": 0.5
+            "volume": 0.8
         }],
         "subtitle": "subtitle.entity.pixie.ambient"
     },
