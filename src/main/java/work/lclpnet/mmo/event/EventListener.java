@@ -104,12 +104,12 @@ public class EventListener {
 		boolean shouldCancel = IMMOEntity.get(e.getClicked()).onClick(e.getPlayer());
 		if(shouldCancel) e.setCanceled(true);
 	}
-
+	
 	/*@SubscribeEvent
 	public static void onServerChat(ServerChatEvent e) {
 		ServerPlayerEntity p = e.getPlayer();
 		DialogData data = new DialogData(Arrays.asList(new DialogFragment("Hello, Gordon!")));
-		MMOPacketHandler.INSTANCE.sendTo(new MessageDialog(p.getEntityId(), data), p.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+		IMMOPlayer.get(p).openMMODialog(new Dialog(p, data).setDismissable(true));
 	}*/
 
 }

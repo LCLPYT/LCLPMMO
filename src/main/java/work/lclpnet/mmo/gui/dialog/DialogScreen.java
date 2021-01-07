@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -14,8 +15,10 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import work.lclpnet.mmo.asm.type.IMMOPlayer;
 import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.entity.PixieEntity;
+import work.lclpnet.mmo.facade.dialog.Dialog;
 import work.lclpnet.mmo.facade.dialog.DialogData;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.Color;
@@ -30,6 +33,11 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	private EntityTypeAdapter<T> adapter;
 	private DialogWrapper dialog;
 
+	@SuppressWarnings("unchecked")
+	public DialogScreen(Dialog dialog) {
+		this((T) dialog.getPartner(), dialog.getData(), dialog.isDismissable());
+	}
+	
 	@SuppressWarnings("unchecked")
 	public DialogScreen(T entity, DialogData data, boolean dismissable) {
 		super(getDialogTitle(entity));
@@ -95,6 +103,11 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	@Override
 	public boolean shouldCloseOnEsc() {
 		return dismissable;
+	}
+	
+	@Override
+	public void closeScreen() {
+		IMMOPlayer.get(Minecraft.getInstance().player).closeMMODialog();
 	}
 
 	public static <T extends LivingEntity> void registerEntityTypeAdapater(EntityType<T> entityType, EntityTypeAdapter<T> adapter) {
