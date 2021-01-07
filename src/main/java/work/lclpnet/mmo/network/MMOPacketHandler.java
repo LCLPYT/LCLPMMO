@@ -28,7 +28,7 @@ import work.lclpnet.mmo.network.msg.MessageTutorial;
 @EventBusSubscriber(bus = Bus.FORGE, modid = LCLPMMO.MODID)
 public class MMOPacketHandler {
 
-	private static final String PROTOCOL_VERSION = "2";
+	private static final String PROTOCOL_VERSION = "3";
 	public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(LCLPMMO.MODID, "main");
 	public static SimpleChannel INSTANCE = null;
 	private static int nextId = 0;

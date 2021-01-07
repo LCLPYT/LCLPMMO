@@ -10,8 +10,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.asm.type.IMMOPlayer;
+import work.lclpnet.mmo.event.custom.DialogCompleteEvent;
 import work.lclpnet.mmo.facade.dialog.Dialog;
 import work.lclpnet.mmo.facade.dialog.DialogData;
 import work.lclpnet.mmo.facade.dialog.DialogFragment;
@@ -21,30 +23,41 @@ import work.lclpnet.mmo.network.IMessageSerializer;
 
 public class MessageDialog implements IMessage {
 
-	private static final byte ACTION_OPEN = 0, ACTION_CLOSE = 1;
+	private static final byte ACTION_OPEN = 0, ACTION_CLOSE = 1, ACTION_COMPLETE = 2;
 
 	private byte action;
+	private int id;
 	private int entityId;
 	private DialogData data;
 	private boolean dismissable;
 
 	public MessageDialog(Dialog dialog) {
-		this(dialog.getPartner().getEntityId(), dialog.getData(), dialog.isDismissable());
+		this(dialog.getId(), dialog.getPartner().getEntityId(), dialog.getData(), dialog.isDismissable());
 	}
 
-	protected MessageDialog(int entityId, DialogData data, boolean dismissable) {
+	protected MessageDialog(int id, int entityId, DialogData data, boolean dismissable) {
 		this(ACTION_OPEN);
+		this.id = id;
 		this.entityId = entityId;
 		this.data = data;
 		this.dismissable = dismissable;
 	}
 	
+	protected MessageDialog(int id) {
+		this(ACTION_COMPLETE);
+		this.id = id;
+	}
+	
 	protected MessageDialog(byte action) {
 		this.action = action;
 	}
-
+	
 	public static MessageDialog getCloseMessage() {
 		return new MessageDialog(ACTION_CLOSE);
+	}
+	
+	public static MessageDialog getCompleteMessage(int id) {
+		return new MessageDialog(id);
 	}
 
 	@Override
@@ -59,6 +72,9 @@ public class MessageDialog implements IMessage {
 		case ACTION_CLOSE:
 			IMMOPlayer.get(p).setCurrentMMODialog(null);
 			break;
+		case ACTION_COMPLETE:
+			MinecraftForge.EVENT_BUS.post(new DialogCompleteEvent(p, this.id));
+			break;
 
 		default:
 			throw new IllegalStateException("Action " + this.action + " is unimplemented!");
@@ -71,7 +87,7 @@ public class MessageDialog implements IMessage {
 		switch (this.action) {
 		case ACTION_OPEN:
 			World w = mc.world;
-			openDialog(mc, new Dialog(w.getEntityByID(this.entityId), this.data).setDismissable(this.dismissable));
+			openDialog(mc, new Dialog(id, w.getEntityByID(this.entityId), this.data).setDismissable(this.dismissable));
 			break;
 		case ACTION_CLOSE:
 			closeDialog(mc);
@@ -102,6 +118,7 @@ public class MessageDialog implements IMessage {
 
 			switch (message.action) {
 			case ACTION_OPEN:
+				buffer.writeInt(message.id);
 				buffer.writeInt(message.entityId);
 
 				List<DialogFragment> structure = message.data.getStructure();
@@ -111,6 +128,9 @@ public class MessageDialog implements IMessage {
 				buffer.writeBoolean(message.dismissable);				
 				break;
 			case ACTION_CLOSE:
+				break;
+			case ACTION_COMPLETE:
+				buffer.writeInt(message.id);
 				break;
 
 			default:
@@ -124,6 +144,7 @@ public class MessageDialog implements IMessage {
 			
 			switch (action) {
 			case ACTION_OPEN:
+				int id = buffer.readInt();
 				int entityId = buffer.readInt();
 
 				List<DialogFragment> structure = new ArrayList<>();
@@ -134,9 +155,12 @@ public class MessageDialog implements IMessage {
 
 				boolean dismissable = buffer.readBoolean();
 
-				return new MessageDialog(entityId, data, dismissable);
+				return new MessageDialog(id, entityId, data, dismissable);
 			case ACTION_CLOSE:
 				return new MessageDialog(ACTION_CLOSE);
+			case ACTION_COMPLETE:
+				int completeId = buffer.readInt();
+				return new MessageDialog(completeId);
 
 			default:
 				throw new IllegalStateException("Action " + action + " is unimplemented!");

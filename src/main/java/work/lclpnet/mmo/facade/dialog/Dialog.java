@@ -4,13 +4,19 @@ import net.minecraft.entity.Entity;
 
 public class Dialog {
 
+	private final int id;
 	private Entity partner;
 	private DialogData data;
 	private boolean dismissable = true;
 	
-	public Dialog(Entity partner, DialogData data) {
+	public Dialog(int id, Entity partner, DialogData data) {
+		this.id = id;
 		this.partner = partner;
 		this.data = data;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	
 	public Entity getPartner() {

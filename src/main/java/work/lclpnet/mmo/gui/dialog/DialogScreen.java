@@ -8,6 +8,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +22,10 @@ import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.entity.PixieEntity;
 import work.lclpnet.mmo.facade.dialog.Dialog;
 import work.lclpnet.mmo.facade.dialog.DialogData;
+import work.lclpnet.mmo.facade.dialog.DialogSubstitute;
 import work.lclpnet.mmo.gui.MMOScreen;
+import work.lclpnet.mmo.network.MMOPacketHandler;
+import work.lclpnet.mmo.network.msg.MessageDialog;
 import work.lclpnet.mmo.util.Color;
 
 public class DialogScreen<T extends LivingEntity> extends MMOScreen {
@@ -29,6 +33,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	private static final Map<EntityType<? extends LivingEntity>, EntityTypeAdapter<? extends LivingEntity>> adapters = new HashMap<>();
 
 	private long firstRenderTime = 0L;
+	private final int id;
 	private boolean dismissable = true;
 	private T entity;
 	private EntityTypeAdapter<T> adapter;
@@ -37,13 +42,14 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 
 	@SuppressWarnings("unchecked")
 	public DialogScreen(Dialog dialog) {
-		this((T) dialog.getPartner(), dialog.getData(), dialog.isDismissable());
+		this((T) dialog.getPartner(), dialog.getData(), dialog.isDismissable(), dialog.getId());
 	}
 
 	@SuppressWarnings("unchecked")
-	public DialogScreen(T entity, DialogData data, boolean dismissable) {
+	public DialogScreen(T entity, DialogData data, boolean dismissable, int id) {
 		super(getDialogTitle(entity));
 
+		this.id = id;
 		this.dismissable = dismissable;
 		this.entity = entity;
 		this.adapter = (EntityTypeAdapter<T>) adapters.get(this.entity.getType());
@@ -65,6 +71,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	protected void init() {
 		nextButton = this.addButton(new Button(this.width / 2 - 30, this.height - 50, 100, 20, new TranslationTextComponent(dialog.hasNext() ? "mmo.screen.dialog.next" : "mmo.screen.dialog.end"), (p_213031_1_) -> {
 			if(!this.dialog.hasNext()) {
+				MMOPacketHandler.INSTANCE.sendToServer(MessageDialog.getCompleteMessage(this.id));
 				closeScreen();
 				return;
 			}
@@ -105,7 +112,14 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 
 		int dialogX = (int) (this.width * 0.1F);
 		int dialogY = 75;
-		ITextComponent dialogUpper = new TranslationTextComponent(dialog.getCurrent().getTranslationKey());
+		DialogSubstitute[] substitutes = dialog.getCurrent().getSubstitutes();
+		Object[] processed = new Object[substitutes.length];
+		for(int i = 0; i < substitutes.length; i++) {
+			DialogSubstitute substitute = substitutes[i];
+			processed[i] = substitute.isTranslationKey() ? I18n.format(substitute.getSubstitute()) : substitute.getSubstitute();
+		}
+		
+		ITextComponent dialogUpper = new TranslationTextComponent(dialog.getCurrent().getTranslationKey(), processed);
 
 		for (IReorderingProcessor s : minecraft.fontRenderer.trimStringToWidth(dialogUpper, (int) (this.width * 0.6F) - dialogX)) {
 			minecraft.fontRenderer.func_238407_a_(matrixStack, s, dialogX + 10, dialogY, Color.WHITE);
