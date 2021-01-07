@@ -216,11 +216,6 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
-	public boolean canBeCollidedWith() {
-		return super.canBeCollidedWith() && !this.isTutorialPixie();
-	}
-
-	@Override
 	public boolean canBePushed() {
 		return super.canBePushed() && !this.isTutorialPixie();
 	}
