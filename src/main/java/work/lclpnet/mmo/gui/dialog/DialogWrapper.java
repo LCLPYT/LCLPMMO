@@ -27,6 +27,10 @@ public class DialogWrapper {
 		this.step = MathHelper.clamp(step, 0, data.getStructure().size());
 	}
 	
+	public boolean hasNext() {
+		return step + 1 < data.getStructure().size();
+	}
+	
 	public void next() {
 		setStep(step + 1);
 	}

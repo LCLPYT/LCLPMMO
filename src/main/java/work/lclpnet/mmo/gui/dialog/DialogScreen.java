@@ -7,6 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,16 +33,17 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	private T entity;
 	private EntityTypeAdapter<T> adapter;
 	private DialogWrapper dialog;
+	private Button nextButton;
 
 	@SuppressWarnings("unchecked")
 	public DialogScreen(Dialog dialog) {
 		this((T) dialog.getPartner(), dialog.getData(), dialog.isDismissable());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public DialogScreen(T entity, DialogData data, boolean dismissable) {
 		super(getDialogTitle(entity));
-		
+
 		this.dismissable = dismissable;
 		this.entity = entity;
 		this.adapter = (EntityTypeAdapter<T>) adapters.get(this.entity.getType());
@@ -50,15 +52,28 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 
 	private static <T extends LivingEntity> ITextComponent getDialogTitle(T le) {
 		ITextComponent name;
-		
+
 		@SuppressWarnings("unchecked")
 		EntityTypeAdapter<T> adapter = (EntityTypeAdapter<T>) adapters.get(le.getType());
 		if(adapter != null) name = adapter.getName(le);
 		else name = le.hasCustomName() ? le.getCustomName() : le.getType().getName();
-		
+
 		return name != null ? name : new TranslationTextComponent("mmo.screen.dialog.title");
 	}
-	
+
+	@Override
+	protected void init() {
+		nextButton = this.addButton(new Button(this.width / 2 - 30, this.height - 50, 100, 20, new TranslationTextComponent(dialog.hasNext() ? "mmo.screen.dialog.next" : "mmo.screen.dialog.end"), (p_213031_1_) -> {
+			if(!this.dialog.hasNext()) {
+				closeScreen();
+				return;
+			}
+			
+			this.dialog.next();
+			update();
+		}));
+	}
+
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if(this.firstRenderTime <= 0L) this.firstRenderTime = Util.milliTime();
@@ -87,11 +102,11 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 		}
 
 		InventoryScreen.drawEntityOnScreen(entitX, entityY, entityScale, (float) entitX - mouseX, (float) (entityY - 100) - mouseY, entity);
-		
+
 		int dialogX = (int) (this.width * 0.1F);
 		int dialogY = 75;
 		ITextComponent dialogUpper = new TranslationTextComponent(dialog.getCurrent().getTranslationKey());
-		
+
 		for (IReorderingProcessor s : minecraft.fontRenderer.trimStringToWidth(dialogUpper, (int) (this.width * 0.6F) - dialogX)) {
 			minecraft.fontRenderer.func_238407_a_(matrixStack, s, dialogX + 10, dialogY, Color.WHITE);
 			dialogY += minecraft.fontRenderer.FONT_HEIGHT;
@@ -104,10 +119,14 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	public boolean shouldCloseOnEsc() {
 		return dismissable;
 	}
-	
+
 	@Override
 	public void closeScreen() {
 		IMMOPlayer.get(Minecraft.getInstance().player).closeMMODialog();
+	}
+	
+	private void update() {
+		nextButton.setMessage(new TranslationTextComponent(this.dialog.hasNext() ? "mmo.screen.dialog.next" : "mmo.screen.dialog.end"));
 	}
 
 	public static <T extends LivingEntity> void registerEntityTypeAdapater(EntityType<T> entityType, EntityTypeAdapter<T> adapter) {
@@ -127,26 +146,26 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 		default int getScreenY(T entity, int screenHeight) {
 			return screenHeight - (int) (screenHeight * 0.2F);
 		}
-		
+
 		default ITextComponent getName(T entity) {
 			return entity.hasCustomName() ? entity.getCustomName() : entity.getType().getName();
 		}
 
 	}
-	
+
 	static {
 		registerEntityTypeAdapater(MMOEntities.PIXIE, new EntityTypeAdapter<PixieEntity>() {
 			@Override
 			public int getScale(PixieEntity entity) {
 				return EntityTypeAdapter.super.getScale(entity) * 3;
 			}
-			
+
 			@Override
 			public int getScreenY(PixieEntity entity, int screenHeight) {
 				return EntityTypeAdapter.super.getScreenY(entity, screenHeight) - (int) (screenHeight * 0.1F);
 			}
 		});
-		
+
 		registerEntityTypeAdapater(EntityType.PLAYER, new EntityTypeAdapter<PlayerEntity>() {
 			@Override
 			public ITextComponent getName(PlayerEntity entity) {

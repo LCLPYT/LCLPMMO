@@ -108,7 +108,10 @@ public class EventListener {
 	/*@SubscribeEvent
 	public static void onServerChat(ServerChatEvent e) {
 		ServerPlayerEntity p = e.getPlayer();
-		DialogData data = new DialogData(Arrays.asList(new DialogFragment("Hello, Gordon!")));
+		DialogData data = new DialogData(Arrays.asList(
+				new DialogFragment("§aLorem ipsum dolor sit amet§7, \n\nconsetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
+				new DialogFragment("AHHHHHHHHHHHHHHHHHJAJAJA JAJAJA JA YA YAAAA"),
+				new DialogFragment("yayayayayaaaa")));
 		IMMOPlayer.get(p).openMMODialog(new Dialog(p, data).setDismissable(true));
 	}*/
 
