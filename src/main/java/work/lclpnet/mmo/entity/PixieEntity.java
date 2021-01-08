@@ -52,6 +52,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	public static final DataParameter<Boolean> TUTORIAL = EntityDataManager.createKey(PixieEntity.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Vector3d> TARGET = EntityDataManager.createKey(PixieEntity.class, MMODataSerializers.VECTOR_3D);
 	public static final DataParameter<Boolean> STRICT_TARGET = EntityDataManager.createKey(PixieEntity.class, DataSerializers.BOOLEAN);
+	public static final DataParameter<Float> BASE_SPEED = EntityDataManager.createKey(PixieEntity.class, DataSerializers.FLOAT);
 
 	private PanicGoal panicGoal;
 	private WanderGoal wanderGoal;
@@ -111,6 +112,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		this.dataManager.register(TUTORIAL, false);
 		this.dataManager.register(TARGET, null);
 		this.dataManager.register(STRICT_TARGET, false);
+		this.dataManager.register(BASE_SPEED, 0.6F);
 	}
 
 	protected PathNavigator createNavigator(World worldIn) {
@@ -248,6 +250,14 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	public Vector3d getTarget() {
 		return this.dataManager.get(TARGET);
 	}
+	
+	public void setBaseSpeed(float baseSpeed) {
+		this.dataManager.set(BASE_SPEED, baseSpeed);
+	}
+	
+	public float getBaseSpeed() {
+		return this.dataManager.get(BASE_SPEED);
+	}
 
 	public void setStrictTarget(boolean strictTarget) {
 		this.dataManager.set(STRICT_TARGET, strictTarget);
@@ -274,6 +284,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 			compound.putDouble("TargetZ", tar.z);
 		}
 		compound.putBoolean("StrictTarget", this.isStrictTarget());
+		compound.putFloat("BaseSpeed", this.getBaseSpeed());
 	}
 
 	@Override
@@ -289,6 +300,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		}
 
 		setStrictTarget(compound.getBoolean("StrictTarget"));
+		setBaseSpeed(compound.getFloat("BaseSpeed"));
 	}
 
 	public static AttributeModifierMap.MutableAttribute prepareAttributes() {
@@ -348,7 +360,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		public void startExecuting() {
 			Vector3d vector3d = PixieEntity.this.getTarget();
 			if (vector3d != null) {
-				double speed = ySquareDistanceToTarget() < 16D && xzSquareDistanceToTarget() < 4D ? 0.3D : 0.6D; // go slower when near to the target
+				double speed = ySquareDistanceToTarget() < 16D && xzSquareDistanceToTarget() < 4D ? 0.3D : getBaseSpeed(); // go slower when near to the target
 				PixieEntity.this.navigator.setPath(PixieEntity.this.navigator.getPathToPos(new BlockPos(vector3d), 0), speed);
 			}
 		}
@@ -381,7 +393,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		public void startExecuting() {
 			Vector3d vector3d = this.getTargetLocation();
 			if (vector3d != null) 
-				PixieEntity.this.navigator.setPath(PixieEntity.this.navigator.getPathToPos(new BlockPos(vector3d), 0), 0.6D);
+				PixieEntity.this.navigator.setPath(PixieEntity.this.navigator.getPathToPos(new BlockPos(vector3d), 0), getBaseSpeed());
 		}
 
 		@Nullable
