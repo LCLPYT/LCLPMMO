@@ -9,7 +9,7 @@ license="MIT"
     modId="lclpmmo"
     version="${version}"
     displayName="LCLPMMO"
-    updateJSONURL="https://raw.githubusercontent.com/LCLPYT/LCLPMMO/master/LCLPMMO/update.json"
+    updateJSONURL="https://raw.githubusercontent.com/LCLPYT/LCLPMMO/master/update.json"
     logoFile="logo.png"
     credits="LCLPNetwork!"
     description='''
@@ -20,7 +20,7 @@ license="MIT"
     [[dependencies.core]]
         modId="corebase"
         mandatory=true
-        versionRange="[1.4,)"
+        versionRange="[1.5,)"
         ordering="BEFORE"
         side="BOTH"
     [[dependencies.core]]
