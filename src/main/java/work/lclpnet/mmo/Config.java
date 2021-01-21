@@ -33,7 +33,7 @@ public class Config {
 	public static void load() {
 		File configDir = new File("config");
 		File configFile = new File(configDir, "lclpmmo.toml");
-		
+
 		if(!configFile.exists()) createConfigFile(configFile);
 		config = FileConfig.builder(configFile).build();
 		config.load();
@@ -76,11 +76,16 @@ public class Config {
 	}
 	
 	private static <T> T get(String path) {
+		ensureConfigNonNull();
 		if(!config.contains(path)) {
 			if(!register.containsKey(path)) throw new IllegalStateException("Path not registered.");
 			set(path, register.get(path));
 		}
 		return config.get(path);
+	}
+
+	private static void ensureConfigNonNull() {
+		if(config == null) load();
 	}
 
 	private static void save() {

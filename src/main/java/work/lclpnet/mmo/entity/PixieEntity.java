@@ -300,7 +300,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		}
 
 		setStrictTarget(compound.getBoolean("StrictTarget"));
-		setBaseSpeed(compound.getFloat("BaseSpeed"));
+		if(compound.contains("BaseSpeed")) setBaseSpeed(compound.getFloat("BaseSpeed"));
 	}
 
 	public static AttributeModifierMap.MutableAttribute prepareAttributes() {
