@@ -4,7 +4,9 @@
         "1.15.2-latest": "1.2.0",
         "1.15.2-recommended": "1.2.0",
         "1.16.3-latest": "1.4.31",
-        "1.16.3-recommended": "1.4.31"
+        "1.16.3-recommended": "1.4.31",
+        "1.16.4-latest": "1.5.0",
+        "1.16.4-recommended": "1.5.0"
     },
     "1.15.2": {
         "1.1.0": "EntityScale attributes added.",
@@ -18,5 +20,8 @@
         "1.3.0": "Port to 1.16.3",
         "1.3.1": "Compatible with LCLPUpdater 1.1.0 + Main menu music fix",
         "1.4.31": "Added Pixies, dialogues etc."
+    },
+    "1.16.4": {
+        "1.5.0": "Compatible with 1.16.4"
     }
 }

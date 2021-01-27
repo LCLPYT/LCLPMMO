@@ -100,7 +100,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 		return this.screen;
 	}
 
-	protected int getMaxScroll() {
+	public int getMaxScroll() {
 		return Math.max(0, this.getMaxPosition() - (this.y1 - this.y0 - 4));
 	}
 
