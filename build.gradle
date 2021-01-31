@@ -14,7 +14,6 @@ buildscript {
 plugins {
     id 'org.ajoberstar.grgit' version '3.1.1'
     id 'com.github.johnrengelman.shadow' version '1.2.4'
-    id "com.wynprice.cursemaven" version "2.0.0"
 }
 
 apply plugin: 'java'
@@ -128,6 +127,7 @@ mixin {
 repositories {
     maven { url = "https://repo.spongepowered.org/maven" }
     maven { url 'https://repo.repsy.io/mvn/gandiber/geckolib' }
+    maven { url "https://www.cursemaven.com" }
     jcenter()
 }
 
@@ -137,7 +137,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compile 'club.minnced:java-discord-rpc:2.0.2'
     implementation fg.deobf('software.bernie.geckolib:forge-1.16.4-geckolib:3.0.1')
-    implementation fg.deobf("curse.maven:reauth:3105779")
+    implementation fg.deobf("curse.maven:reauth-237701:3105779")
 }
 
 shadowJar {
