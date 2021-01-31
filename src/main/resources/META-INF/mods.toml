@@ -17,19 +17,19 @@ license="MIT"
     Intended to be used on LCLPServer 5.0.
     '''
 
-    [[dependencies.core]]
+    [[dependencies.lclpmmo]]
         modId="corebase"
         mandatory=true
         versionRange="[1.6,)"
         ordering="BEFORE"
         side="BOTH"
-    [[dependencies.core]]
+    [[dependencies.lclpmmo]]
         modId="forge"
         mandatory=true
         versionRange="[35,)"
         ordering="NONE"
         side="BOTH"
-    [[dependencies.core]]
+    [[dependencies.lclpmmo]]
         modId="minecraft"
         mandatory=true
         versionRange="[1.16.4]"

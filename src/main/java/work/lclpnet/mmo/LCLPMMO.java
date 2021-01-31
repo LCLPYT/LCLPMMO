@@ -16,6 +16,8 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import software.bernie.example.GeckoLibMod;
+import software.bernie.geckolib3.GeckoLib;
 import work.lclpnet.corebase.util.ComponentSupplier;
 import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.entity.MMOEntities;
@@ -41,6 +43,10 @@ public class LCLPMMO {
 	public static ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
 	public static MMOGroup GROUP = new MMOGroup(MODID);
 
+	static {
+		GeckoLibMod.DISABLE_IN_DEV = true;
+	}
+	
 	public LCLPMMO() {
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::setup);
@@ -51,6 +57,8 @@ public class LCLPMMO {
 		forgeBus.register(this);
 		forgeBus.register(new EventListener());
 		forgeBus.register(new AttributeListener());
+		
+		GeckoLib.initialize();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) { //preinit
