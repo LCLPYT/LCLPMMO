@@ -2,7 +2,10 @@ package work.lclpnet.mmo.render;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +13,7 @@ import work.lclpnet.mmo.render.model.AbstractMMOPlayerModel;
 
 public class MMOPlayerRenderer extends PlayerRenderer {
 
-	protected ResourceLocation textureLocation;
+	public final ResourceLocation textureLocation;
 	
 	public MMOPlayerRenderer(EntityRendererManager renderManager, AbstractMMOPlayerModel model) {
 		super(renderManager, false);
@@ -21,6 +24,19 @@ public class MMOPlayerRenderer extends PlayerRenderer {
 	@Override
 	public ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
 		return this.textureLocation;
+	}
+	
+	@Override
+	public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
+			AbstractClientPlayerEntity playerIn) {
+		
+		super.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, playerIn);
+	}
+	
+	@Override
+	public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
+			AbstractClientPlayerEntity playerIn) {
+		super.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, playerIn);
 	}
 	
 }

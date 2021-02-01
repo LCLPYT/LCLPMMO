@@ -20,7 +20,9 @@
         "client.MixinPlayerController",
         "client.MixinSystemToast",
         "client.MixinMusicTicker",
-        "client.MixinGameSettings"
+        "client.MixinGameSettings",
+        "client.MixinFirstPersonRenderer",
+        "client.MixinPlayerRenderer"
     ],
     "server": [
         "server.MixinDedicatedServer"

@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -20,7 +19,7 @@ import work.lclpnet.mmo.render.model.VampirePlayerModel;
 @OnlyIn(Dist.CLIENT)
 public class ClientRenderHandler {
 
-	private static final Map<MMORace, PlayerRenderer> renderers = new HashMap<>();
+	private static final Map<MMORace, MMOPlayerRenderer> renderers = new HashMap<>();
 	
 	public static void setup() {
 		RenderingRegistry.registerEntityRenderingHandler(MMOEntities.PIXIE, PixieRenderer::new);
@@ -36,9 +35,8 @@ public class ClientRenderHandler {
 	}
 	
 	@Nullable
-	public static PlayerRenderer getPlayerRenderer(AbstractClientPlayerEntity player) {
-//		return renderers.get(Races.getByName("dwarf"));
-		return null;
+	public static MMOPlayerRenderer getPlayerRenderer(AbstractClientPlayerEntity player) {
+		return renderers.get(Races.getByName("dwarf"));
 	}
 	
 }
