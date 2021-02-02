@@ -30,7 +30,7 @@ public class MixinPlayerRenderer {
 			)
 	public ResourceLocation onGetSkinLocation(AbstractClientPlayerEntity player) {
 		MMOPlayerRenderer renderer = ClientRenderHandler.getPlayerRenderer(player);
-		return renderer != null ? renderer.textureLocation : player.getLocationSkin();
+		return renderer != null && renderer.textureLocation != null ? renderer.textureLocation : player.getLocationSkin();
 	}
 	
 }

@@ -2,6 +2,8 @@ package work.lclpnet.mmo.render;
 
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -13,6 +15,7 @@ import work.lclpnet.mmo.render.model.AbstractMMOPlayerModel;
 
 public class MMOPlayerRenderer extends PlayerRenderer {
 
+	@Nullable
 	public final ResourceLocation textureLocation;
 	
 	public MMOPlayerRenderer(EntityRendererManager renderManager, AbstractMMOPlayerModel model) {
@@ -23,7 +26,7 @@ public class MMOPlayerRenderer extends PlayerRenderer {
 	
 	@Override
 	public ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
-		return this.textureLocation;
+		return this.textureLocation == null ? entity.getLocationSkin() : this.textureLocation;
 	}
 	
 	@Override

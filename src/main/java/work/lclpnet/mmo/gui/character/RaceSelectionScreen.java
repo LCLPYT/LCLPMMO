@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.gui.character;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.text.TranslationTextComponent;
@@ -9,15 +10,19 @@ import work.lclpnet.mmo.gui.GenericSelectionScreen;
 
 public class RaceSelectionScreen extends GenericSelectionScreen<MMORace>{
 
+	private List<MMORace> entries;
+	
 	public RaceSelectionScreen(CharacterCreatorScreen prevScreen) {
 		super(new TranslationTextComponent("mmo.menu.select_race.title"), prevScreen);
 		this.background = BACKGROUND_LOCATION_ALT;
 		this.preSelected = prevScreen.selectedRace;
+		
+		this.entries = new ArrayList<>(Races.getRaces());
 	}
 
 	@Override
 	public List<MMORace> getEntries() {
-		return Races.getRaces();
+		return entries;
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class MixinFirstPersonRenderer {
 
 	private void bindMMOPlayerTexture(TextureManager texMan, ResourceLocation loc) {
 		MMOPlayerRenderer renderer = ClientRenderHandler.getPlayerRenderer(this.mc.player);
-		if(renderer != null) texMan.bindTexture(renderer.textureLocation);
+		if(renderer != null && renderer.textureLocation != null) texMan.bindTexture(renderer.textureLocation);
 		else texMan.bindTexture(loc);
 	}
 	

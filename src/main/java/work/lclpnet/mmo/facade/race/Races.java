@@ -1,19 +1,17 @@
 package work.lclpnet.mmo.facade.race;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class Races {
 
-	private static List<MMORace> races = new ArrayList<>();
+	private static Set<MMORace> races = new HashSet<>();
 	
-	static {
-		register(new RaceHuman());
-		register(new RaceDwarf());
-	}
+	public static final RaceHuman HUMAN = register(new RaceHuman());
+	public static final RaceDwarf DWARF = register(new RaceDwarf());
 	
-	private static MMORace register(MMORace race) {
+	private static <T extends MMORace> T register(T race) {
 		if(!races.stream().map(MMORace::toString).noneMatch(race.getUnlocalizedName()::equals)) 
 			throw new IllegalArgumentException(String.format("Race with name '%s' already registered.", race.getUnlocalizedName()));
 		
@@ -21,7 +19,7 @@ public class Races {
 		return race;
 	}
 	
-	public static List<MMORace> getRaces() {
+	public static Set<MMORace> getRaces() {
 		return races;
 	}
 	
