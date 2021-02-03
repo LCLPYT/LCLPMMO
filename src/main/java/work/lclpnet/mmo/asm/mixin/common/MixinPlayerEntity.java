@@ -32,20 +32,17 @@ public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {
 	private transient MMOCharacter mmoCharacter = null;
 	private transient Dialog currentMMODialog = null;
 	
-	/**
-	 * This method modifies the scaled (lclpmmo) entity size of a player. 
-	 */
 	@Inject(
 			method = "Lnet/minecraft/entity/player/PlayerEntity;getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
 			at = @At("HEAD"),
 			cancellable = true
 			)
-	public void onGetSize(Pose poseIn, CallbackInfoReturnable<EntitySize> cir) {
+	public void onGetSizeHead(Pose poseIn, CallbackInfoReturnable<EntitySize> cir) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
 		
 		MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
-		if(character != null && character.getRace() != null) {
-			MMORace r = character.getRace();
+		MMORace r;
+		if(character != null && (r = character.getRace()) != null) {
 			Map<Pose, EntitySize> sizes = r.getEntitySizeOverrides();
 			EntitySize size;
 			if(sizes != null && (size = sizes.get(poseIn)) != null) {
@@ -53,6 +50,15 @@ public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {
 				cir.cancel();
 			}
 		}
+	}
+	
+	@Inject(
+			method = "Lnet/minecraft/entity/player/PlayerEntity;getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
+			at = @At("RETURN"),
+			cancellable = true
+			)
+	public void onGetSizeReturn(Pose poseIn, CallbackInfoReturnable<EntitySize> cir) {
+		PlayerEntity player = (PlayerEntity) (Object) this;
 		
 		float widthScale = MMOMonsterAttributes.getScaleWidth(player),
 				heightScale = MMOMonsterAttributes.getScaleHeight(player);
