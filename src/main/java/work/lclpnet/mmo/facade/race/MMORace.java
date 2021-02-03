@@ -6,11 +6,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.util.text.ITextComponent;
+import work.lclpnet.mmo.entity.IEntitySizeOverride;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
-public class MMORace extends JsonSerializeable implements MMOSelectionItem {
+public class MMORace extends JsonSerializeable implements MMOSelectionItem, IEntitySizeOverride {
 
 	private final String unlocalizedName;
 	private transient ITextComponent title;

@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,6 +20,7 @@ import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.dialog.Dialog;
+import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageDialog;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
@@ -34,17 +37,51 @@ public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {
 	 */
 	@Inject(
 			method = "Lnet/minecraft/entity/player/PlayerEntity;getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
-			at = @At("RETURN"),
+			at = @At("HEAD"),
 			cancellable = true
 			)
 	public void onGetSize(Pose poseIn, CallbackInfoReturnable<EntitySize> cir) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
+		
+		MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
+		if(character != null && character.getRace() != null) {
+			MMORace r = character.getRace();
+			Map<Pose, EntitySize> sizes = r.getEntitySizeOverrides();
+			EntitySize size;
+			if(sizes != null && (size = sizes.get(poseIn)) != null) {
+				cir.setReturnValue(size);
+				cir.cancel();
+			}
+		}
+		
 		float widthScale = MMOMonsterAttributes.getScaleWidth(player),
 				heightScale = MMOMonsterAttributes.getScaleHeight(player);
 		if(widthScale == 1F && heightScale == 1F) return;
 		
 		cir.setReturnValue(cir.getReturnValue().scale(widthScale, heightScale));
 		cir.cancel();
+	}
+	
+	@Inject(
+			method = "Lnet/minecraft/entity/player/PlayerEntity;getStandingEyeHeight("
+					+ "Lnet/minecraft/entity/Pose;"
+					+ "Lnet/minecraft/entity/EntitySize;"
+					+ ")F",
+					at = @At("HEAD"),
+					cancellable = true
+			)
+	public void onGetEyeHeight(Pose pose, EntitySize size, CallbackInfoReturnable<Float> cir) {
+		PlayerEntity player = (PlayerEntity) (Object) this;
+		
+		MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
+		if(character != null && character.getRace() != null) {
+			MMORace r = character.getRace();
+			float height = r.getEyeHeightOverride(pose, size);
+			if(!Float.isNaN(height)) {
+				cir.setReturnValue(height);
+				cir.cancel();
+			}
+		}
 	}
 
 	@Override
