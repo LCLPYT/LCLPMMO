@@ -4,15 +4,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.LCLPMMO;
 
-public class RaceHuman extends MMORace{
+public class RaceElve extends MMORace {
 
-	RaceHuman() {
-		super("human", new TranslationTextComponent("mmo.race.human.title"));
+	RaceElve() {
+		super("elve", new TranslationTextComponent("mmo.race.dwarf.title"));
 	}
 	
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation(LCLPMMO.MODID, "textures/entity/human/icon.png");
+		return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elve/icon.png");
 	}
 
 }

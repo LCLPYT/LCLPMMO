@@ -26,6 +26,7 @@ public class MMOPlayerRenderer extends PlayerRenderer {
 	
 	@Override
 	public ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
+//		return entity.getLocationSkin();
 		return this.textureLocation == null ? entity.getLocationSkin() : this.textureLocation;
 	}
 	

@@ -67,6 +67,7 @@
     "options_screen.audio.only_mmo": "LCLPMMO music only",
     "mmo.race.human.title": "Human",
     "mmo.race.dwarf.title": "Dwarf",
+    "mmo.race.vampire.title": "Vampire",
     "mmo.no_internet": "No server connection.",
     "mmo.player_load_failed": "Error. Could not load player.",
     "music.play.file_not_exist": "The file '%s' does not exist.",

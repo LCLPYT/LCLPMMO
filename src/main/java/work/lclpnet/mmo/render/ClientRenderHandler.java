@@ -16,6 +16,7 @@ import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.facade.race.Races;
+import work.lclpnet.mmo.render.model.ElvePlayerModel;
 import work.lclpnet.mmo.render.model.HumanPlayerModel;
 import work.lclpnet.mmo.render.model.VampirePlayerModel;
 
@@ -38,7 +39,8 @@ public class ClientRenderHandler {
 		humanRenderers.put("default", new MMOPlayerRenderer(renderManager, new HumanPlayerModel(false)));
 		humanRenderers.put("slim", new MMOPlayerRenderer(renderManager, new HumanPlayerModel(true)));
 		
-		playerRenderers.put(Races.DWARF, new MMOPlayerRenderer(renderManager, new VampirePlayerModel()));
+		playerRenderers.put(Races.VAMPIRE, new MMOPlayerRenderer(renderManager, new VampirePlayerModel()));
+		playerRenderers.put(Races.ELVE, new MMOPlayerRenderer(renderManager, new ElvePlayerModel()));
 	}
 
 	@Nullable
