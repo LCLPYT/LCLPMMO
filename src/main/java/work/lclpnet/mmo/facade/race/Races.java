@@ -11,7 +11,7 @@ public class Races {
 	public static final RaceHuman HUMAN = register(new RaceHuman());
 	public static final RaceDwarf DWARF = register(new RaceDwarf());
 	public static final RaceVampire VAMPIRE = register(new RaceVampire());
-	public static final RaceElve ELVE = register(new RaceElve());
+	public static final RaceElven ELVEN = register(new RaceElven());
 	
 	private static <T extends MMORace> T register(T race) {
 		if(races.stream().map(MMORace::toString).anyMatch(race.getUnlocalizedName()::equals))

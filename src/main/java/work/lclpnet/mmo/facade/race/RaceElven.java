@@ -9,20 +9,20 @@ import work.lclpnet.mmo.LCLPMMO;
 
 import java.util.Map;
 
-public class RaceElve extends MMORace {
+public class RaceElven extends MMORace {
 
 	public static final transient Map<Pose, EntitySize> SIZES = ImmutableMap.<Pose, EntitySize>builder()
 			.put(Pose.STANDING, EntitySize.flexible(0.5F, 2.125F))
 			.put(Pose.CROUCHING, EntitySize.flexible(0.5F, 1.75F))
 			.build(); 
 	
-	RaceElve() {
-		super("elve", new TranslationTextComponent("mmo.race.dwarf.title"));
+	RaceElven() {
+		super("elven", new TranslationTextComponent("mmo.race.elven.title"));
 	}
 	
 	@Override
 	public ResourceLocation getIcon() {
-		return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elve/icon.png");
+		return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elven/icon.png");
 	}
 
 	@Override

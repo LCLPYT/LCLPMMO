@@ -11,12 +11,12 @@ import work.lclpnet.mmo.render.MMOModelRenderer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class ElvePlayerModel extends AbstractMMOPlayerModel {
+public class ElvenPlayerModel extends AbstractMMOPlayerModel {
 
     private ModelRenderer leftEar;
     private ModelRenderer rightEar;
 
-    public ElvePlayerModel() {
+    public ElvenPlayerModel() {
         super(0F, true);
 
         textureWidth = 64;
@@ -113,7 +113,7 @@ public class ElvePlayerModel extends AbstractMMOPlayerModel {
 
     @Override
     public ResourceLocation getTextureLocation() {
-        return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elve/elve.png");
+        return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elven/elven.png");
     }
 
     @Override
