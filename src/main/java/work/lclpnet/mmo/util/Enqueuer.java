@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Enqueuer {
 
-	private static volatile List<Runnable> renderQueue = new ArrayList<>();
+	private static final List<Runnable> renderQueue = new ArrayList<>();
 	
 	public static void enqueueOnRender(Runnable run) {
 		renderQueue.add(run);

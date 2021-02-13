@@ -32,7 +32,7 @@ public @interface NoSerialization {
 	 */
 	DistSpecifier in() default DistSpecifier.ALL;
 
-	public static class Strategy implements ExclusionStrategy {
+	class Strategy implements ExclusionStrategy {
 
 		@Override
 		public boolean shouldSkipField(FieldAttributes f) {

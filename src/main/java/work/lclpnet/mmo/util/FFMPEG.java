@@ -10,14 +10,14 @@ public class FFMPEG {
 
 	private static Boolean inPath = null, local = null;
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isInstalled() {
 		if(inPath == null && local == null) {
 			local = isLocalInstalled();
 			inPath = isInPath();
 		}
 		if(inPath != null && inPath.booleanValue()) return true;
-		else if(local != null && local.booleanValue()) return true;
-		else return false;
+		else return local != null && local.booleanValue();
 	}
 
 	public static boolean isLocalInstalled() {

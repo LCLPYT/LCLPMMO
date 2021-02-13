@@ -19,7 +19,7 @@ public class MixinTrackedEntity {
 	private Entity trackedEntity;
 	
 	@Inject(
-			method = "Lnet/minecraft/world/TrackedEntity;track(Lnet/minecraft/entity/player/ServerPlayerEntity;)V",
+			method = "track(Lnet/minecraft/entity/player/ServerPlayerEntity;)V",
 			at = @At("HEAD"),
 			cancellable = true
 			)

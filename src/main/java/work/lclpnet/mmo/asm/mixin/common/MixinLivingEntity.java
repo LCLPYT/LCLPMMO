@@ -21,7 +21,7 @@ import work.lclpnet.mmo.util.MMOMonsterAttributes;
 public class MixinLivingEntity {
 
 	@Inject(
-			method = "Lnet/minecraft/entity/LivingEntity;registerAttributes()Lnet/minecraft/entity/ai/attributes/AttributeModifierMap$MutableAttribute;",
+			method = "registerAttributes()Lnet/minecraft/entity/ai/attributes/AttributeModifierMap$MutableAttribute;",
 			at = @At("RETURN"),
 			cancellable = true
 			)
@@ -34,7 +34,7 @@ public class MixinLivingEntity {
 	}
 	
 	@Inject(
-			method = "Lnet/minecraft/entity/LivingEntity;readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V",
+			method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/entity/ai/attributes/AttributeModifierManager;deserialize("
@@ -48,7 +48,7 @@ public class MixinLivingEntity {
 	}
 	
 	@Inject(
-			method = "Lnet/minecraft/entity/LivingEntity;calculateFallDamage(FF)I",
+			method = "calculateFallDamage(FF)I",
 			at = @At("RETURN"),
 			cancellable = true,
 			locals = LocalCapture.CAPTURE_FAILHARD
@@ -64,7 +64,7 @@ public class MixinLivingEntity {
 	}
 	
 	@Inject(
-			method = "Lnet/minecraft/entity/LivingEntity;getEyeHeight(Lnet/minecraft/entity/Pose;Lnet/minecraft/entity/EntitySize;)F",
+			method = "getEyeHeight(Lnet/minecraft/entity/Pose;Lnet/minecraft/entity/EntitySize;)F",
 			at = @At("RETURN"),
 			cancellable = true
 			)

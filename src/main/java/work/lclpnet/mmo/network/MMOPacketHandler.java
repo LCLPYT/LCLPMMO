@@ -25,7 +25,7 @@ public class MMOPacketHandler {
 	public static SimpleChannel INSTANCE = null;
 	private static int nextId = 0;
 
-	private static Map<Integer, Pair<Class<?>, IMessageSerializer<?>>> recordedMSG = new HashMap<>();
+	private static final Map<Integer, Pair<Class<?>, IMessageSerializer<?>>> recordedMSG = new HashMap<>();
 
 	public static void init() {
 		INSTANCE = NetworkRegistry.newSimpleChannel(
@@ -62,8 +62,7 @@ public class MMOPacketHandler {
 
 	public static Pair<Class<?>, IMessageSerializer<?>> getRecordedMsg(PacketBuffer pb) {
 		int id = pb.readByte();
-		Pair<Class<?>, IMessageSerializer<?>> msg = recordedMSG.get(id);
-		return msg;
+		return recordedMSG.get(id);
 	}
 	
 	public static void sendToClient(ServerPlayerEntity player, IMessage msg) {

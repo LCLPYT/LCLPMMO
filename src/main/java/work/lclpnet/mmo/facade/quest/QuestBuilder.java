@@ -35,8 +35,8 @@ public class QuestBuilder {
 	
 	public static class QuestSequenceBuilder {
 		
-		private QuestBuilder parent;
-		private List<QuestStep> steps = new ArrayList<>();
+		private final QuestBuilder parent;
+		private final List<QuestStep> steps = new ArrayList<>();
 		
 		public QuestSequenceBuilder(QuestBuilder builder) {
 			this.parent = builder;

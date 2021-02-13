@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class Races {
 
-	private static Set<MMORace> races = new HashSet<>();
+	private static final Set<MMORace> races = new HashSet<>();
 	
 	public static final RaceHuman HUMAN = register(new RaceHuman());
 	public static final RaceDwarf DWARF = register(new RaceDwarf());

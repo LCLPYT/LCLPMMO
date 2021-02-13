@@ -27,6 +27,7 @@ public class MMOHorizontalWaterloggableBlock extends MMOWaterloggableBlock{
 		return super.getStateForPlacement(context).with(DIRECTION, context.getPlacementHorizontalFacing());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState rotate(BlockState state, Rotation rotation) {
 		return state.with(DIRECTION, rotation.rotate(state.get(DIRECTION)));

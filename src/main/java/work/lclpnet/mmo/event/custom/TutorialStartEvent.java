@@ -5,7 +5,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 public class TutorialStartEvent extends Event {
 
-	private PlayerEntity player;
+	private final PlayerEntity player;
 	
 	public TutorialStartEvent(PlayerEntity player) {
 		this.player = player;

@@ -11,7 +11,7 @@ import java.util.Map;
 public class Config {
 
 	private static FileConfig config = null;
-	private static Map<String, Object> register = new HashMap<>();
+	private static final Map<String, Object> register = new HashMap<>();
 	
 	public static final String KEY_SKIP_INTRO = "misc.skip-intro",
 			KEY_DISCORD_INTEGRATION = "misc.enable-discord-integration",
@@ -33,7 +33,13 @@ public class Config {
 		File configDir = new File("config");
 		File configFile = new File(configDir, "lclpmmo.toml");
 
-		if(!configFile.exists()) createConfigFile(configFile);
+		if(!configFile.exists()) {
+			try {
+				createConfigFile(configFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		config = FileConfig.builder(configFile).build();
 		config.load();
 		config.close();
@@ -54,21 +60,12 @@ public class Config {
 		if(modified.value) save();
 	}
 
-	private static boolean createConfigFile(File config) {
-		try {
-			config.getParentFile().mkdirs();
-			config.createNewFile();
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	private static void createConfigFile(File config) throws IOException {
+		config.getParentFile().mkdirs();
+		config.createNewFile();
 	}
 
-	public static FileConfig getConfig() {
-		return config;
-	}
-	
 	private static void set(String path, Object val) {
 		config.set(path, val);
 		save();
@@ -93,49 +90,29 @@ public class Config {
 			newConfig.putAll(config);
 			newConfig.save();
 			newConfig.close();
-		}, "Config Saver").run(); 
+		}, "Config Saver").start();
 	}
 	
 	public static boolean shouldSkipIntro() {
 		return get(KEY_SKIP_INTRO);
 	}
 	
-	public static void setSkipIntro(boolean skip) {
-		set(KEY_SKIP_INTRO, skip);
-	}
-	
 	public static boolean enableDiscordIntegration() {
 		return get(KEY_DISCORD_INTEGRATION);
-	}
-	
-	public static void setEnableDiscordIntegration(boolean enable) {
-		set(KEY_DISCORD_INTEGRATION, enable);
 	}
 	
 	public static boolean isNetworkStagingMode() {
 		return get(KEY_NETWORK_STAGING);
 	}
 	
-	public static void setNetworkStagingMode(boolean staging) {
-		set(KEY_NETWORK_STAGING, staging);
-	}
-	
 	public static String getHostStaging() {
 		return get(KEY_NETWORK_HOST_STAGING);
-	}
-	
-	public static void setHostStaging(String host) {
-		set(KEY_NETWORK_HOST_STAGING, host);
 	}
 	
 	public static String getHostLive() {
 		return get(KEY_NETWORK_HOST_LIVE);
 	}
 
-	public static void setHostLive(String host) {
-		set(KEY_NETWORK_HOST_LIVE, host);
-	}
-	
 	public static String getEffectiveHost() {
 		return isNetworkStagingMode() ? getHostStaging() : getHostLive();
 	}

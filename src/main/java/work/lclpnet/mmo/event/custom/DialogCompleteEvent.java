@@ -5,7 +5,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class DialogCompleteEvent extends PlayerEvent {
 
-	private int id;
+	private final int id;
 	
 	public DialogCompleteEvent(PlayerEntity player, int id) {
 		super(player);

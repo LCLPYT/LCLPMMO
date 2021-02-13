@@ -13,7 +13,7 @@ import java.io.IOException;
 public class MMORace extends JsonSerializeable implements MMOSelectionItem, IEntitySizeOverride {
 
 	private final String unlocalizedName;
-	private transient ITextComponent title;
+	private final transient ITextComponent title;
 
 	MMORace(String unlocalizedName, ITextComponent title) {
 		this.unlocalizedName = unlocalizedName;

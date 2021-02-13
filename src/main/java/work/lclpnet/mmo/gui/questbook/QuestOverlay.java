@@ -18,7 +18,7 @@ import work.lclpnet.mmo.util.Color;
 
 public class QuestOverlay {
 
-	private static ResourceLocation MARKER_DEFAULT_LOCATION = new ResourceLocation(LCLPMMO.MODID, "textures/gui/questbook/marker_default.png");
+	private static final ResourceLocation MARKER_DEFAULT_LOCATION = new ResourceLocation(LCLPMMO.MODID, "textures/gui/questbook/marker_default.png");
 
 	public static void render(Minecraft mc, MatrixStack mStack, int x, int y, int width) {
 		MMOCharacter character = User.getSelectedCharacter();

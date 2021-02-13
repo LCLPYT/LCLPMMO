@@ -3,6 +3,7 @@ package work.lclpnet.mmo.util;
 import java.io.File;
 import java.io.IOException;
 
+@SuppressWarnings("ALL")
 public class OSHooks {
 
 	private static class OSHandler {

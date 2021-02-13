@@ -15,7 +15,8 @@ import work.lclpnet.mmo.audio.MMOSoundEvents;
 @OnlyIn(Dist.CLIENT)
 public class FancyButton extends Button{
 
-	private int fontColor, hoverFontColor;
+	private final int fontColor;
+    private final int hoverFontColor;
 	private boolean hover = false;
 	public float scale = 1.5F;
 

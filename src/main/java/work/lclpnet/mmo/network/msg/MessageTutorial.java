@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class MessageTutorial implements IMessage {
 
-	private Type type;
+	private final Type type;
 	
 	public MessageTutorial(Type type) {
 		this.type = type;
@@ -54,7 +54,7 @@ public class MessageTutorial implements IMessage {
 		else if(FMLEnvironment.dist == Dist.CLIENT) handleClient(ctx);		
 	}
 	
-	public static enum Type {
+	public enum Type {
 		START_TUTORIAL,
 		ACKNOCKLEDGE_START
 	}

@@ -7,7 +7,7 @@ import work.lclpnet.mmo.util.ClickListener;
 public interface IMMOEntity<T extends Entity> {
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends Entity> IMMOEntity<T> get(T entity) {
+    static <T extends Entity> IMMOEntity<T> get(T entity) {
 		return (IMMOEntity<T>) entity;
 	}
 	

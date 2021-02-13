@@ -27,30 +27,30 @@ public class MixinEntity implements IMMOEntity<Entity> {
 	private EntityType<?> type;
 	
 	@Redirect(
-			method = "Lnet/minecraft/entity/Entity;getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
+			method = "getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/entity/EntityType;getSize()Lnet/minecraft/entity/EntitySize;"
 					)
 			)
 	public EntitySize getSize(EntityType<?> type) {
-		Entity entity = (Entity) ((Object) this);
+		Entity entity = (Entity) (Object) this;
 		return this.type.getSize().scale(MMOMonsterAttributes.getScaleWidth(entity), MMOMonsterAttributes.getScaleHeight(entity));
 	}
-	
+
 	@Inject(
-			method = "Lnet/minecraft/entity/Entity;getJumpFactor()F",
+			method = "getJumpFactor()F",
 			at = @At("RETURN"),
 			cancellable = true
 			)
 	public void onGetJumpFactor(CallbackInfoReturnable<Float> cir) {
-		float scaleHeight = MMOMonsterAttributes.getScaleHeight((Entity) ((Object) this));
+		float scaleHeight = MMOMonsterAttributes.getScaleHeight((Entity) (Object) this);
 		if(scaleHeight <= 1F || !((Object) this instanceof PlayerEntity)) return;
 		cir.setReturnValue(cir.getReturnValue() * scaleHeight);
 		cir.cancel();
 	}
 	
-	private Map<String, ClickListener<Entity>> clickListeners = new HashMap<>();
+	private final Map<String, ClickListener<Entity>> clickListeners = new HashMap<>();
 
 	@Override
 	public void addClickListener(String id, ClickListener<Entity> listener) {
@@ -75,8 +75,7 @@ public class MixinEntity implements IMMOEntity<Entity> {
 	@Override
 	public boolean onClick(PlayerEntity clicker) {
 		return clickListeners.values().stream()
-				.map(consumer -> consumer.onClick((Entity) (Object) this, clicker))
-				.anyMatch(b -> b);
+				.anyMatch(consumer -> consumer.onClick((Entity) (Object) this, clicker));
 	}
 	
 }

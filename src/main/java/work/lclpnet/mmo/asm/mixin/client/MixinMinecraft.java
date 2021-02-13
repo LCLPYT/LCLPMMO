@@ -39,7 +39,7 @@ public class MixinMinecraft {
 	}
 	
 	@Inject(
-			method = "Lnet/minecraft/client/Minecraft;getBackgroundMusicSelector()Lnet/minecraft/client/audio/BackgroundMusicSelector;",
+			method = "getBackgroundMusicSelector()Lnet/minecraft/client/audio/BackgroundMusicSelector;",
 			at = @At("HEAD"),
 			cancellable = true
 			)
@@ -57,7 +57,6 @@ public class MixinMinecraft {
 		if(this.world == null || this.world instanceof FakeWorld) { // while not joined a world
 			cir.setReturnValue(MMOBackgroundMusicTracks.MAIN_MENU_MUSIC);
 			cir.cancel();
-			return;
 		}
 	}
 	

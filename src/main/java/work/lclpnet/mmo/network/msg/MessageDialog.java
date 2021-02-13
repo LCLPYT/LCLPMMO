@@ -25,7 +25,7 @@ public class MessageDialog implements IMessage {
 
 	private static final byte ACTION_OPEN = 0, ACTION_CLOSE = 1, ACTION_COMPLETE = 2;
 
-	private byte action;
+	private final byte action;
 	private int id;
 	private int entityId;
 	private DialogData data;

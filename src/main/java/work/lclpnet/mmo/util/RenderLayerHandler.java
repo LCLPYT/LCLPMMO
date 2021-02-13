@@ -13,7 +13,7 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class RenderLayerHandler {
 
-	private static Map<Block, RenderType> types = new HashMap<>();
+	private static final Map<Block, RenderType> types = new HashMap<>();
 	
 	static {
 		final RenderType translucent = RenderType.getTranslucent();

@@ -34,9 +34,9 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 	private long firstRenderTime = 0L;
 	private final int id;
 	private boolean dismissable = true;
-	private T entity;
-	private EntityTypeAdapter<T> adapter;
-	private DialogWrapper dialog;
+	private final T entity;
+	private final EntityTypeAdapter<T> adapter;
+	private final DialogWrapper dialog;
 	private Button nextButton;
 
 	@SuppressWarnings("unchecked")
@@ -146,7 +146,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 		adapters.put(entityType, adapter);
 	}
 
-	public static interface EntityTypeAdapter<T extends LivingEntity> {
+	public interface EntityTypeAdapter<T extends LivingEntity> {
 
 		default int getScale(T entity) {
 			return 75;

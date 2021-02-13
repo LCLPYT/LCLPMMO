@@ -11,7 +11,7 @@ public class DynamicCharacterData extends DynamicData {
 	 *  Also make sure field names aren't too long.
 	 */
 	public Integer tutorialState = null;
-	private QuestBook questBook = null;
+	private final QuestBook questBook = null;
 	
 	public QuestBook getQuestBook() {
 		return questBook;

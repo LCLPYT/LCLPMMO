@@ -23,7 +23,7 @@ public class HelperServerLoginNetHandler {
 			Consumer<ServerPlayerEntity> playerSetter) {
 		if(FMLEnvironment.dist != Dist.CLIENT) return false;
 		
-		if(server instanceof IntegratedServer && ((IntegratedServer) server).isServerOwner(profile)) {
+		if(server instanceof IntegratedServer && server.isServerOwner(profile)) {
 			resolve(serverplayerentity, handler, server, loginGameProfile, networkManager, User.getSelectedCharacter(), User.getCurrent(), playerSetter);
 			return true;
 		}

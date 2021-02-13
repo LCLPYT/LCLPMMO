@@ -20,8 +20,6 @@ import software.bernie.geckolib3.GeckoLib;
 import work.lclpnet.corebase.util.ComponentSupplier;
 import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.entity.MMOEntities;
-import work.lclpnet.mmo.event.AttributeListener;
-import work.lclpnet.mmo.event.EventListener;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
@@ -50,9 +48,7 @@ public class LCLPMMO {
 
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.register(this);
-		forgeBus.register(new EventListener());
-		forgeBus.register(new AttributeListener());
-		
+
 		GeckoLib.initialize();
 	}
 

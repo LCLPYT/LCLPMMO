@@ -11,8 +11,8 @@ import java.util.Objects;
 
 public class Quest {
 
-	private String identifier;
-	private List<QuestStep> sequence;
+	private final String identifier;
+	private final List<QuestStep> sequence;
 
 	Quest(String identifier, List<QuestStep> sequence) {
 		this.identifier = Objects.requireNonNull(identifier);

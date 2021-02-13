@@ -25,7 +25,7 @@ public class MixinMusicTicker {
 	@Shadow
 	public int timeUntilNextMusic;
 	@Shadow
-	public ISound currentMusic;
+	private ISound currentMusic;
 
 	@Inject(
 			method = "Lnet/minecraft/client/audio/MusicTicker;selectRandomBackgroundMusic("
@@ -40,7 +40,7 @@ public class MixinMusicTicker {
 	}
 
 	@Inject(
-			method = "Lnet/minecraft/client/audio/MusicTicker;tick()V",
+			method = "tick()V",
 			at = @At(
 					value = "FIELD",
 					target = "Lnet/minecraft/client/audio/MusicTicker;currentMusic:Lnet/minecraft/client/audio/ISound;",

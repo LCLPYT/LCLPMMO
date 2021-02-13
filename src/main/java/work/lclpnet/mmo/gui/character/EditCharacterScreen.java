@@ -19,8 +19,8 @@ public class EditCharacterScreen extends MMOScreen{
 
 	private Button saveButton;
 	private TextFieldWidget nameEdit;
-	private MMOCharacter character;
-	private Screen prevScreen;
+	private final MMOCharacter character;
+	private final Screen prevScreen;
 
 	public EditCharacterScreen(MMOCharacter character, Screen prevScreen) {
 		super(new TranslationTextComponent("mmo.menu.edit_character.title"));

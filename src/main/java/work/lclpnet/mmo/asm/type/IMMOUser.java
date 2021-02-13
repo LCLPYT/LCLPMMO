@@ -14,11 +14,11 @@ public interface IMMOUser {
 	
 	void setMMOCharacter(MMOCharacter character);
 	
-	public static IMMOUser getMMOUser(PlayerEntity player) {
+	static IMMOUser getMMOUser(PlayerEntity player) {
 		return (IMMOUser) player;
 	}
 	
-	public static void initMyPlayer(PlayerEntity player) {
+	static void initMyPlayer(PlayerEntity player) {
 		IMMOUser user = (IMMOUser) player;
 		user.setUser(User.getCurrent());
 		user.setMMOCharacter(User.getSelectedCharacter());

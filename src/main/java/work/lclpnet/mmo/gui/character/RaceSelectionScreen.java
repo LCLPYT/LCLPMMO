@@ -10,7 +10,7 @@ import java.util.List;
 
 public class RaceSelectionScreen extends GenericSelectionScreen<MMORace>{
 
-	private List<MMORace> entries;
+	private final List<MMORace> entries;
 	
 	public RaceSelectionScreen(CharacterCreatorScreen prevScreen) {
 		super(new TranslationTextComponent("mmo.menu.select_race.title"), prevScreen);

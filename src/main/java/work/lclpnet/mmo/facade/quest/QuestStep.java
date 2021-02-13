@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class QuestStep {
 
-	private String subIdentifier;
+	private final String subIdentifier;
 	
 	public QuestStep(String subIdentifier) {
 		this.subIdentifier = Objects.requireNonNull(subIdentifier);

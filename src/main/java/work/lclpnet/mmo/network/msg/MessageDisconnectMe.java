@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class MessageDisconnectMe implements IMessage {
 
-	private ITextComponent msg;
+	private final ITextComponent msg;
 	
 	public MessageDisconnectMe(ITextComponent message) {
 		this.msg = message;

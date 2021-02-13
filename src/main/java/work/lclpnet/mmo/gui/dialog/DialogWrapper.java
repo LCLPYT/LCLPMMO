@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class DialogWrapper {
 	
-	private DialogData data;
+	private final DialogData data;
 	private int step = 0;
 	
 	public DialogWrapper(DialogData data) {

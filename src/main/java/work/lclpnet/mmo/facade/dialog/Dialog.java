@@ -5,8 +5,8 @@ import net.minecraft.entity.Entity;
 public class Dialog {
 
 	private final int id;
-	private Entity partner;
-	private DialogData data;
+	private final Entity partner;
+	private final DialogData data;
 	private boolean dismissable = true;
 	
 	public Dialog(int id, Entity partner, DialogData data) {

@@ -40,7 +40,7 @@ public class MixinServerLoginNetHandler {
 	@Final
 	private MinecraftServer server;
 	@Shadow
-	private GameProfile loginGameProfile;
+	public GameProfile loginGameProfile;
 	@Shadow
 	@Final
 	public NetworkManager networkManager;
@@ -48,7 +48,7 @@ public class MixinServerLoginNetHandler {
 	private User tmpUser = null;
 
 	@Inject(
-			method = "Lnet/minecraft/network/login/ServerLoginNetHandler;tryAcceptPlayer()V",
+			method = "tryAcceptPlayer()V",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/server/management/PlayerList;getPlayerByUUID(Ljava/util/UUID;)Lnet/minecraft/entity/player/ServerPlayerEntity;",
@@ -144,7 +144,7 @@ public class MixinServerLoginNetHandler {
 	}
 	
 	@Redirect(
-			method = "Lnet/minecraft/network/login/ServerLoginNetHandler;tryAcceptPlayer()V",
+			method = "tryAcceptPlayer()V",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/network/NetworkManager;sendPacket(Lnet/minecraft/network/IPacket;)V"

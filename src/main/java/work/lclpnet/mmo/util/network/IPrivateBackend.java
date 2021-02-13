@@ -6,7 +6,7 @@ public interface IPrivateBackend {
 
 	/* --- */
 	
-	public static IPrivateBackend NONE = new IPrivateBackend() {
+	IPrivateBackend NONE = new IPrivateBackend() {
 		@Override
 		public String getCharacterDataSavePath() {
 			return null;

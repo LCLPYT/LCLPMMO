@@ -70,7 +70,7 @@ public class HTTPResponse {
 	public String getJsonStatusMessage() {
 		if(jsonStatusMessage != null) return jsonStatusMessage;
 
-		String s = rawError != null ? rawError : (rawResponse != null ? rawResponse : null);
+		String s = rawError != null ? rawError : (rawResponse);
 		if(s == null) return null;
 
 		JsonObject json;

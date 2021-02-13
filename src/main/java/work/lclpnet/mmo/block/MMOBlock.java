@@ -20,11 +20,13 @@ public abstract class MMOBlock extends Block{
 		super(properties);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
 		return Container.calcRedstone(world.getTileEntity(pos));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean hasComparatorInputOverride(BlockState state) {
 		return this.hasTileEntity(state);

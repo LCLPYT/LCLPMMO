@@ -22,7 +22,7 @@ public class MessageSendMCLinkToken implements IMessage {
 		handlers.put(ctx, handler);
 	}
 
-	private String token;
+	private final String token;
 
 	public MessageSendMCLinkToken(String token) {
 		this.token = token;

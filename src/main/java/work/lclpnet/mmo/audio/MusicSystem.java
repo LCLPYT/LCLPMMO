@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 @OnlyIn(Dist.CLIENT)
 public class MusicSystem {
 
@@ -74,7 +75,7 @@ public class MusicSystem {
 		if(music != null) {
 			music.play();
 			playing.put(file.getPath(), music);
-		} else feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.incompatible"), TextFormatting.RED, new Substitute(FilenameUtils.getExtension(name), TextFormatting.YELLOW)));
+		} else feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.incompatible", "%s"), TextFormatting.RED, new Substitute(FilenameUtils.getExtension(name), TextFormatting.YELLOW)));
 	}
 
 	public static void setVolume(String path, float perc, Consumer<ITextComponent> feedback) {
@@ -162,7 +163,7 @@ public class MusicSystem {
 			return false;
 		}
 		feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.trying"), MessageType.OTHER));
-		File output = new File(file.getParentFile(), file.getName().split("\\.(?=[^\\.]+$)")[0] + ".wav");
+		File output = new File(file.getParentFile(), file.getName().split("\\.(?=[^.]+$)")[0] + ".wav");
 		if(output.exists()) return true; //Already converted
 
 		try {

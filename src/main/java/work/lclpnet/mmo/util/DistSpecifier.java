@@ -9,10 +9,9 @@ public enum DistSpecifier {
 
 	NONE,
 	CLIENT(Dist.CLIENT),
-	DEDICATED_SERVER(Dist.DEDICATED_SERVER),
 	ALL(Dist.CLIENT, Dist.DEDICATED_SERVER);
 	
-	private Dist[] matches;
+	private final Dist[] matches;
 	
 	DistSpecifier(Dist... matches) {
 		this.matches = matches;
@@ -21,7 +20,7 @@ public enum DistSpecifier {
 	public boolean isApplicable() {
 		if(this.equals(DistSpecifier.NONE)) return false;
 		else if(FMLEnvironment.dist == null) return true;
-		else return Arrays.stream(this.matches).anyMatch(FMLEnvironment.dist::equals);
+		else return Arrays.asList(this.matches).contains(FMLEnvironment.dist);
 	}
 
 }

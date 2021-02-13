@@ -92,7 +92,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 
 	@Override
 	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) ? true : this.searchField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.searchField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
 	}
 
 	@Override

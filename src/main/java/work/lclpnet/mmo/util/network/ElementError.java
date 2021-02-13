@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class ElementError {
 
-	private String element;
-	private List<String> errors;
+	private final String element;
+	private final List<String> errors;
 	
 	public ElementError(String element, List<String> errors) {
 		this.element = Objects.requireNonNull(element);

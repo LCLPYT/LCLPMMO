@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class QuestState {
 
-	private Quest quest;
-	private int step = 0;
+	private final Quest quest;
+	private final int step = 0;
 	
 	public QuestState(Quest quest) {
 		this.quest = Objects.requireNonNull(quest);

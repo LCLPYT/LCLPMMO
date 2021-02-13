@@ -86,7 +86,7 @@ public class MessageMusic implements IMessage {
 		return new Gson().toJson(this);
 	}
 	
-	public static enum MusicAction {
+	public enum MusicAction {
 		PLAY, PLAY_YT, VOLUME, STOP
 	}
 	

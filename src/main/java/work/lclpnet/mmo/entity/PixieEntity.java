@@ -39,7 +39,10 @@ import work.lclpnet.corebase.util.EntityHelper;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
 import work.lclpnet.mmo.util.MMODataSerializers;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.ParametersAreNullableByDefault;
 import java.util.EnumSet;
 
 public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, ILimitTracking {
@@ -62,7 +65,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public float getBlockPathWeight(BlockPos pos, IWorldReader worldIn) {
+	public float getBlockPathWeight(@Nonnull BlockPos pos, IWorldReader worldIn) {
 		return worldIn.getBlockState(pos).isAir() ? 10.0F : 0.0F;
 	}
 
@@ -101,6 +104,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		tutorialLookGoal = null;
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	protected void registerData() {
 		super.registerData();
@@ -110,7 +114,8 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 		this.dataManager.register(BASE_SPEED, 0.6F);
 	}
 
-	protected PathNavigator createNavigator(World worldIn) {
+	@Nonnull
+	protected PathNavigator createNavigator(@Nonnull World worldIn) {
 		FlyingPathNavigator flyingpathnavigator = new FlyingPathNavigator(this, worldIn) {
 
 			@SuppressWarnings("deprecation")
@@ -132,7 +137,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
-	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+	protected SoundEvent getHurtSound(@Nullable DamageSource damageSourceIn) {
 		return MMOSoundEvents.ENTITY_PIXIE_HURT;
 	}
 
@@ -142,6 +147,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
+	@Nonnull
 	public SoundCategory getSoundCategory() {
 		return SoundCategory.NEUTRAL;
 	}
@@ -157,20 +163,24 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
+	@ParametersAreNullableByDefault
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	@Override
+	@ParametersAreNullableByDefault
 	public AgeableEntity func_241840_a(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
 		return null;
 	}
 
 	@Override
+	@ParametersAreNullableByDefault
 	public boolean canMateWith(AnimalEntity otherAnimal) {
 		return false;
 	}
 
 	@Override
+	@ParametersAreNullableByDefault
 	public boolean isBreedingItem(ItemStack stack) {
 		return false;
 	}
@@ -182,7 +192,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 
 	@Override
 	public boolean shouldBeTrackedBy(ServerPlayerEntity player) {
-		return this.isTamed() && this.isTutorialPixie() ? this.isOwner(player) : true;
+		return !this.isTamed() || !this.isTutorialPixie() || this.isOwner(player);
 	}
 
 	@Override
@@ -218,6 +228,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
+	@ParametersAreNullableByDefault
 	protected int getExperiencePoints(PlayerEntity player) {
 		return 1 + this.world.rand.nextInt(2);
 	}
@@ -267,6 +278,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
+	@ParametersAreNonnullByDefault
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Tutorial", this.isTutorialPixie());
@@ -283,6 +295,7 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
+	@ParametersAreNonnullByDefault
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		setTutorialPixie(compound.getBoolean("Tutorial"));

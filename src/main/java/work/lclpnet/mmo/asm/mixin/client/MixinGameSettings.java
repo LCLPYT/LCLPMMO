@@ -15,7 +15,7 @@ public class MixinGameSettings {
 	public double gamma;
 	
 	@Inject(
-			method = "Lnet/minecraft/client/GameSettings;loadOptions()V",
+			method = "loadOptions()V",
 			at = @At("TAIL")
 			)
 	public void onLoadOptions(CallbackInfo ci) {

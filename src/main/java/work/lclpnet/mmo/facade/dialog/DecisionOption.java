@@ -2,7 +2,7 @@ package work.lclpnet.mmo.facade.dialog;
 
 public class DecisionOption {
 
-	private String translationKey;
+	private final String translationKey;
 	
 	public DecisionOption(String translationKey) {
 		this.translationKey = translationKey;

@@ -27,7 +27,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 	private static final ResourceLocation selectionTextures = new ResourceLocation("textures/gui/world_selection.png");
 	private final S screen;
 	private List<T> entries;
-	private Supplier<List<T>> entrySupplier;
+	private final Supplier<List<T>> entrySupplier;
 	private ResourceLocation bgTexture = AbstractGui.BACKGROUND_LOCATION;
 	private T preSelected = null;
 
@@ -84,7 +84,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
 		for(T entry : this.entries) {
 			if (entry.getTitle().getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(s) || entry.getUnlocalizedName().toLowerCase(Locale.ROOT).contains(s)) {
-				this.addEntry(new Entry(this, entry, preSelected != null && entry.equals(preSelected)));
+				this.addEntry(new Entry(this, entry, entry.equals(preSelected)));
 			}
 		}
 
@@ -103,7 +103,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 	}
 
 	@SuppressWarnings("deprecation")
-	protected void renderHoleBackground(int p_renderHoleBackground_1_, int p_renderHoleBackground_2_, int p_renderHoleBackground_3_, int p_renderHoleBackground_4_) {
+	protected void renderWholeBackground(int p_renderHoleBackground_1_, int p_renderHoleBackground_2_, int p_renderHoleBackground_4_) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		this.minecraft.getTextureManager().bindTexture(bgTexture);
@@ -111,8 +111,8 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 		bufferbuilder.pos((double)this.x0, (double)p_renderHoleBackground_2_, 0.0D).tex(0.0F, (float)p_renderHoleBackground_2_ / 32.0F).color(64, 64, 64, p_renderHoleBackground_4_).endVertex();
 		bufferbuilder.pos((double)(this.x0 + this.width), (double)p_renderHoleBackground_2_, 0.0D).tex((float)this.width / 32.0F, (float)p_renderHoleBackground_2_ / 32.0F).color(64, 64, 64, p_renderHoleBackground_4_).endVertex();
-		bufferbuilder.pos((double)(this.x0 + this.width), (double)p_renderHoleBackground_1_, 0.0D).tex((float)this.width / 32.0F, (float)p_renderHoleBackground_1_ / 32.0F).color(64, 64, 64, p_renderHoleBackground_3_).endVertex();
-		bufferbuilder.pos((double)this.x0, (double)p_renderHoleBackground_1_, 0.0D).tex(0.0F, (float)p_renderHoleBackground_1_ / 32.0F).color(64, 64, 64, p_renderHoleBackground_3_).endVertex();
+		bufferbuilder.pos((double)(this.x0 + this.width), (double)p_renderHoleBackground_1_, 0.0D).tex((float)this.width / 32.0F, (float)p_renderHoleBackground_1_ / 32.0F).color(64, 64, 64, 255).endVertex();
+		bufferbuilder.pos((double)this.x0, (double)p_renderHoleBackground_1_, 0.0D).tex(0.0F, (float)p_renderHoleBackground_1_ / 32.0F).color(64, 64, 64, 255).endVertex();
 		tessellator.draw();
 	}
 
@@ -139,8 +139,8 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
 		this.renderList(mStack, k, l, p_render_1_, p_render_2_, p_render_3_);
 		RenderSystem.disableDepthTest();
-		this.renderHoleBackground(0, this.y0, 255, 255);
-		this.renderHoleBackground(this.y1, this.height, 255, 255);
+		this.renderWholeBackground(0, this.y0, 255);
+		this.renderWholeBackground(this.y1, this.height, 255);
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
 		RenderSystem.disableAlphaTest();

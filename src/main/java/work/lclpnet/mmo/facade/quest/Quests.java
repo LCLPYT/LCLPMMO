@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 
 public class Quests {
 
-	private static List<Quest> quests = new ArrayList<>();
+	private static final List<Quest> quests = new ArrayList<>();
 
 	static {
 		// Start quest

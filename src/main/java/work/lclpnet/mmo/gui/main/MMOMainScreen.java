@@ -50,9 +50,9 @@ public class MMOMainScreen extends MMOScreen{
 			MINECRAFT_TITLE_TEXTURES = new ResourceLocation(LCLPMMO.MODID, "textures/gui/main/title.png"),
 			ACCESSIBILITY_TEXTURES = new ResourceLocation("textures/gui/accessibility.png");
 	private final RenderSkybox panorama = new RenderSkybox(PANORAMA_RESOURCES);
-	private boolean showFadeInAnimation;
+	private final boolean showFadeInAnimation;
 	private long firstRenderTime = 0L;
-	private List<MMOButtonInfo> menuButtons = new ArrayList<>();
+	private final List<MMOButtonInfo> menuButtons = new ArrayList<>();
 	private ClientPlayerEntity player;
 
 	public MMOMainScreen(boolean fade) {

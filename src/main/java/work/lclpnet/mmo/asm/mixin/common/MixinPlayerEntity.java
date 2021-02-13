@@ -32,7 +32,7 @@ public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {
 	private transient Dialog currentMMODialog = null;
 	
 	@Inject(
-			method = "Lnet/minecraft/entity/player/PlayerEntity;getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
+			method = "getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
 			at = @At("HEAD"),
 			cancellable = true
 			)
@@ -52,7 +52,7 @@ public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {
 	}
 	
 	@Inject(
-			method = "Lnet/minecraft/entity/player/PlayerEntity;getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
+			method = "getSize(Lnet/minecraft/entity/Pose;)Lnet/minecraft/entity/EntitySize;",
 			at = @At("RETURN"),
 			cancellable = true
 			)

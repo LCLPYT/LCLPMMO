@@ -48,7 +48,7 @@ public class MixinClientPlayNetHandler {
 	}
 
 	@Inject(
-			method = "Lnet/minecraft/client/network/play/ClientPlayNetHandler;handleSpawnPlayer(Lnet/minecraft/network/play/server/SSpawnPlayerPacket;)V",
+			method = "handleSpawnPlayer(Lnet/minecraft/network/play/server/SSpawnPlayerPacket;)V",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/world/ClientWorld;addPlayer("

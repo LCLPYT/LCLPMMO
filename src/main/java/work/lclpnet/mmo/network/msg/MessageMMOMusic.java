@@ -16,7 +16,7 @@ public class MessageMMOMusic implements IMessage {
 
 	private boolean stop = false;
 	private boolean loop = false;
-	private SoundEvent music;
+	private final SoundEvent music;
 
 	public MessageMMOMusic(SoundEvent music) {
 		this(music, false, false);
