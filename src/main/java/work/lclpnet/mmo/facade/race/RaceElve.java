@@ -1,14 +1,13 @@
 package work.lclpnet.mmo.facade.race;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.LCLPMMO;
+
+import java.util.Map;
 
 public class RaceElve extends MMORace {
 

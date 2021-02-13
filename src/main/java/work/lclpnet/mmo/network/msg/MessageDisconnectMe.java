@@ -1,7 +1,5 @@
 package work.lclpnet.mmo.network.msg;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
@@ -10,6 +8,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
+
+import java.util.function.Supplier;
 
 public class MessageDisconnectMe implements IMessage {
 

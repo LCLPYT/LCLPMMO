@@ -1,16 +1,6 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
-import java.util.Iterator;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
 import com.google.gson.JsonObject;
-
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.entity.Entity;
@@ -20,6 +10,12 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.network.play.server.SEntityPropertiesPacket;
 import net.minecraft.network.play.server.SSpawnPlayerPacket;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
@@ -27,6 +23,8 @@ import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+
+import java.util.Iterator;
 
 @Mixin(ClientPlayNetHandler.class)
 public class MixinClientPlayNetHandler {

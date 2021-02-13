@@ -1,16 +1,15 @@
 package work.lclpnet.mmo.facade;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 import com.google.gson.JsonObject;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.network.HTTPResponse;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class User extends JsonSerializeable {
 

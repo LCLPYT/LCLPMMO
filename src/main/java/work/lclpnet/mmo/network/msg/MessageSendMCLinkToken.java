@@ -1,9 +1,5 @@
 package work.lclpnet.mmo.network.msg;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.login.ServerLoginNetHandler;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,6 +9,10 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import work.lclpnet.mmo.event.custom.MCLinkTokenReceivedEvent;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class MessageSendMCLinkToken implements IMessage {
 

@@ -1,8 +1,8 @@
 package work.lclpnet.mmo.gui;
 
-import java.util.List;
-
 import net.minecraft.util.IReorderingProcessor;
+
+import java.util.List;
 
 public interface GenericSelectionSetup<T extends MMOSelectionItem> {
 

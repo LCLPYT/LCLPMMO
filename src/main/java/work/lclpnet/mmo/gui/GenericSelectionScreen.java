@@ -1,10 +1,6 @@
 package work.lclpnet.mmo.gui;
 
-import java.util.List;
-import java.util.function.Function;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -13,6 +9,9 @@ import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.List;
+import java.util.function.Function;
 
 public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends MMOScreen implements GenericSelectionSetup<T> {
 

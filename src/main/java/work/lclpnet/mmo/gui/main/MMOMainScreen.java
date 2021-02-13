@@ -1,21 +1,12 @@
 package work.lclpnet.mmo.gui.main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AccessibilityScreen;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.LanguageScreen;
-import net.minecraft.client.gui.screen.MultiplayerScreen;
-import net.minecraft.client.gui.screen.MultiplayerWarningScreen;
-import net.minecraft.client.gui.screen.OptionsScreen;
-import net.minecraft.client.gui.screen.WorldSelectionScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -47,6 +38,9 @@ import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.character.CharacterChooserScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class MMOMainScreen extends MMOScreen{

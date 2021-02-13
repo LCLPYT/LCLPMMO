@@ -1,9 +1,9 @@
 package work.lclpnet.mmo.facade.dialog;
 
+import net.minecraft.network.PacketBuffer;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.network.PacketBuffer;
 
 public class DialogFragment {
 

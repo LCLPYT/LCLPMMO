@@ -1,5 +1,10 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.BackgroundMusicSelector;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.MusicTicker;
+import net.minecraft.client.audio.SoundHandler;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -7,12 +12,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.BackgroundMusicSelector;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.MusicTicker;
-import net.minecraft.client.audio.SoundHandler;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.audio.MMOBackgroundMusicSelector;
 import work.lclpnet.mmo.audio.MusicSystem;

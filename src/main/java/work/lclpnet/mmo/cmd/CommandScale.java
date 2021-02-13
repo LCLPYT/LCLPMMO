@@ -1,14 +1,9 @@
 package work.lclpnet.mmo.cmd;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -23,6 +18,10 @@ import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.cmd.args.ScaleArgumentType;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class CommandScale extends CommandBase{
 

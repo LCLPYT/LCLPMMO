@@ -1,24 +1,19 @@
 package work.lclpnet.mmo.gui.login;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.network.AuthManager;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class RegisterScreen extends MMOScreen {
 

@@ -1,16 +1,15 @@
 package work.lclpnet.mmo.util.json;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.util.DistSpecifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-
-import work.lclpnet.mmo.facade.JsonSerializeable;
-import work.lclpnet.mmo.util.DistSpecifier;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 

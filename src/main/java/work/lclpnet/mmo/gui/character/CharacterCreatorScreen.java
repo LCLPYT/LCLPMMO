@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.gui.character;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;

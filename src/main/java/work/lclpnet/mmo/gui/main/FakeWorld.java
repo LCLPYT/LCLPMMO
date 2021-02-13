@@ -1,7 +1,5 @@
 package work.lclpnet.mmo.gui.main;
 
-import java.util.Random;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.world.ClientWorld;
@@ -13,6 +11,8 @@ import net.minecraft.world.biome.BiomeManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.LCLPMMO;
+
+import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class FakeWorld extends ClientWorld{

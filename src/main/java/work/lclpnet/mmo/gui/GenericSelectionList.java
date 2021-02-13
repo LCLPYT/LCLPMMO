@@ -1,18 +1,8 @@
 package work.lclpnet.mmo.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.chat.NarratorChatListener;
@@ -26,6 +16,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Supplier;
 
 public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen & GenericSelectionSetup<T>> extends ExtendedList<GenericSelectionList<T, S>.Entry>{
 

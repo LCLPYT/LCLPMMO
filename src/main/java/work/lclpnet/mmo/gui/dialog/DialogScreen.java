@@ -1,10 +1,6 @@
 package work.lclpnet.mmo.gui.dialog;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -27,6 +23,9 @@ import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageDialog;
 import work.lclpnet.mmo.util.Color;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 

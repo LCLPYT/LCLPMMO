@@ -5,10 +5,6 @@
 
 package work.lclpnet.mmo.block;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -20,6 +16,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.util.MMONames;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.MOD)
 public class MMOBlocks {

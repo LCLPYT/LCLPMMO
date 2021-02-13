@@ -1,7 +1,5 @@
 package work.lclpnet.mmo.gui.main;
 
-import java.util.UUID;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
@@ -12,6 +10,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class FakeClientPlayNetHandler extends ClientPlayNetHandler{

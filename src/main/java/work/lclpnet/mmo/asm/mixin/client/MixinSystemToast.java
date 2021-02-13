@@ -1,7 +1,12 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
-import java.util.List;
-
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.toasts.IToast;
+import net.minecraft.client.gui.toasts.IToast.Visibility;
+import net.minecraft.client.gui.toasts.SystemToast;
+import net.minecraft.client.gui.toasts.ToastGui;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.ITextComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,14 +14,7 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
-import net.minecraft.client.gui.toasts.IToast.Visibility;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.client.gui.toasts.IToast;
-import net.minecraft.client.gui.toasts.SystemToast;
-import net.minecraft.client.gui.toasts.ToastGui;
+import java.util.List;
 
 @Mixin(SystemToast.class)
 public class MixinSystemToast {
@@ -24,9 +22,9 @@ public class MixinSystemToast {
 	@Shadow
 	private long firstDrawTime;
 	@Shadow
-	private List<IReorderingProcessor> field_238531_e_;
+	public List<IReorderingProcessor> field_238531_e_;
 	@Shadow
-	private ITextComponent title;
+	public ITextComponent title;
 	
 	/**
 	 * Makes the unreachable condition with <code>SystemToast.field_238531_e_ == null</code> possible again.

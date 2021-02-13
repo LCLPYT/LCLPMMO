@@ -1,9 +1,9 @@
 package work.lclpnet.mmo.util;
 
-import java.util.Arrays;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import java.util.Arrays;
 
 public enum DistSpecifier {
 

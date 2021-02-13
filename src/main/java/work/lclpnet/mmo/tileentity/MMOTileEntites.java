@@ -1,8 +1,5 @@
 package work.lclpnet.mmo.tileentity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
@@ -12,6 +9,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.block.MMOBlocks;
 import work.lclpnet.mmo.util.MMONames;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.MOD)
 public class MMOTileEntites {

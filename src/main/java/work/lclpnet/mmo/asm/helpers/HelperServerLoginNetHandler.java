@@ -1,9 +1,6 @@
 package work.lclpnet.mmo.asm.helpers;
 
-import java.util.function.Consumer;
-
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.login.ServerLoginNetHandler;
@@ -16,6 +13,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
+
+import java.util.function.Consumer;
 
 public class HelperServerLoginNetHandler {
 

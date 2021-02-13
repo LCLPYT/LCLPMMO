@@ -1,13 +1,12 @@
 package work.lclpnet.mmo;
 
+import com.electronwill.nightconfig.core.file.FileConfig;
+
+import javax.xml.ws.Holder;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.ws.Holder;
-
-import com.electronwill.nightconfig.core.file.FileConfig;
 
 public class Config {
 

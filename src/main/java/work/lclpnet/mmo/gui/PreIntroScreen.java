@@ -1,9 +1,6 @@
 package work.lclpnet.mmo.gui;
 
-import java.util.Date;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.ColorHelper;
@@ -17,6 +14,8 @@ import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.DateUtil;
 import work.lclpnet.mmo.util.MMONames;
+
+import java.util.Date;
 
 @OnlyIn(Dist.CLIENT)
 public class PreIntroScreen extends MMOScreen{

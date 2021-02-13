@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.gui.questbook;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.IReorderingProcessor;

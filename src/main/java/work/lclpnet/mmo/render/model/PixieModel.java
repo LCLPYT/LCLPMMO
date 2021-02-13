@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.render.model;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;

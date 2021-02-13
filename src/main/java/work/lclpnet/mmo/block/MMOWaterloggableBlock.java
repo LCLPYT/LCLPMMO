@@ -5,8 +5,6 @@
 
 package work.lclpnet.mmo.block;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -19,6 +17,8 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+
+import javax.annotation.Nonnull;
 
 public class MMOWaterloggableBlock extends MMOBlock implements IWaterLoggable{
 

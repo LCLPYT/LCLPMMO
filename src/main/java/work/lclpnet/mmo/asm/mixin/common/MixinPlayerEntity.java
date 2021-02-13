@@ -1,12 +1,5 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
-import java.util.Map;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
@@ -15,6 +8,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import work.lclpnet.mmo.asm.type.IMMOPlayer;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.facade.User;
@@ -24,6 +21,8 @@ import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageDialog;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
+
+import java.util.Map;
 
 @Mixin(PlayerEntity.class)
 public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {

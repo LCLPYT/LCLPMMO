@@ -1,8 +1,8 @@
 package work.lclpnet.mmo.network;
 
-import java.util.function.Supplier;
-
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import java.util.function.Supplier;
 
 public interface IMessage {
 

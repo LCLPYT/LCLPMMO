@@ -1,10 +1,5 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.util.ClientRecipeBook;
@@ -15,6 +10,10 @@ import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.MinecraftForge;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.event.custom.EntityRightClickedEvent;
 
@@ -45,7 +44,8 @@ public class MixinPlayerController {
 									+ "Lnet/minecraft/entity/player/PlayerEntity;"
 									+ "Lnet/minecraft/entity/Entity;"
 									+ "Lnet/minecraft/util/Hand;"
-									+ ")Lnet/minecraft/util/ActionResultType;"
+									+ ")Lnet/minecraft/util/ActionResultType;",
+							remap = false
 							),
 					cancellable = true
 			)

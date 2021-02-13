@@ -1,19 +1,6 @@
 package work.lclpnet.mmo.audio;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FilenameUtils;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -24,6 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.io.FilenameUtils;
 import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.corebase.util.Substitute;
 import work.lclpnet.mmo.LCLPMMO;
@@ -31,6 +19,12 @@ import work.lclpnet.mmo.util.EnvironmentUtils;
 import work.lclpnet.mmo.util.FFMPEG;
 import work.lclpnet.mmo.util.MessageUtils;
 import work.lclpnet.mmo.util.YoutubeDL;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class MusicSystem {

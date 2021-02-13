@@ -1,13 +1,12 @@
 package work.lclpnet.mmo.facade;
 
-import static work.lclpnet.mmo.util.json.MMOGson.gson;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-
 import work.lclpnet.mmo.util.DebugState;
 import work.lclpnet.mmo.util.json.MMOGson;
 import work.lclpnet.mmo.util.json.NoSerialization;
+
+import static work.lclpnet.mmo.util.json.MMOGson.gson;
 
 public class JsonSerializeable {
 

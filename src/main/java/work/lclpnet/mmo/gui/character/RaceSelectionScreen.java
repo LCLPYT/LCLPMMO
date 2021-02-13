@@ -1,12 +1,12 @@
 package work.lclpnet.mmo.gui.character;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.facade.race.Races;
 import work.lclpnet.mmo.gui.GenericSelectionScreen;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RaceSelectionScreen extends GenericSelectionScreen<MMORace>{
 

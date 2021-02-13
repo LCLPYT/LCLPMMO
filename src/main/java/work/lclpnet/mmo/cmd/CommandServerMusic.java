@@ -1,13 +1,10 @@
 package work.lclpnet.mmo.cmd;
 
-import java.util.List;
-
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -23,6 +20,8 @@ import work.lclpnet.mmo.cmd.args.MusicArgumentType;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageMusic;
 import work.lclpnet.mmo.network.msg.MessageMusic.MusicAction;
+
+import java.util.List;
 
 public class CommandServerMusic extends CommandBase{
 

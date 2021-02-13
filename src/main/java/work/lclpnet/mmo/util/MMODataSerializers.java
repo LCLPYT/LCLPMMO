@@ -1,8 +1,5 @@
 package work.lclpnet.mmo.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.math.vector.Vector3d;
@@ -12,6 +9,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DataSerializerEntry;
 import work.lclpnet.mmo.LCLPMMO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = LCLPMMO.MODID)
 public class MMODataSerializers {

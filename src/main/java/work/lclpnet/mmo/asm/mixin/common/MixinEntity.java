@@ -1,9 +1,9 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -11,14 +11,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
 import work.lclpnet.mmo.asm.type.IMMOEntity;
 import work.lclpnet.mmo.util.ClickListener;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Mixin(Entity.class)
 public class MixinEntity implements IMMOEntity<Entity> {

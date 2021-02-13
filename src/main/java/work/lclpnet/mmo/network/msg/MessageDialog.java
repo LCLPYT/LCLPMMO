@@ -1,9 +1,5 @@
 package work.lclpnet.mmo.network.msg;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -20,6 +16,10 @@ import work.lclpnet.mmo.facade.dialog.DialogFragment;
 import work.lclpnet.mmo.gui.dialog.DialogScreen;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class MessageDialog implements IMessage {
 

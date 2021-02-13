@@ -1,17 +1,15 @@
 package work.lclpnet.mmo.render;
 
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import work.lclpnet.mmo.render.model.AbstractMMOPlayerModel;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class MMOPlayerRenderer extends PlayerRenderer {
 

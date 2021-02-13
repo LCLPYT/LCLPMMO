@@ -1,12 +1,5 @@
 package work.lclpnet.mmo.cmd.args;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.StringReader;
@@ -16,13 +9,19 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 public class ScaleArgumentType implements ArgumentType<ScaleArgumentResult> {
 	private static final Collection<String> EXAMPLES = Arrays.asList("0 0", "~ ~", "0.1 0.5", "~1 ~2");

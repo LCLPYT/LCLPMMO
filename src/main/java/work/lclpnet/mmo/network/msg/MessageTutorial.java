@@ -1,7 +1,5 @@
 package work.lclpnet.mmo.network.msg;
 
-import java.util.function.Supplier;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,6 +11,8 @@ import work.lclpnet.mmo.event.custom.TutorialStartEvent;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
 import work.lclpnet.mmo.network.MMOPacketHandler;
+
+import java.util.function.Supplier;
 
 public class MessageTutorial implements IMessage {
 

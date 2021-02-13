@@ -1,11 +1,10 @@
 package work.lclpnet.mmo.entity;
 
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
+
+import javax.annotation.Nullable;
+import java.util.Map;
 
 public interface IEntitySizeOverride {
 

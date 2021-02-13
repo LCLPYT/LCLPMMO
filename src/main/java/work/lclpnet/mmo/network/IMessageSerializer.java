@@ -1,9 +1,9 @@
 package work.lclpnet.mmo.network;
 
-import java.util.function.Supplier;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public interface IMessageSerializer<T extends IMessage> {
 

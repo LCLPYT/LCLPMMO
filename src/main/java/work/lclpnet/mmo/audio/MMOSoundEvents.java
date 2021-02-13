@@ -1,8 +1,5 @@
 package work.lclpnet.mmo.audio;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -11,6 +8,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.util.MMONames.Sound;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.MOD)
 public class MMOSoundEvents {

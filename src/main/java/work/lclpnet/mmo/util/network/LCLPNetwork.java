@@ -1,23 +1,6 @@
 package work.lclpnet.mmo.util.network;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonElement;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,6 +8,15 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.User;
+
+import javax.annotation.Nullable;
+import java.io.*;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class LCLPNetwork {
 

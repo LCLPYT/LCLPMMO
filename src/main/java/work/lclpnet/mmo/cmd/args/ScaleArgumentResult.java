@@ -2,7 +2,6 @@ package work.lclpnet.mmo.cmd.args;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.vector.Vector2f;
 import work.lclpnet.mmo.util.MMOMonsterAttributes;

@@ -1,11 +1,11 @@
 package work.lclpnet.mmo.facade;
 
+import work.lclpnet.mmo.util.DataUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import work.lclpnet.mmo.util.DataUtils;
 
 public class DynamicData extends JsonSerializeable {
 

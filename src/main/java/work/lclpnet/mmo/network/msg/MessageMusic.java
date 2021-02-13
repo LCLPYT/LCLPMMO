@@ -1,12 +1,6 @@
 package work.lclpnet.mmo.network.msg;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.google.gson.Gson;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.PacketBuffer;
@@ -19,6 +13,11 @@ import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MusicSystem;
 import work.lclpnet.mmo.network.IMessage;
 import work.lclpnet.mmo.network.IMessageSerializer;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class MessageMusic implements IMessage {
 

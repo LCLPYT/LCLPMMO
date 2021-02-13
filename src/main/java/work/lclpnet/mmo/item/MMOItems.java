@@ -1,8 +1,5 @@
 package work.lclpnet.mmo.item;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.SpawnEggItem;
@@ -13,6 +10,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.util.MMONames;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = LCLPMMO.MODID)
 public class MMOItems {

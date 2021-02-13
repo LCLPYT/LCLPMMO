@@ -3,7 +3,6 @@ package work.lclpnet.mmo.cmd.args;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.util.text.TranslationTextComponent;
 

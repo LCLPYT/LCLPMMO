@@ -1,19 +1,17 @@
 package work.lclpnet.mmo.util.network;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import org.apache.commons.io.IOUtils;
+import work.lclpnet.mmo.facade.JsonSerializeable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-
-import work.lclpnet.mmo.facade.JsonSerializeable;
 
 public class HTTPResponse {
 

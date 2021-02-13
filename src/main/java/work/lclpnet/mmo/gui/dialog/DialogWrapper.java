@@ -1,10 +1,10 @@
 package work.lclpnet.mmo.gui.dialog;
 
-import java.util.Objects;
-
 import net.minecraft.util.math.MathHelper;
 import work.lclpnet.mmo.facade.dialog.DialogData;
 import work.lclpnet.mmo.facade.dialog.DialogFragment;
+
+import java.util.Objects;
 
 public class DialogWrapper {
 	

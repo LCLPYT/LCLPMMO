@@ -1,10 +1,5 @@
 package work.lclpnet.mmo.render;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -19,6 +14,10 @@ import work.lclpnet.mmo.facade.race.Races;
 import work.lclpnet.mmo.render.model.ElvePlayerModel;
 import work.lclpnet.mmo.render.model.HumanPlayerModel;
 import work.lclpnet.mmo.render.model.VampirePlayerModel;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientRenderHandler {

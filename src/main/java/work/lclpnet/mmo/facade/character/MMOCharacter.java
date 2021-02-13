@@ -1,15 +1,8 @@
 package work.lclpnet.mmo.facade.character;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -21,6 +14,12 @@ import work.lclpnet.mmo.util.DistSpecifier;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 import work.lclpnet.mmo.util.json.NoSerialization;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class MMOCharacter extends NetworkSaveable implements MMOSelectionItem {
 

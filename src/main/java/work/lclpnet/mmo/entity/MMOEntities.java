@@ -1,9 +1,5 @@
 package work.lclpnet.mmo.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -15,6 +11,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.util.MMONames;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = LCLPMMO.MODID)
 public class MMOEntities {

@@ -1,10 +1,9 @@
 package work.lclpnet.mmo.facade;
 
-import java.util.function.Consumer;
-
 import com.google.gson.JsonElement;
-
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+
+import java.util.function.Consumer;
 
 public abstract class NetworkSaveable extends JsonSerializeable {
 

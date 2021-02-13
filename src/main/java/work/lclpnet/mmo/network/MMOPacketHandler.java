@@ -1,10 +1,6 @@
 package work.lclpnet.mmo.network;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -16,14 +12,10 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.network.msg.MessageDialog;
-import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
-import work.lclpnet.mmo.network.msg.MessageMMOMusic;
-import work.lclpnet.mmo.network.msg.MessageMusic;
-import work.lclpnet.mmo.network.msg.MessageRequestMCLink;
-import work.lclpnet.mmo.network.msg.MessageSendMCLinkToken;
-import work.lclpnet.mmo.network.msg.MessageShowTutorialScreen;
-import work.lclpnet.mmo.network.msg.MessageTutorial;
+import work.lclpnet.mmo.network.msg.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @EventBusSubscriber(bus = Bus.FORGE, modid = LCLPMMO.MODID)
 public class MMOPacketHandler {

@@ -1,13 +1,7 @@
 package work.lclpnet.mmo.gui.character;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,6 +15,11 @@ import work.lclpnet.mmo.gui.EditableGenericSelectionScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.util.Enqueuer;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCharacter> {
 

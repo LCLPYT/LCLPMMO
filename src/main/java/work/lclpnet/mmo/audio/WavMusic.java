@@ -1,21 +1,13 @@
 package work.lclpnet.mmo.audio;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineEvent.Type;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.sound.sampled.*;
+import javax.sound.sampled.LineEvent.Type;
+import java.io.File;
+import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
 public class WavMusic extends MusicBase implements MusicInstance{

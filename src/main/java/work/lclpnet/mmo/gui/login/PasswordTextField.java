@@ -1,13 +1,12 @@
 package work.lclpnet.mmo.gui.login;
 
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PasswordTextField extends TextFieldWidget {
 

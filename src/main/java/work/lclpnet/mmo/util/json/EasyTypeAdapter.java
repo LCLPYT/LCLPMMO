@@ -1,9 +1,5 @@
 package work.lclpnet.mmo.util.json;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -11,9 +7,12 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-
 import work.lclpnet.mmo.util.DebugState;
 import work.lclpnet.mmo.util.IOConsumer;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public abstract class EasyTypeAdapter<T> extends TypeAdapter<T> {
 

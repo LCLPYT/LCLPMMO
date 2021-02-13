@@ -1,9 +1,5 @@
 package work.lclpnet.mmo.entity;
 
-import java.util.EnumSet;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
@@ -14,11 +10,7 @@ import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.FlyingMovementController;
-import net.minecraft.entity.ai.goal.FollowOwnerGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtWithoutMovingGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.IFlyingAnimal;
 import net.minecraft.entity.passive.TameableEntity;
@@ -46,6 +38,9 @@ import net.minecraft.world.server.ServerWorld;
 import work.lclpnet.corebase.util.EntityHelper;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
 import work.lclpnet.mmo.util.MMODataSerializers;
+
+import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, ILimitTracking {
 
@@ -313,9 +308,6 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 
 	class WanderToGoal extends Goal {
 
-		/**
-		 * @param strict True, if the entity should be teleported to the target when very near.
-		 */
 		WanderToGoal() {
 			this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
 		}

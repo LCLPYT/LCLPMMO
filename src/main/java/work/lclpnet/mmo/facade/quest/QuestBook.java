@@ -1,9 +1,9 @@
 package work.lclpnet.mmo.facade.quest;
 
+import work.lclpnet.mmo.facade.JsonSerializeable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import work.lclpnet.mmo.facade.JsonSerializeable;
 
 public class QuestBook {
 

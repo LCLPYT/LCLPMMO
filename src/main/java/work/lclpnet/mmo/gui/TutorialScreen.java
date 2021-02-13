@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.TextFormatting;
