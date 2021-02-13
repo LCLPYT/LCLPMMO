@@ -121,7 +121,7 @@ public class HTTPResponse {
 				elems.forEach(eElem -> {
 					try {
 					    errors.add(eElem.getAsString());
-					} catch (ClassCastException ex) {}
+					} catch (ClassCastException ignored) {}
 				});
 			}
 			elemErrors.add(new ElementError(e.getKey(), errors));	

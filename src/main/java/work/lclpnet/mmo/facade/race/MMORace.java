@@ -48,7 +48,7 @@ public class MMORace extends JsonSerializeable implements MMOSelectionItem, IEnt
 		}
 
 		@Override
-		public MMORace read(JsonObject json) throws IOException {
+		public MMORace read(JsonObject json) {
 			return fromJsonObject(json);
 		}
 

@@ -116,7 +116,7 @@ public class MMOCharacter extends NetworkSaveable implements MMOSelectionItem {
 		}
 
 		@Override
-		public MMOCharacter read(JsonObject json) throws IOException {
+		public MMOCharacter read(JsonObject json) {
 			String name = json.get("name").getAsString();
 			MMORace race = MMORace.Adapter.INSTANCE.fromJsonObject(json.getAsJsonObject("race"));
 			DynamicCharacterData data = null;

@@ -14,15 +14,16 @@
         "common.MixinTrackedEntity"
     ],
     "client": [
-        "client.MixinMinecraft",
-        "client.MixinEntityRendererManager",
-        "client.MixinClientPlayNetHandler",
-        "client.MixinPlayerController",
-        "client.MixinSystemToast",
-        "client.MixinMusicTicker",
-        "client.MixinGameSettings",
-        "client.MixinFirstPersonRenderer",
-        "client.MixinPlayerRenderer"
+      "client.MixinClientPlayNetHandler",
+      "client.MixinEntityRendererManager",
+      "client.MixinFirstPersonRenderer",
+      "client.MixinGameSettings",
+      "client.MixinMinecraft",
+      "client.MixinMusicTicker",
+      "client.MixinPlayerController",
+      "client.MixinPlayerRenderer",
+      "client.MixinSystemToast",
+      "client.MixinHeldItemLayer"
     ],
     "server": [
         "server.MixinDedicatedServer"

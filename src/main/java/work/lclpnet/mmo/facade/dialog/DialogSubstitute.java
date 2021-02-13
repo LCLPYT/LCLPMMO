@@ -4,8 +4,8 @@ import net.minecraft.network.PacketBuffer;
 
 public class DialogSubstitute {
 
-	protected String substitute;
-	protected boolean translationKey;
+	protected final String substitute;
+	protected final boolean translationKey;
 	
 	public DialogSubstitute(String substitute, boolean translationKey) {
 		this.substitute = substitute;

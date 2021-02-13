@@ -20,7 +20,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	protected Button selectButton;
 	protected TextFieldWidget searchField;
 	protected GenericSelectionList<T, GenericSelectionScreen<T>> selectionList;
-	protected Properties props;
+	protected final Properties props;
 	protected ResourceLocation background = null;
 	protected T preSelected = null;
 
@@ -141,14 +141,14 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 	protected static class Properties {
 
 		Function<Integer, Integer> selectionListHeight = height -> height - 32;
-		Function<Integer, Integer> selBtnPosX = width -> width / 2 - 154;
+		final Function<Integer, Integer> selBtnPosX = width -> width / 2 - 154;
 		Function<Integer, Integer> selBtnPosY = height -> height - 28;
-		Function<Integer, Integer> selBtnWidth = width -> 150;
-		Function<Integer, Integer> selBtnHeight = height -> 20;
+		final Function<Integer, Integer> selBtnWidth = width -> 150;
+		final Function<Integer, Integer> selBtnHeight = height -> 20;
 		Function<Integer, Integer> cancelBtnPosX = width -> width / 2 + 4;
-		Function<Integer, Integer> cancelBtnPosY = height -> height - 28;
+		final Function<Integer, Integer> cancelBtnPosY = height -> height - 28;
 		Function<Integer, Integer> cancelBtnWidth = width -> 150;
-		Function<Integer, Integer> cancelBtnHeight = height -> 20;
+		final Function<Integer, Integer> cancelBtnHeight = height -> 20;
 
 		protected Properties() {}
 

@@ -53,7 +53,7 @@ public class Quest {
 		}
 
 		@Override
-		public Quest read(JsonObject json) throws IOException {
+		public Quest read(JsonObject json) {
 			String identifier = json.get("identifier").getAsString();
 			return Quests.getQuestByIdentifier(identifier);
 		}

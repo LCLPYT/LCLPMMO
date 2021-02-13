@@ -33,8 +33,8 @@ public class LCLPMMO {
 	
 	public static final String MODID = "lclpmmo";
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
-	public static MMOGroup GROUP = new MMOGroup(MODID);
+	public static final ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
+	public static final MMOGroup GROUP = new MMOGroup(MODID);
 
 	static {
 		GeckoLibMod.DISABLE_IN_DEV = true;

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class DecisionDialogFragment extends DialogFragment {
 
-	protected List<DecisionOption> options;
+	protected final List<DecisionOption> options;
 	
 	public DecisionDialogFragment(String questionTranslationKey, List<DecisionOption> options, DialogSubstitute... substitutes) {
 		super(questionTranslationKey, substitutes);

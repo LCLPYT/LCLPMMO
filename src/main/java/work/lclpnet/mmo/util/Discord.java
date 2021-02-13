@@ -13,6 +13,7 @@ public class Discord {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	
+	@SuppressWarnings("BusyWait")
 	public static void initRPC() {
 		LOGGER.info("Initializing Discord Rich Presence...");
 		

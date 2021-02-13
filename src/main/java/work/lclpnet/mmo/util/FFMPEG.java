@@ -55,7 +55,7 @@ public class FFMPEG {
 		else return;
 
 		String[] procArgs = new String[args.length + 1];
-		procArgs[0] = program.toString();
+		procArgs[0] = program;
 		for(int i = 0; i < args.length; i++) procArgs[i + 1] = args[i];
 
 		System.out.printf("Executing %s\n", Arrays.stream(procArgs).map(a -> a + " ").collect(Collectors.joining()));

@@ -31,7 +31,7 @@ public class ScaleArgumentType implements ArgumentType<ScaleArgumentResult> {
 		return new ScaleArgumentType();
 	}
 
-	public static Vector2f getVec2f(CommandContext<CommandSource> context, String name, Entity target) throws CommandSyntaxException {
+	public static Vector2f getVec2f(CommandContext<CommandSource> context, String name, Entity target) {
 		return context.getArgument(name, ScaleArgumentResult.class).getScale(target);
 	}
 

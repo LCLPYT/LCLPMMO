@@ -42,4 +42,10 @@ public class RaceElve extends MMORace {
 		}
 	}
 
+	public static final float[] TRIDENT_TRANSLATION = new float[] { 0F, -4F / 16F, 0F };
+
+	@Override
+	public float[] getTridentTranslation() {
+		return TRIDENT_TRANSLATION;
+	}
 }

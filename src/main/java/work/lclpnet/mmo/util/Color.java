@@ -19,7 +19,10 @@ public class Color {
 			LIME = 0xff7fff00,
 			TURQUOISE = 0xff00ff7f;
 
-	public float red, green, blue, alpha;
+	public final float red;
+	public final float green;
+	public final float blue;
+	public float alpha;
 
 	/**
 	 * @param red Red part. {0.0;255.0}

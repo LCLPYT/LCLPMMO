@@ -16,13 +16,13 @@ import java.lang.reflect.Modifier;
 
 public abstract class EasyTypeAdapter<T> extends TypeAdapter<T> {
 
-	protected Class<T> clazz;
+	protected final Class<T> clazz;
 
 	public EasyTypeAdapter(Class<T> clazz) {
 		this.clazz = clazz;
 	}
 
-	protected abstract T read(JsonObject json) throws IOException;
+	protected abstract T read(JsonObject json);
 
 	@Override
 	public T read(JsonReader in) throws IOException {

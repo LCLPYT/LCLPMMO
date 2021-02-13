@@ -21,9 +21,9 @@ import java.util.function.Supplier;
 
 public class MessageMusic implements IMessage {
 
-	public MusicAction action;
-	public String file;
-	public float volume;
+	public final MusicAction action;
+	public final String file;
+	public final float volume;
 	
 	public MessageMusic(MusicAction action) {
 		this(action, "", -1F);

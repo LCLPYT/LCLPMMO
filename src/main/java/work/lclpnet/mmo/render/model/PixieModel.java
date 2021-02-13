@@ -8,11 +8,11 @@ import work.lclpnet.mmo.entity.PixieEntity;
 
 public class PixieModel extends SegmentedModel<PixieEntity> {
 
-	public ModelRenderer body;
-	public ModelRenderer leftTopWing;
-	public ModelRenderer rightTopWing;
-	public ModelRenderer rightBottomWing;
-	public ModelRenderer leftBottomWing;
+	public final ModelRenderer body;
+	public final ModelRenderer leftTopWing;
+	public final ModelRenderer rightTopWing;
+	public final ModelRenderer rightBottomWing;
+	public final ModelRenderer leftBottomWing;
 
 	public PixieModel() {
 		textureWidth = 16;

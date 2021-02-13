@@ -86,7 +86,7 @@ public class ScalePart {
 	public int hashCode() {
 		int i = this.relative ? 1 : 0;
 		int j = Float.floatToIntBits(this.value);
-		i = 31 * i + (int)(j ^ j >>> 32);
+		i = 31 * i + (j ^ j >>> 32);
 		return i;
 	}
 

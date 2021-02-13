@@ -8,6 +8,8 @@ import java.util.Map;
 
 public interface IEntitySizeOverride {
 
+	float[] TRIDENT_TRANSLATION = new float[] { 0F, 0F, 0F };
+
 	@Nullable
 	default Map<Pose, EntitySize> getEntitySizeOverrides() {
 		return null;
@@ -15,6 +17,10 @@ public interface IEntitySizeOverride {
 	
 	default float getEyeHeightOverride(Pose pose, EntitySize size) {
 		return Float.NaN;
+	}
+
+	default float[] getTridentTranslation() {
+		return TRIDENT_TRANSLATION;
 	}
 	
 }

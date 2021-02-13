@@ -7,8 +7,8 @@ import java.util.List;
 
 public class DialogFragment {
 
-	protected String translationKey;
-	protected DialogSubstitute[] substitutes;
+	protected final String translationKey;
+	protected final DialogSubstitute[] substitutes;
 	
 	public DialogFragment(String translationKey, DialogSubstitute... substitutes) {
 		this.translationKey = translationKey;

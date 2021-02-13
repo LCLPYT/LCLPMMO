@@ -218,9 +218,10 @@ public class MMOMainScreen extends MMOScreen{
 
 	public class MMOButtonInfo {
 
-		public ITextComponent text;
-		public IPressable onClick;
-		public int color, hoverColor;
+		public final ITextComponent text;
+		public final IPressable onClick;
+		public final int color;
+		public final int hoverColor;
 
 		public MMOButtonInfo(ITextComponent text, IPressable onClick) {
 			this(text, onClick, TextFormatting.WHITE.getColor(), TextFormatting.YELLOW.getColor());

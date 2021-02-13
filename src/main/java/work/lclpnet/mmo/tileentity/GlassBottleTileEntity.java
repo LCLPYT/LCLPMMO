@@ -16,7 +16,7 @@ import work.lclpnet.mmo.util.ItemStackUtils;
 
 public class GlassBottleTileEntity extends TileEntity{
 
-	protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+	protected final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
 	public GlassBottleTileEntity() {
 		super(MMOTileEntites.GLASS_BOTTLE);

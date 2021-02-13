@@ -8,7 +8,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 public class PlayerBlockEvent extends BlockEvent{
 
-	protected PlayerEntity player;
+	protected final PlayerEntity player;
 	
 	public PlayerBlockEvent(IWorld world, BlockPos pos, BlockState state, PlayerEntity player) {
 		super(world, pos, state);

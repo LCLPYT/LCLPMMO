@@ -8,7 +8,7 @@ import java.io.File;
 @OnlyIn(Dist.CLIENT)
 public class MusicBase {
 
-	protected File file;
+	protected final File file;
 	protected float volume;
 	
 	public MusicBase(File file, float volume) {

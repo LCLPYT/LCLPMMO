@@ -22,7 +22,7 @@ public class LCLPNetwork {
 
 	private static String accessToken = null;
 	private static boolean online = false;
-	public static IPrivateBackend BACKEND = IPrivateBackend.NONE;
+	public static final IPrivateBackend BACKEND = IPrivateBackend.NONE;
 
 	public static void loadAccessToken(final Consumer<Boolean> callback) {
 		new Thread(() -> {
@@ -39,13 +39,11 @@ public class LCLPNetwork {
 				while((read = in.read(buffer, 0, buffer.length)) != -1) 
 					out.write(buffer, 0, read);
 
-				accessToken = new String(out.toByteArray());
+				accessToken = out.toString();
 				callback.accept(true);
-				return;
 			} catch (IOException e) {
 				e.printStackTrace();
 				callback.accept(false);
-				return;
 			}
 		}, "access token loader").start();
 	}
@@ -78,11 +76,9 @@ public class LCLPNetwork {
 			try (OutputStream out = new FileOutputStream(f)) {
 				out.write(token.getBytes());
 				callback.accept(true);
-				return;
 			} catch (IOException e) {
 				e.printStackTrace();
 				callback.accept(false);
-				return;
 			}
 		}, "access token saver").start();
 	}
@@ -141,10 +137,8 @@ public class LCLPNetwork {
 				conn.disconnect();
 
 				if(callback != null) callback.accept(response);
-				return;
 			} catch (ConnectException e) {
 				if(callback != null) callback.accept(HTTPResponse.NO_CONNECTION);
-				return;
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}			

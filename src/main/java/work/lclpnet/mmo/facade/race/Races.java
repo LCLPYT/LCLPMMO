@@ -14,7 +14,7 @@ public class Races {
 	public static final RaceElve ELVE = register(new RaceElve());
 	
 	private static <T extends MMORace> T register(T race) {
-		if(!races.stream().map(MMORace::toString).noneMatch(race.getUnlocalizedName()::equals)) 
+		if(races.stream().map(MMORace::toString).anyMatch(race.getUnlocalizedName()::equals))
 			throw new IllegalArgumentException(String.format("Race with name '%s' already registered.", race.getUnlocalizedName()));
 		
 		races.add(race);

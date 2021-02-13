@@ -22,7 +22,7 @@ public class CharacterCreatorScreen extends MMOScreen{
 	protected Button btnCreateCharacter;
 	protected TextFieldWidget characterNameField;
 	protected String characterName = "";
-	protected CharacterChooserScreen prevScreen;
+	protected final CharacterChooserScreen prevScreen;
 	protected MMORace selectedRace = null;
 	protected boolean createFirst = false;
 

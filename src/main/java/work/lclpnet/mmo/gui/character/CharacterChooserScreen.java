@@ -32,7 +32,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 
 		if(User.getSelectedCharacter() != null) {
 			for(MMOCharacter character : characters) {
-				if(character.id != null && character.id == User.getSelectedCharacter().id) {
+				if(character.id != null && character.id.equals(User.getSelectedCharacter().id)) {
 					this.preSelected = character;
 					break;
 				}
@@ -50,7 +50,6 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 		LCLPNetwork.post("api/ls5/set-active-character", body, response -> {
 			if(response.isNoConnection()) {
 				displayToast(new TranslationTextComponent("mmo.no_internet"));
-				return;
 			}
 			else if(response.getResponseCode() == 200) {
 				User.setSelectedCharacter(selected);
@@ -97,7 +96,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 					} else if(response.getResponseCode() == 200) {
 						displayToast(new TranslationTextComponent("mmo.menu.select_character.delete_success"),
 								null);
-						if(User.getSelectedCharacter() != null && User.getSelectedCharacter().id != null && character.id == User.getSelectedCharacter().id) 
+						if(User.getSelectedCharacter() != null && User.getSelectedCharacter().id != null && character.id.equals(User.getSelectedCharacter().id))
 							User.setSelectedCharacter(null);
 					} else {
 						ITextComponent reason = new TranslationTextComponent("error.unknown");
