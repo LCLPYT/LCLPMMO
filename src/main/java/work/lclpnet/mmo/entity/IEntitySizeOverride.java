@@ -21,5 +21,7 @@ public interface IEntitySizeOverride {
 	default void doTridentTranslation(MatrixStack matrixStack) {}
 
 	default void doElytraTranslation(MatrixStack matrixStack) {}
+
+	default void doCapeTranslation(MatrixStack matrixStack) {}
 	
 }

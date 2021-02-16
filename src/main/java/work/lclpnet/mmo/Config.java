@@ -18,7 +18,8 @@ public class Config {
 			KEY_NETWORK_STAGING = "network.staging",
 			KEY_NETWORK_HOST_STAGING = "network.host-staging",
 			KEY_NETWORK_HOST_LIVE = "network.host-live",
-			KEY_MINECRAFT_MUSIC_DISABLED = "game.disable-minecraft-music";
+			KEY_MINECRAFT_MUSIC_DISABLED = "game.disable-minecraft-music",
+	        KEY_DEBUG_CAPE = "debug.cape";
 	
 	static {
 		register.put(KEY_SKIP_INTRO, false);
@@ -27,6 +28,7 @@ public class Config {
 		register.put(KEY_NETWORK_HOST_STAGING, "http://localhost:8000");
 		register.put(KEY_NETWORK_HOST_LIVE, "https://lclpnet.work");
 		register.put(KEY_MINECRAFT_MUSIC_DISABLED, false);
+		register.put(KEY_DEBUG_CAPE, false);
 	}
 	
 	public static void load() {
@@ -123,6 +125,10 @@ public class Config {
 	
 	public static boolean isMinecraftMusicDisabled() {
 		return get(KEY_MINECRAFT_MUSIC_DISABLED);
+	}
+
+	public static boolean isDebugCape() {
+		return get(KEY_DEBUG_CAPE);
 	}
 	
 }

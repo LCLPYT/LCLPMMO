@@ -14,7 +14,7 @@ import work.lclpnet.mmo.facade.race.MMORace;
 public class MixinElytraLayer {
 
     @Inject(
-            method = "Lnet/minecraft/client/renderer/entity/layers/ElytraLayer;render(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/entity/LivingEntity;FFFFFF)V",
+            method = "render(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/entity/LivingEntity;FFFFFF)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/matrix/MatrixStack;translate(DDD)V"
