@@ -57,4 +57,9 @@ public class RaceElven extends MMORace {
 	public void doCapeTranslation(MatrixStack matrixStack) {
 		matrixStack.translate(0F, -4F / 16F, 0F);
 	}
+
+	@Override
+	public void doParrotTranslation(MatrixStack matrixStack) {
+		matrixStack.translate(0F, -4F / 16F, 0F);
+	}
 }
