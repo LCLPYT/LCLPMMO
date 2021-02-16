@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.HandSide;
@@ -13,8 +12,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import work.lclpnet.mmo.asm.type.IMMOUser;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 
 @Mixin(HeldItemLayer.class)
@@ -25,18 +22,10 @@ public class MixinHeldItemLayer {
             at = @At("HEAD")
     )
     public void onRenderItemPre(LivingEntity livingEntity, ItemStack itemStack, ItemCameraTransforms.TransformType p_229135_3_, HandSide p_229135_4_, MatrixStack matrixStack, IRenderTypeBuffer p_229135_6_, int p_229135_7_, CallbackInfo ci) {
-        if(itemStack.isEmpty() || !(livingEntity instanceof PlayerEntity)) return;
-
-        PlayerEntity player = (PlayerEntity) livingEntity;
-        MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
-        if(character == null) return;
-        MMORace race = character.getRace();
-        if(race == null) return;
-
-        if(Items.TRIDENT.equals(itemStack.getItem()) && livingEntity.isHandActive()) {
+        MMORace race = MMORace.getRaceFromPlayer(livingEntity);
+        if(conditionRenderItem(livingEntity, itemStack, race)) {
             matrixStack.push();
-            float[] translation = race.getTridentTranslation();
-            matrixStack.translate(translation[0], translation[1], translation[2]);
+            race.doTridentTranslation(matrixStack);
         }
     }
 
@@ -45,11 +34,11 @@ public class MixinHeldItemLayer {
             at = @At("TAIL")
     )
     public void onRenderItemPost(LivingEntity livingEntity, ItemStack itemStack, ItemCameraTransforms.TransformType p_229135_3_, HandSide p_229135_4_, MatrixStack matrixStack, IRenderTypeBuffer p_229135_6_, int p_229135_7_, CallbackInfo ci) {
-        if(itemStack.isEmpty()) return;
+        if(conditionRenderItem(livingEntity, itemStack, MMORace.getRaceFromPlayer(livingEntity))) matrixStack.pop();
+    }
 
-        if(Items.TRIDENT.equals(itemStack.getItem()) && livingEntity.isHandActive()) {
-            matrixStack.pop();
-        }
+    private boolean conditionRenderItem(LivingEntity livingEntity, ItemStack itemStack, MMORace race) {
+        return !itemStack.isEmpty() && race != null && Items.TRIDENT.equals(itemStack.getItem()) && livingEntity.isHandActive();
     }
 
 }

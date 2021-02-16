@@ -23,7 +23,8 @@
       "client.MixinPlayerController",
       "client.MixinPlayerRenderer",
       "client.MixinSystemToast",
-      "client.MixinHeldItemLayer"
+      "client.MixinHeldItemLayer",
+      "client.MixinElytraLayer"
     ],
     "server": [
         "server.MixinDedicatedServer"

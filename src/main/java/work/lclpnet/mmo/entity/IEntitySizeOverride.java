@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 
@@ -7,8 +8,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 public interface IEntitySizeOverride {
-
-	float[] TRIDENT_TRANSLATION = new float[] { 0F, 0F, 0F };
 
 	@Nullable
 	default Map<Pose, EntitySize> getEntitySizeOverrides() {
@@ -19,8 +18,8 @@ public interface IEntitySizeOverride {
 		return Float.NaN;
 	}
 
-	default float[] getTridentTranslation() {
-		return TRIDENT_TRANSLATION;
-	}
+	default void doTridentTranslation(MatrixStack matrixStack) {}
+
+	default void doElytraTranslation(MatrixStack matrixStack) {}
 	
 }

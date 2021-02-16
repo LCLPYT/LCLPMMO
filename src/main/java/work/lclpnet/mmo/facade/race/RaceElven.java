@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.facade.race;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.ResourceLocation;
@@ -42,10 +43,13 @@ public class RaceElven extends MMORace {
 		}
 	}
 
-	public static final float[] TRIDENT_TRANSLATION = new float[] { 0F, -4F / 16F, 0F };
+	@Override
+	public void doTridentTranslation(MatrixStack matrixStack) {
+		matrixStack.translate(0F, -4F / 16F, 0F);
+	}
 
 	@Override
-	public float[] getTridentTranslation() {
-		return TRIDENT_TRANSLATION;
+	public void doElytraTranslation(MatrixStack matrixStack) {
+		matrixStack.translate(0F, -3F / 16F, 0F);
 	}
 }

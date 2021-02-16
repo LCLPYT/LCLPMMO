@@ -2,9 +2,13 @@ package work.lclpnet.mmo.facade.race;
 
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
+import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.entity.IEntitySizeOverride;
 import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
@@ -28,6 +32,15 @@ public class MMORace extends JsonSerializeable implements MMOSelectionItem, IEnt
 	@Override
 	public ITextComponent getTitle() {
 		return title;
+	}
+
+	public static MMORace getRaceFromPlayer(LivingEntity entity) {
+		if(!(entity instanceof PlayerEntity)) return null;
+
+		PlayerEntity player = (PlayerEntity) entity;
+		MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
+		if(character == null) return null;
+		return character.getRace();
 	}
 
 	public static class Adapter extends EasyTypeAdapter<MMORace> {
