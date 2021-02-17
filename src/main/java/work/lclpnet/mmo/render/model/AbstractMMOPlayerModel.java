@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 import work.lclpnet.mmo.render.MMOModelRenderer;
 
+import java.util.Random;
+
 public abstract class AbstractMMOPlayerModel extends PlayerModel<AbstractClientPlayerEntity> {
 
 	public AbstractMMOPlayerModel(float modelSize, boolean smallArmsIn) {
@@ -18,5 +20,14 @@ public abstract class AbstractMMOPlayerModel extends PlayerModel<AbstractClientP
 		MMOModelRenderer mmoRenderer = (MMOModelRenderer) modelRenderer;
 		mmoRenderer.setMMOTranslations(x, y, z);
 	}
-	
+
+	@Override
+	public ModelRenderer getRandomModelRenderer(Random randomIn) {
+		try {
+			return super.getRandomModelRenderer(randomIn);
+		} catch (IllegalArgumentException ex) {
+			return null;
+		}
+	}
+
 }

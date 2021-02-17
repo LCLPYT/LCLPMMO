@@ -27,4 +27,13 @@ public interface IEntitySizeOverride {
 	default void doParrotTranslation(MatrixStack matrixStack) {}
 
 	default void doHeadItemTranslation(MatrixStack matrixStack) {}
+
+	default void doHelmetTranslation(MatrixStack matrixStack) {}
+
+	default void doChestplateTranslation(MatrixStack matrixStack) {}
+
+	default void doLeggingsTranslation(MatrixStack matrixStack) {}
+
+	default void doBootsTranslation(MatrixStack matrixStack) {}
+
 }

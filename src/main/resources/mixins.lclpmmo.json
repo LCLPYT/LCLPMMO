@@ -28,7 +28,8 @@
       "client.MixinAbstractClientPlayerEntity",
       "client.MixinCapeLayer",
       "client.MixinParrotVariantLayer",
-      "client.MixinHeadLayer"
+      "client.MixinHeadLayer",
+      "client.MixinStuckInBodyLayer"
     ],
     "server": [
         "server.MixinDedicatedServer"

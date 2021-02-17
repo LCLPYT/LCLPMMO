@@ -13,8 +13,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ElvenPlayerModel extends AbstractMMOPlayerModel {
 
-    private ModelRenderer leftEar;
-    private ModelRenderer rightEar;
+    private MMOModelRenderer leftEar;
+    private MMOModelRenderer rightEar;
 
     public ElvenPlayerModel() {
         super(0F, true);
@@ -41,14 +41,14 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
         bipedLeftArm.setTextureOffset(40, 16).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 14.0F, 4.0F, 0.0F, true);
 
-        bipedLeftArmwear = new ModelRenderer(this);
+        bipedLeftArmwear = new MMOModelRenderer(this);
 
         bipedRightArm = new MMOModelRenderer(this);
         setMMOTranslation(bipedRightArm, 0.0625F, -0.25F, 0F);
         bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
         bipedRightArm.setTextureOffset(32, 46).addBox(-3.0F, -2.0F, -2.0F, 3.0F, 14.0F, 4.0F, 0.0F, true);
 
-        bipedRightArmwear = new ModelRenderer(this);
+        bipedRightArmwear = new MMOModelRenderer(this);
 
         bipedLeftLeg = new MMOModelRenderer(this);
         setMMOTranslation(bipedLeftLeg, 0F, -0.125F, 0F);
@@ -60,7 +60,7 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         bipedRightLeg.setRotationPoint(-1.9F, 12.0F, 0.0F);
         bipedRightLeg.setTextureOffset(16, 46).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 14.0F, 4.0F, 0.0F, true);
 
-        leftEar = new ModelRenderer(this);
+        leftEar = new MMOModelRenderer(this);
         leftEar.setRotationPoint(0.5F, -3.0F, 3.0F);
         bipedHead.addChild(leftEar);
         leftEar.setTextureOffset(34, 1).addBox(3.5F, -1.0F, -4.0F, 0.5F, 1.0F, 1.0F, 0.0F, false);
@@ -72,7 +72,7 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         leftEar.setTextureOffset(50, 3).addBox(4.5F, -2.5F, -2.0F, 0.5F, 1.0F, 0.5F, 0.0F, false);
         leftEar.setTextureOffset(50, 5).addBox(4.5F, -2.5F, -1.5F, 0.5F, 0.5F, 0.5F, 0.0F, false);
 
-        rightEar = new ModelRenderer(this);
+        rightEar = new MMOModelRenderer(this);
         rightEar.setRotationPoint(0.0F, 0.0F, 0.0F);
         bipedHead.addChild(rightEar);
         rightEar.setTextureOffset(34, 1).addBox(-4.5F, -4.0F, -1.0F, 0.5F, 1.0F, 1.0F, 0.0F, false);
@@ -84,7 +84,7 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         rightEar.setTextureOffset(50, 9).addBox(-5.5F, -5.5F, 1.0F, 0.5F, 1.0F, 0.5F, 0.0F, false);
         rightEar.setTextureOffset(50, 11).addBox(-5.5F, -5.5F, 1.5F, 0.5F, 0.5F, 0.5F, 0.0F, false);
 
-        bipedBodyWear = new ModelRenderer(this);
+        bipedBodyWear = new MMOModelRenderer(this);
         bipedBodyWear.setRotationPoint(0.0F, 24.0F, 0.0F);
         bipedBodyWear.setTextureOffset(13, 39).addBox(-4.0F, -4.0F, 2.0F, 1.0F, 1.0F, 0.5F, 0.0F, false);
         bipedBodyWear.setTextureOffset(0 , 37).addBox(-3.0F, -4.0F, 2.0F, 7.0F, 3.0F, 1.0F, 0.0F, false);

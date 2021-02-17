@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
+import java.util.Random;
+
 public class MMOModelRenderer extends ModelRenderer {
 
 	protected float mmoTranslateX = 0F, 
@@ -29,5 +31,13 @@ public class MMOModelRenderer extends ModelRenderer {
 		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		matrixStackIn.pop();
 	}
-	
+
+	@Override
+	public ModelBox getRandomCube(Random randomIn) {
+		try {
+			return super.getRandomCube(randomIn);
+		} catch (IllegalArgumentException ex) {
+			return null;
+		}
+	}
 }
