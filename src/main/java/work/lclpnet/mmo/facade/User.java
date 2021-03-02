@@ -44,8 +44,6 @@ public class User extends JsonSerializeable {
 	
 	public static void setSelectedCharacter(MMOCharacter selectedCharacter) {
 		if(FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
-		System.out.println(selectedCharacter.getData().encryptToString());
-		System.out.println(Base64.getDecoder().decode(selectedCharacter.getData().encryptToString().getBytes(StandardCharsets.UTF_8)).length);
 		User.selectedCharacter = selectedCharacter;
 	}
 	

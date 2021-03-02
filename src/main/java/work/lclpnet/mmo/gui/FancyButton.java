@@ -12,6 +12,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
 
+import javax.annotation.Nonnull;
+
 @OnlyIn(Dist.CLIENT)
 public class FancyButton extends Button{
 
@@ -31,7 +33,7 @@ public class FancyButton extends Button{
 	}
 
 	@Override
-	public void renderButton(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
 		if(!hover && this.isHovered()) {
 			hover = true;
 			onHover();
@@ -44,7 +46,8 @@ public class FancyButton extends Button{
 		FontRenderer fontrenderer = minecraft.fontRenderer;
 		int j = getFGColor();
 		int color = j | MathHelper.ceil(this.alpha * 255.0F) << 24;
-		drawString(mStack, fontrenderer, getMessage(), scale, this.x, (int) (this.y + this.height / 2 - fontrenderer.FONT_HEIGHT / scale), color);
+		int stringY = (int) (this.y + this.height / 2 - fontrenderer.FONT_HEIGHT / scale);
+		drawString(mStack, fontrenderer, getMessage(), scale, this.x, stringY, color);
 	}
 
 	private void drawString(MatrixStack mStack, FontRenderer fr, ITextComponent str, float scale, int x, int y, int color) {

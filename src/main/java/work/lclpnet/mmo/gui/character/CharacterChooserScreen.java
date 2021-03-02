@@ -13,7 +13,7 @@ import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.EditableGenericSelectionScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
-import work.lclpnet.mmo.util.Enqueuer;
+import work.lclpnet.mmo.util.RenderWorker;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 			}
 			else if(response.getResponseCode() == 200) {
 				User.setSelectedCharacter(selected);
-				Enqueuer.enqueueOnRender(() -> this.minecraft.displayGuiScreen(new MMOMainScreen(false)));
+				RenderWorker.enqueueOnRender(() -> this.minecraft.displayGuiScreen(new MMOMainScreen(false)));
 			} else {
 				ITextComponent reason = new TranslationTextComponent("error.unknown");
 				System.err.println(response);
@@ -131,7 +131,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 		final Consumer<List<MMOCharacter>> callback = characters -> {
 			final CharacterChooserScreen guiScreenIn = new CharacterChooserScreen(prevScreen, characters);
 
-			Enqueuer.enqueueOnRender(() -> mc.displayGuiScreen(guiScreenIn));
+			RenderWorker.enqueueOnRender(() -> mc.displayGuiScreen(guiScreenIn));
 		};
 
 		LCLPNetwork.post("api/ls5/get-characters", null, response -> {
