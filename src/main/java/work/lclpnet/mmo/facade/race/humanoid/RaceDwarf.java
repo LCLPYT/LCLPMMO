@@ -1,11 +1,12 @@
-package work.lclpnet.mmo.facade.race;
+package work.lclpnet.mmo.facade.race.humanoid;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import work.lclpnet.mmo.facade.race.MMORace;
 
-public class RaceDwarf extends MMORace{
+public class RaceDwarf extends MMORace {
 
-	RaceDwarf() {
+	public RaceDwarf() {
 		super("dwarf", new TranslationTextComponent("mmo.race.dwarf.title"));
 	}
 	

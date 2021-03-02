@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.facade.race;
+package work.lclpnet.mmo.facade.race.humanoid;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -7,6 +7,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.facade.race.MMORace;
 
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class RaceElven extends MMORace {
 			.put(Pose.CROUCHING, EntitySize.flexible(0.5F, 1.75F))
 			.build(); 
 	
-	RaceElven() {
+	public RaceElven() {
 		super("elven", new TranslationTextComponent("mmo.race.elven.title"));
 	}
 	

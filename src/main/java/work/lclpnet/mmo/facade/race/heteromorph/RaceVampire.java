@@ -1,12 +1,13 @@
-package work.lclpnet.mmo.facade.race;
+package work.lclpnet.mmo.facade.race.heteromorph;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.facade.race.MMORace;
 
 public class RaceVampire extends MMORace {
 
-	RaceVampire() {
+	public RaceVampire() {
 		super("vampire", new TranslationTextComponent("mmo.race.vampire.title"));
 	}
 	

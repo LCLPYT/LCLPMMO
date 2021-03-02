@@ -19,7 +19,7 @@ public class MMORace extends JsonSerializeable implements MMOSelectionItem, IEnt
 	private final String unlocalizedName;
 	private final transient ITextComponent title;
 
-	MMORace(String unlocalizedName, ITextComponent title) {
+	public MMORace(String unlocalizedName, ITextComponent title) {
 		this.unlocalizedName = unlocalizedName;
 		this.title = title;
 	}
