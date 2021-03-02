@@ -186,6 +186,10 @@ public abstract class AbstractMMOPlayerModel extends PlayerModel<AbstractClientP
 		return null;
 	}
 
+	public BipedModel<AbstractClientPlayerEntity> getArmorLeggings() {
+		return null;
+	}
+
 	@Override
 	public ModelRenderer getRandomModelRenderer(Random randomIn) {
 		try {
@@ -193,6 +197,21 @@ public abstract class AbstractMMOPlayerModel extends PlayerModel<AbstractClientP
 		} catch (IllegalArgumentException ex) {
 			return null;
 		}
+	}
+
+	protected final BipedModel<AbstractClientPlayerEntity> getDefaultBodyArmor() {
+		return getScaledArmorModel(1.0F);
+	}
+	protected final BipedModel<AbstractClientPlayerEntity> getDefaultLeggingsArmor() {
+		return getScaledArmorModel(0.5F);
+	}
+
+	private BipedModel<AbstractClientPlayerEntity> getScaledArmorModel(float delta) {
+		BipedModel<AbstractClientPlayerEntity> bodyModel = new BipedModel<>(delta);
+
+		this.overrideModelScale(bodyModel, delta, ModelContext.ARMOR);
+
+		return bodyModel;
 	}
 
 	public static class BoxProperties {

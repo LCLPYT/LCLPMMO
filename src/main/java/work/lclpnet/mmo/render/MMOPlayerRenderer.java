@@ -27,11 +27,14 @@ public class MMOPlayerRenderer extends PlayerRenderer {
 	}
 
 	private void overrideLayers(AbstractMMOPlayerModel model) {
-		BipedModel<AbstractClientPlayerEntity> armorBody = model.getArmorBody();
-		if (armorBody != null) {
+		BipedModel<AbstractClientPlayerEntity> armorBody = model.getArmorBody(), armorLeggings = model.getArmorLeggings();
+		if (armorBody != null || armorLeggings != null) {
 			Common.applyFilteredAction(this.layerRenderers, BipedArmorLayer.class::isInstance, this.layerRenderers::removeAll);
 
-			this.addLayer(new BipedArmorLayer<>(this, new BipedModel<>(0.5F), armorBody));
+			if(armorBody == null) armorBody = new BipedModel<>(1.0F);
+			else if(armorLeggings == null) armorLeggings = new BipedModel<>(0.5F);
+
+			this.addLayer(new BipedArmorLayer<>(this, armorLeggings, armorBody));
 		}
 	}
 

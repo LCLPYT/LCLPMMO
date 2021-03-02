@@ -186,13 +186,12 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
 
     @Override
     public BipedModel<AbstractClientPlayerEntity> getArmorBody() {
-        final float delta = 1.0F;
+        return this.getDefaultBodyArmor();
+    }
 
-        BipedModel<AbstractClientPlayerEntity> bodyModel = new BipedModel<>(delta);
-
-        this.overrideModelScale(bodyModel, delta, ModelContext.ARMOR);
-
-        return bodyModel;
+    @Override
+    public BipedModel<AbstractClientPlayerEntity> getArmorLeggings() {
+        return this.getDefaultLeggingsArmor();
     }
 
 }
