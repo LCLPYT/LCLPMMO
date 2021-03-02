@@ -22,7 +22,10 @@ public class VampirePlayerModel extends AbstractMMOPlayerModel {
 		populate();
 	}
 
-	private void populate() {
+	@Override
+	protected void populate() {
+		this.loseModelReferences();
+
 		bipedHead = new MMOModelRenderer(this);
 		bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
 		bipedHead.setTextureOffset(0, 0).addBox(-4.0F, -8.0F, -4F, 8.0F, 8.0F, 8.0F, 0.0F, false);

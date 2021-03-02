@@ -1,40 +1,41 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "compatibilityLevel": "JAVA_8",
-    "mixinPriority": 1,
-    "package": "work.lclpnet.mmo.asm.mixin",
-    "refmap": "mmo.refmap.json",
-    "mixins": [
-        "common.MixinEntity",
-        "common.MixinLivingEntity",
-        "common.MixinPlayerEntity",
-        "common.MixinPlayerList",
-        "common.MixinServerLoginNetHandler",
-        "common.MixinTrackedEntity"
-    ],
-    "client": [
-      "client.MixinClientPlayNetHandler",
-      "client.MixinEntityRendererManager",
-      "client.MixinFirstPersonRenderer",
-      "client.MixinGameSettings",
-      "client.MixinMinecraft",
-      "client.MixinMusicTicker",
-      "client.MixinPlayerController",
-      "client.MixinPlayerRenderer",
-      "client.MixinSystemToast",
-      "client.MixinHeldItemLayer",
-      "client.MixinElytraLayer",
-      "client.MixinAbstractClientPlayerEntity",
-      "client.MixinCapeLayer",
-      "client.MixinParrotVariantLayer",
-      "client.MixinHeadLayer",
-      "client.MixinStuckInBodyLayer"
-    ],
-    "server": [
-        "server.MixinDedicatedServer"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixinPriority": 1,
+  "package": "work.lclpnet.mmo.asm.mixin",
+  "refmap": "mmo.refmap.json",
+  "mixins": [
+    "common.MixinEntity",
+    "common.MixinLivingEntity",
+    "common.MixinPlayerEntity",
+    "common.MixinPlayerList",
+    "common.MixinServerLoginNetHandler",
+    "common.MixinTrackedEntity"
+  ],
+  "client": [
+    "client.MixinAbstractClientPlayerEntity",
+    "client.MixinCapeLayer",
+    "client.MixinClientPlayNetHandler",
+    "client.MixinElytraLayer",
+    "client.MixinEntityRendererManager",
+    "client.MixinFirstPersonRenderer",
+    "client.MixinGameSettings",
+    "client.MixinHeadLayer",
+    "client.MixinHeldItemLayer",
+    "client.MixinMinecraft",
+    "client.MixinMusicTicker",
+    "client.MixinParrotVariantLayer",
+    "client.MixinPlayerController",
+    "client.MixinPlayerRenderer",
+    "client.MixinStuckInBodyLayer",
+    "client.MixinSystemToast",
+    "client.MixinModelRenderer"
+  ],
+  "server": [
+    "server.MixinDedicatedServer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
   }

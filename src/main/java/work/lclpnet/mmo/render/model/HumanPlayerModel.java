@@ -13,4 +13,7 @@ public class HumanPlayerModel extends AbstractMMOPlayerModel {
 		return null;
 	}
 
+	@Override
+	protected void populate() {}
+
 }

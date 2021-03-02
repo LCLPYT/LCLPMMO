@@ -2,9 +2,12 @@ package work.lclpnet.mmo.render.model;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.render.MMOModelRenderer;
 
@@ -25,40 +28,90 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         populate();
     }
 
-    private void populate() {
-        bipedHead = new MMOModelRenderer(this);
-        setMMOTranslation(bipedHead, 0F, -0.25F, 0F);
-        bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
-        bipedHead.setTextureOffset(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, 0.0F, false);
+    @Override
+    protected MMOModelRenderer.Properties head(BoxProperties props, ModelContext ctx) {
+        return new MMOModelRenderer.Properties(
+                new Vector3f(0F, -0.25F, 0F),
+                new Vector3f(0.0F, 0.0F, 0.0F),
+                new Vector3f(-4.0F, -8.0F, -4.0F),
+                new Vector3f(8.0F, 8.0F, 8.0F),
+                props
+        );
+    }
 
-        bipedBody = new MMOModelRenderer(this);
-        setMMOTranslation(bipedBody, 0F, -0.25F, 0F);
-        bipedBody.setRotationPoint(0.0F, 0.0F, 0.0F);
-        bipedBody.setTextureOffset(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 14.0F, 4.0F, 0.0F, false);
+    @Override
+    protected MMOModelRenderer.Properties body(BoxProperties props, ModelContext ctx) {
+        return new MMOModelRenderer.Properties(
+                new Vector3f(0F, -0.25F, 0F),
+                new Vector3f(0.0F, 0.0F, 0.0F),
+                new Vector3f(-4.0F, 0.0F, -2.0F),
+                new Vector3f(8.0F, 14.0F, 4.0F),
+                props
+        );
+    }
 
-        bipedLeftArm = new MMOModelRenderer(this);
-        setMMOTranslation(bipedLeftArm, 0F, -0.25F, 0F);
-        bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-        bipedLeftArm.setTextureOffset(40, 16).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 14.0F, 4.0F, 0.0F, true);
+    @Override
+    protected MMOModelRenderer.Properties leftArm(BoxProperties props, ModelContext ctx) {
+        return new MMOModelRenderer.Properties(
+                new Vector3f(0F, -0.25F, 0F),
+                new Vector3f(5.0F, 2.0F, 0.0F),
+                new Vector3f(-1.0F, -2.0F, -2.0F),
+                new Vector3f(3.0F, 14.0F, 4.0F),
+                props
+        );
+    }
+
+    @Override
+    protected MMOModelRenderer.Properties rightArm(BoxProperties props, ModelContext ctx) {
+        MMOModelRenderer.Properties rArm = new MMOModelRenderer.Properties(
+                new Vector3f(0.0625F, -0.25F, 0F),
+                new Vector3f(-5.0F, 2.0F, 0.0F),
+                new Vector3f(-3.0F, -2.0F, -2.0F),
+                new Vector3f(3.0F, 14.0F, 4.0F),
+                props
+        );
+
+        if(ctx == ModelContext.ARMOR) rArm.postTranslation = new Vector3f(-0.0625F, 0F, 0F);
+
+        return rArm;
+    }
+
+    @Override
+    protected MMOModelRenderer.Properties leftLeg(BoxProperties props, ModelContext ctx) {
+        return new MMOModelRenderer.Properties(
+                new Vector3f(0F, -0.125F, 0F),
+                new Vector3f(1.9F, 12F, 0.0F),
+                new Vector3f(-2.0F, 0.0F, -2.0F),
+                new Vector3f(4.0F, 14.0F, 4.0F),
+                props
+        );
+    }
+
+    @Override
+    protected MMOModelRenderer.Properties rightLeg(BoxProperties props, ModelContext ctx) {
+        return new MMOModelRenderer.Properties(
+                new Vector3f(0F, -0.125F, 0F),
+                new Vector3f(-1.9F, 12.0F, 0.0F),
+                new Vector3f(-2.0F, 0.0F, -2.0F),
+                new Vector3f(4.0F, 14.0F, 4.0F),
+                props
+        );
+    }
+
+    @Override
+    protected void populate() {
+        // Clear references and override model parts
+        this.overrideBipedModel(this, ModelContext.DEFAULT,
+                new BoxProperties(0, 0, 0F, false),
+                new BoxProperties(16, 16, 0F, false),
+                new BoxProperties(40, 16, 0F, true),
+                new BoxProperties(32, 46, 0F, true),
+                new BoxProperties(0, 16, 0F, false),
+                new BoxProperties(16, 46, 0F, true)
+        );
 
         bipedLeftArmwear = new MMOModelRenderer(this);
-
-        bipedRightArm = new MMOModelRenderer(this);
-        setMMOTranslation(bipedRightArm, 0.0625F, -0.25F, 0F);
-        bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-        bipedRightArm.setTextureOffset(32, 46).addBox(-3.0F, -2.0F, -2.0F, 3.0F, 14.0F, 4.0F, 0.0F, true);
-
         bipedRightArmwear = new MMOModelRenderer(this);
-
-        bipedLeftLeg = new MMOModelRenderer(this);
-        setMMOTranslation(bipedLeftLeg, 0F, -0.125F, 0F);
-        bipedLeftLeg.setRotationPoint(1.9F, 12F, 0.0F);
-        bipedLeftLeg.setTextureOffset(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 14.0F, 4.0F, 0.0F, false);
-
-        bipedRightLeg = new MMOModelRenderer(this);
-        setMMOTranslation(bipedRightLeg, 0F, -0.125F, 0F);
-        bipedRightLeg.setRotationPoint(-1.9F, 12.0F, 0.0F);
-        bipedRightLeg.setTextureOffset(16, 46).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 14.0F, 4.0F, 0.0F, true);
 
         leftEar = new MMOModelRenderer(this);
         leftEar.setRotationPoint(0.5F, -3.0F, 3.0F);
@@ -129,6 +182,17 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         modelrenderer.translateRotate(matrixStackIn);
         modelrenderer.rotationPointX -= translateX;
         modelrenderer.rotationPointY -= translateY;
+    }
+
+    @Override
+    public BipedModel<AbstractClientPlayerEntity> getArmorBody() {
+        final float delta = 1.0F;
+
+        BipedModel<AbstractClientPlayerEntity> bodyModel = new BipedModel<>(delta);
+
+        this.overrideModelScale(bodyModel, delta, ModelContext.ARMOR);
+
+        return bodyModel;
     }
 
 }
