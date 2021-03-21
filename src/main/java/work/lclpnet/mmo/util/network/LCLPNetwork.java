@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.util.network;
 
 import com.google.gson.JsonElement;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -24,63 +23,12 @@ public class LCLPNetwork {
 	private static boolean online = false;
 	public static final IPrivateBackend BACKEND = IPrivateBackend.NONE;
 
-	public static void loadAccessToken(final Consumer<Boolean> callback) {
-		new Thread(() -> {
-			File f = getAuthFile();
-			if(!f.exists()) {
-				callback.accept(false);
-				return;
-			}
-
-			try(InputStream in = new FileInputStream(f);
-					ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-				byte[] buffer = new byte[1024];
-				int read;
-				while((read = in.read(buffer, 0, buffer.length)) != -1) 
-					out.write(buffer, 0, read);
-
-				accessToken = out.toString();
-				callback.accept(true);
-			} catch (IOException e) {
-				e.printStackTrace();
-				callback.accept(false);
-			}
-		}, "access token loader").start();
+	public static void setAccessToken(String accessToken) {
+		LCLPNetwork.accessToken = accessToken;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static void setAccessToken(@Nullable String token, final Consumer<Boolean> callback) {
-		accessToken = token;
-
-		new Thread(() -> {
-			File f = getAuthFile();
-			if(!f.exists()) {
-				if(token == null) {
-					callback.accept(true);
-					return;
-				}
-
-				f.getParentFile().mkdirs();
-				try(OutputStream out = new FileOutputStream(new File(".auth", "_README.txt"))) {
-					out.write(I18n.format("warn.auth.token").getBytes(StandardCharsets.UTF_8));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-			if(f.exists() && token == null) {
-				callback.accept(f.delete());
-				return;
-			}
-
-			try (OutputStream out = new FileOutputStream(f)) {
-				out.write(token.getBytes());
-				callback.accept(true);
-			} catch (IOException e) {
-				e.printStackTrace();
-				callback.accept(false);
-			}
-		}, "access token saver").start();
+	public static String getAccessToken() {
+		return accessToken;
 	}
 
 	public static void checkAccessToken(Consumer<User> callback) {
@@ -94,19 +42,11 @@ public class LCLPNetwork {
 					callback.accept(null);
 					return;
 				}
-				if(FMLEnvironment.dist == Dist.CLIENT) setAccessToken(null, b -> {});
+				if(FMLEnvironment.dist == Dist.CLIENT) AccessTokenStorage.store(null, b -> {});
 				else throw new IllegalStateException("Server access token is not valid!");
 				callback.accept(null);
 			}
 		});
-	}
-
-	private static File getAuthFile() {
-		return new File(".auth", "lclpnetwork.token");
-	}
-
-	public static String getAccessToken() {
-		return accessToken;
 	}
 
 	public static void sendRequest(String path, String requestMethod, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
@@ -123,6 +63,7 @@ public class LCLPNetwork {
 				conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
 				if (accessToken != null)
 					conn.setRequestProperty("Authorization", String.format("Bearer %s", accessToken));
+				System.out.println(accessToken);
 
 				if (body != null) {
 					conn.setDoOutput(true);
@@ -150,9 +91,10 @@ public class LCLPNetwork {
 	}
 
 	public static void logout() {
-		sendRequest("api/auth/revoke-token", "GET", null, null);
-		setAccessToken(null, b -> {});
-		User.reloadUser(null, () -> {});
+		sendRequest("api/auth/revoke-token", "GET", null, resp -> {
+			AccessTokenStorage.store(null, b -> {});
+			User.reloadUser(null, () -> {});
+		});
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -165,7 +107,7 @@ public class LCLPNetwork {
 	}
 
 	public static void setup(Runnable callback) {
-		LCLPNetwork.loadAccessToken(loaded -> LCLPNetwork.checkAccessToken(user -> {
+		AccessTokenStorage.load(loaded -> LCLPNetwork.checkAccessToken(user -> {
 			if(FMLEnvironment.dist == Dist.CLIENT) User.reloadUser(user, callback);
 		}));
 	}

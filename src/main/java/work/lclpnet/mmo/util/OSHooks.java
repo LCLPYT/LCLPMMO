@@ -59,11 +59,15 @@ public class OSHooks {
 
     static {
         if(System.getProperty("os.name").equalsIgnoreCase("Linux")) handler = new LinuxHandler();
-        else if(System.getProperty("os.name").contains("Windows")) handler = new WinHandler();
+        else if(isWindows()) handler = new WinHandler();
         else handler = new OSHandler();
     }
-    
-    public static boolean isFFMPEGLocalInstalled() {
+
+	public static boolean isWindows() {
+		return System.getProperty("os.name").contains("Windows");
+	}
+
+	public static boolean isFFMPEGLocalInstalled() {
     	return handler.isFFMPEGLocalInstalled();
     }
     
@@ -77,6 +81,18 @@ public class OSHooks {
 
 	public static boolean makeExecutable(File rel) {
     	return handler.makeExecutable(rel);
+	}
+
+	public static boolean _WINDOWS_makeFileHidden(File f) {
+		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/C", "attrib", "+h", f.getAbsolutePath());
+		pb.inheritIO();
+		try {
+			Process p = pb.start();
+			if(p.waitFor() == 0) return true;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }
