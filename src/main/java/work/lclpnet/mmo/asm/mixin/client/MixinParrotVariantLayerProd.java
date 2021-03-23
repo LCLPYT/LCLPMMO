@@ -13,18 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import work.lclpnet.mmo.facade.race.MMORace;
 
 @Mixin(ParrotVariantLayer.class)
-public class MixinParrotVariantLayer {
+public class MixinParrotVariantLayerProd {
 
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(
-            method = "lambda$renderParrot$1(Lcom/mojang/blaze3d/matrix/MatrixStack;ZLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/client/renderer/IRenderTypeBuffer;Lnet/minecraft/nbt/CompoundNBT;IFFFFLnet/minecraft/entity/EntityType;)V",
+            method = "lambda$renderParrot$1(Lnet/minecraft/entity/player/PlayerEntity;ZLcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;Lnet/minecraft/nbt/CompoundNBT;IFFFFLnet/minecraft/entity/EntityType;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/matrix/MatrixStack;translate(DDD)V"
+                    target = "Lcom/mojang/blaze3d/matrix/MatrixStack;translate(DDD)V",
+                    remap = true
             ),
             remap = false
     )
-    private void onParrotRender(MatrixStack matrixStackIn, boolean leftShoulderIn, PlayerEntity playerEntityIn, IRenderTypeBuffer renderTypeBufferIn, CompoundNBT nbt, int packedLight, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, EntityType<?> entityType, CallbackInfo ci) {
+    private void onParrotRender(PlayerEntity playerEntityIn, boolean leftShoulderIn, MatrixStack matrixStackIn, IRenderTypeBuffer renderTypeBufferIn, CompoundNBT nbt, int packedLight, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, EntityType<?> entityType, CallbackInfo ci) {
         MMORace race = MMORace.getRaceFromPlayer(playerEntityIn);
         if(race != null) race.doParrotTranslation(matrixStackIn);
     }

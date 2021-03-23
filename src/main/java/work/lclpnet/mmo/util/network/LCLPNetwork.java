@@ -63,7 +63,6 @@ public class LCLPNetwork {
 				conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
 				if (accessToken != null)
 					conn.setRequestProperty("Authorization", String.format("Bearer %s", accessToken));
-				System.out.println(accessToken);
 
 				if (body != null) {
 					conn.setDoOutput(true);

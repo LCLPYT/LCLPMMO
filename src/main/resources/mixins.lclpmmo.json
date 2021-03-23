@@ -25,7 +25,6 @@
     "client.MixinHeldItemLayer",
     "client.MixinMinecraft",
     "client.MixinMusicTicker",
-    "client.MixinParrotVariantLayer",
     "client.MixinPlayerController",
     "client.MixinPlayerRenderer",
     "client.MixinStuckInBodyLayer",
