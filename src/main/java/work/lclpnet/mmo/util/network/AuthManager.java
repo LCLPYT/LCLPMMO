@@ -40,7 +40,13 @@ public class AuthManager {
 				JsonElement elem = obj.get("accessToken");
 
 				if(elem == null) callback.accept(false);
-				else AccessTokenStorage.store(elem.getAsString(), callback);
+				else {
+					String token = elem.getAsString();
+					AccessTokenStorage.store(token, success -> {
+						if(!success) throw new IllegalStateException("Could not store access token");
+						callback.accept(true);
+					});
+				}
 			}
 		});
 	}
