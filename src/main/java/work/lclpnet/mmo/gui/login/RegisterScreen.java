@@ -34,7 +34,7 @@ public class RegisterScreen extends MMOScreen {
         privPolText = I18n.format("mmo.menu.register.privacy_policy");
         privPol = new StringTextComponent(privPolText);
         privPol.setStyle(privPol.getStyle()
-        		.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/datenschutz"))
+        		.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/privacy-policy"))
         		.setUnderlined(true)
         		.setColor(net.minecraft.util.text.Color.fromTextFormatting(TextFormatting.BLUE)));
     }
@@ -169,7 +169,7 @@ public class RegisterScreen extends MMOScreen {
                 && mouseY > (double) privPolY
                 && mouseY < (double) (privPolY + this.font.FONT_HEIGHT)) {
             try {
-                URI uri = new URI("https://lclpnet.work/datenschutz");
+                URI uri = new URI("https://lclpnet.work/privacy-policy");
                 Util.getOSType().openURI(uri);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
