@@ -4,7 +4,10 @@ import com.google.gson.JsonElement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.lclpnet.mmo.Config;
+import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.facade.JsonSerializeable;
 import work.lclpnet.mmo.facade.User;
 
@@ -22,6 +25,7 @@ public class LCLPNetwork {
 	private static String accessToken = null;
 	private static boolean online = false;
 	public static final IPrivateBackend BACKEND = IPrivateBackend.NONE;
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static void setAccessToken(String accessToken) {
 		LCLPNetwork.accessToken = accessToken;
@@ -32,18 +36,28 @@ public class LCLPNetwork {
 	}
 
 	public static void checkAccessToken(Consumer<User> callback) {
+		LOGGER.info("Checking access token validity...");
+
 		sendRequest("api/auth/user", "GET", null, resp -> {
 			online = !resp.isNoConnection();
 			if(resp.getResponseCode() == 200) {
-				if(FMLEnvironment.dist == Dist.CLIENT) callback.accept(JsonSerializeable.parse(resp.getRawResponse(), User.class));
+				User user = JsonSerializeable.parse(resp.getRawResponse(), User.class);
+				LOGGER.info("Logged in as {} (#{}).", user.getName(), user.getId());
+				if(FMLEnvironment.dist == Dist.CLIENT) callback.accept(user);
 				else callback.accept(null);
 			} else {
 				if(resp.isNoConnection()) {
+					LOGGER.info("No connection to check validity.");
 					callback.accept(null);
 					return;
 				}
+
+				LOGGER.info("Access token is no longer valid!");
 				if(FMLEnvironment.dist == Dist.CLIENT) AccessTokenStorage.store(null, b -> {});
-				else throw new IllegalStateException("Server access token is not valid!");
+				else {
+					LCLPMMO.shutdownServer("Server access token is not valid!");
+					throw new IllegalStateException("Server access token is not valid!");
+				}
 				callback.accept(null);
 			}
 		});

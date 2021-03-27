@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.example.GeckoLibMod;
 import software.bernie.geckolib3.GeckoLib;
+import work.lclpnet.corebase.CoreBase;
 import work.lclpnet.corebase.util.ComponentSupplier;
 import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.entity.MMOEntities;
@@ -28,6 +30,8 @@ import work.lclpnet.mmo.render.ClientRenderHandler;
 import work.lclpnet.mmo.util.*;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
+import javax.annotation.Nullable;
+
 @Mod(LCLPMMO.MODID)
 public class LCLPMMO {
 	
@@ -35,6 +39,8 @@ public class LCLPMMO {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
 	public static final MMOGroup GROUP = new MMOGroup(MODID);
+	private static boolean serverStarted = false, shutdown = false;
+	private static String shutdownReason = null;
 
 	static {
 		GeckoLibMod.DISABLE_IN_DEV = true;
@@ -70,7 +76,24 @@ public class LCLPMMO {
 	public void serverStart(final FMLServerStartingEvent e) {
 		LOGGER.info("LCLPMMO server starting...");
 	}
-	
+
+	@SubscribeEvent
+	public void serverStarted(final FMLServerStartedEvent e) {
+		serverStarted = true;
+		if(shutdown) doShutdown();
+	}
+
+	public static void shutdownServer(@Nullable String reason) {
+		shutdownReason = reason;
+		if(serverStarted) doShutdown();
+		else shutdown = true;
+	}
+
+	private static void doShutdown() {
+		LOGGER.info("Shutting down server: {}", shutdownReason != null ? shutdownReason : "No reason provided.");
+		CoreBase.getServer().initiateShutdown(false);
+	}
+
 	@SubscribeEvent
 	public void onRegisterCommands(RegisterCommandsEvent e) {
 		MMOCommands.registerCommands(e.getDispatcher(), e.getEnvironment());
