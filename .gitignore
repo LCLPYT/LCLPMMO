@@ -17,7 +17,7 @@ out
 build
 .gradle
 libs
-gradle.properties
+private.properties
 
 # other
 eclipse
