@@ -4,7 +4,20 @@ A modification for MinecraftForge, to add MMO stuff to Minecraft. Intended to be
 ### For players:<br>
 Read the [installation instructions](https://lclpnet.work/lclpserver/5.0#installationTitle)
 
-### For developers / Modpack creators
-This mod depends on <a href="https://github.com/LCLPYT/CoreBase">CoreBase</a>, and it's dependencies.
-Until 1.16, this mod also requires <a href="https://github.com/LXGaming/MixinBootstrap">MixinBootstrap</a> (also a dependency of CoreBase).
-From 1.16 and upwards, MixinBootstrap is no longer required, since <a href="https://github.com/MinecraftForge/MinecraftForge">MinecraftForge</a> supports Mixins itself.
+### Using LCLPMMO in your project
+Of course, you can also implement LCLPMMO in your project. Just keep in mind that the mod is intended to be used on the official LCLPServer 5.0 Minecraft server.
+<br>
+To implement it, just add this repository to your build.gradle:
+```groovy
+repositories {
+    maven { url 'https://repo.lclpnet.work/repository/internal' }
+}
+```
+Now add the following dependency:
+```groovy
+dependencies {
+    implementation fg.deobf("work.lclpnet.mods:LCLPMMO:VERSION")
+}
+```
+You need to replace VERSION with the version you want to use.
+To see all versions available, you can [check the repository](https://repo.lclpnet.work/#artifact~internal/work.lclpnet.mods/LCLPMMO).
