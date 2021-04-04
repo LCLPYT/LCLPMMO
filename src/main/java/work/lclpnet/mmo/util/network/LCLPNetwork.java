@@ -24,7 +24,7 @@ public class LCLPNetwork {
 
 	private static String accessToken = null;
 	private static boolean online = false;
-	public static final IPrivateBackend BACKEND = IPrivateBackend.NONE;
+	public static IPrivateBackend BACKEND = IPrivateBackend.NONE;
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static void setAccessToken(String accessToken) {
