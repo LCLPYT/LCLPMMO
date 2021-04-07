@@ -63,6 +63,7 @@
     "mmo.screen.dialog.title": "Dialog",
     "mmo.screen.dialog.next": "Next",
     "mmo.screen.dialog.end": "End Dialog",
+    "mmo.hud.magic.title": "Magic",
     "tutorial.not_free": "You may not move to far from the tutorial. Complete it to be free.",
     "options_screen.audio.only_mmo": "LCLPMMO music only",
     "mmo.race.human.title": "Human",
