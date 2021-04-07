@@ -22,7 +22,7 @@ public class MixinHeadLayer {
     )
     private void onRenderItem(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         MMORace race = MMORace.getRaceFromPlayer(entitylivingbaseIn);
-        if(race != null) race.doHeadItemTranslation(matrixStackIn);
+        if (race != null) race.doHeadItemTranslation(matrixStackIn);
     }
 
 }

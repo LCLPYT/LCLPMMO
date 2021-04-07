@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

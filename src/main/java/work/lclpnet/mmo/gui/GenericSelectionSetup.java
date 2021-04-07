@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface GenericSelectionSetup<T extends MMOSelectionItem> {
 
-	void setButtonsActive(boolean active);
-	
-	void setTooltip(List<IReorderingProcessor> tooltip);
-	
-	void onSelected(T selected);
-	
+    void setButtonsActive(boolean active);
+
+    void setTooltip(List<IReorderingProcessor> tooltip);
+
+    void onSelected(T selected);
+
 }

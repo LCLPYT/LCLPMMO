@@ -1,6 +1,6 @@
 package work.lclpnet.mmo.facade;
 
-import work.lclpnet.mmo.util.DataUtils;
+import work.lclpnet.mmo.util.MMOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +14,7 @@ public class DynamicData extends JsonSerializeable {
 		
 		try (ByteArrayInputStream in = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
 				ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			DataUtils.uncompressedToGzBase64(in, out);
+			MMOUtils.Data.uncompressedToGzBase64(in, out);
 			return new String(out.toByteArray(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -26,7 +26,7 @@ public class DynamicData extends JsonSerializeable {
 		String json;
 		try (ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
 				ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			DataUtils.gzBase64ToUncompressed(in, out);
+			MMOUtils.Data.gzBase64ToUncompressed(in, out);
 			json = new String(out.toByteArray(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();

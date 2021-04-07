@@ -6,32 +6,32 @@ import java.io.IOException;
 @SuppressWarnings("ALL")
 public class OSHooks {
 
-	private static class OSHandler {
+    private static class OSHandler {
 
-		public File getFFMPEGExecutable() {
-			return new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + "ffmpeg" + File.separatorChar + "ffmpeg");
-		}
-		
-		public boolean isFFMPEGLocalInstalled() {
-			return getFFMPEGExecutable().exists();
-		}
-		
-		public File getYTDLExecutable() {
-			return new File("bin", "youtube-dl");
-		}
+        public File getFFMPEGExecutable() {
+            return new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + "ffmpeg" + File.separatorChar + "ffmpeg");
+        }
 
-		public boolean makeExecutable(File rel) {
-			ProcessBuilder pb = new ProcessBuilder("chmod", "+x", rel.getAbsolutePath());
-			pb.inheritIO();
-			try {
-				Process p = pb.start();
-				if(p.waitFor() == 0) return true;
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
-			}
-			return false;
-		}
-	}
+        public boolean isFFMPEGLocalInstalled() {
+            return getFFMPEGExecutable().exists();
+        }
+
+        public File getYTDLExecutable() {
+            return new File("bin", "youtube-dl");
+        }
+
+        public boolean makeExecutable(File rel) {
+            ProcessBuilder pb = new ProcessBuilder("chmod", "+x", rel.getAbsolutePath());
+            pb.inheritIO();
+            try {
+                Process p = pb.start();
+                if (p.waitFor() == 0) return true;
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
 
     private static class LinuxHandler extends OSHandler {
         // Override methods here
@@ -39,60 +39,60 @@ public class OSHooks {
 
     private static class WinHandler extends OSHandler {
 
-    	@Override
-    	public File getFFMPEGExecutable() {
-    		return new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + "ffmpeg" + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
-    	}
-    	
-    	@Override
-    	public File getYTDLExecutable() {
-    		return new File("bin", "youtube-dl.exe");
-    	}
+        @Override
+        public File getFFMPEGExecutable() {
+            return new File("bin" + File.separatorChar + "ffmpeg" + File.separatorChar + "ffmpeg" + File.separatorChar + "bin" + File.separatorChar + "ffmpeg.exe");
+        }
 
-		@Override
-		public boolean makeExecutable(File rel) {
-			return true;
-		}
-	}
+        @Override
+        public File getYTDLExecutable() {
+            return new File("bin", "youtube-dl.exe");
+        }
+
+        @Override
+        public boolean makeExecutable(File rel) {
+            return true;
+        }
+    }
 
     private static final OSHandler handler;
 
     static {
-        if(System.getProperty("os.name").equalsIgnoreCase("Linux")) handler = new LinuxHandler();
-        else if(isWindows()) handler = new WinHandler();
+        if (System.getProperty("os.name").equalsIgnoreCase("Linux")) handler = new LinuxHandler();
+        else if (isWindows()) handler = new WinHandler();
         else handler = new OSHandler();
     }
 
-	public static boolean isWindows() {
-		return System.getProperty("os.name").contains("Windows");
-	}
-
-	public static boolean isFFMPEGLocalInstalled() {
-    	return handler.isFFMPEGLocalInstalled();
+    public static boolean isWindows() {
+        return System.getProperty("os.name").contains("Windows");
     }
-    
+
+    public static boolean isFFMPEGLocalInstalled() {
+        return handler.isFFMPEGLocalInstalled();
+    }
+
     public static File getFFMPEGExecutable() {
-    	return handler.getFFMPEGExecutable();
+        return handler.getFFMPEGExecutable();
     }
-    
+
     public static File getYTDLExecutable() {
-    	return handler.getYTDLExecutable();
+        return handler.getYTDLExecutable();
     }
 
-	public static boolean makeExecutable(File rel) {
-    	return handler.makeExecutable(rel);
-	}
+    public static boolean makeExecutable(File rel) {
+        return handler.makeExecutable(rel);
+    }
 
-	public static boolean _WINDOWS_makeFileHidden(File f) {
-		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/C", "attrib", "+h", f.getAbsolutePath());
-		pb.inheritIO();
-		try {
-			Process p = pb.start();
-			if(p.waitFor() == 0) return true;
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+    public static boolean _WINDOWS_makeFileHidden(File f) {
+        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/C", "attrib", "+h", f.getAbsolutePath());
+        pb.inheritIO();
+        try {
+            Process p = pb.start();
+            if (p.waitFor() == 0) return true;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

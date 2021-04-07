@@ -27,7 +27,7 @@ public class MixinParrotVariantLayerDev {
     )
     private void onParrotRender(MatrixStack matrixStackIn, boolean leftShoulderIn, PlayerEntity playerEntityIn, IRenderTypeBuffer renderTypeBufferIn, CompoundNBT nbt, int packedLight, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, EntityType<?> entityType, CallbackInfo ci) {
         MMORace race = MMORace.getRaceFromPlayer(playerEntityIn);
-        if(race != null) race.doParrotTranslation(matrixStackIn);
+        if (race != null) race.doParrotTranslation(matrixStackIn);
     }
 
 }

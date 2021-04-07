@@ -49,14 +49,13 @@ public class LoginScreen extends MMOScreen {
             this.buttonLogin.active = false;
             authManager.login(textFieldEmail.getText(), textFieldPassword.getText(), success -> {
                 this.buttonLogin.active = true;
-                if(success == null) {
-                   displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
+                if (success == null) {
+                    displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                             new TranslationTextComponent("mmo.no_internet"));
-                } else if(success) {
+                } else if (success) {
                     displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
                     loadUserAndResolve(this.minecraft);
-                }
-                else {
+                } else {
                     loginFailed = true;
                     displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                             new TranslationTextComponent("mmo.menu.login.check_credentials"));
@@ -77,12 +76,12 @@ public class LoginScreen extends MMOScreen {
 
     public static void resolve(Minecraft mc) {
         Screen startingScreen = EventListener.getStartingScreen();
-        if(startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
+        if (startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
         mc.displayGuiScreen(startingScreen);
     }
-    
+
     public static void loadUserAndResolve(Minecraft mc) {
-    	LCLPNetwork.checkAccessToken(user -> User.reloadUser(user, () -> resolve(mc)));
+        LCLPNetwork.checkAccessToken(user -> User.reloadUser(user, () -> resolve(mc)));
     }
 
     private void changed(String s) {
@@ -106,8 +105,8 @@ public class LoginScreen extends MMOScreen {
 
     @Override
     public void onClose() {
-    	super.onClose();
-    	this.minecraft.keyboardListener.enableRepeatEvents(false);
+        super.onClose();
+        this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override

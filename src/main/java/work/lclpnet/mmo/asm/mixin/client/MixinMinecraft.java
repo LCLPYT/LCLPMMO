@@ -25,39 +25,39 @@ import work.lclpnet.mmo.gui.main.FakeWorld;
 @OnlyIn(Dist.CLIENT)
 public class MixinMinecraft {
 
-	@Shadow
-	public ClientPlayerEntity player;
-	@Shadow
-	public ClientWorld world;
-	@Shadow
-	@Final
-	private MusicTicker musicTicker;
-	
-	@Inject(method = "<init>*", at = @At("RETURN"))
-	public void onInitEnd(CallbackInfo callbackInfo) {
-		System.out.printf("Mixins are enabled for '%s'. (CLIENT)\n", LCLPMMO.MODID);
-	}
-	
-	@Inject(
-			method = "getBackgroundMusicSelector()Lnet/minecraft/client/audio/BackgroundMusicSelector;",
-			at = @At("HEAD"),
-			cancellable = true
-			)
-	public void onGetBackgroundMusicSelector(CallbackInfoReturnable<BackgroundMusicSelector> cir) {
-		SoundEvent enqueuedBackgroundMusic = MusicSystem.getEnqueuedBackgroundMusic();
-		if(enqueuedBackgroundMusic != null) {
-			MusicSystem.playBackgroundMusic(null);
-			musicTicker.stop();
-			musicTicker.timeUntilNextMusic = 0;
-			cir.setReturnValue(new MMOBackgroundMusicSelector(enqueuedBackgroundMusic, 12000, 24000, true));
-			cir.cancel();
-			return;
-		}
-		
-		if(this.world == null || this.world instanceof FakeWorld) { // while not joined a world
-			cir.setReturnValue(MMOBackgroundMusicTracks.MAIN_MENU_MUSIC);
-			cir.cancel();
-		}
-	}
-	
+    @Shadow
+    public ClientPlayerEntity player;
+    @Shadow
+    public ClientWorld world;
+    @Shadow
+    @Final
+    private MusicTicker musicTicker;
+
+    @Inject(method = "<init>*", at = @At("RETURN"))
+    public void onInitEnd(CallbackInfo callbackInfo) {
+        System.out.printf("Mixins are enabled for '%s'. (CLIENT)\n", LCLPMMO.MODID);
+    }
+
+    @Inject(
+            method = "getBackgroundMusicSelector()Lnet/minecraft/client/audio/BackgroundMusicSelector;",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void onGetBackgroundMusicSelector(CallbackInfoReturnable<BackgroundMusicSelector> cir) {
+        SoundEvent enqueuedBackgroundMusic = MusicSystem.getEnqueuedBackgroundMusic();
+        if (enqueuedBackgroundMusic != null) {
+            MusicSystem.playBackgroundMusic(null);
+            musicTicker.stop();
+            musicTicker.timeUntilNextMusic = 0;
+            cir.setReturnValue(new MMOBackgroundMusicSelector(enqueuedBackgroundMusic, 12000, 24000, true));
+            cir.cancel();
+            return;
+        }
+
+        if (this.world == null || this.world instanceof FakeWorld) { // while not joined a world
+            cir.setReturnValue(MMOBackgroundMusicTracks.MAIN_MENU_MUSIC);
+            cir.cancel();
+        }
+    }
+
 }

@@ -23,7 +23,7 @@ public class MenuAdapter<T, P> {
 
     public T get(int guiScale, P parameter) {
         Function<P, T> fun;
-        if(!lookup.containsKey(guiScale) || (fun = lookup.get(guiScale)) == null) return defaultValue.apply(parameter);
+        if (!lookup.containsKey(guiScale) || (fun = lookup.get(guiScale)) == null) return defaultValue.apply(parameter);
 
         return fun.apply(parameter);
     }

@@ -9,10 +9,10 @@ import work.lclpnet.mmo.LCLPMMO;
 
 @Mixin(DedicatedServer.class)
 public class MixinDedicatedServer {
-	
-	@Inject(method = "<init>*", at = @At("RETURN"))
-	public void onInitEnd(CallbackInfo callbackInfo) {
-		System.out.printf("Mixins are enabled for '%s'. (DEDICATED SERVER)\n", LCLPMMO.MODID);
-	}
-	
+
+    @Inject(method = "<init>*", at = @At("RETURN"))
+    public void onInitEnd(CallbackInfo callbackInfo) {
+        System.out.printf("Mixins are enabled for '%s'. (DEDICATED SERVER)\n", LCLPMMO.MODID);
+    }
+
 }

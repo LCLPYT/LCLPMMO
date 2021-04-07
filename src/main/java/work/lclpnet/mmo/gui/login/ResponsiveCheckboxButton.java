@@ -16,7 +16,7 @@ public class ResponsiveCheckboxButton extends CheckboxButton {
     @Override
     public void onPress() {
         super.onPress();
-        if(responder != null) responder.accept(this.isChecked());
+        if (responder != null) responder.accept(this.isChecked());
     }
 
     public void setResponder(Consumer<Boolean> responder) {

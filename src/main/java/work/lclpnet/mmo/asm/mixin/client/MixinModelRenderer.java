@@ -25,6 +25,7 @@ public class MixinModelRenderer implements IMMOModelRenderer {
     }
 
     @Override
-    public void postTranslateRotate(MatrixStack matrixStack) {}
+    public void postTranslateRotate(MatrixStack matrixStack) {
+    }
 
 }

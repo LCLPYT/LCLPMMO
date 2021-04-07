@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;

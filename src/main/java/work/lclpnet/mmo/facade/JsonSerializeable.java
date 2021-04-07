@@ -2,7 +2,7 @@ package work.lclpnet.mmo.facade;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import work.lclpnet.mmo.util.DebugState;
+import work.lclpnet.mmo.util.MMOUtils;
 import work.lclpnet.mmo.util.json.MMOGson;
 import work.lclpnet.mmo.util.json.NoSerialization;
 
@@ -24,9 +24,9 @@ public class JsonSerializeable {
 	 */
 	public String toDebugString(boolean useAdapters) {
 		if(useAdapters) {
-			DebugState.setDebug(true);
+			MMOUtils.setDebug(true);
 			String json = MMOGson.allSerializerGson.toJson(this);
-			DebugState.setDebug(false);
+			MMOUtils.setDebug(false);
 			return json;
 		} else return new Gson().toJson(this);
 	}

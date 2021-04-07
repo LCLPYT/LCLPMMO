@@ -18,16 +18,16 @@ public class AccessTokenStorage {
     public static void load(final Consumer<Boolean> callback) {
         new Thread(() -> {
             File f = getTokenFileForEnv();
-            if(!f.exists()) {
+            if (!f.exists()) {
                 callback.accept(false);
                 return;
             }
 
-            try(InputStream in = new FileInputStream(f);
-                ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            try (InputStream in = new FileInputStream(f);
+                 ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                 byte[] buffer = new byte[1024];
                 int read;
-                while((read = in.read(buffer, 0, buffer.length)) != -1)
+                while ((read = in.read(buffer, 0, buffer.length)) != -1)
                     out.write(buffer, 0, read);
 
                 LCLPNetwork.setAccessToken(out.toString());
@@ -45,23 +45,24 @@ public class AccessTokenStorage {
 
         new Thread(() -> {
             File f = getTokenFileForEnv();
-            if(!f.exists()) {
-                if(token == null) {
+            if (!f.exists()) {
+                if (token == null) {
                     callback.accept(true);
                     return;
                 }
 
-                if(!f.getParentFile().exists() && !f.getParentFile().mkdirs()) throw new IllegalStateException("Could not create directory.");
+                if (!f.getParentFile().exists() && !f.getParentFile().mkdirs())
+                    throw new IllegalStateException("Could not create directory.");
 
                 File readme = new File(f.getParentFile(), "README.txt");
-                try(OutputStream out = new FileOutputStream(readme)) {
+                try (OutputStream out = new FileOutputStream(readme)) {
                     out.write(I18n.format("warn.auth.token").getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
 
-            if(f.exists() && token == null) {
+            if (f.exists() && token == null) {
                 callback.accept(f.delete());
                 return;
             }

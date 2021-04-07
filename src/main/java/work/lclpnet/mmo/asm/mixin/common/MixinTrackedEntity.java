@@ -14,18 +14,18 @@ import work.lclpnet.mmo.entity.ILimitTracking;
 @Mixin(TrackedEntity.class)
 public class MixinTrackedEntity {
 
-	@Shadow
-	@Final
-	private Entity trackedEntity;
-	
-	@Inject(
-			method = "track(Lnet/minecraft/entity/player/ServerPlayerEntity;)V",
-			at = @At("HEAD"),
-			cancellable = true
-			)
-	public void onTrack(ServerPlayerEntity p, CallbackInfo ci) {
-		if(trackedEntity instanceof ILimitTracking && !((ILimitTracking) trackedEntity).shouldBeTrackedBy(p)) 
-			ci.cancel(); 
-	}
-	
+    @Shadow
+    @Final
+    private Entity trackedEntity;
+
+    @Inject(
+            method = "track(Lnet/minecraft/entity/player/ServerPlayerEntity;)V",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void onTrack(ServerPlayerEntity p, CallbackInfo ci) {
+        if (trackedEntity instanceof ILimitTracking && !((ILimitTracking) trackedEntity).shouldBeTrackedBy(p))
+            ci.cancel();
+    }
+
 }

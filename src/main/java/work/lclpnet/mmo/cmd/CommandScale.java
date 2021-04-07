@@ -17,88 +17,88 @@ import work.lclpnet.corebase.cmd.CoreCommands;
 import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.cmd.args.ScaleArgumentType;
-import work.lclpnet.mmo.util.MMOMonsterAttributes;
+import work.lclpnet.mmo.entity.MMOMonsterAttributes;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CommandScale extends CommandBase{
+public class CommandScale extends CommandBase {
 
-	public CommandScale() {
-		super("scale");
-	}
+    public CommandScale() {
+        super("scale");
+    }
 
-	@Override
-	protected LiteralArgumentBuilder<CommandSource> transform(LiteralArgumentBuilder<CommandSource> builder) {
-		return builder
-				.requires(CoreCommands::permLevel2)
-				.then(Commands.literal("set")
-						.then(Commands.argument("target", EntityArgument.entities())
-								.then(Commands.argument("scale", FloatArgumentType.floatArg(0F, 127F))
-										.executes(this::setSize))))
-				.then(Commands.literal("reset")
-						.then(Commands.argument("target", EntityArgument.entities())
-								.executes(this::resetSize)))
-				.then(Commands.literal("setwh")
-						.then(Commands.argument("target", EntityArgument.entities())
-								.then(Commands.argument("widthHeight", ScaleArgumentType.scale())
-										.executes(this::setWH))));
-	}
+    @Override
+    protected LiteralArgumentBuilder<CommandSource> transform(LiteralArgumentBuilder<CommandSource> builder) {
+        return builder
+                .requires(CoreCommands::permLevel2)
+                .then(Commands.literal("set")
+                        .then(Commands.argument("target", EntityArgument.entities())
+                                .then(Commands.argument("scale", FloatArgumentType.floatArg(0F, 127F))
+                                        .executes(this::setSize))))
+                .then(Commands.literal("reset")
+                        .then(Commands.argument("target", EntityArgument.entities())
+                                .executes(this::resetSize)))
+                .then(Commands.literal("setwh")
+                        .then(Commands.argument("target", EntityArgument.entities())
+                                .then(Commands.argument("widthHeight", ScaleArgumentType.scale())
+                                        .executes(this::setWH))));
+    }
 
-	public int setSize(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-		Collection<? extends Entity> entities = EntityArgument.getEntities(ctx, "target");
-		float scale = ctx.getArgument("scale", Float.class);
+    public int setSize(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        Collection<? extends Entity> entities = EntityArgument.getEntities(ctx, "target");
+        float scale = ctx.getArgument("scale", Float.class);
 
-		List<LivingEntity> scaled = new ArrayList<>();
-		for(Entity en : entities) {
-			if(!(en instanceof LivingEntity)) continue;
-			scaled.add((LivingEntity) en);
-			MMOMonsterAttributes.setScale(en, scale);
-		}
+        List<LivingEntity> scaled = new ArrayList<>();
+        for (Entity en : entities) {
+            if (!(en instanceof LivingEntity)) continue;
+            scaled.add((LivingEntity) en);
+            MMOMonsterAttributes.setScale(en, scale);
+        }
 
-		if(scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).append(
-				new TranslationTextComponent("cmd.scale.set.no_valid")));
+        if (scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).append(
+                new TranslationTextComponent("cmd.scale.set.no_valid")));
 
-		ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", scale, EntitySelector.joinNames(scaled).getString()), false);
+        ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", scale, EntitySelector.joinNames(scaled).getString()), false);
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public int resetSize(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-		Collection<? extends Entity> entities = EntityArgument.getEntities(ctx, "target");
+    public int resetSize(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        Collection<? extends Entity> entities = EntityArgument.getEntities(ctx, "target");
 
-		List<LivingEntity> scaled = new ArrayList<>();
-		for(Entity en : entities) {
-			if(!(en instanceof LivingEntity)) continue;
-			scaled.add((LivingEntity) en);
-			MMOMonsterAttributes.setScale(en, 1F);
-		}
+        List<LivingEntity> scaled = new ArrayList<>();
+        for (Entity en : entities) {
+            if (!(en instanceof LivingEntity)) continue;
+            scaled.add((LivingEntity) en);
+            MMOMonsterAttributes.setScale(en, 1F);
+        }
 
-		if(scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).append(
-				new TranslationTextComponent("cmd.scale.set.no_valid")));
+        if (scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).append(
+                new TranslationTextComponent("cmd.scale.set.no_valid")));
 
-		ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", 1F, EntitySelector.joinNames(scaled).getString()), false);
+        ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", 1F, EntitySelector.joinNames(scaled).getString()), false);
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public int setWH(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-		Collection<? extends Entity> entities = EntityArgument.getEntities(ctx, "target");
+    public int setWH(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        Collection<? extends Entity> entities = EntityArgument.getEntities(ctx, "target");
 
-		List<LivingEntity> scaled = new ArrayList<>();
-		for(Entity en : entities) {
-			if(!(en instanceof LivingEntity)) continue;
-			scaled.add((LivingEntity) en);
-			
-			MMOMonsterAttributes.setScale(en, ScaleArgumentType.getVec2f(ctx, "widthHeight", en));
-		}
+        List<LivingEntity> scaled = new ArrayList<>();
+        for (Entity en : entities) {
+            if (!(en instanceof LivingEntity)) continue;
+            scaled.add((LivingEntity) en);
 
-		if(scaled.isEmpty()) throw new CommandException(new TranslationTextComponent("cmd.scale.set.no_valid"));
+            MMOMonsterAttributes.setScale(en, ScaleArgumentType.getVec2f(ctx, "widthHeight", en));
+        }
 
-		ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success_rel", EntitySelector.joinNames(scaled).getString()), false);
+        if (scaled.isEmpty()) throw new CommandException(new TranslationTextComponent("cmd.scale.set.no_valid"));
 
-		return 0;
-	}
+        ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success_rel", EntitySelector.joinNames(scaled).getString()), false);
+
+        return 0;
+    }
 
 }

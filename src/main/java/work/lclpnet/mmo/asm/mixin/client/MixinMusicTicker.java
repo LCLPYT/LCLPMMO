@@ -19,48 +19,48 @@ import work.lclpnet.mmo.audio.MusicSystem;
 @Mixin(MusicTicker.class)
 public class MixinMusicTicker {
 
-	@Final
-	@Shadow
-	private Minecraft client;
-	@Shadow
-	public int timeUntilNextMusic;
-	@Shadow
-	private ISound currentMusic;
+    @Final
+    @Shadow
+    private Minecraft client;
+    @Shadow
+    public int timeUntilNextMusic;
+    @Shadow
+    private ISound currentMusic;
 
-	@Inject(
-			method = "Lnet/minecraft/client/audio/MusicTicker;selectRandomBackgroundMusic("
-					+ "Lnet/minecraft/client/audio/BackgroundMusicSelector;"
-					+ ")V",
-					at = @At("HEAD"),
-					cancellable = true
-			)
-	public void onSelectRandomBackgroundMusic(BackgroundMusicSelector sel, CallbackInfo ci) {
-		if(Config.isMinecraftMusicDisabled() && !(sel instanceof MMOBackgroundMusicSelector))
-			ci.cancel();
-	}
+    @Inject(
+            method = "Lnet/minecraft/client/audio/MusicTicker;selectRandomBackgroundMusic("
+                    + "Lnet/minecraft/client/audio/BackgroundMusicSelector;"
+                    + ")V",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void onSelectRandomBackgroundMusic(BackgroundMusicSelector sel, CallbackInfo ci) {
+        if (Config.isMinecraftMusicDisabled() && !(sel instanceof MMOBackgroundMusicSelector))
+            ci.cancel();
+    }
 
-	@Inject(
-			method = "tick()V",
-			at = @At(
-					value = "FIELD",
-					target = "Lnet/minecraft/client/audio/MusicTicker;currentMusic:Lnet/minecraft/client/audio/ISound;",
-					opcode = Opcodes.PUTFIELD
-					),
-			cancellable = true
-			)
-	public void onSoundStopped(CallbackInfo ci) {
-		if(MusicSystem.isLoopBackgroundMusic()
-				&& currentMusic != null 
-				&& MusicSystem.getLastBackgroundMusic() != null 
-				&& MusicSystem.getLastBackgroundMusic().name.equals(currentMusic.getSoundLocation())) {
-			
-			if (this.currentMusic.getSound() != SoundHandler.MISSING_SOUND) {
-				this.client.getSoundHandler().play(this.currentMusic);
-			}
+    @Inject(
+            method = "tick()V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/audio/MusicTicker;currentMusic:Lnet/minecraft/client/audio/ISound;",
+                    opcode = Opcodes.PUTFIELD
+            ),
+            cancellable = true
+    )
+    public void onSoundStopped(CallbackInfo ci) {
+        if (MusicSystem.isLoopBackgroundMusic()
+                && currentMusic != null
+                && MusicSystem.getLastBackgroundMusic() != null
+                && MusicSystem.getLastBackgroundMusic().name.equals(currentMusic.getSoundLocation())) {
 
-			this.timeUntilNextMusic = Integer.MAX_VALUE;
-			ci.cancel();
-		}
-	}
+            if (this.currentMusic.getSound() != SoundHandler.MISSING_SOUND) {
+                this.client.getSoundHandler().play(this.currentMusic);
+            }
+
+            this.timeUntilNextMusic = Integer.MAX_VALUE;
+            ci.cancel();
+        }
+    }
 
 }

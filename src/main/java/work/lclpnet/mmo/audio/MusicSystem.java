@@ -15,10 +15,9 @@ import org.apache.commons.io.FilenameUtils;
 import work.lclpnet.corebase.util.MessageType;
 import work.lclpnet.corebase.util.Substitute;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.util.EnvironmentUtils;
-import work.lclpnet.mmo.util.FFMPEG;
-import work.lclpnet.mmo.util.MessageUtils;
-import work.lclpnet.mmo.util.YoutubeDL;
+import work.lclpnet.mmo.client.FFMPEG;
+import work.lclpnet.mmo.client.YoutubeDL;
+import work.lclpnet.mmo.util.MMOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,242 +29,244 @@ import java.util.stream.Collectors;
 @OnlyIn(Dist.CLIENT)
 public class MusicSystem {
 
-	private static final Map<String, MusicInstance> playing = new HashMap<>();
-	private static SoundEvent enqueuedBackgroundMusic = null;
-	private static SoundEvent lastBackgroundMusic = null;
-	private static boolean loopBackgroundMusic = false;
+    private static final Map<String, MusicInstance> playing = new HashMap<>();
+    private static SoundEvent enqueuedBackgroundMusic = null;
+    private static SoundEvent lastBackgroundMusic = null;
+    private static boolean loopBackgroundMusic = false;
 
-	public static SoundEvent getLastBackgroundMusic() {
-		return lastBackgroundMusic;
-	}
-	
-	public static void playBackgroundMusic(SoundEvent sound) {
-		if(enqueuedBackgroundMusic != null && sound == null) lastBackgroundMusic = enqueuedBackgroundMusic;
-		else lastBackgroundMusic = null;
-		
-		enqueuedBackgroundMusic = sound;
-	}
-	
-	public static boolean isLoopBackgroundMusic() {
-		return loopBackgroundMusic;
-	}
-	
-	public static void setLoopBackgroundMusic(boolean loopBackgroundMusic) {
-		MusicSystem.loopBackgroundMusic = loopBackgroundMusic;
-	}
-	
-	public static SoundEvent getEnqueuedBackgroundMusic() {
-		return enqueuedBackgroundMusic;
-	}
-	
-	public static void play(String path, Consumer<ITextComponent> feedback) {
-		play(getMusicFile(path), feedback);
-	}
+    public static SoundEvent getLastBackgroundMusic() {
+        return lastBackgroundMusic;
+    }
 
-	public static void play(File file, Consumer<ITextComponent> feedback) {
-		if(!checkFileExists(feedback, file)) return;
+    public static void playBackgroundMusic(SoundEvent sound) {
+        if (enqueuedBackgroundMusic != null && sound == null) lastBackgroundMusic = enqueuedBackgroundMusic;
+        else lastBackgroundMusic = null;
 
-		String name = file.getName();
-		MusicInstance music = null;
-		float vol = getVolume();
-		if (FilenameUtils.isExtension(name, "mid")) music = new MidiMusic(file, vol);
-		else if (FilenameUtils.isExtension(name, "wav")) music = new WavMusic(file, vol);
-		else if (tryConvert(file, feedback)) return;
+        enqueuedBackgroundMusic = sound;
+    }
 
-		if(music != null) {
-			music.play();
-			playing.put(file.getPath(), music);
-		} else feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.incompatible", "%s"), TextFormatting.RED, new Substitute(FilenameUtils.getExtension(name), TextFormatting.YELLOW)));
-	}
+    public static boolean isLoopBackgroundMusic() {
+        return loopBackgroundMusic;
+    }
 
-	public static void setVolume(String path, float perc, Consumer<ITextComponent> feedback) {
-		if(!volumeIfExists(getMusicFile(path), perc) && !volumeIfExists(getDownloadedMusicFile(path), perc)) 
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", path), MessageType.ERROR));
-	}
+    public static void setLoopBackgroundMusic(boolean loopBackgroundMusic) {
+        MusicSystem.loopBackgroundMusic = loopBackgroundMusic;
+    }
 
-	public static void setOverallVolume(float perc, Consumer<ITextComponent> feedback) {
-		perc = MathHelper.clamp(perc, 0F, 1F);
+    public static SoundEvent getEnqueuedBackgroundMusic() {
+        return enqueuedBackgroundMusic;
+    }
 
-		if(playing.isEmpty()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.none_playing"), MessageType.ERROR));
-			return;
-		}
+    public static void play(String path, Consumer<ITextComponent> feedback) {
+        play(getMusicFile(path), feedback);
+    }
 
-		final float volume = perc;
-		playing.values().forEach(m -> m.setVolume(volume));
-	}
+    public static void play(File file, Consumer<ITextComponent> feedback) {
+        if (!checkFileExists(feedback, file)) return;
 
-	public static void stopSound(String path, Consumer<ITextComponent> feedback) {
-		if(!stopIfExists(getMusicFile(path)) && !stopIfExists(getDownloadedMusicFile(path))) 
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", path), MessageType.ERROR));
-	}
+        String name = file.getName();
+        MusicInstance music = null;
+        float vol = getVolume();
+        if (FilenameUtils.isExtension(name, "mid")) music = new MidiMusic(file, vol);
+        else if (FilenameUtils.isExtension(name, "wav")) music = new WavMusic(file, vol);
+        else if (tryConvert(file, feedback)) return;
 
-	private static boolean stopIfExists(File f) {
-		if(!checkFilePlaying(f)) return false;
+        if (music != null) {
+            music.play();
+            playing.put(file.getPath(), music);
+        } else
+            feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.incompatible", "%s"), TextFormatting.RED, new Substitute(FilenameUtils.getExtension(name), TextFormatting.YELLOW)));
+    }
 
-		MusicInstance music = getMusic(f);
-		if(music != null) music.stop();
-		return true;
-	}
+    public static void setVolume(String path, float perc, Consumer<ITextComponent> feedback) {
+        if (!volumeIfExists(getMusicFile(path), perc) && !volumeIfExists(getDownloadedMusicFile(path), perc))
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", path), MessageType.ERROR));
+    }
 
-	private static boolean volumeIfExists(File f, float perc) {
-		if(!checkFilePlaying(f)) return false;
+    public static void setOverallVolume(float perc, Consumer<ITextComponent> feedback) {
+        perc = MathHelper.clamp(perc, 0F, 1F);
 
-		perc = MathHelper.clamp(perc, 0F, 1F);
+        if (playing.isEmpty()) {
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.none_playing"), MessageType.ERROR));
+            return;
+        }
 
-		MusicInstance music = getMusic(f);
-		if(music != null) music.setVolume(perc);
-		return true;
-	}
+        final float volume = perc;
+        playing.values().forEach(m -> m.setVolume(volume));
+    }
 
-	public static void stopAllSound(Consumer<ITextComponent> feedback) {
-		if(playing.isEmpty()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.none_playing"), MessageType.ERROR));
-			return;
-		}
+    public static void stopSound(String path, Consumer<ITextComponent> feedback) {
+        if (!stopIfExists(getMusicFile(path)) && !stopIfExists(getDownloadedMusicFile(path)))
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_playing", path), MessageType.ERROR));
+    }
 
-		List<MusicInstance> toStop = new ArrayList<>(playing.values());
-		toStop.forEach(m -> m.stop());
-	}
+    private static boolean stopIfExists(File f) {
+        if (!checkFilePlaying(f)) return false;
 
-	public static List<String> getAllMusicFiles() {
-		File dir = getMusicDir();
-		if(!dir.exists() || dir.list() == null) return new ArrayList<>();
-		return Arrays.asList(dir.list());
-	}
+        MusicInstance music = getMusic(f);
+        if (music != null) music.stop();
+        return true;
+    }
 
-	public static List<String> getAllPlaying() {
-		return playing.keySet().stream().map(key -> FilenameUtils.getName(key)).collect(Collectors.toList());
-	}
+    private static boolean volumeIfExists(File f, float perc) {
+        if (!checkFilePlaying(f)) return false;
 
-	public static List<String> getDownloadedVideoTitles() {
-		File dir = new File(EnvironmentUtils.getTmpDir(), "dl");
-		if(!dir.exists()) return Lists.newArrayList();
+        perc = MathHelper.clamp(perc, 0F, 1F);
 
-		File[] children = dir.listFiles();
-		if(children == null || children.length <= 0) return Lists.newArrayList();
+        MusicInstance music = getMusic(f);
+        if (music != null) music.setVolume(perc);
+        return true;
+    }
 
-		List<String> titles = new ArrayList<>();
-		for(File f : children) 
-			if(!f.isDirectory()) 
-				titles.add(f.getName());
+    public static void stopAllSound(Consumer<ITextComponent> feedback) {
+        if (playing.isEmpty()) {
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.none_playing"), MessageType.ERROR));
+            return;
+        }
 
-		return titles;
-	}
+        List<MusicInstance> toStop = new ArrayList<>(playing.values());
+        toStop.forEach(m -> m.stop());
+    }
 
-	static void untrack(File file) {
-		playing.remove(file.getPath());
-	}
+    public static List<String> getAllMusicFiles() {
+        File dir = getMusicDir();
+        if (!dir.exists() || dir.list() == null) return new ArrayList<>();
+        return Arrays.asList(dir.list());
+    }
 
-	public static boolean tryConvert(File file, Consumer<ITextComponent> feedback) {
-		if(!FFMPEG.isInstalled()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ffmpeg.not_installed"), MessageUtils.WARN));
-			return false;
-		}
-		feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.trying"), MessageType.OTHER));
-		File output = new File(file.getParentFile(), file.getName().split("\\.(?=[^.]+$)")[0] + ".wav");
-		if(output.exists()) return true; //Already converted
+    public static List<String> getAllPlaying() {
+        return playing.keySet().stream().map(key -> FilenameUtils.getName(key)).collect(Collectors.toList());
+    }
 
-		try {
-			FFMPEG.convertToWav(file, output, i -> {
-				if(i == null || i != 0) feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
-				else {
-					MusicSystem.play(output, feedback);
-					feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.convert.success", "%s"), TextFormatting.GREEN, 
-							new Substitute(output.getName(), TextFormatting.YELLOW)));
-					System.out.println("Deleting old file...");
-					System.out.println(file.delete() ? "Successfully deleted old file" : "Could not delete old file.");
-				}
-			});
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
-			return false;
-		}
-	}
+    public static List<String> getDownloadedVideoTitles() {
+        File dir = new File(MMOUtils.getTmpDir(), "dl");
+        if (!dir.exists()) return Lists.newArrayList();
 
-	private static boolean checkFileExists(Consumer<ITextComponent> feedback, File file) {
-		if(!file.exists()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_exist", file.getPath()), MessageType.ERROR));
-			return false;
-		}
-		return true;
-	}
+        File[] children = dir.listFiles();
+        if (children == null || children.length <= 0) return Lists.newArrayList();
 
-	private static boolean checkFilePlaying(File file) {
-		return playing.containsKey(file.getPath());
-	}
+        List<String> titles = new ArrayList<>();
+        for (File f : children)
+            if (!f.isDirectory())
+                titles.add(f.getName());
 
-	private static File getMusicFile(String path) {
-		return new File(getMusicDir(), path);
-	}
+        return titles;
+    }
 
-	private static File getDownloadedMusicFile(String path) {
-		return new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + path);
-	}
+    static void untrack(File file) {
+        playing.remove(file.getPath());
+    }
 
-	private static File getMusicDir() {
-		return new File("music");
-	}
+    public static boolean tryConvert(File file, Consumer<ITextComponent> feedback) {
+        if (!FFMPEG.isInstalled()) {
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ffmpeg.not_installed"), MMOUtils.WARN));
+            return false;
+        }
+        feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.trying"), MessageType.OTHER));
+        File output = new File(file.getParentFile(), file.getName().split("\\.(?=[^.]+$)")[0] + ".wav");
+        if (output.exists()) return true; //Already converted
 
-	private static MusicInstance getMusic(File file) {
-		return playing.get(file.getPath());
-	}
+        try {
+            FFMPEG.convertToWav(file, output, i -> {
+                if (i == null || i != 0)
+                    feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
+                else {
+                    MusicSystem.play(output, feedback);
+                    feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.convert.success", "%s"), TextFormatting.GREEN,
+                            new Substitute(output.getName(), TextFormatting.YELLOW)));
+                    System.out.println("Deleting old file...");
+                    System.out.println(file.delete() ? "Successfully deleted old file" : "Could not delete old file.");
+                }
+            });
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.convert.error"), MessageType.ERROR));
+            return false;
+        }
+    }
 
-	public static float getVolume() {
-		GameSettings settings = Minecraft.getInstance().gameSettings;
-		return settings.getSoundLevel(SoundCategory.RECORDS) * settings.getSoundLevel(SoundCategory.MASTER);
-	}
+    private static boolean checkFileExists(Consumer<ITextComponent> feedback, File file) {
+        if (!file.exists()) {
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.play.file_not_exist", file.getPath()), MessageType.ERROR));
+            return false;
+        }
+        return true;
+    }
 
-	public static void playYtUrl(String file, Consumer<ITextComponent> feedback) {
-		if(!YoutubeDL.isInstalled()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MessageUtils.WARN));
-			return;
-		}
-		feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.download.trying", "%s"), TextFormatting.AQUA, new Substitute(file, TextFormatting.YELLOW)));
+    private static boolean checkFilePlaying(File file) {
+        return playing.containsKey(file.getPath());
+    }
 
-		try {
-			YoutubeDL.download(file, (i, f) -> {
-				if(i == null || i != 0 || f == null) {
-					feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
-					return;
-				}
+    private static File getMusicFile(String path) {
+        return new File(getMusicDir(), path);
+    }
 
-				feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
-				MusicSystem.tryConvert(f, feedback);
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
-		}
-	}
+    private static File getDownloadedMusicFile(String path) {
+        return new File(MMOUtils.getTmpDir(), "dl" + File.separatorChar + path);
+    }
 
-	public static void playYtSearch(String file, Consumer<ITextComponent> feedback) {
-		if(!YoutubeDL.isInstalled()) {
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MessageUtils.WARN));
-			return;
-		}
-		feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.download.trying", "%s"), TextFormatting.AQUA, new Substitute(file, TextFormatting.YELLOW)));
+    private static File getMusicDir() {
+        return new File("music");
+    }
 
-		try {
-			YoutubeDL.downloadQuery(file, (i, f) -> {
-				if(i == null || i != 0 || f == null) {
-					feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
-					return;
-				}
+    private static MusicInstance getMusic(File file) {
+        return playing.get(file.getPath());
+    }
 
-				feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
-				MusicSystem.tryConvert(f, feedback);
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-			feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
-		}
-	}
+    public static float getVolume() {
+        GameSettings settings = Minecraft.getInstance().gameSettings;
+        return settings.getSoundLevel(SoundCategory.RECORDS) * settings.getSoundLevel(SoundCategory.MASTER);
+    }
 
-	public static void playDownloaded(String file, Consumer<ITextComponent> feedback) {
-		play(getDownloadedMusicFile(file), feedback);
-	}
+    public static void playYtUrl(String file, Consumer<ITextComponent> feedback) {
+        if (!YoutubeDL.isInstalled()) {
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MMOUtils.WARN));
+            return;
+        }
+        feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.download.trying", "%s"), TextFormatting.AQUA, new Substitute(file, TextFormatting.YELLOW)));
+
+        try {
+            YoutubeDL.download(file, (i, f) -> {
+                if (i == null || i != 0 || f == null) {
+                    feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+                    return;
+                }
+
+                feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
+                MusicSystem.tryConvert(f, feedback);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+        }
+    }
+
+    public static void playYtSearch(String file, Consumer<ITextComponent> feedback) {
+        if (!YoutubeDL.isInstalled()) {
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("warn.ytdl.not_installed"), MMOUtils.WARN));
+            return;
+        }
+        feedback.accept(LCLPMMO.TEXT.complexMessage(I18n.format("music.download.trying", "%s"), TextFormatting.AQUA, new Substitute(file, TextFormatting.YELLOW)));
+
+        try {
+            YoutubeDL.downloadQuery(file, (i, f) -> {
+                if (i == null || i != 0 || f == null) {
+                    feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+                    return;
+                }
+
+                feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.success"), MessageType.SUCCESS));
+                MusicSystem.tryConvert(f, feedback);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            feedback.accept(LCLPMMO.TEXT.message(I18n.format("music.download.error"), MessageType.ERROR));
+        }
+    }
+
+    public static void playDownloaded(String file, Consumer<ITextComponent> feedback) {
+        play(getDownloadedMusicFile(file), feedback);
+    }
 
 }

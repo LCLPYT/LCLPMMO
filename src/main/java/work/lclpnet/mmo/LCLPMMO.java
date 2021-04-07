@@ -20,13 +20,16 @@ import software.bernie.example.GeckoLibMod;
 import software.bernie.geckolib3.GeckoLib;
 import work.lclpnet.corebase.CoreBase;
 import work.lclpnet.corebase.util.ComponentSupplier;
+import work.lclpnet.mmo.client.*;
+import work.lclpnet.mmo.client.input.MMOKeybindings;
+import work.lclpnet.mmo.client.render.ClientRenderHandler;
 import work.lclpnet.mmo.cmd.MMOCommands;
 import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
+import work.lclpnet.mmo.item.MMOItems;
 import work.lclpnet.mmo.network.MMOPacketHandler;
-import work.lclpnet.mmo.render.ClientRenderHandler;
 import work.lclpnet.mmo.util.*;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
@@ -38,7 +41,7 @@ public class LCLPMMO {
 	public static final String MODID = "lclpmmo";
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
-	public static final MMOGroup GROUP = new MMOGroup(MODID);
+	public static final MMOItems.MMOItemGroup GROUP = new MMOItems.MMOItemGroup(MODID);
 	private static boolean serverStarted = false, shutdown = false;
 	private static String shutdownReason = null;
 
@@ -67,7 +70,7 @@ public class LCLPMMO {
 		MMOCommands.registerArgumentTypes();
 		MMOEntities.registerEntityTypeAttributes();
 		
-		if(FMLEnvironment.dist == Dist.CLIENT) EnvironmentUtils.deleteTmpDir();
+		if(FMLEnvironment.dist == Dist.CLIENT) MMOUtils.deleteTmpDir();
 		
 		LOGGER.info("LCLPMMO initialized.");
 	}
@@ -105,6 +108,7 @@ public class LCLPMMO {
 		RenderLayerHandler.init();
 		ColorHandler.init();
 		ClientRenderHandler.setup();
+		MMOKeybindings.init();
 		
 		boolean FORCE_DISABLE = true; // TODO remove in release
 		if(!FORCE_DISABLE && Config.enableDiscordIntegration()) Discord.initRPC();

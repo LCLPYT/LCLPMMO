@@ -23,7 +23,7 @@ public class MixinHeldItemLayer {
     )
     public void onRenderItemPre(LivingEntity livingEntity, ItemStack itemStack, ItemCameraTransforms.TransformType p_229135_3_, HandSide p_229135_4_, MatrixStack matrixStack, IRenderTypeBuffer p_229135_6_, int p_229135_7_, CallbackInfo ci) {
         MMORace race = MMORace.getRaceFromPlayer(livingEntity);
-        if(conditionRenderItem(livingEntity, itemStack, race)) {
+        if (conditionRenderItem(livingEntity, itemStack, race)) {
             matrixStack.push();
             race.doTridentTranslation(matrixStack);
         }
@@ -34,7 +34,7 @@ public class MixinHeldItemLayer {
             at = @At("TAIL")
     )
     public void onRenderItemPost(LivingEntity livingEntity, ItemStack itemStack, ItemCameraTransforms.TransformType p_229135_3_, HandSide p_229135_4_, MatrixStack matrixStack, IRenderTypeBuffer p_229135_6_, int p_229135_7_, CallbackInfo ci) {
-        if(conditionRenderItem(livingEntity, itemStack, MMORace.getRaceFromPlayer(livingEntity))) matrixStack.pop();
+        if (conditionRenderItem(livingEntity, itemStack, MMORace.getRaceFromPlayer(livingEntity))) matrixStack.pop();
     }
 
     private boolean conditionRenderItem(LivingEntity livingEntity, ItemStack itemStack, MMORace race) {

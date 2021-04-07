@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render;
+package work.lclpnet.mmo.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.vector.Vector3f;
 import work.lclpnet.mmo.asm.type.IMMOModelRenderer;
-import work.lclpnet.mmo.render.model.AbstractMMOPlayerModel;
+import work.lclpnet.mmo.client.render.model.AbstractMMOPlayerModel;
 
 import java.util.Random;
 

@@ -18,41 +18,41 @@ import java.util.function.Consumer;
 
 public class HelperServerLoginNetHandler {
 
-	public static boolean ifOnClient(MinecraftServer server, GameProfile profile, ServerPlayerEntity serverplayerentity,
-			ServerLoginNetHandler handler, GameProfile loginGameProfile, NetworkManager networkManager, 
-			Consumer<ServerPlayerEntity> playerSetter) {
-		if(FMLEnvironment.dist != Dist.CLIENT) return false;
-		
-		if(server instanceof IntegratedServer && server.isServerOwner(profile)) {
-			resolve(serverplayerentity, handler, server, loginGameProfile, networkManager, User.getSelectedCharacter(), User.getCurrent(), playerSetter);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public static void resolve(ServerPlayerEntity serverplayerentity, ServerLoginNetHandler handler, MinecraftServer server,
-			GameProfile loginGameProfile, NetworkManager networkManager, MMOCharacter character, User tmpUser, 
-			Consumer<ServerPlayerEntity> playerSetter) {
-		
-		networkManager.sendPacket(new SLoginSuccessPacket(loginGameProfile));
-		
-		if (serverplayerentity != null) {
-			handler.currentLoginState = State.DELAY_ACCEPT;
-			
-			ServerPlayerEntity player = server.getPlayerList().createPlayerForUser(loginGameProfile);
-			playerSetter.accept(player);
-			IMMOUser mmo = IMMOUser.getMMOUser(player);
-			mmo.setMMOCharacter(character);
-			mmo.setUser(tmpUser);
-		} else {
-			ServerPlayerEntity created = server.getPlayerList().createPlayerForUser(loginGameProfile);
-			IMMOUser mmo = IMMOUser.getMMOUser(created);
-			mmo.setMMOCharacter(character);
-			mmo.setUser(tmpUser);
-			
-			server.getPlayerList().initializeConnectionToPlayer(networkManager, created);
-		}
-	}
-	
+    public static boolean ifOnClient(MinecraftServer server, GameProfile profile, ServerPlayerEntity serverplayerentity,
+                                     ServerLoginNetHandler handler, GameProfile loginGameProfile, NetworkManager networkManager,
+                                     Consumer<ServerPlayerEntity> playerSetter) {
+        if (FMLEnvironment.dist != Dist.CLIENT) return false;
+
+        if (server instanceof IntegratedServer && server.isServerOwner(profile)) {
+            resolve(serverplayerentity, handler, server, loginGameProfile, networkManager, User.getSelectedCharacter(), User.getCurrent(), playerSetter);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void resolve(ServerPlayerEntity serverplayerentity, ServerLoginNetHandler handler, MinecraftServer server,
+                               GameProfile loginGameProfile, NetworkManager networkManager, MMOCharacter character, User tmpUser,
+                               Consumer<ServerPlayerEntity> playerSetter) {
+
+        networkManager.sendPacket(new SLoginSuccessPacket(loginGameProfile));
+
+        if (serverplayerentity != null) {
+            handler.currentLoginState = State.DELAY_ACCEPT;
+
+            ServerPlayerEntity player = server.getPlayerList().createPlayerForUser(loginGameProfile);
+            playerSetter.accept(player);
+            IMMOUser mmo = IMMOUser.getMMOUser(player);
+            mmo.setMMOCharacter(character);
+            mmo.setUser(tmpUser);
+        } else {
+            ServerPlayerEntity created = server.getPlayerList().createPlayerForUser(loginGameProfile);
+            IMMOUser mmo = IMMOUser.getMMOUser(created);
+            mmo.setMMOCharacter(character);
+            mmo.setUser(tmpUser);
+
+            server.getPlayerList().initializeConnectionToPlayer(networkManager, created);
+        }
+    }
+
 }

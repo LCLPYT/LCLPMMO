@@ -9,31 +9,33 @@ import work.lclpnet.mmo.audio.MusicSystem;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MusicArgumentType implements ArgumentType<String>{
+public class MusicArgumentType implements ArgumentType<String> {
 
-	@Override
-	public String parse(StringReader reader) {
+    @Override
+    public String parse(StringReader reader) {
         final String text = reader.getRemaining();
         reader.setCursor(reader.getTotalLength());
         return text;
-	}
-	
-	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		String input = context.getInput();
-		if(input.startsWith("/music stop ") || input.startsWith("/music volume ")) MusicSystem.getAllPlaying().forEach(builder::suggest);
-		else if(input.startsWith("/music youtube downloaded ")) MusicSystem.getDownloadedVideoTitles().forEach(builder::suggest);
-		else MusicSystem.getAllMusicFiles().forEach(builder::suggest);
-		
-		return builder.buildFuture();
-	}
-	
-	public static String getMusic(final CommandContext<?> context, final String name) {
+    }
+
+    @Override
+    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+        String input = context.getInput();
+        if (input.startsWith("/music stop ") || input.startsWith("/music volume "))
+            MusicSystem.getAllPlaying().forEach(builder::suggest);
+        else if (input.startsWith("/music youtube downloaded "))
+            MusicSystem.getDownloadedVideoTitles().forEach(builder::suggest);
+        else MusicSystem.getAllMusicFiles().forEach(builder::suggest);
+
+        return builder.buildFuture();
+    }
+
+    public static String getMusic(final CommandContext<?> context, final String name) {
         return context.getArgument(name, String.class);
     }
-    
+
     public static MusicArgumentType music() {
-    	return new MusicArgumentType();
+        return new MusicArgumentType();
     }
-	
+
 }

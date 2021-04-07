@@ -1,6 +1,8 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.client;
 
 import org.apache.commons.io.FileUtils;
+import work.lclpnet.mmo.util.MMOUtils;
+import work.lclpnet.mmo.util.OSHooks;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +81,7 @@ public class YoutubeDL {
 
 	public static void download(String url, BiConsumer<Integer, File> handler) throws IOException {
 		int current = nextId++;
-		final File dir = new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + current);
+		final File dir = new File(MMOUtils.getTmpDir(), "dl" + File.separatorChar + current);
 		if(!dir.exists()) dir.mkdirs();
 		
 		if(!FFMPEG.isInstalled()) {
@@ -98,7 +100,7 @@ public class YoutubeDL {
 					return;
 				}
 				File f = children[0];
-				File destFile = new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + f.getName());
+				File destFile = new File(MMOUtils.getTmpDir(), "dl" + File.separatorChar + f.getName());
 				try {
 					FileUtils.copyFile(f, destFile);
 					FileUtils.forceDelete(dir);
@@ -119,7 +121,7 @@ public class YoutubeDL {
 	
 	public static void downloadQuery(String url, BiConsumer<Integer, File> handler) throws IOException {
 		int current = nextId++;
-		final File dir = new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + current);
+		final File dir = new File(MMOUtils.getTmpDir(), "dl" + File.separatorChar + current);
 		if(!dir.exists()) dir.mkdirs();
 		
 		if(!FFMPEG.isInstalled()) {
@@ -138,7 +140,7 @@ public class YoutubeDL {
 					return;
 				}
 				File f = children[0];
-				File destFile = new File(EnvironmentUtils.getTmpDir(), "dl" + File.separatorChar + f.getName());
+				File destFile = new File(MMOUtils.getTmpDir(), "dl" + File.separatorChar + f.getName());
 				try {
 					FileUtils.copyFile(f, destFile);
 					FileUtils.forceDelete(dir);

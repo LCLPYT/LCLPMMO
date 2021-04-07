@@ -32,7 +32,8 @@ public class LocalLCLPStorage {
     @Nonnull
     public static File getRootDirectory() throws IllegalStateException {
         File root = getRootDirectoryFile();
-        if(!root.exists() && !createHiddenDirectory(root)) throw new IllegalStateException("Could not create storage root.");
+        if (!root.exists() && !createHiddenDirectory(root))
+            throw new IllegalStateException("Could not create storage root.");
 
         return root;
     }
@@ -42,12 +43,11 @@ public class LocalLCLPStorage {
     }
 
     private static boolean createHiddenDirectory(File dir) {
-        if(!dir.exists()) {
-            if(!dir.mkdirs()) return false;
-            else if(OSHooks.isWindows()) return OSHooks._WINDOWS_makeFileHidden(dir);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) return false;
+            else if (OSHooks.isWindows()) return OSHooks._WINDOWS_makeFileHidden(dir);
             else return true;
-        }
-        else return dir.isDirectory();
+        } else return dir.isDirectory();
     }
 
 }

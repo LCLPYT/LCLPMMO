@@ -2,15 +2,15 @@ package work.lclpnet.mmo.util.network;
 
 public interface IPrivateBackend {
 
-	String getCharacterDataSavePath();
+    String getCharacterDataSavePath();
 
-	/* --- */
-	
-	IPrivateBackend NONE = new IPrivateBackend() {
-		@Override
-		public String getCharacterDataSavePath() {
-			return null;
-		}
-	};
-	
+    /* --- */
+
+    IPrivateBackend NONE = new IPrivateBackend() {
+        @Override
+        public String getCharacterDataSavePath() {
+            return null;
+        }
+    };
+
 }

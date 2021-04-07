@@ -29,7 +29,7 @@ import work.lclpnet.mmo.gui.login.LoginScreen;
 import work.lclpnet.mmo.gui.login.ResponsiveCheckboxButton;
 import work.lclpnet.mmo.gui.main.MMOMainScreen;
 import work.lclpnet.mmo.network.msg.MessageShowTutorialScreen;
-import work.lclpnet.mmo.util.RenderWorker;
+import work.lclpnet.mmo.util.QueueWorker;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
@@ -57,7 +57,7 @@ public class EventListener {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onRenderTick(RenderTickEvent e) {
-		if(e.phase == Phase.END) RenderWorker.workRender();
+		if(e.phase == Phase.END) QueueWorker.doRenderWork();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -67,7 +67,7 @@ public class EventListener {
 
 		MessageShowTutorialScreen.ClientCache.needCache = false;
 		if(MessageShowTutorialScreen.ClientCache.cached != null) 
-			RenderWorker.enqueueOnRender(MessageShowTutorialScreen.ClientCache.cached::showTutorialScreen);
+			QueueWorker.enqueueOnRender(MessageShowTutorialScreen.ClientCache.cached::showTutorialScreen);
 	}
 
 	@OnlyIn(Dist.CLIENT)

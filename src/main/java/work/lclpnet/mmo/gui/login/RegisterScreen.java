@@ -34,9 +34,9 @@ public class RegisterScreen extends MMOScreen {
         privPolText = I18n.format("mmo.menu.register.privacy_policy");
         privPol = new StringTextComponent(privPolText);
         privPol.setStyle(privPol.getStyle()
-        		.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/privacy-policy"))
-        		.setUnderlined(true)
-        		.setColor(net.minecraft.util.text.Color.fromTextFormatting(TextFormatting.BLUE)));
+                .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://lclpnet.work/privacy-policy"))
+                .setUnderlined(true)
+                .setColor(net.minecraft.util.text.Color.fromTextFormatting(TextFormatting.BLUE)));
     }
 
     public void tick() {
@@ -68,8 +68,8 @@ public class RegisterScreen extends MMOScreen {
         this.addButton(checkbox);
 
         this.buttonRegister = this.addButton(new Button(this.width / 2 - 100, 184, 200, 20, new TranslationTextComponent("mmo.menu.register.register"), (p_213030_1_) -> {
-            if(!textFieldPassword.getText().equals(textFieldConfirmPassword.getText())) {
-            	displayToast(new TranslationTextComponent("mmo.menu.register.password_mismatch"));
+            if (!textFieldPassword.getText().equals(textFieldConfirmPassword.getText())) {
+                displayToast(new TranslationTextComponent("mmo.menu.register.password_mismatch"));
                 passwordError = true;
                 return;
             }
@@ -79,25 +79,22 @@ public class RegisterScreen extends MMOScreen {
             authManager.register(textFieldEmail.getText(), textFieldPassword.getText(), textFieldConfirmPassword.getText(), error -> {
                 this.buttonRegister.active = true;
 
-                if(error == null) {
-                	displayToast(new TranslationTextComponent("mmo.menu.register.success"));
+                if (error == null) {
+                    displayToast(new TranslationTextComponent("mmo.menu.register.success"));
                     LoginScreen.loadUserAndResolve(this.minecraft);
-                }
-                else {
+                } else {
                     registerFailed = false;
                     mailError = false;
                     passwordError = false;
 
                     ITextComponent err = null;
-                    if(error.equals("The email has already been taken.")) {
+                    if (error.equals("The email has already been taken.")) {
                         err = new TranslationTextComponent("mmo.menu.register.mail_taken");
                         mailError = true;
-                    }
-                    else if(error.equals("The password must be at least 8 characters.")) {
+                    } else if (error.equals("The password must be at least 8 characters.")) {
                         err = new TranslationTextComponent("mmo.menu.register.pw_too_short");
                         passwordError = true;
-                    }
-                    else {
+                    } else {
                         err = new StringTextComponent(error);
                         registerFailed = true;
                     }
@@ -122,9 +119,9 @@ public class RegisterScreen extends MMOScreen {
         String email = this.textFieldEmail.getText();
         this.buttonRegister.active =
                 !email.isEmpty() && email.split("@").length == 2
-                && !this.textFieldPassword.getText().isEmpty()
-                && !this.textFieldConfirmPassword.getText().isEmpty()
-                && this.checkbox.isChecked();
+                        && !this.textFieldPassword.getText().isEmpty()
+                        && !this.textFieldConfirmPassword.getText().isEmpty()
+                        && this.checkbox.isChecked();
     }
 
     @Override
@@ -140,10 +137,10 @@ public class RegisterScreen extends MMOScreen {
 
     @Override
     public void onClose() {
-    	super.onClose();
-    	this.minecraft.keyboardListener.enableRepeatEvents(false);
+        super.onClose();
+        this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
-    
+
     @Override
     public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(mStack);

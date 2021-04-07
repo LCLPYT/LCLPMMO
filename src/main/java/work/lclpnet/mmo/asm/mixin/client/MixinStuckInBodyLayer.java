@@ -26,7 +26,7 @@ public class MixinStuckInBodyLayer {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void onRender(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci, int i, Random random, int j, ModelRenderer modelrenderer) {
-        if(modelrenderer == null) {
+        if (modelrenderer == null) {
             matrixStackIn.pop();
             ci.cancel();
         }
@@ -42,7 +42,7 @@ public class MixinStuckInBodyLayer {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void onRender(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci, int i, Random random, int j, ModelRenderer modelrenderer, ModelRenderer.ModelBox box) {
-        if(box == null) {
+        if (box == null) {
             matrixStackIn.pop();
             ci.cancel();
         }

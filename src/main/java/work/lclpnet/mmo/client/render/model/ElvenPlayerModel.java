@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render.model;
+package work.lclpnet.mmo.client.render.model;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -9,7 +9,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.render.MMOModelRenderer;
+import work.lclpnet.mmo.client.render.MMOModelRenderer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

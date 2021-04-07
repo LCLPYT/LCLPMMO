@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.client;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -18,21 +18,16 @@ import work.lclpnet.mmo.tileentity.GlassBottleTileEntity;
 public class ColorHandler {
 
 	public static void init() {
-		Minecraft.getInstance().getBlockColors().register(new IBlockColor() {
-			
-			@Override
-			public int getColor(BlockState state, IBlockDisplayReader light, BlockPos pos,
-					int tintIndex) {
-				if(light == null || pos == null) return -1;
-				
-				TileEntity te = Minecraft.getInstance().world.getTileEntity(pos);
-				if(te instanceof GlassBottleTileEntity) {
-					ItemStack item = ((GlassBottleTileEntity) te).getItem();
-					return PotionUtils.getColor(item);
-				}
-				
-				return BiomeColors.getWaterColor(light, pos);
+		Minecraft.getInstance().getBlockColors().register((state, light, pos, tintIndex) -> {
+			if(light == null || pos == null) return -1;
+
+			TileEntity te = Minecraft.getInstance().world.getTileEntity(pos);
+			if(te instanceof GlassBottleTileEntity) {
+				ItemStack item = ((GlassBottleTileEntity) te).getItem();
+				return PotionUtils.getColor(item);
 			}
+
+			return BiomeColors.getWaterColor(light, pos);
 		}, MMOBlocks.GLASS_BOTTLE);
 	}
 	

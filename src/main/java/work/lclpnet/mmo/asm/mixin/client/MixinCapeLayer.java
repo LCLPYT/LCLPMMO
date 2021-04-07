@@ -22,7 +22,7 @@ public class MixinCapeLayer {
     )
     public void onRender(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         MMORace race = MMORace.getRaceFromPlayer(entitylivingbaseIn);
-        if(race != null) race.doCapeTranslation(matrixStackIn);
+        if (race != null) race.doCapeTranslation(matrixStackIn);
     }
 
 }

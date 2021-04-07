@@ -5,23 +5,23 @@ import work.lclpnet.mmo.facade.dialog.Dialog;
 
 public interface IMMOPlayer {
 
-	void openMMODialog(Dialog dialog);
+    void openMMODialog(Dialog dialog);
 
-	/**
-	 * Helper method. <b>ONLY FOR INTERNAL USAGE!</b>
-	 */
-	void setCurrentMMODialog(Dialog dialog);
-	
-	Dialog getCurrentMMODialog();
-	
-	void closeMMODialog();
-	
-	default boolean isMMODialogOpen() {
-		return getCurrentMMODialog() != null;
-	}
-	
-	static IMMOPlayer get(PlayerEntity player) {
-		return (IMMOPlayer) player;
-	}
-	
+    /**
+     * Helper method. <b>ONLY FOR INTERNAL USAGE!</b>
+     */
+    void setCurrentMMODialog(Dialog dialog);
+
+    Dialog getCurrentMMODialog();
+
+    void closeMMODialog();
+
+    default boolean isMMODialogOpen() {
+        return getCurrentMMODialog() != null;
+    }
+
+    static IMMOPlayer get(PlayerEntity player) {
+        return (IMMOPlayer) player;
+    }
+
 }

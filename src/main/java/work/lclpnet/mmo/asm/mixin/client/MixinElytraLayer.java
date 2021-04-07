@@ -22,7 +22,7 @@ public class MixinElytraLayer {
     )
     public void onRender(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         MMORace race = MMORace.getRaceFromPlayer(entity);
-        if(race != null) race.doElytraTranslation(matrixStackIn);
+        if (race != null) race.doElytraTranslation(matrixStackIn);
     }
 
 }

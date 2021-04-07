@@ -8,18 +8,18 @@ import work.lclpnet.mmo.facade.race.MMORace;
 
 public class MMOGson {
 
-	public static final Gson gson = builder()
-			.addSerializationExclusionStrategy(new NoSerialization.Strategy())
-			.create(),
+    public static final Gson gson = builder()
+            .addSerializationExclusionStrategy(new NoSerialization.Strategy())
+            .create(),
 
-			allSerializerGson = builder()
-			.create();
+    allSerializerGson = builder()
+            .create();
 
-	private static GsonBuilder builder() {
-		return new GsonBuilder()
-				.registerTypeAdapter(MMORace.class, MMORace.Adapter.INSTANCE)
-				.registerTypeAdapter(MMOCharacter.class, new MMOCharacter.Adapter())
-				.registerTypeAdapter(Quest.class, new Quest.Adapter());
-	}
+    private static GsonBuilder builder() {
+        return new GsonBuilder()
+                .registerTypeAdapter(MMORace.class, MMORace.Adapter.INSTANCE)
+                .registerTypeAdapter(MMOCharacter.class, new MMOCharacter.Adapter())
+                .registerTypeAdapter(Quest.class, new Quest.Adapter());
+    }
 
 }

@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render;
+package work.lclpnet.mmo.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -7,13 +7,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import work.lclpnet.mmo.asm.type.IMMOUser;
+import work.lclpnet.mmo.client.render.MMOPlayerRenderer;
+import work.lclpnet.mmo.client.render.PixieRenderer;
+import work.lclpnet.mmo.client.render.model.ElvenPlayerModel;
+import work.lclpnet.mmo.client.render.model.HumanPlayerModel;
+import work.lclpnet.mmo.client.render.model.VampirePlayerModel;
 import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.facade.race.Races;
-import work.lclpnet.mmo.render.model.ElvenPlayerModel;
-import work.lclpnet.mmo.render.model.HumanPlayerModel;
-import work.lclpnet.mmo.render.model.VampirePlayerModel;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

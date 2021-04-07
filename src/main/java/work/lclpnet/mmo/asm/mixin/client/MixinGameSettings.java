@@ -11,15 +11,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameSettings.class)
 public class MixinGameSettings {
 
-	@Shadow
-	public double gamma;
-	
-	@Inject(
-			method = "loadOptions()V",
-			at = @At("TAIL")
-			)
-	public void onLoadOptions(CallbackInfo ci) {
-		this.gamma = MathHelper.clamp(this.gamma, 0D, 1D);
-	}
-	
+    @Shadow
+    public double gamma;
+
+    @Inject(
+            method = "loadOptions()V",
+            at = @At("TAIL")
+    )
+    public void onLoadOptions(CallbackInfo ci) {
+        this.gamma = MathHelper.clamp(this.gamma, 0D, 1D);
+    }
+
 }

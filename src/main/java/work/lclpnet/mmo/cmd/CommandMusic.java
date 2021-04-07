@@ -20,222 +20,222 @@ import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageMusic;
 import work.lclpnet.mmo.network.msg.MessageMusic.MusicAction;
 
-public class CommandMusic extends CommandBase{
+public class CommandMusic extends CommandBase {
 
-	public CommandMusic() {
-		super("music");
-	}
+    public CommandMusic() {
+        super("music");
+    }
 
-	@Override
-	protected LiteralArgumentBuilder<CommandSource> transform(LiteralArgumentBuilder<CommandSource> builder) {
-		return builder
-				.then(Commands.literal("play")
-						.then(Commands.argument("file", MusicArgumentType.music())
-								.executes(this::playSelf)))
-				.then(Commands.literal("youtube")
-						.then(Commands.literal("url")
-								.then(Commands.argument("url", StringArgumentType.greedyString()).executes(this::playYtUrlSelf)))
-						.then(Commands.literal("search")
-								.then(Commands.argument("ytquery", StringArgumentType.greedyString()).executes(this::playYtSearchSelf)))
-						.then(Commands.literal("downloaded")
-								.then(Commands.argument("downloaded", MusicArgumentType.music()).executes(this::playYtDownloadedSelf)))
-						)
-				.then(Commands.literal("volume")
-						.then(Commands.argument("percent", FloatArgumentType.floatArg(0F, 1F))
-								.executes(this::volumeAllSelf)
-								.then(Commands.argument("file", MusicArgumentType.music())
-										.executes(this::volumeSelf))))
-				.then(Commands.literal("stop")
-						.executes(this::stopAllSelf)
-						.then(Commands.argument("file", MusicArgumentType.music())
-								.executes(this::stopSelf)));
-	}
+    @Override
+    protected LiteralArgumentBuilder<CommandSource> transform(LiteralArgumentBuilder<CommandSource> builder) {
+        return builder
+                .then(Commands.literal("play")
+                        .then(Commands.argument("file", MusicArgumentType.music())
+                                .executes(this::playSelf)))
+                .then(Commands.literal("youtube")
+                        .then(Commands.literal("url")
+                                .then(Commands.argument("url", StringArgumentType.greedyString()).executes(this::playYtUrlSelf)))
+                        .then(Commands.literal("search")
+                                .then(Commands.argument("ytquery", StringArgumentType.greedyString()).executes(this::playYtSearchSelf)))
+                        .then(Commands.literal("downloaded")
+                                .then(Commands.argument("downloaded", MusicArgumentType.music()).executes(this::playYtDownloadedSelf)))
+                )
+                .then(Commands.literal("volume")
+                        .then(Commands.argument("percent", FloatArgumentType.floatArg(0F, 1F))
+                                .executes(this::volumeAllSelf)
+                                .then(Commands.argument("file", MusicArgumentType.music())
+                                        .executes(this::volumeSelf))))
+                .then(Commands.literal("stop")
+                        .executes(this::stopAllSelf)
+                        .then(Commands.argument("file", MusicArgumentType.music())
+                                .executes(this::stopSelf)));
+    }
 
-	public int playYtDownloadedSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+    public int playYtDownloadedSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		String file = ctx.getArgument("downloaded", String.class);
+        String file = ctx.getArgument("downloaded", String.class);
 
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Playing downloaded music file '%s'...", 
-						TextFormatting.GREEN, 
-						new Substitute(file, TextFormatting.YELLOW)
-						), 
-				false);
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Playing downloaded music file '%s'...",
+                        TextFormatting.GREEN,
+                        new Substitute(file, TextFormatting.YELLOW)
+                ),
+                false);
 
-		MessageMusic msg = new MessageMusic(MusicAction.PLAY_YT, "downloaded:" + file);
+        MessageMusic msg = new MessageMusic(MusicAction.PLAY_YT, "downloaded:" + file);
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
-	
-	public int playYtSearchSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		String file = ctx.getArgument("ytquery", String.class);
+    public int playYtSearchSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        String file = ctx.getArgument("ytquery", String.class);
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Searching '%s' on YouTube...", 
-						TextFormatting.GREEN, 
-						new Substitute(file, TextFormatting.YELLOW)
-						), 
-				false);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MessageMusic msg = new MessageMusic(MusicAction.PLAY_YT, "search:" + file);
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Searching '%s' on YouTube...",
+                        TextFormatting.GREEN,
+                        new Substitute(file, TextFormatting.YELLOW)
+                ),
+                false);
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
-	
-	public int playYtUrlSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MessageMusic msg = new MessageMusic(MusicAction.PLAY_YT, "search:" + file);
 
-		String file = ctx.getArgument("url", String.class);
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+    public int playYtUrlSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Searching for music on '%s'...", 
-						TextFormatting.GREEN, 
-						new Substitute(file, TextFormatting.YELLOW)
-						), 
-				false);
+        String file = ctx.getArgument("url", String.class);
 
-		MessageMusic msg = new MessageMusic(MusicAction.PLAY_YT, "url:" + file);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Searching for music on '%s'...",
+                        TextFormatting.GREEN,
+                        new Substitute(file, TextFormatting.YELLOW)
+                ),
+                false);
 
-	public int playSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MessageMusic msg = new MessageMusic(MusicAction.PLAY_YT, "url:" + file);
 
-		String file = ctx.getArgument("file", String.class);
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Playing music file '%s'...", 
-						TextFormatting.GREEN, 
-						new Substitute(file, TextFormatting.YELLOW)
-						), 
-				false);
+    public int playSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		MessageMusic msg = new MessageMusic(MusicAction.PLAY, file);
+        String file = ctx.getArgument("file", String.class);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Playing music file '%s'...",
+                        TextFormatting.GREEN,
+                        new Substitute(file, TextFormatting.YELLOW)
+                ),
+                false);
 
-	public int volumeAllSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MessageMusic msg = new MessageMusic(MusicAction.PLAY, file);
 
-		float percent = ctx.getArgument("percent", Float.class);
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Setting general music volume to %s...", 
-						TextFormatting.GREEN, 
-						new Substitute(percent, TextFormatting.YELLOW) 
-						), 
-				false);
+    public int volumeAllSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		MessageMusic msg = new MessageMusic(MusicAction.VOLUME, percent);
+        float percent = ctx.getArgument("percent", Float.class);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Setting general music volume to %s...",
+                        TextFormatting.GREEN,
+                        new Substitute(percent, TextFormatting.YELLOW)
+                ),
+                false);
 
-	public int volumeSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MessageMusic msg = new MessageMusic(MusicAction.VOLUME, percent);
 
-		String file = ctx.getArgument("file", String.class);
-		float percent = ctx.getArgument("percent", Float.class);
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Setting volume of '%s' to %s...", 
-						TextFormatting.GREEN, 
-						new Substitute(file, TextFormatting.YELLOW), 
-						new Substitute(percent, TextFormatting.YELLOW)
-						), 
-				false);
+    public int volumeSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		MessageMusic msg = new MessageMusic(MusicAction.VOLUME, file, percent);
+        String file = ctx.getArgument("file", String.class);
+        float percent = ctx.getArgument("percent", Float.class);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Setting volume of '%s' to %s...",
+                        TextFormatting.GREEN,
+                        new Substitute(file, TextFormatting.YELLOW),
+                        new Substitute(percent, TextFormatting.YELLOW)
+                ),
+                false);
 
-	public int stopAllSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MessageMusic msg = new MessageMusic(MusicAction.VOLUME, file, percent);
 
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Stopping all music...", 
-						TextFormatting.GREEN
-						), 
-				false);
+    public int stopAllSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		MessageMusic msg = new MessageMusic(MusicAction.STOP);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Stopping all music...",
+                        TextFormatting.GREEN
+                ),
+                false);
 
-	public int stopSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException{
-		if(!CoreCommands.isPlayer(ctx.getSource())) {
-			ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
-			return 1;
-		}
+        MessageMusic msg = new MessageMusic(MusicAction.STOP);
 
-		String file = ctx.getArgument("file", String.class);
-		ServerPlayerEntity p = ctx.getSource().asPlayer();
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
-		ctx.getSource().sendFeedback(
-				LCLPMMO.TEXT.complexMessage(
-						"Stopping music '%s'...", 
-						TextFormatting.GREEN, 
-						new Substitute(file, TextFormatting.YELLOW)
-						), 
-				false);
+    public int stopSelf(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        if (!CoreCommands.isPlayer(ctx.getSource())) {
+            ctx.getSource().sendErrorMessage(LCLPMMO.TEXT.message("You must be a player to execute this command.", MessageType.ERROR));
+            return 1;
+        }
 
-		MessageMusic msg = new MessageMusic(MusicAction.STOP, file);
+        String file = ctx.getArgument("file", String.class);
+        ServerPlayerEntity p = ctx.getSource().asPlayer();
 
-		MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
-		return 0;
-	}
+        ctx.getSource().sendFeedback(
+                LCLPMMO.TEXT.complexMessage(
+                        "Stopping music '%s'...",
+                        TextFormatting.GREEN,
+                        new Substitute(file, TextFormatting.YELLOW)
+                ),
+                false);
+
+        MessageMusic msg = new MessageMusic(MusicAction.STOP, file);
+
+        MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
+        return 0;
+    }
 
 }

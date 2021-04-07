@@ -15,134 +15,135 @@ import java.util.List;
 
 public class HTTPResponse {
 
-	public static final HTTPResponse NO_CONNECTION = new HTTPResponse(-1, null, null);
-	private final int responseCode;
-	private final String rawResponse, rawError;
-	private ValidationViolations validationViolations = null;
-	private String jsonStatusMessage = null;
+    public static final HTTPResponse NO_CONNECTION = new HTTPResponse(-1, null, null);
+    private final int responseCode;
+    private final String rawResponse, rawError;
+    private ValidationViolations validationViolations = null;
+    private String jsonStatusMessage = null;
 
-	public HTTPResponse(int responseCode, String rawResponse, String rawError) {
-		this.responseCode = responseCode;
-		this.rawResponse = rawResponse;
-		this.rawError = rawError;
-	}
+    public HTTPResponse(int responseCode, String rawResponse, String rawError) {
+        this.responseCode = responseCode;
+        this.rawResponse = rawResponse;
+        this.rawError = rawError;
+    }
 
-	public int getResponseCode() {
-		return responseCode;
-	}
+    public int getResponseCode() {
+        return responseCode;
+    }
 
-	public String getRawResponse() {
-		return rawResponse;
-	}
+    public String getRawResponse() {
+        return rawResponse;
+    }
 
-	public String getRawError() {
-		return rawError;
-	}
+    public String getRawError() {
+        return rawError;
+    }
 
-	public boolean isNoConnection() {
-		return NO_CONNECTION.equals(this);
-	}
+    public boolean isNoConnection() {
+        return NO_CONNECTION.equals(this);
+    }
 
-	public static HTTPResponse fromRequest(HttpURLConnection conn) throws IOException {
-		int status = conn.getResponseCode();
+    public static HTTPResponse fromRequest(HttpURLConnection conn) throws IOException {
+        int status = conn.getResponseCode();
 
-		String response;
-		try (InputStream in = conn.getInputStream()) {
-			response = IOUtils.toString(in, StandardCharsets.UTF_8);
-		} catch (IOException | NullPointerException e) {
-			response = null;
-		}
+        String response;
+        try (InputStream in = conn.getInputStream()) {
+            response = IOUtils.toString(in, StandardCharsets.UTF_8);
+        } catch (IOException | NullPointerException e) {
+            response = null;
+        }
 
-		String error;
-		try(InputStream inErr = conn.getErrorStream()) {
-			error = IOUtils.toString(inErr, StandardCharsets.UTF_8);
-		} catch (IOException | NullPointerException e) {
-			error = null;
-		}
+        String error;
+        try (InputStream inErr = conn.getErrorStream()) {
+            error = IOUtils.toString(inErr, StandardCharsets.UTF_8);
+        } catch (IOException | NullPointerException e) {
+            error = null;
+        }
 
-		return new HTTPResponse(status, response, error);
-	}
-	
-	public boolean hasJsonStatusMessage() {
-		return getJsonStatusMessage() != null;
-	}
+        return new HTTPResponse(status, response, error);
+    }
 
-	public String getJsonStatusMessage() {
-		if(jsonStatusMessage != null) return jsonStatusMessage;
+    public boolean hasJsonStatusMessage() {
+        return getJsonStatusMessage() != null;
+    }
 
-		String s = rawError != null ? rawError : (rawResponse);
-		if(s == null) return null;
+    public String getJsonStatusMessage() {
+        if (jsonStatusMessage != null) return jsonStatusMessage;
 
-		JsonObject json;
-		try {
-			json = JsonSerializeable.parse(s, JsonObject.class);
-		} catch (JsonSyntaxException e) {
-			return null;
-		}
+        String s = rawError != null ? rawError : (rawResponse);
+        if (s == null) return null;
 
-		JsonElement elem = json.get("message");
-		if(elem == null) return null;
+        JsonObject json;
+        try {
+            json = JsonSerializeable.parse(s, JsonObject.class);
+        } catch (JsonSyntaxException e) {
+            return null;
+        }
 
-		try {
-			jsonStatusMessage = elem.getAsString();
-			return jsonStatusMessage;
-		} catch (ClassCastException e) {
-			return null;
-		}
-	}
+        JsonElement elem = json.get("message");
+        if (elem == null) return null;
 
-	public boolean hasValidationViolations() {
-		return getValidationViolations() != null && !validationViolations.getViolations().isEmpty();
-	}
+        try {
+            jsonStatusMessage = elem.getAsString();
+            return jsonStatusMessage;
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
 
-	public ValidationViolations getValidationViolations() {
-		if(validationViolations != null) return validationViolations;
+    public boolean hasValidationViolations() {
+        return getValidationViolations() != null && !validationViolations.getViolations().isEmpty();
+    }
 
-		if(rawError == null) return null;
+    public ValidationViolations getValidationViolations() {
+        if (validationViolations != null) return validationViolations;
 
-		JsonObject json;
-		try {
-			json = JsonSerializeable.parse(rawError, JsonObject.class);
-		} catch (JsonSyntaxException e) {
-			return null;
-		}
+        if (rawError == null) return null;
 
-		JsonElement elem = json.get("errors");
-		if(elem == null || !elem.isJsonObject()) return null;
+        JsonObject json;
+        try {
+            json = JsonSerializeable.parse(rawError, JsonObject.class);
+        } catch (JsonSyntaxException e) {
+            return null;
+        }
 
-		List<ElementError> elemErrors = new ArrayList<>();
+        JsonElement elem = json.get("errors");
+        if (elem == null || !elem.isJsonObject()) return null;
 
-		JsonObject obj = elem.getAsJsonObject();
-		obj.entrySet().forEach(e -> {
-			List<String> errors = new ArrayList<>();
-			if(e.getValue().isJsonArray()) {
-				List<JsonElement> elems = new ArrayList<>();
-				e.getValue().getAsJsonArray().forEach(elems::add);
-				elems.forEach(eElem -> {
-					try {
-					    errors.add(eElem.getAsString());
-					} catch (ClassCastException ignored) {}
-				});
-			}
-			elemErrors.add(new ElementError(e.getKey(), errors));	
-		});
+        List<ElementError> elemErrors = new ArrayList<>();
 
-		return (validationViolations = new ValidationViolations(elemErrors));
-	}
-	
-	public <T> T getExtra(Class<T> clazz) {
-		JsonObject obj = JsonSerializeable.parse(rawResponse, JsonObject.class);
-		JsonElement elem = obj.get("extra");
-		if(elem == null || elem.isJsonNull()) return null;
-		else return JsonSerializeable.cast(elem.getAsJsonObject(), clazz);
-	}
+        JsonObject obj = elem.getAsJsonObject();
+        obj.entrySet().forEach(e -> {
+            List<String> errors = new ArrayList<>();
+            if (e.getValue().isJsonArray()) {
+                List<JsonElement> elems = new ArrayList<>();
+                e.getValue().getAsJsonArray().forEach(elems::add);
+                elems.forEach(eElem -> {
+                    try {
+                        errors.add(eElem.getAsString());
+                    } catch (ClassCastException ignored) {
+                    }
+                });
+            }
+            elemErrors.add(new ElementError(e.getKey(), errors));
+        });
 
-	@Override
-	public String toString() {
-		return "HTTPResponse{" +
-				"responseCode=" + responseCode +
-				", rawResponse='" + rawResponse + '\'' +
-				", rawError='" + rawError + '\'' +
-				'}';
-	}
+        return (validationViolations = new ValidationViolations(elemErrors));
+    }
+
+    public <T> T getExtra(Class<T> clazz) {
+        JsonObject obj = JsonSerializeable.parse(rawResponse, JsonObject.class);
+        JsonElement elem = obj.get("extra");
+        if (elem == null || elem.isJsonNull()) return null;
+        else return JsonSerializeable.cast(elem.getAsJsonObject(), clazz);
+    }
+
+    @Override
+    public String toString() {
+        return "HTTPResponse{" +
+                "responseCode=" + responseCode +
+                ", rawResponse='" + rawResponse + '\'' +
+                ", rawError='" + rawError + '\'' +
+                '}';
+    }
 }

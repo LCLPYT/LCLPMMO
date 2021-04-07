@@ -1,4 +1,6 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.client;
+
+import work.lclpnet.mmo.util.OSHooks;
 
 import java.io.File;
 import java.io.IOException;

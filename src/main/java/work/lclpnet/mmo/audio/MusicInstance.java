@@ -6,10 +6,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public interface MusicInstance {
 
-	void play();
+    void play();
 
-	void stop();
-	
-	void setVolume(float f);
-	
+    void stop();
+
+    void setVolume(float f);
+
 }

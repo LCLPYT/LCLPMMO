@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render.model;
+package work.lclpnet.mmo.client.render.model;
 
 import net.minecraft.util.ResourceLocation;
 

@@ -18,60 +18,60 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import work.lclpnet.mmo.render.ClientRenderHandler;
-import work.lclpnet.mmo.util.MMOMonsterAttributes;
+import work.lclpnet.mmo.client.render.ClientRenderHandler;
+import work.lclpnet.mmo.entity.MMOMonsterAttributes;
 
 @Mixin(EntityRendererManager.class)
 @OnlyIn(Dist.CLIENT)
 public abstract class MixinEntityRendererManager {
 
-	@Inject(
-			method = "Lnet/minecraft/client/renderer/entity/EntityRendererManager;renderBoundingBox("
-					+ "Lcom/mojang/blaze3d/matrix/MatrixStack;"
-					+ "Lcom/mojang/blaze3d/vertex/IVertexBuilder;"
-					+ "Lnet/minecraft/entity/Entity;"
-					+ "FFF"
-					+ ")V",
-					at = @At(
-							value = "INVOKE",
-							target = "Lnet/minecraft/client/renderer/WorldRenderer;drawBoundingBox("
-									+ "Lcom/mojang/blaze3d/matrix/MatrixStack;"
-									+ "Lcom/mojang/blaze3d/vertex/IVertexBuilder;"
-									+ "Lnet/minecraft/util/math/AxisAlignedBB;"
-									+ "FFFF"
-									+ ")V",
-									shift = Shift.BEFORE
-							),
-					cancellable = true,
-					locals = LocalCapture.CAPTURE_FAILHARD
-			)
-	public void onDrawBoundingBox(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Entity en, float red, float green, float blue, CallbackInfo ci,
-			AxisAlignedBB axisalignedbb) {
-		float scaleWidth = MMOMonsterAttributes.getScaleWidth(en), inverseWidth = 1F / scaleWidth,
-				scaleHeight = MMOMonsterAttributes.getScaleHeight(en), inverseHeight = 1F / scaleHeight;
-		
-		matrixStackIn.scale(inverseWidth, inverseHeight, inverseWidth);
-		WorldRenderer.drawBoundingBox(matrixStackIn, bufferIn, axisalignedbb, red, green, blue, 1.0F);
-		ci.cancel();
-	}
-	
-	@Inject(
-			method = "Lnet/minecraft/client/renderer/entity/EntityRendererManager;getRenderer("
-					+ "Lnet/minecraft/entity/Entity;"
-					+ ")Lnet/minecraft/client/renderer/entity/EntityRenderer;",
-					at = @At(
-							value = "INVOKE",
-							target = "Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;getSkinType()Ljava/lang/String;"
-							),
-					cancellable = true
-			)
-	public void onGetSkinType(Entity en, CallbackInfoReturnable<EntityRenderer<?>> cir) {
-		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) en;
-		PlayerRenderer renderer = ClientRenderHandler.getPlayerRenderer(player);
-		if(renderer == null) return;
-		
-		cir.setReturnValue(renderer);
-		cir.cancel();
-	}
+    @Inject(
+            method = "Lnet/minecraft/client/renderer/entity/EntityRendererManager;renderBoundingBox("
+                    + "Lcom/mojang/blaze3d/matrix/MatrixStack;"
+                    + "Lcom/mojang/blaze3d/vertex/IVertexBuilder;"
+                    + "Lnet/minecraft/entity/Entity;"
+                    + "FFF"
+                    + ")V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/WorldRenderer;drawBoundingBox("
+                            + "Lcom/mojang/blaze3d/matrix/MatrixStack;"
+                            + "Lcom/mojang/blaze3d/vertex/IVertexBuilder;"
+                            + "Lnet/minecraft/util/math/AxisAlignedBB;"
+                            + "FFFF"
+                            + ")V",
+                    shift = Shift.BEFORE
+            ),
+            cancellable = true,
+            locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    public void onDrawBoundingBox(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Entity en, float red, float green, float blue, CallbackInfo ci,
+                                  AxisAlignedBB axisalignedbb) {
+        float scaleWidth = MMOMonsterAttributes.getScaleWidth(en), inverseWidth = 1F / scaleWidth,
+                scaleHeight = MMOMonsterAttributes.getScaleHeight(en), inverseHeight = 1F / scaleHeight;
+
+        matrixStackIn.scale(inverseWidth, inverseHeight, inverseWidth);
+        WorldRenderer.drawBoundingBox(matrixStackIn, bufferIn, axisalignedbb, red, green, blue, 1.0F);
+        ci.cancel();
+    }
+
+    @Inject(
+            method = "Lnet/minecraft/client/renderer/entity/EntityRendererManager;getRenderer("
+                    + "Lnet/minecraft/entity/Entity;"
+                    + ")Lnet/minecraft/client/renderer/entity/EntityRenderer;",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;getSkinType()Ljava/lang/String;"
+            ),
+            cancellable = true
+    )
+    public void onGetSkinType(Entity en, CallbackInfoReturnable<EntityRenderer<?>> cir) {
+        AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) en;
+        PlayerRenderer renderer = ClientRenderHandler.getPlayerRenderer(player);
+        if (renderer == null) return;
+
+        cir.setReturnValue(renderer);
+        cir.cancel();
+    }
 
 }

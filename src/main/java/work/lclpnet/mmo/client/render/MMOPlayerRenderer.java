@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render;
+package work.lclpnet.mmo.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.util.ResourceLocation;
-import work.lclpnet.mmo.render.model.AbstractMMOPlayerModel;
-import work.lclpnet.mmo.util.Common;
+import work.lclpnet.mmo.client.render.model.AbstractMMOPlayerModel;
+import work.lclpnet.mmo.util.MMOUtils;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -29,7 +29,7 @@ public class MMOPlayerRenderer extends PlayerRenderer {
 	private void overrideLayers(AbstractMMOPlayerModel model) {
 		BipedModel<AbstractClientPlayerEntity> armorBody = model.getArmorBody(), armorLeggings = model.getArmorLeggings();
 		if (armorBody != null || armorLeggings != null) {
-			Common.applyFilteredAction(this.layerRenderers, BipedArmorLayer.class::isInstance, this.layerRenderers::removeAll);
+			MMOUtils.applyFilteredAction(this.layerRenderers, BipedArmorLayer.class::isInstance, this.layerRenderers::removeAll);
 
 			if(armorBody == null) armorBody = new BipedModel<>(1.0F);
 			else if(armorLeggings == null) armorLeggings = new BipedModel<>(0.5F);

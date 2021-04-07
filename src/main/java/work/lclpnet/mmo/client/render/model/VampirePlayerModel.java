@@ -1,13 +1,13 @@
-package work.lclpnet.mmo.render.model;
+package work.lclpnet.mmo.client.render.model;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.render.MMOModelRenderer;
+import work.lclpnet.mmo.client.render.MMOModelRenderer;
 
-import static work.lclpnet.mmo.util.Common.ZERO;
+import static work.lclpnet.mmo.util.MMOUtils.ZERO;
 
 public class VampirePlayerModel extends AbstractMMOPlayerModel {
 

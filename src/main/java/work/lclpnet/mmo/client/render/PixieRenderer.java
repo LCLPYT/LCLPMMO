@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render;
+package work.lclpnet.mmo.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.client.render.model.PixieModel;
 import work.lclpnet.mmo.entity.PixieEntity;
-import work.lclpnet.mmo.render.model.PixieModel;
 
 public class PixieRenderer extends MobRenderer<PixieEntity, PixieModel> {
 	

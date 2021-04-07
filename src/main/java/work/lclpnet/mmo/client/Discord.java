@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.util;
+package work.lclpnet.mmo.client;
 
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;

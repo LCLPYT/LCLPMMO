@@ -9,70 +9,70 @@ import java.util.function.Consumer;
 
 public class AuthManager {
 
-	private static final String LS5_IDENTIFICATION = "$2y$10$PuKeoJ/jUBVy9fBYhr3x3egoyyA7N84zjVlnFr9q0fPjUkf8gOH.6";
-	private boolean requestInProgress = false;
+    private static final String LS5_IDENTIFICATION = "$2y$10$PuKeoJ/jUBVy9fBYhr3x3egoyyA7N84zjVlnFr9q0fPjUkf8gOH.6";
+    private boolean requestInProgress = false;
 
-	public void login(String user, String password, Consumer<Boolean> callback) {
-		Objects.requireNonNull(user);
-		Objects.requireNonNull(password);
-		Objects.requireNonNull(callback);
+    public void login(String user, String password, Consumer<Boolean> callback) {
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(password);
+        Objects.requireNonNull(callback);
 
-		if(requestInProgress) return;
+        if (requestInProgress) return;
 
-		requestInProgress = true;
+        requestInProgress = true;
 
-		JsonObject body = new JsonObject();
-		body.addProperty("email", user);
-		body.addProperty("password", password);
-		body.addProperty("identification", LS5_IDENTIFICATION);
+        JsonObject body = new JsonObject();
+        body.addProperty("email", user);
+        body.addProperty("password", password);
+        body.addProperty("identification", LS5_IDENTIFICATION);
 
-		LCLPNetwork.post("api/auth/ls5/access-token", body, resp -> {
-			requestInProgress = false;
+        LCLPNetwork.post("api/auth/ls5/access-token", body, resp -> {
+            requestInProgress = false;
 
-			if(resp.isNoConnection()) {
-				callback.accept(null);
-				return;
-			}
+            if (resp.isNoConnection()) {
+                callback.accept(null);
+                return;
+            }
 
-			if(resp.getResponseCode() != 200) callback.accept(false);
-			else {
-				JsonObject obj = new Gson().fromJson(resp.getRawResponse(), JsonObject.class);
-				JsonElement elem = obj.get("accessToken");
+            if (resp.getResponseCode() != 200) callback.accept(false);
+            else {
+                JsonObject obj = new Gson().fromJson(resp.getRawResponse(), JsonObject.class);
+                JsonElement elem = obj.get("accessToken");
 
-				if(elem == null) callback.accept(false);
-				else {
-					String token = elem.getAsString();
-					AccessTokenStorage.store(token, success -> {
-						if(!success) throw new IllegalStateException("Could not store access token");
-						callback.accept(true);
-					});
-				}
-			}
-		});
-	}
+                if (elem == null) callback.accept(false);
+                else {
+                    String token = elem.getAsString();
+                    AccessTokenStorage.store(token, success -> {
+                        if (!success) throw new IllegalStateException("Could not store access token");
+                        callback.accept(true);
+                    });
+                }
+            }
+        });
+    }
 
-	public void checkEmailVerified(Consumer<Boolean> callback) {
-		if(requestInProgress) return;
-		requestInProgress = true;
+    public void checkEmailVerified(Consumer<Boolean> callback) {
+        if (requestInProgress) return;
+        requestInProgress = true;
 
-		LCLPNetwork.sendRequest("api/auth/verified", "GET", null, resp -> {
-			requestInProgress = false;
+        LCLPNetwork.sendRequest("api/auth/verified", "GET", null, resp -> {
+            requestInProgress = false;
 
-			if(resp.isNoConnection()) callback.accept(null);
-			else if(resp.getResponseCode() != 200) callback.accept(false);
-			else {
-				JsonObject obj = new Gson().fromJson(resp.getRawResponse(), JsonObject.class);
-				JsonElement elem = obj.get("email_verified");
+            if (resp.isNoConnection()) callback.accept(null);
+            else if (resp.getResponseCode() != 200) callback.accept(false);
+            else {
+                JsonObject obj = new Gson().fromJson(resp.getRawResponse(), JsonObject.class);
+                JsonElement elem = obj.get("email_verified");
 
-				if(elem == null) callback.accept(false);
-				else callback.accept(elem.getAsBoolean());
-			}
-		});
-	}
+                if (elem == null) callback.accept(false);
+                else callback.accept(elem.getAsBoolean());
+            }
+        });
+    }
 
-	public void register(String user, String password, String confirmPassword, Consumer<String> callback) {
-		// TODO make screen for email verification
-		throw new IllegalStateException("Temporarily disabled.");
+    public void register(String user, String password, String confirmPassword, Consumer<String> callback) {
+        // TODO make screen for email verification
+        throw new IllegalStateException("Temporarily disabled.");
 		/*Objects.requireNonNull(user);
 		Objects.requireNonNull(password);
 		Objects.requireNonNull(confirmPassword);
@@ -125,6 +125,6 @@ public class AuthManager {
 				login(user, password, success -> callback.accept(success ? null : "Login issue."));
 			}
 		});*/
-	}
+    }
 
 }

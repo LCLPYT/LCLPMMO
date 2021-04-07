@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.util.MMOMonsterAttributes;
+import work.lclpnet.mmo.entity.MMOMonsterAttributes;
 
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
 public class AttributeListener {

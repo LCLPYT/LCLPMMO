@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.render.model;
+package work.lclpnet.mmo.client.render.model;
 
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
-import work.lclpnet.mmo.render.MMOModelRenderer;
+import work.lclpnet.mmo.client.render.MMOModelRenderer;
 
 import javax.annotation.Nullable;
 import java.util.Random;
