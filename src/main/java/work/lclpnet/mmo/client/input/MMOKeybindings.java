@@ -4,8 +4,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import work.lclpnet.mmo.LCLPMMO;
@@ -19,11 +17,9 @@ public class MMOKeybindings {
 
     private static final List<KeyBinding> keyBindings = new ArrayList<>();
 
-    /* register keybindings here..
-    example:
+    public static final String GROUP_LCLPMMO = "LCLPMMO";
 
-    public static final KeyBinding TEST = register("key.keyboard.g", "Description...", InputMappings.Type.KEYSYM, "LCLPMMO");
-     */
+    public static final KeyBinding KEY_MAGIC_OVERLAY = register("key.keyboard.g", "Open Magic HUD", InputMappings.Type.KEYSYM, GROUP_LCLPMMO);
 
     private static KeyBinding register(String keyName, String description, InputMappings.Type type, String group) {
         int keyCode = InputMappings.getInputByName(keyName).getKeyCode();
@@ -35,11 +31,6 @@ public class MMOKeybindings {
     public static void init() {
         keyBindings.forEach(ClientRegistry::registerKeyBinding);
         keyBindings.clear();
-    }
-
-    @SubscribeEvent
-    public static void onKeyInput(InputEvent.KeyInputEvent event) {
-        // listen to keybindings here
     }
 
 }
