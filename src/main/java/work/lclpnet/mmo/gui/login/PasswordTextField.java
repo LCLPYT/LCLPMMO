@@ -15,11 +15,11 @@ public class PasswordTextField extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack mStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+    public void renderWidget(MatrixStack mStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
         final String before = this.getText();
 
         this.text = IntStream.range(0, before.length()).mapToObj(i -> "*").collect(Collectors.joining());
-        super.renderButton(mStack, p_renderButton_1_, p_renderButton_2_, p_renderButton_3_);
+        super.renderWidget(mStack, p_renderButton_1_, p_renderButton_2_, p_renderButton_3_);
         this.text = before;
     }
 }

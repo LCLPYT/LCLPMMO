@@ -49,7 +49,7 @@ public class MessageMusic implements IMessage {
 	}
 	
 	public void handleMusic() {
-		final Consumer<ITextComponent> feedback = text -> Minecraft.getInstance().ingameGUI.func_238450_a_(ChatType.SYSTEM, text, Util.DUMMY_UUID);
+		final Consumer<ITextComponent> feedback = text -> Minecraft.getInstance().ingameGUI.sendChatMessage(ChatType.SYSTEM, text, Util.DUMMY_UUID);
 		
 		switch (action) {
 		case PLAY:

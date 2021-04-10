@@ -47,7 +47,7 @@ public class QuestOverlay {
         IFormattableTextComponent questTitle = new TranslationTextComponent(String.format("mmo.quest.%s.title", currentQuest.getIdentifier()));
 
         for (IReorderingProcessor s : mc.fontRenderer.trimStringToWidth(questTitle, width)) {
-            mc.fontRenderer.func_238407_a_(mStack, s, x + 10, y, Color.YELLOW);
+            mc.fontRenderer.drawTextWithShadow(mStack, s, x + 10, y, Color.YELLOW);
             y += mc.fontRenderer.FONT_HEIGHT;
         }
 
@@ -57,7 +57,7 @@ public class QuestOverlay {
         IFormattableTextComponent questDescription = new TranslationTextComponent(String.format("mmo.quest.%s.step.%s", currentQuest.getIdentifier(), currentStep.getSubIdentifier()));
 
         for (IReorderingProcessor s : mc.fontRenderer.trimStringToWidth(questDescription, width)) {
-            mc.fontRenderer.func_238407_a_(mStack, s, x + 10, y, 16777215);
+            mc.fontRenderer.drawTextWithShadow(mStack, s, x + 10, y, 16777215);
             y += mc.fontRenderer.FONT_HEIGHT;
         }
 

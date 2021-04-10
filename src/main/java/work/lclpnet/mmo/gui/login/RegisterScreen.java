@@ -149,7 +149,7 @@ public class RegisterScreen extends MMOScreen {
         drawString(mStack, this.font, I18n.format("mmo.menu.login.password"), this.width / 2 - 100, 84, registerFailed || passwordError ? Color.RED : 10526880);
         drawString(mStack, this.font, I18n.format("mmo.menu.register.password_confirm"), this.width / 2 - 100, 124, registerFailed || passwordError ? Color.RED : 10526880);
 
-        this.font.func_243246_a(mStack, privPol, privPolX, privPolY, 0xFFFFFF); // func_243246_a = drawStringWithShadow
+        this.font.drawTextWithShadow(mStack, privPol, privPolX, privPolY, 0xFFFFFF); // func_243246_a = drawStringWithShadow
 
         this.textFieldEmail.render(mStack, mouseX, mouseY, partialTicks);
         this.textFieldPassword.render(mStack, mouseX, mouseY, partialTicks);

@@ -34,7 +34,7 @@ public class MMOScreen extends Screen {
         for (IReorderingProcessor s : fr.trimStringToWidth(str, this.width)) {
             mStack.push();
             mStack.scale(scale, scale, scale);
-            fr.func_238407_a_(mStack, s, (float) (x - fr.func_243245_a(s) / 2.0), y, color);
+            fr.drawTextWithShadow(mStack, s, (float) (x - fr.func_243245_a(s) / 2.0), y, color);
             mStack.pop();
             y += fr.FONT_HEIGHT * scale;
         }
@@ -42,7 +42,7 @@ public class MMOScreen extends Screen {
 
     protected void drawMultiLineCenteredString(MatrixStack mStack, FontRenderer fr, ITextComponent str, int x, int y) {
         for (IReorderingProcessor s : fr.trimStringToWidth(str, this.width)) {
-            fr.func_238407_a_(mStack, s, (float) (x - fr.func_243245_a(s) / 2.0), y, 0xFFFFFF);
+            fr.drawTextWithShadow(mStack, s, (float) (x - fr.func_243245_a(s) / 2.0), y, 0xFFFFFF);
             y += fr.FONT_HEIGHT;
         }
     }

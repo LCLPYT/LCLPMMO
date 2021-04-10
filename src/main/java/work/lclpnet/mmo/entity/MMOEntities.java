@@ -3,9 +3,9 @@ package work.lclpnet.mmo.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -35,9 +35,10 @@ public class MMOEntities {
 		ENTITY_TYPES.forEach(event.getRegistry()::register);
 		ENTITY_TYPES.clear();
 	}
-	
-    public static void registerEntityTypeAttributes() {
-        GlobalEntityTypeAttributes.put(PIXIE, PixieEntity.prepareAttributes().create());
-    }
 
+	@SubscribeEvent
+	public static void onRegisterEntityAttributes(EntityAttributeCreationEvent event) {
+		event.put(PIXIE, PixieEntity.prepareAttributes().create());
+	}
+	
 }

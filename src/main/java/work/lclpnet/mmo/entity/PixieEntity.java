@@ -168,8 +168,9 @@ public class PixieEntity extends TameableEntity implements INPC, IFlyingAnimal, 
 	}
 
 	@Override
+	@Nullable
 	@ParametersAreNullableByDefault
-	public AgeableEntity func_241840_a(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
+	public AgeableEntity createChild(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
 		return null;
 	}
 

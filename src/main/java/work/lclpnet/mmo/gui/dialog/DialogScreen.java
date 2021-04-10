@@ -121,7 +121,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
         ITextComponent dialogUpper = new TranslationTextComponent(dialog.getCurrent().getTranslationKey(), processed);
 
         for (IReorderingProcessor s : minecraft.fontRenderer.trimStringToWidth(dialogUpper, (int) (this.width * 0.6F) - dialogX)) {
-            minecraft.fontRenderer.func_238407_a_(matrixStack, s, dialogX + 10, dialogY, Color.WHITE);
+            minecraft.fontRenderer.drawTextWithShadow(matrixStack, s, dialogX + 10, dialogY, Color.WHITE);
             dialogY += minecraft.fontRenderer.FONT_HEIGHT;
         }
 

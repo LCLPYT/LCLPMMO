@@ -224,8 +224,14 @@ public class FakeNetworkManager extends NetworkManager {
             @Override
             public <T> Attribute<T> attr(AttributeKey<T> key) {
                 return new Attribute<T>() {
+
                     @Override
                     public T setIfAbsent(T value) {
+                        return null;
+                    }
+
+                    @Override
+                    public T getAndRemove() {
                         return null;
                     }
 
@@ -240,15 +246,6 @@ public class FakeNetworkManager extends NetworkManager {
                     }
 
                     @Override
-                    public T getAndRemove() {
-                        return null;
-                    }
-
-                    @Override
-                    public void remove() {
-                    }
-
-                    @Override
                     public T get() {
                         return null;
                     }
@@ -256,6 +253,11 @@ public class FakeNetworkManager extends NetworkManager {
                     @Override
                     public boolean compareAndSet(T oldValue, T newValue) {
                         return false;
+                    }
+
+                    @Override
+                    public void remove() {
+
                     }
 
                     @Override

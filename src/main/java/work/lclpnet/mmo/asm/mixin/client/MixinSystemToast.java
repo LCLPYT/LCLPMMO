@@ -31,17 +31,10 @@ public class MixinSystemToast {
      * This will make the effect of a SystemToast instance with a null subtitle the same as prior 1.16.x.
      */
     @Inject(
-            method = "Lnet/minecraft/client/gui/toasts/SystemToast;func_230444_a_("
-                    + "Lcom/mojang/blaze3d/matrix/MatrixStack;"
-                    + "Lnet/minecraft/client/gui/toasts/ToastGui;"
-                    + "J"
-                    + ")Lnet/minecraft/client/gui/toasts/IToast$Visibility;",
+            method = "func_230444_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/gui/toasts/ToastGui;J)Lnet/minecraft/client/gui/toasts/IToast$Visibility;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/toasts/ToastGui;blit("
-                            + "Lcom/mojang/blaze3d/matrix/MatrixStack;"
-                            + "IIIIII"
-                            + ")V",
+                    target = "Lnet/minecraft/client/gui/toasts/ToastGui;blit(Lcom/mojang/blaze3d/matrix/MatrixStack;IIIIII)V",
                     shift = Shift.AFTER
             ),
             cancellable = true
@@ -49,7 +42,7 @@ public class MixinSystemToast {
     public void afterBlit(MatrixStack mStack, ToastGui toastGui, long delta, CallbackInfoReturnable<Visibility> cir) {
         if (!field_238531_e_.isEmpty()) return;
 
-        toastGui.getMinecraft().fontRenderer.func_243248_b(mStack, this.title, 18.0F, 12.0F, -256);
+        toastGui.getMinecraft().fontRenderer.drawText(mStack, this.title, 18.0F, 12.0F, -256);
 
         cir.setReturnValue(delta - this.firstDrawTime < 5000L ? IToast.Visibility.SHOW : IToast.Visibility.HIDE);
         cir.cancel();

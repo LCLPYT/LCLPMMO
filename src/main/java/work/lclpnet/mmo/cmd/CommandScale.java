@@ -57,8 +57,8 @@ public class CommandScale extends CommandBase {
             MMOMonsterAttributes.setScale(en, scale);
         }
 
-        if (scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).append(
-                new TranslationTextComponent("cmd.scale.set.no_valid")));
+        if (scaled.isEmpty())
+            throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).appendSibling(new TranslationTextComponent("cmd.scale.set.no_valid")));
 
         ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", scale, EntitySelector.joinNames(scaled).getString()), false);
 
@@ -75,8 +75,8 @@ public class CommandScale extends CommandBase {
             MMOMonsterAttributes.setScale(en, 1F);
         }
 
-        if (scaled.isEmpty()) throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).append(
-                new TranslationTextComponent("cmd.scale.set.no_valid")));
+        if (scaled.isEmpty())
+            throw new CommandException(LCLPMMO.TEXT.message("", MessageType.ERROR).appendSibling(new TranslationTextComponent("cmd.scale.set.no_valid")));
 
         ctx.getSource().sendFeedback(new TranslationTextComponent("cmd.scale.set.success", 1F, EntitySelector.joinNames(scaled).getString()), false);
 

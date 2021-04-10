@@ -67,8 +67,8 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
             NarratorChatListener.INSTANCE.say(new TranslationTextComponent("mmo.narrator.selection.selected", selected.entry.getTitle().getString()).getString());
     }
 
-    protected void moveSelection(AbstractList.Ordering p_241219_1_) {
-        this.func_241572_a_(p_241219_1_, (p_241652_0_) -> true);
+    protected void moveSelection(AbstractList.Ordering ordering) {
+        this.filterList(ordering, (p_241652_0_) -> true);
         this.screen.setButtonsActive(true);
     }
 
@@ -260,7 +260,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
 
         @SuppressWarnings("deprecation")
         public void render(MatrixStack mStack, int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-            this.minecraft.fontRenderer.func_243246_a(mStack, this.entry.getTitle(), (float) (p_render_3_ + 32 + 3), (float) (p_render_2_ + 1), 16777215);
+            this.minecraft.fontRenderer.drawTextWithShadow(mStack, this.entry.getTitle(), (float) (p_render_3_ + 32 + 3), (float) (p_render_2_ + 1), 16777215);
             this.minecraft.fontRenderer.drawString(mStack, this.entry.getFirstLine(), (float) (p_render_3_ + 32 + 3), (float) (p_render_2_ + 9 + 3), 8421504);
             this.minecraft.fontRenderer.drawString(mStack, this.entry.getSecondLine(), (float) (p_render_3_ + 32 + 3), (float) (p_render_2_ + 9 + 9 + 3), 8421504);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

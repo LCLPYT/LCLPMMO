@@ -33,7 +33,7 @@ public class FancyButton extends Button {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
         if (!hover && this.isHovered()) {
             hover = true;
             onHover();
@@ -57,7 +57,7 @@ public class FancyButton extends Button {
 
         mStack.push();
         mStack.scale(scale, scale, scale);
-        fr.func_243246_a(mStack, str, x, y, color);
+        fr.drawTextWithShadow(mStack, str, x, y, color);
         mStack.pop();
     }
 

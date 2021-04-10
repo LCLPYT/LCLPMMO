@@ -144,7 +144,7 @@ dependencies {
     implementation "org.spongepowered:mixin:0.8.2"
 
     implementation fg.deobf("work.lclpnet.mods:CoreBase:${project.property('corebase_version')}") // required by LCLPMMO
-    implementation fg.deobf("software.bernie.geckolib:forge-${project.property('mc_version')}-geckolib:${project.property('geckolib_version')}")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.property('mc_version')}:${project.property('geckolib_version')}")
     //implementation fg.deobf("curse.maven:reauth-237701:3105779")
 
     compile 'club.minnced:java-discord-rpc:2.0.2'
