@@ -24,9 +24,7 @@ public class GUIListener {
 
     @SubscribeEvent
     public static void onMouseRaw(InputEvent.RawMouseEvent e) {
-        if (MagicOverlay.isShowing()) {
-            e.setCanceled(true);
-        }
+        if (MagicOverlay.isShowing()) e.setCanceled(true);
     }
 
 }
