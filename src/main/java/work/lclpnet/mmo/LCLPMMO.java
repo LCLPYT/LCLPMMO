@@ -47,7 +47,7 @@ public class LCLPMMO {
 	private static String shutdownReason = null;
 
 	static {
-		GeckoLibMod.DISABLE_IN_DEV = true;
+		if(FMLEnvironment.dist == Dist.CLIENT) GeckoLibMod.DISABLE_IN_DEV = true;
 	}
 	
 	public LCLPMMO() {
@@ -59,7 +59,7 @@ public class LCLPMMO {
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.register(this);
 
-		GeckoLib.initialize();
+		if(FMLEnvironment.dist == Dist.CLIENT) GeckoLib.initialize();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) { //preinit
