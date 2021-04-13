@@ -19,7 +19,8 @@ public class MessageRequestMCLink implements IMessage {
 	public void handle(Supplier<Context> ctx) {
 		if(FMLEnvironment.dist != Dist.CLIENT) return;
 
-		LCLPNetwork.post("api/auth/request-mclink-token", null, response -> {
+		LCLPNetwork.post("api/mc/request-mclink-token", null, response -> {
+
 			String token;
 			try {
 				if (response.isNoConnection() || response.getResponseCode() != 201) throw new IllegalStateException();
