@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.entity;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
@@ -13,8 +14,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -22,11 +27,13 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = LCLPMMO.MODID)
 public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimatable {
 
     private static final UUID entityUUID = UUID.fromString("6CC930D2-9F85-11EB-A8B3-0242AC130003");
@@ -34,7 +41,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     private static final RangedInteger angerAlliesRange = TickRangeConverter.convertRange(4, 6);
     private static final RangedInteger angerSoundRange = TickRangeConverter.convertRange(0, 1);
     private static final RangedInteger puffRange = TickRangeConverter.convertRange(10, 20);
-    private static final AttributeModifier attackingSpeedBoost = new AttributeModifier(entityUUID, "Attacking speed boost", 0.15D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier attackingSpeedBoost = new AttributeModifier(entityUUID, "Attacking speed boost", 0.175D, AttributeModifier.Operation.ADDITION);
 
     protected int angerTime;
     protected int angerNearbyAlliesTimer;
@@ -98,7 +105,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         return MonsterEntity.func_234295_eP_()
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 35.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.5D)
                 .createMutableAttribute(Attributes.ARMOR, 1.5D)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
     }
@@ -191,17 +198,26 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         return 100;
     }
 
+    @SubscribeEvent
+    public static void onBoletusAttack(LivingAttackEvent e) {
+        if(!e.getEntity().getEntityWorld().isRemote) return;
+
+        if(!(e.getSource() instanceof EntityDamageSource)) return;
+        EntityDamageSource source = (EntityDamageSource) e.getSource();
+
+        if(!(source.getImmediateSource() instanceof BoletusEntity)) return;
+        BoletusEntity boletus = (BoletusEntity) source.getImmediateSource();
+
+        System.out.println("BOLETUS ATTACK");
+        AnimationData data = boletus.factory.getOrCreateAnimationData(boletus.getEntityId());
+        AnimationController<?> controller = data.getAnimationControllers().get("attack");
+        controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.attack"));
+        controller.markNeedsReload();
+        boletus.attackAnimationEnabled = true;
+    }
+
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if(this.world.isRemote) { // wont trigger, search for another injection point
-            AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
-            AnimationController<?> controller = data.getAnimationControllers().get("attack");
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.attack"));
-            controller.markNeedsReload();
-            this.attackAnimationEnabled = true;
-            System.out.println("ATTACK");
-        }
-
         return super.attackEntityAsMob(entityIn);
     }
 
@@ -209,6 +225,25 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     @Override
     protected SoundEvent getAmbientSound() {
         return MMOSoundEvents.ENTITY_BOLETUS_IDLE;
+    }
+
+    protected SoundEvent getStepSound() {
+        return MMOSoundEvents.ENTITY_BOLETUS_STEP;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        this.playSound(this.getStepSound(), 0.15F, 1.0F);
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return MMOSoundEvents.ENTITY_BOLETUS_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return MMOSoundEvents.ENTITY_BOLETUS_DEATH;
     }
 
     public void writeAdditional(CompoundNBT compound) {

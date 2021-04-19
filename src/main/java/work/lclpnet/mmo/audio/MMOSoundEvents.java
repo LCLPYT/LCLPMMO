@@ -27,7 +27,10 @@ public class MMOSoundEvents {
             ENTITY_PIXIE_DEATH = register(Sound.ENTITY_PIXIE_DEATH),
             ENTITY_PIXIE_AMBIENT = register(Sound.ENTITY_PIXIE_AMBIENT),
             ENTITY_PIXIE_SAY = register(Sound.ENTITY_PIXIE_SAY),
-            ENTITY_BOLETUS_IDLE = register(Sound.ENTITY_BOLETUS_IDLE);
+            ENTITY_BOLETUS_IDLE = register(Sound.ENTITY_BOLETUS_IDLE),
+            ENTITY_BOLETUS_STEP = register(Sound.ENTITY_BOLETUS_STEP),
+            ENTITY_BOLETUS_DEATH = register(Sound.ENTITY_BOLETUS_DEATH),
+            ENTITY_BOLETUS_HURT = register(Sound.ENTITY_BOLETUS_HURT);
 
     private static SoundEvent register(String name) {
         SoundEvent event = new SoundEvent(new ResourceLocation(name));

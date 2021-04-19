@@ -96,6 +96,43 @@
         }],
         "subtitle": "subtitle.entity.boletus.idle"
     },
+    "entity.boletus.death": {
+        "sounds": [{
+            "name": "lclpmmo:entity/boletus/boletus_death1",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_death2",
+            "stream": false
+        }],
+        "subtitle": "subtitle.entity.boletus.death"
+    },
+    "entity.boletus.hurt": {
+        "sounds": [{
+            "name": "lclpmmo:entity/boletus/boletus_hurt1",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_hurt2",
+            "stream": false
+        }],
+        "subtitle": "subtitle.entity.boletus.hurt"
+    },
+    "entity.boletus.step": {
+        "sounds": [{
+            "name": "lclpmmo:entity/boletus/boletus_step1",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_step2",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_step3",
+            "stream": false
+        }],
+        "subtitle": "subtitle.entity.boletus.step"
+    },
     "music.tutorial_01": {
         "sounds": [{
             "name": "lclpmmo:music/tutorial_01",

@@ -141,9 +141,12 @@
     "multiplayer.disconnect.no_character": "You must create a character first!",
     "multiplayer.disconnect.not_linked": "Your minecraft account is not linked with your LCLPNetwork account yet. Please join a LCLPNetwork minecraft server to link them.",
     "mmo.narrator.selection.selected": "Selected %s",
-    "subtitle.entity.pixie.hurt": "Pixie nimmt Schaden",
+    "subtitle.entity.pixie.hurt": "Pixie takes damage",
     "subtitle.entity.pixie.ambient": "Pixie glimmers",
     "subtitle.entity.pixie.death": "Pixie dies",
     "subtitle.entity.pixie.say": "Pixie talks",
-    "subtitle.entity.boletus.idle": "Boletus idles"
+    "subtitle.entity.boletus.idle": "Boletus idles",
+    "subtitle.entity.boletus.death": "Boletus dies",
+    "subtitle.entity.boletus.step": "Boletus walks",
+    "subtitle.entity.boletus.hurt": "Boletus takes damage"
 }

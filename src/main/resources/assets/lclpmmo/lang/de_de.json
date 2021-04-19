@@ -145,5 +145,8 @@
     "subtitle.entity.pixie.ambient": "Pixie schimmert",
     "subtitle.entity.pixie.death": "Pixie stirbt",
     "subtitle.entity.pixie.say": "Pixie spricht",
-    "subtitle.entity.boletus.idle": "Boletus atmet"
+    "subtitle.entity.boletus.idle": "Boletus atmet",
+    "subtitle.entity.boletus.death": "Boletus stirbt",
+    "subtitle.entity.boletus.step": "Boletus läuft",
+    "subtitle.entity.boletus.hurt": "Boletus nimmt Schaden"
 }

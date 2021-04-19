@@ -45,7 +45,10 @@ public class MMONames {
                 ENTITY_PIXIE_AMBIENT = loc("entity.pixie.ambient"),
                 ENTITY_PIXIE_DEATH = loc("entity.pixie.death"),
                 ENTITY_PIXIE_SAY = loc("entity.pixie.say"),
-                ENTITY_BOLETUS_IDLE = loc("entity.boletus.idle");
+                ENTITY_BOLETUS_IDLE = loc("entity.boletus.idle"),
+                ENTITY_BOLETUS_STEP = loc("entity.boletus.step"),
+                ENTITY_BOLETUS_DEATH = loc("entity.boletus.death"),
+                ENTITY_BOLETUS_HURT = loc("entity.boletus.hurt");
 
     }
 
