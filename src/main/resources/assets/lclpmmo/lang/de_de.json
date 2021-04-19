@@ -114,6 +114,8 @@
     "cmd.scale.set.success_rel": "Größenskalierung wurde für %s gesetzt.",
     "itemGroup.lclpmmo": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glasflasche",
+    "item.lclpmmo.boletus_spawn_egg": "Boletus-Spawn-Ei",
+    "entity.lclpmmo.boletus": "Boletus",
     "item.lclpmmo.pixie_spawn_egg": "Pixie-Spawn-Ei",
     "entity.lclpmmo.pixie": "Pixie",
     "dia.pixie.greet_1": "Hey...",
@@ -130,7 +132,7 @@
     "dia.pixie.tutorialsecond_6": "Gehen wir weiter...",
     "dia.pixie.tutorialharbor_1": "Da wären wir. Dies ist der Hafen. Über die Wasserwege kann Handel betrieben werden. Aber es reisen auch von hier aus in andere Gegenden.",
     "dia.pixie.tutorialharbor_2": "Du kannst hier unter anderem auf dem Markt handeln, oder du suchst dir eine Mitfahrgelegenheit und reist irgendwo hin.",
-    "dia.pixie.tutorialharbor_3": "Zuerst wird du aber dein Tutorial absolvieren müssen.",
+    "dia.pixie.tutorialharbor_3": "Zuerst wirst du aber dein Tutorial beenden müssen.",
     "dia.pixie.tutorialharbor_4": "Bitte folge mir, wir werden dir jetzt erst einmal Ausrüstung besorgen!",
     "multiplayer.disconnect.no_id": "Dein Minecraft-Konto konnte nicht authentifiziert werden!",
     "multiplayer.disconnect.lclpnetwork_down": "Die LCLPNetwork-Authentifizierungs-Server sind im moment nicht erreichbar.",
@@ -142,5 +144,6 @@
     "subtitle.entity.pixie.hurt": "Pixie nimmt Schaden",
     "subtitle.entity.pixie.ambient": "Pixie schimmert",
     "subtitle.entity.pixie.death": "Pixie stirbt",
-    "subtitle.entity.pixie.say": "Pixie spricht"
+    "subtitle.entity.pixie.say": "Pixie spricht",
+    "subtitle.entity.boletus.idle": "Boletus atmet"
 }

@@ -1,8 +1,8 @@
 package work.lclpnet.mmo;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
+import work.lclpnet.mmo.util.Holder;
 
-import javax.xml.ws.Holder;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

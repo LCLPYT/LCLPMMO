@@ -5,10 +5,7 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import work.lclpnet.mmo.asm.type.IMMOUser;
-import work.lclpnet.mmo.client.render.MMOPlayerRenderer;
-import work.lclpnet.mmo.client.render.PixieRenderer;
 import work.lclpnet.mmo.client.render.model.ElvenPlayerModel;
 import work.lclpnet.mmo.client.render.model.HumanPlayerModel;
 import work.lclpnet.mmo.client.render.model.VampirePlayerModel;
@@ -21,6 +18,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler;
+
 @OnlyIn(Dist.CLIENT)
 public class ClientRenderHandler {
 
@@ -28,14 +27,14 @@ public class ClientRenderHandler {
     private static final Map<String, MMOPlayerRenderer> humanRenderers = new HashMap<>();
 
     public static void setup() {
-        RenderingRegistry.registerEntityRenderingHandler(MMOEntities.PIXIE, PixieRenderer::new);
+        registerEntityRenderingHandler(MMOEntities.PIXIE, PixieRenderer::new);
+        registerEntityRenderingHandler(MMOEntities.BOLETUS, BoletusRenderer::new);
 
         registerPlayerModels();
     }
 
     public static void registerPlayerModels() {
         EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
-        if(renderManager == null) throw new NullPointerException("Render manager is null");
 
         humanRenderers.put("default", new MMOPlayerRenderer(renderManager, new HumanPlayerModel(false)));
         humanRenderers.put("slim", new MMOPlayerRenderer(renderManager, new HumanPlayerModel(true)));

@@ -1,0 +1,89 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.boletus",
+				"texture_width": 70,
+				"texture_height": 70,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "torso",
+					"parent": "root",
+					"pivot": [0, 28, 0]
+				},
+				{
+					"name": "head",
+					"parent": "torso",
+					"pivot": [0, 39, -2],
+					"cubes": [
+						{"origin": [-3, 39, -7], "size": [6, 8, 8], "uv": [28, 20]}
+					]
+				},
+				{
+					"name": "mushroom",
+					"parent": "head",
+					"pivot": [0, 45, -3],
+					"cubes": [
+						{"origin": [-5, 45, -7], "size": [10, 4, 8], "uv": [0, 16]},
+						{"origin": [-6, 44, -9], "size": [12, 4, 12], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "body",
+					"parent": "torso",
+					"pivot": [0, 39, -2],
+					"rotation": [15, 0, 0],
+					"cubes": [
+						{"origin": [-2, 27, -4], "size": [4, 13, 4], "uv": [0, 43]},
+						{"origin": [-4, 31.03407, -6.25882], "size": [8, 7, 8], "uv": [0, 28]}
+					]
+				},
+				{
+					"name": "left_arm",
+					"parent": "torso",
+					"pivot": [4, 35, 0],
+					"cubes": [
+						{"origin": [3, 25, -3], "size": [4, 12, 4], "uv": [48, 48]},
+						{"origin": [4, 16, -2], "size": [2, 20, 2], "uv": [16, 43]}
+					]
+				},
+				{
+					"name": "right_arm",
+					"parent": "torso",
+					"pivot": [-4, 35, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [-7, 28, -3], "size": [4, 9, 4], "uv": [48, 0], "mirror": false},
+						{"origin": [-6, 18, -2], "size": [2, 16, 2], "uv": [24, 43], "mirror": false}
+					]
+				},
+				{
+					"name": "left_leg",
+					"parent": "root",
+					"pivot": [2, 28, 1],
+					"cubes": [
+						{"origin": [1, 0, 0], "size": [2, 28, 2], "uv": [40, 40]}
+					]
+				},
+				{
+					"name": "right_leg",
+					"parent": "root",
+					"pivot": [-2, 28, 1],
+					"mirror": true,
+					"cubes": [
+						{"origin": [-3, 0, 0], "size": [2, 28, 2], "uv": [32, 36], "mirror": false}
+					]
+				}
+			]
+		}
+	]
+}

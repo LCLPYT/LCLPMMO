@@ -10,8 +10,8 @@ public class MMONames {
 
     public static class Item {
 
-        public static final String PIXIE_SPAWN_EGG = loc("pixie_spawn_egg");
-
+        public static final String PIXIE_SPAWN_EGG = loc("pixie_spawn_egg"),
+                BOLETUS_SPAWN_EGG = "boletus_spawn_egg";
     }
 
     public static class Block {
@@ -28,7 +28,8 @@ public class MMONames {
 
     public static class Entity {
 
-        public static final String PIXIE = loc("pixie");
+        public static final String PIXIE = loc("pixie"),
+                BOLETUS = loc("boletus");
 
     }
 
@@ -43,7 +44,8 @@ public class MMONames {
                 ENTITY_PIXIE_HURT = loc("entity.pixie.hurt"),
                 ENTITY_PIXIE_AMBIENT = loc("entity.pixie.ambient"),
                 ENTITY_PIXIE_DEATH = loc("entity.pixie.death"),
-                ENTITY_PIXIE_SAY = loc("entity.pixie.say");
+                ENTITY_PIXIE_SAY = loc("entity.pixie.say"),
+                ENTITY_BOLETUS_IDLE = loc("entity.boletus.idle");
 
     }
 

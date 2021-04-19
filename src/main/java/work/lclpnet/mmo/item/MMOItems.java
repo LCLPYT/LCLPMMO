@@ -23,6 +23,7 @@ public class MMOItems {
     private static final List<Item> ITEMS = new ArrayList<>();
 
     public static final Item PIXIE_SPAWN_EGG = register(MMONames.Item.PIXIE_SPAWN_EGG, new SpawnEggItem(MMOEntities.PIXIE, 0x7dafff, 0xdeebff, new Item.Properties().group(ItemGroup.MISC)));
+    public static final Item BOLETUS_SPAWN_EGG = register(MMONames.Item.BOLETUS_SPAWN_EGG, new SpawnEggItem(MMOEntities.BOLETUS, 0x6d8c4a, 0x993a29, new Item.Properties().group(ItemGroup.MISC)));
 
     private static Item register(String name, Item item) {
         item.setRegistryName(name);

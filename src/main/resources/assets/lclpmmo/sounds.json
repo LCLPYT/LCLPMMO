@@ -85,6 +85,17 @@
         }],
         "subtitle": "subtitle.entity.pixie.say"
     },
+    "entity.boletus.idle": {
+        "sounds": [{
+            "name": "lclpmmo:entity/boletus/boletus_idle1",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_idle2",
+            "stream": false
+        }],
+        "subtitle": "subtitle.entity.boletus.idle"
+    },
     "music.tutorial_01": {
         "sounds": [{
             "name": "lclpmmo:music/tutorial_01",
