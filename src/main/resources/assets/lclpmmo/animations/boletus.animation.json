@@ -66,35 +66,35 @@
 			}
 		},
 		"animation.boletus.attack": {
-			"animation_length": 0.95833,
+			"animation_length": 0.375,
 			"bones": {
 				"torso": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.4583": {
-							"vector": [20, 0, -2.5],
+						"0.125": {
+							"vector": [10, 0, -5],
 							"easing": "easeInSine"
 						},
-						"0.6667": {
+						"0.2917": {
 							"vector": [-24.69, 0, 0]
 						},
-						"0.9583": {
+						"0.375": {
 							"vector": [0, 0, 0]
 						}
 					}
 				},
 				"left_arm": {
 					"rotation": {
-						"0.5417": {
+						"0.0417": {
 							"vector": [0, 0, 0]
 						},
-						"0.75": {
+						"0.2083": {
 							"vector": [-92.5, 0, 0],
 							"easing": "easeInOutQuad"
 						},
-						"0.9583": {
+						"0.375": {
 							"vector": [0, 0, 0],
 							"easing": "easeOutQuad"
 						}
@@ -102,14 +102,14 @@
 				},
 				"right_arm": {
 					"rotation": {
-						"0.5417": {
+						"0.0417": {
 							"vector": [0, 0, 0]
 						},
-						"0.75": {
+						"0.2083": {
 							"vector": [-92.5, 0, 0],
 							"easing": "easeInOutQuad"
 						},
-						"0.9583": {
+						"0.375": {
 							"vector": [0, 0, 0],
 							"easing": "easeOutQuad"
 						}
@@ -118,7 +118,7 @@
 			}
 		},
 		"animation.boletus.poof": {
-			"animation_length": 0.66667,
+			"animation_length": 1.125,
 			"bones": {
 				"mushroom": {
 					"scale": {
@@ -126,12 +126,15 @@
 							"vector": [1, 1, 1]
 						},
 						"0.3333": {
-							"vector": [1.2, 0.7, 1.2],
-							"easing": "easeInQuint"
+							"vector": [0.7, 1.7, 0.7],
+							"easing": "easeInQuad"
 						},
-						"0.6667": {
+						"0.5833": {
+							"vector": [1.4, 0.6, 1.4]
+						},
+						"1.125": {
 							"vector": [1, 1, 1],
-							"easing": "easeOutQuad"
+							"easing": "linear"
 						}
 					}
 				}
