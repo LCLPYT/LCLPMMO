@@ -12,14 +12,16 @@ import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.RangedInteger;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.TickRangeConverter;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -27,14 +29,14 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
+import work.lclpnet.mmo.network.msg.MessageEntityAttack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = LCLPMMO.MODID)
-public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimatable {
+public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimatable, IMMOAttacker {
 
     private static final UUID entityUUID = UUID.fromString("6CC930D2-9F85-11EB-A8B3-0242AC130003");
     private static final RangedInteger angerTimeRange = TickRangeConverter.convertRange(20, 39);
@@ -51,6 +53,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     protected AnimationFactory factory = new AnimationFactory(this);
     protected boolean poofAnimationEnabled = false;
     protected boolean attackAnimationEnabled = false;
+    protected int stepSoundTimer = 0;
 
     public BoletusEntity(World worldIn) {
         super(MMOEntities.BOLETUS, worldIn);
@@ -114,13 +117,17 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     public void tick() {
         super.tick();
 
-        if (this.world.isRemote && puffTimer-- <= 0) {
-            puffTimer = puffRange.getRandomWithinRange(this.rand);
-            AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
-            AnimationController<?> controller = data.getAnimationControllers().get("poof");
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.poof"));
-            controller.markNeedsReload();
-            this.poofAnimationEnabled = true;
+        if (this.world.isRemote) {
+            if(puffTimer-- <= 0) {
+                puffTimer = puffRange.getRandomWithinRange(this.rand);
+                AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
+                AnimationController<?> controller = data.getAnimationControllers().get("poof");
+                controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.poof"));
+                controller.markNeedsReload();
+                this.poofAnimationEnabled = true;
+            }
+
+            if(stepSoundTimer > 0) stepSoundTimer--;
         }
     }
 
@@ -178,10 +185,6 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
                 .forEach(other -> other.setAttackTarget(attackTarget));
     }
 
-    private void playAngerSound() {
-        this.playSound(SoundEvents.ENTITY_ZOMBIFIED_PIGLIN_ANGRY, this.getSoundVolume() * 2.0F, this.getSoundPitch() * 1.8F);
-    }
-
     public void setAttackTarget(@Nullable LivingEntity entity) {
         if (this.getAttackTarget() == null && entity != null) {
             this.angerSoundTimer = angerSoundRange.getRandomWithinRange(this.rand);
@@ -198,27 +201,20 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         return 100;
     }
 
-    @SubscribeEvent
-    public static void onBoletusAttack(LivingAttackEvent e) {
-        if(!e.getEntity().getEntityWorld().isRemote) return;
+    @Override
+    public boolean attackEntityAsMob(@Nonnull Entity entityIn) {
+        MessageEntityAttack.sync(this, entityIn);
+        return super.attackEntityAsMob(entityIn);
+    }
 
-        if(!(e.getSource() instanceof EntityDamageSource)) return;
-        EntityDamageSource source = (EntityDamageSource) e.getSource();
-
-        if(!(source.getImmediateSource() instanceof BoletusEntity)) return;
-        BoletusEntity boletus = (BoletusEntity) source.getImmediateSource();
-
-        System.out.println("BOLETUS ATTACK");
-        AnimationData data = boletus.factory.getOrCreateAnimationData(boletus.getEntityId());
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void onMMOAttack(Entity victim) {
+        AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
         AnimationController<?> controller = data.getAnimationControllers().get("attack");
         controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.attack"));
         controller.markNeedsReload();
-        boletus.attackAnimationEnabled = true;
-    }
-
-    @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
-        return super.attackEntityAsMob(entityIn);
+        this.attackAnimationEnabled = true;
     }
 
     @Nullable
@@ -233,7 +229,14 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(this.getStepSound(), 0.15F, 1.0F);
+        if(stepSoundTimer <= 0) {
+            this.playSound(this.getStepSound(), 0.15F, 1.0F);
+            stepSoundTimer = 100;
+        }
+    }
+
+    private void playAngerSound() {
+        this.playSound(MMOSoundEvents.ENTITY_BOLETUS_ANGRY, this.getSoundVolume(), this.getSoundPitch() * 1.3F);
     }
 
     @Override

@@ -30,7 +30,8 @@ public class MMOSoundEvents {
             ENTITY_BOLETUS_IDLE = register(Sound.ENTITY_BOLETUS_IDLE),
             ENTITY_BOLETUS_STEP = register(Sound.ENTITY_BOLETUS_STEP),
             ENTITY_BOLETUS_DEATH = register(Sound.ENTITY_BOLETUS_DEATH),
-            ENTITY_BOLETUS_HURT = register(Sound.ENTITY_BOLETUS_HURT);
+            ENTITY_BOLETUS_HURT = register(Sound.ENTITY_BOLETUS_HURT),
+            ENTITY_BOLETUS_ANGRY = register(Sound.ENTITY_BOLETUS_ANGRY);
 
     private static SoundEvent register(String name) {
         SoundEvent event = new SoundEvent(new ResourceLocation(name));

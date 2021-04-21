@@ -133,6 +133,13 @@
         }],
         "subtitle": "subtitle.entity.boletus.step"
     },
+    "entity.boletus.angry": {
+        "sounds": [{
+            "name": "lclpmmo:entity/boletus/boletus_angry",
+            "stream": false
+        }],
+        "subtitle": "subtitle.entity.boletus.angry"
+    },
     "music.tutorial_01": {
         "sounds": [{
             "name": "lclpmmo:music/tutorial_01",

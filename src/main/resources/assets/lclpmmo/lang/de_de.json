@@ -148,5 +148,6 @@
     "subtitle.entity.boletus.idle": "Boletus atmet",
     "subtitle.entity.boletus.death": "Boletus stirbt",
     "subtitle.entity.boletus.step": "Boletus läuft",
-    "subtitle.entity.boletus.hurt": "Boletus nimmt Schaden"
+    "subtitle.entity.boletus.hurt": "Boletus nimmt Schaden",
+    "subtitle.entity.boletus.angry": "Boletus ist wütend"
 }

@@ -1,15 +1,18 @@
 package work.lclpnet.mmo.network;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.network.msg.*;
@@ -20,7 +23,7 @@ import java.util.Map;
 @EventBusSubscriber(bus = Bus.FORGE, modid = LCLPMMO.MODID)
 public class MMOPacketHandler {
 
-	private static final String PROTOCOL_VERSION = "3";
+	private static final String PROTOCOL_VERSION = "4";
 	public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(LCLPMMO.MODID, "main");
 	public static SimpleChannel INSTANCE = null;
 	private static int nextId = 0;
@@ -43,6 +46,7 @@ public class MMOPacketHandler {
 		register(MessageTutorial.class, new MessageTutorial.Serializer());
 		register(MessageMMOMusic.class, new MessageMMOMusic.Serializer());
 		register(MessageDialog.class, new MessageDialog.Serializer());
+		register(MessageEntityAttack.class, new MessageEntityAttack.Serializer());
 	}
 
 	private static <T extends IMessage> void register(Class<T> clazz, IMessageSerializer<T> msg) {
@@ -66,12 +70,20 @@ public class MMOPacketHandler {
 	}
 	
 	public static void sendToClient(ServerPlayerEntity player, IMessage msg) {
-		MMOPacketHandler.INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+		INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+	}
+
+	public static void sendToTrackingChunk(Chunk c, IMessage msg) {
+		INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> c), msg);
+	}
+
+	public static void sendToTrackingEntity(Entity e, IMessage msg) {
+		INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> e), msg);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	public static void sendToServer(IMessage msg) {
-		MMOPacketHandler.INSTANCE.sendToServer(msg);
+		INSTANCE.sendToServer(msg);
 	}
 	
 }
