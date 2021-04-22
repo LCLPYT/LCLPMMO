@@ -10,14 +10,15 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.RangedInteger;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.TickRangeConverter;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,12 +32,14 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import work.lclpnet.mmo.audio.MMOSoundEvents;
 import work.lclpnet.mmo.network.msg.MessageEntityAttack;
+import work.lclpnet.mmo.particle.MMOParticles;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
 
-public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimatable, IMMOAttacker {
+public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimatable, IMMOAttacker, IEntityAnimatable {
 
     private static final UUID entityUUID = UUID.fromString("6CC930D2-9F85-11EB-A8B3-0242AC130003");
     private static final RangedInteger angerTimeRange = TickRangeConverter.convertRange(20, 39);
@@ -49,10 +52,16 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     protected int angerNearbyAlliesTimer;
     protected int angerSoundTimer;
     protected int puffTimer;
+    protected int puffDelayTimer;
     protected UUID angerTarget;
+
+    @OnlyIn(Dist.CLIENT)
     protected AnimationFactory factory = new AnimationFactory(this);
-    protected boolean poofAnimationEnabled = false;
+    @OnlyIn(Dist.CLIENT)
+    protected boolean puffAnimationEnabled = false;
+    @OnlyIn(Dist.CLIENT)
     protected boolean attackAnimationEnabled = false;
+    @OnlyIn(Dist.CLIENT)
     protected int stepSoundTimer = 0;
 
     public BoletusEntity(World worldIn) {
@@ -101,6 +110,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setCallsForHelp(BoletusEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::func_233680_b_));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PixieEntity.class, 10, false, false, le -> !((PixieEntity) le).isTamed()));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
         this.targetSelector.addGoal(3, new ResetAngerGoal<>(this, true));
     }
 
@@ -118,16 +128,28 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         super.tick();
 
         if (this.world.isRemote) {
-            if(puffTimer-- <= 0) {
-                puffTimer = puffRange.getRandomWithinRange(this.rand);
-                AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
-                AnimationController<?> controller = data.getAnimationControllers().get("poof");
-                controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.poof"));
-                controller.markNeedsReload();
-                this.poofAnimationEnabled = true;
+            if(stepSoundTimer > 0) stepSoundTimer--;
+        } else {
+            if(puffDelayTimer > 0 && --puffDelayTimer <= 0) {
+                ServerWorld sw = (ServerWorld) this.world;
+                double x = this.getPosX();
+                double y = this.getPosYEye() + 0.2D;
+                double z = this.getPosZ();
+                sw.spawnParticle(MMOParticles.SPORES, x, y, z, 30, 0.5D, 0.1D, 0.5D, 0.035D);
+                sw.playSound(null, x, y, z, MMOSoundEvents.ENTITY_BOLETUS_SPORES, SoundCategory.HOSTILE, this.getSoundVolume(), this.getSoundPitch());
+
+                double distance = 6D;
+                Vector3d min = new Vector3d(x - distance, y - distance, z - distance);
+                Vector3d max = new Vector3d(x + distance, y + distance, z + distance);
+                List<PlayerEntity> entities = this.world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(min, max), en -> en.getDistanceSq(x, y, z) <= distance * distance);
+                entities.forEach(p -> p.addPotionEffect(new EffectInstance(Effects.NAUSEA, 250, 1)));
             }
 
-            if(stepSoundTimer > 0) stepSoundTimer--;
+            if(!this.isAIDisabled() && puffTimer-- <= 0) {
+                puffTimer = puffRange.getRandomWithinRange(this.rand);
+                playAnimation(this, MMOEntityAnimations.BOLETUS_PUFF);
+                puffDelayTimer = 9;
+            }
         }
     }
 
@@ -276,9 +298,9 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         return PlayState.CONTINUE;
     }
 
-    private <E extends IAnimatable> PlayState poofPredicate(AnimationEvent<E> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.boletus.poof"));
-        return poofAnimationEnabled ? PlayState.CONTINUE : PlayState.STOP;
+    private <E extends IAnimatable> PlayState puffPredicate(AnimationEvent<E> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff"));
+        return puffAnimationEnabled ? PlayState.CONTINUE : PlayState.STOP;
     }
 
     private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
@@ -289,13 +311,24 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController<>(this, "idle", 0, this::idlePredicate));
-        data.addAnimationController(new AnimationController<>(this, "poof", 0, this::poofPredicate));
+        data.addAnimationController(new AnimationController<>(this, "puff", 0, this::puffPredicate));
         data.addAnimationController(new AnimationController<>(this, "attack", 0, this::attackPredicate));
     }
 
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
+    }
+
+    @Override
+    public void onAnimation(short animationId) {
+        if (animationId == MMOEntityAnimations.BOLETUS_PUFF) {
+            AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
+            AnimationController<?> controller = data.getAnimationControllers().get("puff");
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff"));
+            controller.markNeedsReload();
+            this.puffAnimationEnabled = true;
+        }
     }
 
 }

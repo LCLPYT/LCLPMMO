@@ -140,6 +140,21 @@
         }],
         "subtitle": "subtitle.entity.boletus.angry"
     },
+    "entity.boletus.spores": {
+        "sounds": [{
+            "name": "lclpmmo:entity/boletus/boletus_spores1",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_spores2",
+            "stream": false
+        },
+        {
+            "name": "lclpmmo:entity/boletus/boletus_spores3",
+            "stream": false
+        }],
+        "subtitle": "subtitle.entity.boletus.spores"
+    },
     "music.tutorial_01": {
         "sounds": [{
             "name": "lclpmmo:music/tutorial_01",

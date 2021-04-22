@@ -49,7 +49,14 @@ public class MMONames {
                 ENTITY_BOLETUS_STEP = loc("entity.boletus.step"),
                 ENTITY_BOLETUS_DEATH = loc("entity.boletus.death"),
                 ENTITY_BOLETUS_HURT = loc("entity.boletus.hurt"),
-                ENTITY_BOLETUS_ANGRY = loc("entity.boletus.angry");
+                ENTITY_BOLETUS_ANGRY = loc("entity.boletus.angry"),
+                ENTITY_BOLETUS_SPORES = loc("entity.boletus.spores");
+
+    }
+
+    public static class Particle {
+
+        public static final String SPORES = loc("spores");
 
     }
 

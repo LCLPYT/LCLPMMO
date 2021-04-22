@@ -117,7 +117,7 @@
 				}
 			}
 		},
-		"animation.boletus.poof": {
+		"animation.boletus.puff": {
 			"animation_length": 1.125,
 			"bones": {
 				"mushroom": {

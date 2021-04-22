@@ -149,5 +149,6 @@
     "subtitle.entity.boletus.death": "Boletus dies",
     "subtitle.entity.boletus.step": "Boletus walks",
     "subtitle.entity.boletus.hurt": "Boletus takes damage",
-    "subtitle.entity.boletus.angry": "Boletus is angry"
+    "subtitle.entity.boletus.angry": "Boletus is angry",
+    "subtitle.entity.boletus.spores": "Boletus spreads spores"
 }

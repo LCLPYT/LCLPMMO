@@ -47,6 +47,7 @@ public class MMOPacketHandler {
 		register(MessageMMOMusic.class, new MessageMMOMusic.Serializer());
 		register(MessageDialog.class, new MessageDialog.Serializer());
 		register(MessageEntityAttack.class, new MessageEntityAttack.Serializer());
+		register(MessageEntityAnimation.class, new MessageEntityAnimation.Serializer());
 	}
 
 	private static <T extends IMessage> void register(Class<T> clazz, IMessageSerializer<T> msg) {
