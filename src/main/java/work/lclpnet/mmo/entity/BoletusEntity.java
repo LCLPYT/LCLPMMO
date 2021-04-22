@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -53,21 +54,30 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     protected int angerSoundTimer;
     protected int puffTimer;
     protected int puffDelayTimer;
+    protected int stepSoundTimer;
     protected UUID angerTarget;
 
+    /*  Client-Only Fields
+    ! IMPORTANT !
+    Do not to initialize them here, since an exception will be thrown on the server.
+    */
     @OnlyIn(Dist.CLIENT)
-    protected AnimationFactory factory = new AnimationFactory(this);
+    protected AnimationFactory factory;
     @OnlyIn(Dist.CLIENT)
-    protected boolean puffAnimationEnabled = false;
+    protected boolean puffAnimationEnabled;
     @OnlyIn(Dist.CLIENT)
-    protected boolean attackAnimationEnabled = false;
-    @OnlyIn(Dist.CLIENT)
-    protected int stepSoundTimer = 0;
+    protected boolean attackAnimationEnabled;
 
     public BoletusEntity(World worldIn) {
         super(MMOEntities.BOLETUS, worldIn);
         this.ignoreFrustumCheck = true;
 
+        // Initialize client-only fields here to prevent exceptions on the server.
+        if(FMLEnvironment.dist == Dist.CLIENT) {
+            factory = new AnimationFactory(this);
+            puffAnimationEnabled = false;
+            attackAnimationEnabled = false;
+        }
         this.puffTimer = puffRange.getRandomWithinRange(this.rand);
     }
 
@@ -127,9 +137,9 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     public void tick() {
         super.tick();
 
-        if (this.world.isRemote) {
+        if (!this.world.isRemote) {
             if(stepSoundTimer > 0) stepSoundTimer--;
-        } else {
+
             if(puffDelayTimer > 0 && --puffDelayTimer <= 0) {
                 ServerWorld sw = (ServerWorld) this.world;
                 double x = this.getPosX();

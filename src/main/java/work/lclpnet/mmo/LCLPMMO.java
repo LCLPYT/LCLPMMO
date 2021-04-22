@@ -47,7 +47,7 @@ public class LCLPMMO {
 	private static String shutdownReason = null;
 
 	static {
-		if(FMLEnvironment.dist == Dist.CLIENT) GeckoLibMod.DISABLE_IN_DEV = true;
+		if(!FMLEnvironment.production) GeckoLibMod.DISABLE_IN_DEV = true;
 	}
 	
 	public LCLPMMO() {

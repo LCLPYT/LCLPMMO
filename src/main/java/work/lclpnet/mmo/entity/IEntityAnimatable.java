@@ -17,7 +17,8 @@ public interface IEntityAnimatable {
 
     default void playAnimation(Entity entity, short animationId) {
         if(entity.world.isRemote) throw new IllegalStateException("Tried to play animation from client.");
-        MMOPacketHandler.sendToTrackingEntity(entity, new MessageEntityAnimation(entity, animationId));
+        MessageEntityAnimation msg = new MessageEntityAnimation(entity, animationId);
+        MMOPacketHandler.sendToTrackingEntity(entity, msg);
     }
 
 }

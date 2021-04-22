@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkEvent;
 import work.lclpnet.mmo.entity.IEntityAnimatable;
@@ -29,8 +30,12 @@ public class MessageEntityAnimation implements IMessage {
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-        if(FMLEnvironment.dist != Dist.CLIENT) return;
+        if(FMLEnvironment.dist == Dist.CLIENT) handleClient();
+    }
 
+    // 22.04.2021: Never try to load client-only classes in a method without @OnlyIn(Dist.Client) Baka. RIP my free time
+    @OnlyIn(Dist.CLIENT)
+    private void handleClient() {
         World w = Minecraft.getInstance().world;
         if(w == null) return;
 
