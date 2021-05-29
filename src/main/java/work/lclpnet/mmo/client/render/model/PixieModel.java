@@ -78,5 +78,4 @@ public class PixieModel extends SegmentedModel<PixieEntity> {
 			this.leftBottomWing.rotateAngleX = pi * -0.09F - rot * 0.025F;
 		}
 	}
-
 }

@@ -24,5 +24,4 @@ public class MixinCapeLayer {
         MMORace race = MMORace.getRaceFromPlayer(entitylivingbaseIn);
         if (race != null) race.doCapeTranslation(matrixStackIn);
     }
-
 }

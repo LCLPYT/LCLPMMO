@@ -23,6 +23,7 @@ public class MMOEntities {
 
 	public static final EntityType<PixieEntity> PIXIE = register(MMONames.Entity.PIXIE, PixieEntity::new, 0.4F, 0.3F);
 	public static final EntityType<BoletusEntity> BOLETUS = register(MMONames.Entity.BOLETUS, BoletusEntity::new, 0.8F, 3F);
+	public static final EntityType<FallenKnightEntity> FALLEN_KNIGHT = register(MMONames.Entity.FALLEN_KNIGHT, FallenKnightEntity::new, 0.8F, 4F);
 
 	private static <T extends Entity> EntityType<T> register(String name, Function<World, T> function, float width, float height) {
 		EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.CREATURE).size(width, height).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(name);
@@ -41,6 +42,7 @@ public class MMOEntities {
 	public static void onRegisterEntityAttributes(EntityAttributeCreationEvent event) {
 		event.put(PIXIE, PixieEntity.prepareAttributes().create());
 		event.put(BOLETUS, BoletusEntity.prepareAttributes().create());
+		event.put(FALLEN_KNIGHT, FallenKnightEntity.prepareAttributes().create());
 	}
 	
 }

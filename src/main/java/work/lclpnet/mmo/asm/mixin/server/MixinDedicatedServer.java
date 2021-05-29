@@ -14,5 +14,4 @@ public class MixinDedicatedServer {
     public void onInitEnd(CallbackInfo callbackInfo) {
         System.out.printf("Mixins are enabled for '%s'. (DEDICATED SERVER)\n", LCLPMMO.MODID);
     }
-
 }

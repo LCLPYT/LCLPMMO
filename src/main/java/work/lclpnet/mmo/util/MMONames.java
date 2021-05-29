@@ -29,8 +29,8 @@ public class MMONames {
     public static class Entity {
 
         public static final String PIXIE = loc("pixie"),
-                BOLETUS = loc("boletus");
-
+                BOLETUS = loc("boletus"),
+                FALLEN_KNIGHT = loc("fallen_knight");
     }
 
     public static class Sound {
