@@ -6,17 +6,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.event.world.BlockEvent;
 
-public class PlayerBlockEvent extends BlockEvent{
+public class PlayerBlockEvent extends BlockEvent {
 
-	protected final PlayerEntity player;
-	
-	public PlayerBlockEvent(IWorld world, BlockPos pos, BlockState state, PlayerEntity player) {
-		super(world, pos, state);
-		this.player = player;
-	}
-	
-	public PlayerEntity getPlayer() {
-		return player;
-	}
+    protected final PlayerEntity player;
 
+    public PlayerBlockEvent(IWorld world, BlockPos pos, BlockState state, PlayerEntity player) {
+        super(world, pos, state);
+        this.player = player;
+    }
+
+    public PlayerEntity getPlayer() {
+        return player;
+    }
 }

@@ -23,5 +23,4 @@ public interface IMMOUser {
         user.setUser(User.getCurrent());
         user.setMMOCharacter(User.getSelectedCharacter());
     }
-
 }

@@ -14,47 +14,44 @@ import java.util.function.Supplier;
 
 public class MessageShowTutorialScreen implements IMessage {
 
-	private boolean skip = false;
+    private boolean skip = false;
 
-	public MessageShowTutorialScreen(boolean skip) {
-		this.skip = skip;
-	}
+    public MessageShowTutorialScreen(boolean skip) {
+        this.skip = skip;
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public void showTutorialScreen() {
-		if(ClientCache.needCache) ClientCache.cached = this;
-		else {
-			ClientCache.cached = null;
-			Minecraft.getInstance().displayGuiScreen(new TutorialScreen(skip));
-		}
-	}
+    @OnlyIn(Dist.CLIENT)
+    public void showTutorialScreen() {
+        if (ClientCache.needCache) ClientCache.cached = this;
+        else {
+            ClientCache.cached = null;
+            Minecraft.getInstance().displayGuiScreen(new TutorialScreen(skip));
+        }
+    }
 
-	@Override
-	public void handle(Supplier<Context> ctx) {
-		if(FMLEnvironment.dist == Dist.CLIENT) showTutorialScreen();
-	}
+    @Override
+    public void handle(Supplier<Context> ctx) {
+        if (FMLEnvironment.dist == Dist.CLIENT) showTutorialScreen();
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static class ClientCache {
+    @OnlyIn(Dist.CLIENT)
+    public static class ClientCache {
 
-		public static MessageShowTutorialScreen cached = null;
-		public static boolean needCache = true;
+        public static MessageShowTutorialScreen cached = null;
+        public static boolean needCache = true;
+    }
 
-	}
+    public static class Serializer implements IMessageSerializer<MessageShowTutorialScreen> {
 
-	public static class Serializer implements IMessageSerializer<MessageShowTutorialScreen> {
+        @Override
+        public void encode(MessageShowTutorialScreen message, PacketBuffer buffer) {
+            buffer.writeBoolean(message.skip);
+        }
 
-		@Override
-		public void encode(MessageShowTutorialScreen message, PacketBuffer buffer) {
-			buffer.writeBoolean(message.skip);
-		}
-
-		@Override
-		public MessageShowTutorialScreen decode(PacketBuffer buffer) {
-			boolean skip = buffer.readBoolean();
-			return new MessageShowTutorialScreen(skip);
-		}
-
-	}
-
+        @Override
+        public MessageShowTutorialScreen decode(PacketBuffer buffer) {
+            boolean skip = buffer.readBoolean();
+            return new MessageShowTutorialScreen(skip);
+        }
+    }
 }

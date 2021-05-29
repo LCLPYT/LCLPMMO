@@ -55,5 +55,4 @@ public class MixinFirstPersonRenderer {
         if (renderer != null && renderer.textureLocation != null) texMan.bindTexture(renderer.textureLocation);
         else texMan.bindTexture(loc);
     }
-
 }

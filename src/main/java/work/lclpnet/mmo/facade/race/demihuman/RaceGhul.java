@@ -8,5 +8,4 @@ public class RaceGhul extends MMORace {
     public RaceGhul() {
         super("ghul", new TranslationTextComponent("mmo.race.ghul.title"));
     }
-
 }

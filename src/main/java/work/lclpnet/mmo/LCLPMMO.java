@@ -38,88 +38,88 @@ import javax.annotation.Nullable;
 
 @Mod(LCLPMMO.MODID)
 public class LCLPMMO {
-	
-	public static final String MODID = "lclpmmo";
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
-	public static final MMOItems.MMOItemGroup GROUP = new MMOItems.MMOItemGroup(MODID);
-	private static boolean serverStarted = false, shutdown = false;
-	private static String shutdownReason = null;
 
-	static {
-		if(!FMLEnvironment.production) GeckoLibMod.DISABLE_IN_DEV = true;
-	}
-	
-	public LCLPMMO() {
-		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modBus.addListener(this::setup);
-		modBus.addListener(this::clientSetup);
-		modBus.addListener(this::onIMCEnqueue);
+    public static final String MODID = "lclpmmo";
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final ComponentSupplier TEXT = new ComponentSupplier("LCLPMMO");
+    public static final MMOItems.MMOItemGroup GROUP = new MMOItems.MMOItemGroup(MODID);
+    private static boolean serverStarted = false, shutdown = false;
+    private static String shutdownReason = null;
 
-		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		forgeBus.register(this);
+    static {
+        if (!FMLEnvironment.production) GeckoLibMod.DISABLE_IN_DEV = true;
+    }
 
-		if(FMLEnvironment.dist == Dist.CLIENT) GeckoLib.initialize();
-	}
+    public LCLPMMO() {
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(this::setup);
+        modBus.addListener(this::clientSetup);
+        modBus.addListener(this::onIMCEnqueue);
 
-	private void setup(final FMLCommonSetupEvent event) { //preinit
-		LOGGER.info("LCLPMMO initializing...");
+        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+        forgeBus.register(this);
 
-		Config.load();
-		LCLPNetwork.setup(() -> {});
-		MMOPacketHandler.init();
-		MMOCommands.registerArgumentTypes();
+        if (FMLEnvironment.dist == Dist.CLIENT) GeckoLib.initialize();
+    }
 
-		if(FMLEnvironment.dist == Dist.CLIENT) MMOUtils.deleteTmpDir();
-		
-		LOGGER.info("LCLPMMO initialized.");
-	}
-	
-	@SubscribeEvent
-	public void serverStart(final FMLServerStartingEvent e) {
-		LOGGER.info("LCLPMMO server starting...");
-	}
+    private void setup(final FMLCommonSetupEvent event) { //preinit
+        LOGGER.info("LCLPMMO initializing...");
 
-	@SubscribeEvent
-	public void serverStarted(final FMLServerStartedEvent e) {
-		serverStarted = true;
-		if(shutdown) doShutdown();
-	}
+        Config.load();
+        LCLPNetwork.setup(() -> {
+        });
+        MMOPacketHandler.init();
+        MMOCommands.registerArgumentTypes();
 
-	public static void shutdownServer(@Nullable String reason) {
-		shutdownReason = reason;
-		if(serverStarted) doShutdown();
-		else shutdown = true;
-	}
+        if (FMLEnvironment.dist == Dist.CLIENT) MMOUtils.deleteTmpDir();
 
-	private static void doShutdown() {
-		LOGGER.info("Shutting down server: {}", shutdownReason != null ? shutdownReason : "No reason provided.");
-		CoreBase.getServer().initiateShutdown(false);
-	}
+        LOGGER.info("LCLPMMO initialized.");
+    }
 
-	@SubscribeEvent
-	public void onRegisterCommands(RegisterCommandsEvent e) {
-		MMOCommands.registerCommands(e.getDispatcher(), e.getEnvironment());
-	}
-	
-	private void clientSetup(final FMLClientSetupEvent e) {
-		LOGGER.info("LCLPMMO client starting...");
-		
-		RenderLayerHandler.init();
-		ColorHandler.init();
-		ClientRenderHandler.setup();
-		MMOKeybindings.init();
-		
-		boolean FORCE_DISABLE = true; // TODO remove in release
-		if(!FORCE_DISABLE && Config.enableDiscordIntegration()) Discord.initRPC();
-	}
-	
-	public void onIMCEnqueue(InterModEnqueueEvent e) {
-		InterModComms.sendTo(LCLPMMO.MODID, "lclpupdater", "defineStartingScreens", () -> new Class<?>[] {
-			MMOMainScreen.class,
-			PreIntroScreen.class,
-			LoginScreen.class
-		});
-	}
+    @SubscribeEvent
+    public void serverStart(final FMLServerStartingEvent e) {
+        LOGGER.info("LCLPMMO server starting...");
+    }
 
+    @SubscribeEvent
+    public void serverStarted(final FMLServerStartedEvent e) {
+        serverStarted = true;
+        if (shutdown) doShutdown();
+    }
+
+    public static void shutdownServer(@Nullable String reason) {
+        shutdownReason = reason;
+        if (serverStarted) doShutdown();
+        else shutdown = true;
+    }
+
+    private static void doShutdown() {
+        LOGGER.info("Shutting down server: {}", shutdownReason != null ? shutdownReason : "No reason provided.");
+        CoreBase.getServer().initiateShutdown(false);
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommands(RegisterCommandsEvent e) {
+        MMOCommands.registerCommands(e.getDispatcher(), e.getEnvironment());
+    }
+
+    private void clientSetup(final FMLClientSetupEvent e) {
+        LOGGER.info("LCLPMMO client starting...");
+
+        RenderLayerHandler.init();
+        ColorHandler.init();
+        ClientRenderHandler.setup();
+        MMOKeybindings.init();
+
+        boolean FORCE_DISABLE = true; // TODO remove in release
+        if (!FORCE_DISABLE && Config.enableDiscordIntegration()) Discord.initRPC();
+    }
+
+    public void onIMCEnqueue(InterModEnqueueEvent e) {
+        InterModComms.sendTo(LCLPMMO.MODID, "lclpupdater", "defineStartingScreens", () -> new Class<?>[]{
+                MMOMainScreen.class,
+                PreIntroScreen.class,
+                LoginScreen.class
+        });
+    }
 }

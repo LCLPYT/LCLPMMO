@@ -278,5 +278,4 @@ public class FakeNetworkManager extends NetworkManager {
             }
         };
     }
-
 }

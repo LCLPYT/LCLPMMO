@@ -35,5 +35,4 @@ public class TutorialScreen extends MMOScreen {
     public boolean shouldCloseOnEsc() {
         return false;
     }
-
 }

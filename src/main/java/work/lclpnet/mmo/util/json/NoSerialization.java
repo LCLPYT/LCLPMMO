@@ -44,7 +44,5 @@ public @interface NoSerialization {
         public boolean shouldSkipClass(Class<?> clazz) {
             return false;
         }
-
     }
-
 }

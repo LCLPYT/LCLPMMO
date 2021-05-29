@@ -20,5 +20,4 @@ public class MMOCommands {
         ArgumentTypes.register("mmo_music", MusicArgumentType.class, new ArgumentSerializer<>(MusicArgumentType::music));
         ArgumentTypes.register("mmo_scale", ScaleArgumentType.class, new ArgumentSerializer<>(ScaleArgumentType::scale));
     }
-
 }

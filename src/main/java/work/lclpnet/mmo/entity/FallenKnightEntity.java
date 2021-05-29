@@ -1,8 +1,7 @@
 package work.lclpnet.mmo.entity;
 
-import com.google.gson.TypeAdapterFactory;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.MonsterEntity;
@@ -27,15 +26,16 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
     @OnlyIn(Dist.CLIENT)
     protected AnimationFactory factory;
 
+    protected float eyeHeight = 4.35F;
+
     public FallenKnightEntity(World worldIn) {
         super(MMOEntities.FALLEN_KNIGHT, worldIn);
         this.ignoreFrustumCheck = true;
 
         // Initialize client-only fields here to prevent exceptions on the server.
-        if(FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
             factory = new AnimationFactory(this);
         }
-
     }
 
     public static AttributeModifierMap.MutableAttribute prepareAttributes() {
@@ -60,5 +60,16 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
     private <E extends IAnimatable> PlayState idlePredicate(AnimationEvent<E> event) {
         event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.fallen_knight.idle", true));
         return PlayState.CONTINUE;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public float getEyeHeight(Pose pose) {
+        return this.eyeHeight;
+    }
+
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.eyeHeight;
     }
 }

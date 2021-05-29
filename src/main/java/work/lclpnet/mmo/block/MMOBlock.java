@@ -52,5 +52,4 @@ public abstract class MMOBlock extends Block {
         TileEntity tileEntity = world.getTileEntity(pos);
         return tileEntity != null && tileEntity.receiveClientEvent(id, type);
     }
-
 }

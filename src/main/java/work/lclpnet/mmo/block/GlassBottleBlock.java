@@ -211,5 +211,4 @@ public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements
         ItemStack item = bottle.getItem();
         if (!item.isEmpty()) Block.spawnAsEntity(worldIn, pos, item);
     }
-
 }

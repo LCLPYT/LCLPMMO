@@ -41,5 +41,4 @@ public class MMOKeybindings {
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
         // listen to keybindings here
     }
-
 }

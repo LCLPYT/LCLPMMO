@@ -13,59 +13,59 @@ import java.util.Map;
 
 public class RaceElven extends MMORace {
 
-	public static final transient Map<Pose, EntitySize> SIZES = ImmutableMap.<Pose, EntitySize>builder()
-			.put(Pose.STANDING, EntitySize.flexible(0.5F, 2.125F))
-			.put(Pose.CROUCHING, EntitySize.flexible(0.5F, 1.75F))
-			.build(); 
-	
-	public RaceElven() {
-		super("elven", new TranslationTextComponent("mmo.race.elven.title"));
-	}
-	
-	@Override
-	public ResourceLocation getIcon() {
-		return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elven/icon.png");
-	}
+    public static final transient Map<Pose, EntitySize> SIZES = ImmutableMap.<Pose, EntitySize>builder()
+            .put(Pose.STANDING, EntitySize.flexible(0.5F, 2.125F))
+            .put(Pose.CROUCHING, EntitySize.flexible(0.5F, 1.75F))
+            .build();
 
-	@Override
-	public Map<Pose, EntitySize> getEntitySizeOverrides() {
-		return SIZES;
-	}
-	
-	@Override
-	public float getEyeHeightOverride(Pose pose, EntitySize size) {
-		switch (pose) {
-		case STANDING:
-			return 1.85F;
-		case CROUCHING:
-			return 1.48F;
-		default:
-			return super.getEyeHeightOverride(pose, size);
-		}
-	}
+    public RaceElven() {
+        super("elven", new TranslationTextComponent("mmo.race.elven.title"));
+    }
 
-	@Override
-	public void doTridentTranslation(MatrixStack matrixStack) {
-		matrixStack.translate(0F, -4F / 16F, 0F);
-	}
+    @Override
+    public ResourceLocation getIcon() {
+        return new ResourceLocation(LCLPMMO.MODID, "textures/entity/elven/icon.png");
+    }
 
-	@Override
-	public void doElytraTranslation(MatrixStack matrixStack) {
-		matrixStack.translate(0F, -3F / 16F, 0F);
-	}
+    @Override
+    public Map<Pose, EntitySize> getEntitySizeOverrides() {
+        return SIZES;
+    }
 
-	@Override
-	public void doCapeTranslation(MatrixStack matrixStack) {
-		matrixStack.translate(0F, -4F / 16F, 0F);
-	}
+    @Override
+    public float getEyeHeightOverride(Pose pose, EntitySize size) {
+        switch (pose) {
+            case STANDING:
+                return 1.85F;
+            case CROUCHING:
+                return 1.48F;
+            default:
+                return super.getEyeHeightOverride(pose, size);
+        }
+    }
 
-	@Override
-	public void doParrotTranslation(MatrixStack matrixStack) {
-		matrixStack.translate(0F, -4F / 16F, 0F);
-	}
+    @Override
+    public void doTridentTranslation(MatrixStack matrixStack) {
+        matrixStack.translate(0F, -4F / 16F, 0F);
+    }
 
-	@Override
-	public void doHeadItemTranslation(MatrixStack matrixStack) {
-		matrixStack.translate(0F, -4F / 16F, 0F);
-	}
+    @Override
+    public void doElytraTranslation(MatrixStack matrixStack) {
+        matrixStack.translate(0F, -3F / 16F, 0F);
+    }
+
+    @Override
+    public void doCapeTranslation(MatrixStack matrixStack) {
+        matrixStack.translate(0F, -4F / 16F, 0F);
+    }
+
+    @Override
+    public void doParrotTranslation(MatrixStack matrixStack) {
+        matrixStack.translate(0F, -4F / 16F, 0F);
+    }
+
+    @Override
+    public void doHeadItemTranslation(MatrixStack matrixStack) {
+        matrixStack.translate(0F, -4F / 16F, 0F);
+    }
 }

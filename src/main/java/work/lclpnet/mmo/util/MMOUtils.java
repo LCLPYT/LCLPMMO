@@ -95,6 +95,5 @@ public class MMOUtils {
                     uncompressedOut.write(buffer, 0, read);
             }
         }
-
     }
 }

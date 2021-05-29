@@ -25,5 +25,4 @@ public class MusicControl {
         MessageMMOMusic msg = new MessageMMOMusic(null, false, loop);
         MMOPacketHandler.sendToClient(player, msg);
     }
-
 }

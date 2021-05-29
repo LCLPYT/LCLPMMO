@@ -121,5 +121,4 @@ public class LoginScreen extends MMOScreen {
         this.textFieldPassword.render(mStack, mouseX, mouseY, partialTicks);
         super.render(mStack, mouseX, mouseY, partialTicks);
     }
-
 }

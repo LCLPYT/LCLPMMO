@@ -40,5 +40,4 @@ public class MixinHeldItemLayer {
     private boolean conditionRenderItem(LivingEntity livingEntity, ItemStack itemStack, MMORace race) {
         return !itemStack.isEmpty() && race != null && Items.TRIDENT.equals(itemStack.getItem()) && livingEntity.isHandActive();
     }
-
 }

@@ -11,5 +11,4 @@ public class MMOBackgroundMusicSelector extends BackgroundMusicSelector {
     public MMOBackgroundMusicSelector(SoundEvent soundEvent, int minDelay, int maxDelay, boolean replaceCurrentMusic) {
         super(soundEvent, minDelay, maxDelay, replaceCurrentMusic);
     }
-
 }

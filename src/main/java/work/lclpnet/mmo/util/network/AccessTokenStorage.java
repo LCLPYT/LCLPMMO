@@ -86,5 +86,4 @@ public class AccessTokenStorage {
         String dist = FMLEnvironment.dist.name().toLowerCase(Locale.ROOT);
         return LocalLCLPStorage.getDirectory("lclpmmo", "access_tokens", env, dist);
     }
-
 }

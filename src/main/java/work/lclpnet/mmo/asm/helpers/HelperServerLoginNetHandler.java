@@ -54,5 +54,4 @@ public class HelperServerLoginNetHandler {
             server.getPlayerList().initializeConnectionToPlayer(networkManager, created);
         }
     }
-
 }

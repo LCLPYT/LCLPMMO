@@ -151,5 +151,4 @@ public class MixinServerLoginNetHandler {
     public void onAcceptPlayerRemLoginSuccess(NetworkManager nm, IPacket<?> packet) {
         // this empty redirect is necessary, because otherwise the user would not see login errors. We will set this later in HelperServerLoginNetHandler.resolve
     }
-
 }

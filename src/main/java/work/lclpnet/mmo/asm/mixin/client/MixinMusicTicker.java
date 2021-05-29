@@ -62,5 +62,4 @@ public class MixinMusicTicker {
             ci.cancel();
         }
     }
-
 }

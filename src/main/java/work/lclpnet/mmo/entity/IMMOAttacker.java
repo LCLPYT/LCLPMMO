@@ -14,5 +14,4 @@ public interface IMMOAttacker {
      */
     @OnlyIn(Dist.CLIENT)
     void onMMOAttack(Entity victim);
-
 }

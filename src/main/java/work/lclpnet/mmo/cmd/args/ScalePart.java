@@ -93,5 +93,4 @@ public class ScalePart {
     public boolean isRelative() {
         return this.relative;
     }
-
 }

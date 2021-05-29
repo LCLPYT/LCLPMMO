@@ -16,44 +16,43 @@ import java.util.Objects;
 
 public class MMOPlayerRenderer extends PlayerRenderer {
 
-	@Nullable
-	public final ResourceLocation textureLocation;
-	
-	public MMOPlayerRenderer(EntityRendererManager renderManager, AbstractMMOPlayerModel model) {
-		super(renderManager, false);
-		this.entityModel = Objects.requireNonNull(model);
-		this.textureLocation = model.getTextureLocation();
-		overrideLayers(model);
-	}
+    @Nullable
+    public final ResourceLocation textureLocation;
 
-	private void overrideLayers(AbstractMMOPlayerModel model) {
-		BipedModel<AbstractClientPlayerEntity> armorBody = model.getArmorBody(), armorLeggings = model.getArmorLeggings();
-		if (armorBody != null || armorLeggings != null) {
-			MMOUtils.applyFilteredAction(this.layerRenderers, BipedArmorLayer.class::isInstance, this.layerRenderers::removeAll);
+    public MMOPlayerRenderer(EntityRendererManager renderManager, AbstractMMOPlayerModel model) {
+        super(renderManager, false);
+        this.entityModel = Objects.requireNonNull(model);
+        this.textureLocation = model.getTextureLocation();
+        overrideLayers(model);
+    }
 
-			if(armorBody == null) armorBody = new BipedModel<>(1.0F);
-			else if(armorLeggings == null) armorLeggings = new BipedModel<>(0.5F);
+    private void overrideLayers(AbstractMMOPlayerModel model) {
+        BipedModel<AbstractClientPlayerEntity> armorBody = model.getArmorBody(), armorLeggings = model.getArmorLeggings();
+        if (armorBody != null || armorLeggings != null) {
+            MMOUtils.applyFilteredAction(this.layerRenderers, BipedArmorLayer.class::isInstance, this.layerRenderers::removeAll);
 
-			this.addLayer(new BipedArmorLayer<>(this, armorLeggings, armorBody));
-		}
-	}
+            if (armorBody == null) armorBody = new BipedModel<>(1.0F);
+            else if (armorLeggings == null) armorLeggings = new BipedModel<>(0.5F);
 
-	@Override
-	public ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
-		return this.textureLocation == null ? entity.getLocationSkin() : this.textureLocation;
-	}
-	
-	@Override
-	public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
-			AbstractClientPlayerEntity playerIn) {
-		
-		super.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, playerIn);
-	}
-	
-	@Override
-	public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
-			AbstractClientPlayerEntity playerIn) {
-		super.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, playerIn);
-	}
-	
+            this.addLayer(new BipedArmorLayer<>(this, armorLeggings, armorBody));
+        }
+    }
+
+    @Override
+    public ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
+        return this.textureLocation == null ? entity.getLocationSkin() : this.textureLocation;
+    }
+
+    @Override
+    public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
+                               AbstractClientPlayerEntity playerIn) {
+
+        super.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, playerIn);
+    }
+
+    @Override
+    public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
+                              AbstractClientPlayerEntity playerIn) {
+        super.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, playerIn);
+    }
 }

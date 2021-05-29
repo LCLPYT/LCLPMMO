@@ -6,18 +6,17 @@ import work.lclpnet.mmo.facade.race.MMORace;
 
 public class RaceDwarf extends MMORace {
 
-	public RaceDwarf() {
-		super("dwarf", new TranslationTextComponent("mmo.race.dwarf.title"));
-	}
-	
-	@Override
-	public ResourceLocation getIcon() {
-		return new ResourceLocation("textures/item/iron_pickaxe.png");
-	}
+    public RaceDwarf() {
+        super("dwarf", new TranslationTextComponent("mmo.race.dwarf.title"));
+    }
+
+    @Override
+    public ResourceLocation getIcon() {
+        return new ResourceLocation("textures/item/iron_pickaxe.png");
+    }
 	
 	/*@Override
 	public String getToolTip() {
 		return new StringTextComponent("Dwarf").getFormattedText();
 	}*/
-
 }

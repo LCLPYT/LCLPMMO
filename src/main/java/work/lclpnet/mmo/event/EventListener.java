@@ -35,75 +35,76 @@ import work.lclpnet.mmo.util.network.LCLPNetwork;
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.FORGE)
 public class EventListener {
 
-	private static boolean startup = true;
+    private static boolean startup = true;
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onGui(GuiOpenEvent e) {
-		if(e.getGui() instanceof MainMenuScreen) {
-			e.setCanceled(true);
-			if(LCLPNetwork.getAccessToken() == null) Minecraft.getInstance().displayGuiScreen(new LoginScreen());
-			else Minecraft.getInstance().displayGuiScreen(getStartingScreen());
-		}
-	}
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onGui(GuiOpenEvent e) {
+        if (e.getGui() instanceof MainMenuScreen) {
+            e.setCanceled(true);
+            if (LCLPNetwork.getAccessToken() == null) Minecraft.getInstance().displayGuiScreen(new LoginScreen());
+            else Minecraft.getInstance().displayGuiScreen(getStartingScreen());
+        }
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static Screen getStartingScreen() {
-		Screen screen = Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen();
-		startup = false;
-		return screen;
-	}
+    @OnlyIn(Dist.CLIENT)
+    public static Screen getStartingScreen() {
+        Screen screen = Config.shouldSkipIntro() || !startup ? new MMOMainScreen(true) : new PreIntroScreen();
+        startup = false;
+        return screen;
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onRenderTick(RenderTickEvent e) {
-		if(e.phase == Phase.END) QueueWorker.doRenderWork();
-	}
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onRenderTick(RenderTickEvent e) {
+        if (e.phase == Phase.END) QueueWorker.doRenderWork();
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onGuiClose(GuiOpenEvent e) {
-		if(e.getGui() != null) return;
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onGuiClose(GuiOpenEvent e) {
+        if (e.getGui() != null) return;
 
-		MessageShowTutorialScreen.ClientCache.needCache = false;
-		if(MessageShowTutorialScreen.ClientCache.cached != null) 
-			QueueWorker.enqueueOnRender(MessageShowTutorialScreen.ClientCache.cached::showTutorialScreen);
-	}
+        MessageShowTutorialScreen.ClientCache.needCache = false;
+        if (MessageShowTutorialScreen.ClientCache.cached != null)
+            QueueWorker.enqueueOnRender(MessageShowTutorialScreen.ClientCache.cached::showTutorialScreen);
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onWorldLeave(WorldEvent.Unload e) {
-		MessageShowTutorialScreen.ClientCache.needCache = true;
-		MusicSystem.stopAllSound(x -> {});
-		MusicSystem.setLoopBackgroundMusic(false);
-		MusicSystem.playBackgroundMusic(null);
-	}
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onWorldLeave(WorldEvent.Unload e) {
+        MessageShowTutorialScreen.ClientCache.needCache = true;
+        MusicSystem.stopAllSound(x -> {
+        });
+        MusicSystem.setLoopBackgroundMusic(false);
+        MusicSystem.playBackgroundMusic(null);
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onSoundSettingsScreen(InitGuiEvent e) {
-		Screen gui = e.getGui();
-		if(!(gui instanceof OptionsSoundsScreen)) return;
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onSoundSettingsScreen(InitGuiEvent e) {
+        Screen gui = e.getGui();
+        if (!(gui instanceof OptionsSoundsScreen)) return;
 
-		ResponsiveCheckboxButton checkbox = new ResponsiveCheckboxButton(10, 10, 150, 20, new TranslationTextComponent("options_screen.audio.only_mmo"), Config.isMinecraftMusicDisabled());
-		checkbox.setResponder(Config::setMinecraftMusicDisabled);
-		e.addWidget(checkbox);
-	}
+        ResponsiveCheckboxButton checkbox = new ResponsiveCheckboxButton(10, 10, 150, 20, new TranslationTextComponent("options_screen.audio.only_mmo"), Config.isMinecraftMusicDisabled());
+        checkbox.setResponder(Config::setMinecraftMusicDisabled);
+        e.addWidget(checkbox);
+    }
 
-	@SubscribeEvent
-	public static void onEntityInteract(PlayerInteractEvent.EntityInteract e) {
-		if(!(e.getTarget().world instanceof ServerWorld) || e.getHand() != Hand.MAIN_HAND) return;
-		
-		EntityRightClickedEvent event = new EntityRightClickedEvent(e.getPlayer(), e.getTarget(), false);
-		MinecraftForge.EVENT_BUS.post(event);
-		if(event.isCanceled()) e.setCanceled(true);
-	}
-	
-	@SubscribeEvent
-	public static void onEntityRightClicked(EntityRightClickedEvent e) {
-		boolean shouldCancel = IMMOEntity.get(e.getClicked()).onClick(e.getPlayer());
-		if(shouldCancel) e.setCanceled(true);
-	}
+    @SubscribeEvent
+    public static void onEntityInteract(PlayerInteractEvent.EntityInteract e) {
+        if (!(e.getTarget().world instanceof ServerWorld) || e.getHand() != Hand.MAIN_HAND) return;
+
+        EntityRightClickedEvent event = new EntityRightClickedEvent(e.getPlayer(), e.getTarget(), false);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onEntityRightClicked(EntityRightClickedEvent e) {
+        boolean shouldCancel = IMMOEntity.get(e.getClicked()).onClick(e.getPlayer());
+        if (shouldCancel) e.setCanceled(true);
+    }
 	
 	/*@SubscribeEvent
 	public static void onServerChat(ServerChatEvent e) {
@@ -114,5 +115,4 @@ public class EventListener {
 				new DialogFragment("yayayayayaaaa")));
 		IMMOPlayer.get(p).openMMODialog(new Dialog(p, data).setDismissable(true));
 	}*/
-
 }

@@ -8,5 +8,4 @@ public class RaceDarkDwarf extends MMORace {
     public RaceDarkDwarf() {
         super("dark_dwarf", new TranslationTextComponent("mmo.race.dark_dwarf.title"));
     }
-
 }

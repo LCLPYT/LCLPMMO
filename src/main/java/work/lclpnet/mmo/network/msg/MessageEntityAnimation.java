@@ -30,17 +30,17 @@ public class MessageEntityAnimation implements IMessage {
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-        if(FMLEnvironment.dist == Dist.CLIENT) handleClient();
+        if (FMLEnvironment.dist == Dist.CLIENT) handleClient();
     }
 
     // 22.04.2021: Never try to load client-only classes in a method without @OnlyIn(Dist.Client) Baka. RIP my free time
     @OnlyIn(Dist.CLIENT)
     private void handleClient() {
         World w = Minecraft.getInstance().world;
-        if(w == null) return;
+        if (w == null) return;
 
         Entity en = w.getEntityByID(this.entityId);
-        if(!(en instanceof IEntityAnimatable)) return;
+        if (!(en instanceof IEntityAnimatable)) return;
 
         ((IEntityAnimatable) en).onAnimation(this.animationId);
     }
@@ -60,5 +60,4 @@ public class MessageEntityAnimation implements IMessage {
             return new MessageEntityAnimation(entityId, animationId);
         }
     }
-
 }

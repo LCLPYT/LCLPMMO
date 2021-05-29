@@ -11,5 +11,4 @@ public class BoletusRenderer extends GeoEntityRenderer<BoletusEntity> {
         super(renderManager, new BoletusModel());
         this.shadowSize = 0.7F;
     }
-
 }

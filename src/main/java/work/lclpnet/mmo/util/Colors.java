@@ -16,5 +16,4 @@ public class Colors {
             MAGENTA = new Color(255, 0, 127),
             LIME = new Color(127, 255, 0),
             TURQUOISE = new Color(0, 255, 127);
-
 }

@@ -6,11 +6,10 @@ import java.util.function.Supplier;
 
 public interface IMessage {
 
-	void handle(Supplier<Context> ctx);
-	
-	default void wrapHandle(Supplier<Context> ctx) {
-		ctx.get().setPacketHandled(true);
-		handle(ctx);
-	}
-	
+    void handle(Supplier<Context> ctx);
+
+    default void wrapHandle(Supplier<Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        handle(ctx);
+    }
 }

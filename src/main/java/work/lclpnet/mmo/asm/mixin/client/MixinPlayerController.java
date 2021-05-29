@@ -59,5 +59,4 @@ public class MixinPlayerController {
             cir.cancel();
         }
     }
-
 }

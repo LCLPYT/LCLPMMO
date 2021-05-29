@@ -76,5 +76,4 @@ public class Color {
     public static Color fromARGBInt(int colorInt) {
         return new Color(colorInt);
     }
-
 }

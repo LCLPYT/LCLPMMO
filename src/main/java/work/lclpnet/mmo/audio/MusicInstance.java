@@ -11,5 +11,4 @@ public interface MusicInstance {
     void stop();
 
     void setVolume(float f);
-
 }

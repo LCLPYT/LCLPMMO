@@ -44,7 +44,6 @@ public class MMODataSerializers {
         public Vector3d copyValue(Vector3d value) {
             return value;
         }
-
     });
 
     private static <T> IDataSerializer<T> register(String name, IDataSerializer<T> serializer) {
@@ -59,5 +58,4 @@ public class MMODataSerializers {
         ENTRIES.forEach(e.getRegistry()::register);
         ENTRIES.clear();
     }
-
 }

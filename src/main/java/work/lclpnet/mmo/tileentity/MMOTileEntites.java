@@ -16,21 +16,20 @@ import java.util.List;
 @EventBusSubscriber(modid = LCLPMMO.MODID, bus = Bus.MOD)
 public class MMOTileEntites {
 
-	private static final List<TileEntityType<?>> TILE_ENTITY_TYPES = new ArrayList<>();
+    private static final List<TileEntityType<?>> TILE_ENTITY_TYPES = new ArrayList<>();
 
-	public static final TileEntityType<GlassBottleTileEntity> GLASS_BOTTLE = buildType(MMONames.TileEntity.GLASS_BOTTLE, TileEntityType.Builder.create(GlassBottleTileEntity::new, MMOBlocks.GLASS_BOTTLE));
+    public static final TileEntityType<GlassBottleTileEntity> GLASS_BOTTLE = buildType(MMONames.TileEntity.GLASS_BOTTLE, TileEntityType.Builder.create(GlassBottleTileEntity::new, MMOBlocks.GLASS_BOTTLE));
 
-	private static <T extends TileEntity> TileEntityType<T> buildType(String id, TileEntityType.Builder<T> builder) {
-		TileEntityType<T> type = builder.build(null);
-		type.setRegistryName(id);
-		TILE_ENTITY_TYPES.add(type);
-		return type;
-	}
+    private static <T extends TileEntity> TileEntityType<T> buildType(String id, TileEntityType.Builder<T> builder) {
+        TileEntityType<T> type = builder.build(null);
+        type.setRegistryName(id);
+        TILE_ENTITY_TYPES.add(type);
+        return type;
+    }
 
-	@SubscribeEvent
-	public static void registerTypes(final RegistryEvent.Register<TileEntityType<?>> event) {
-		TILE_ENTITY_TYPES.forEach(type -> event.getRegistry().register(type));
-		TILE_ENTITY_TYPES.clear();
-	}
-
+    @SubscribeEvent
+    public static void registerTypes(final RegistryEvent.Register<TileEntityType<?>> event) {
+        TILE_ENTITY_TYPES.forEach(type -> event.getRegistry().register(type));
+        TILE_ENTITY_TYPES.clear();
+    }
 }

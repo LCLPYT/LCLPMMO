@@ -8,5 +8,4 @@ public class RaceWerewolf extends MMORace {
     public RaceWerewolf() {
         super("werewolf", new TranslationTextComponent("mmo.race.werewolf.title"));
     }
-
 }

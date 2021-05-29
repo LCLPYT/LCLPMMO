@@ -13,33 +13,31 @@ import java.util.function.Supplier;
 
 public class MessageDisconnectMe implements IMessage {
 
-	private final ITextComponent msg;
-	
-	public MessageDisconnectMe(ITextComponent message) {
-		this.msg = message;
-	}
-	
-	@Override
-	public void handle(Supplier<Context> supplier) {
-		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
-		
-		ServerPlayerEntity sender = supplier.get().getSender();
-		supplier.get().enqueueWork(() -> sender.connection.disconnect(this.msg));
-	}
-	
-	public static class Serializer implements IMessageSerializer<MessageDisconnectMe> {
-		
-		@Override
-		public void encode(MessageDisconnectMe message, PacketBuffer buffer) {
-			buffer.writeTextComponent(message.msg);
-		}
+    private final ITextComponent msg;
 
-		@Override
-		public MessageDisconnectMe decode(PacketBuffer buffer) {
-			ITextComponent msg = buffer.readTextComponent();
-			return new MessageDisconnectMe(msg);
-		}
-		
-	}
+    public MessageDisconnectMe(ITextComponent message) {
+        this.msg = message;
+    }
 
+    @Override
+    public void handle(Supplier<Context> supplier) {
+        if (FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
+
+        ServerPlayerEntity sender = supplier.get().getSender();
+        supplier.get().enqueueWork(() -> sender.connection.disconnect(this.msg));
+    }
+
+    public static class Serializer implements IMessageSerializer<MessageDisconnectMe> {
+
+        @Override
+        public void encode(MessageDisconnectMe message, PacketBuffer buffer) {
+            buffer.writeTextComponent(message.msg);
+        }
+
+        @Override
+        public MessageDisconnectMe decode(PacketBuffer buffer) {
+            ITextComponent msg = buffer.readTextComponent();
+            return new MessageDisconnectMe(msg);
+        }
+    }
 }

@@ -87,7 +87,6 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
                 this.addEntry(new Entry(this, entry, entry.equals(preSelected)));
             }
         }
-
     }
 
     public S getGuiScreen() {
@@ -303,7 +302,5 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
         public T getEntry() {
             return entry;
         }
-
     }
-
 }

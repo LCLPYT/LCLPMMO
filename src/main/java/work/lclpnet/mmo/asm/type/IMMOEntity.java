@@ -39,5 +39,4 @@ public interface IMMOEntity<T extends Entity> {
      * @return true, if the click on the entity should be canceled.
      */
     boolean onClick(PlayerEntity clicker);
-
 }

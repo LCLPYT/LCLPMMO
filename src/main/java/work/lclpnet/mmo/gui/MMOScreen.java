@@ -109,5 +109,4 @@ public class MMOScreen extends Screen {
             systemtoast.field_238532_h_ = i <= 160 ? i : i + 30;
         }
     }
-
 }

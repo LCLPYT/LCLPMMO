@@ -8,5 +8,4 @@ public class RaceUndead extends MMORace {
     public RaceUndead() {
         super("undead", new TranslationTextComponent("mmo.race.undead.title"));
     }
-
 }

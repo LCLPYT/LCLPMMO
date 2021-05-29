@@ -237,5 +237,4 @@ public class CommandMusic extends CommandBase {
         MMOPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> p), msg);
         return 0;
     }
-
 }

@@ -73,7 +73,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         this.ignoreFrustumCheck = true;
 
         // Initialize client-only fields here to prevent exceptions on the server.
-        if(FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
             factory = new AnimationFactory(this);
             puffAnimationEnabled = false;
             attackAnimationEnabled = false;
@@ -138,9 +138,9 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         super.tick();
 
         if (!this.world.isRemote) {
-            if(stepSoundTimer > 0) stepSoundTimer--;
+            if (stepSoundTimer > 0) stepSoundTimer--;
 
-            if(puffDelayTimer > 0 && --puffDelayTimer <= 0) {
+            if (puffDelayTimer > 0 && --puffDelayTimer <= 0) {
                 ServerWorld sw = (ServerWorld) this.world;
                 double x = this.getPosX();
                 double y = this.getPosYEye() + 0.2D;
@@ -155,7 +155,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
                 entities.forEach(p -> p.addPotionEffect(new EffectInstance(Effects.NAUSEA, 250, 1)));
             }
 
-            if(!this.isAIDisabled() && puffTimer-- <= 0) {
+            if (!this.isAIDisabled() && puffTimer-- <= 0) {
                 puffTimer = puffRange.getRandomWithinRange(this.rand);
                 playAnimation(this, MMOEntityAnimations.BOLETUS_PUFF);
                 puffDelayTimer = 9;
@@ -165,17 +165,18 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
 
     protected void updateAITasks() {
         ModifiableAttributeInstance attributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
-        if(attributeInstance == null) return;
+        if (attributeInstance == null) return;
 
         if (this.isAngry()) {
-            if (!attributeInstance.hasModifier(attackingSpeedBoost)) attributeInstance.applyNonPersistentModifier(attackingSpeedBoost);
+            if (!attributeInstance.hasModifier(attackingSpeedBoost))
+                attributeInstance.applyNonPersistentModifier(attackingSpeedBoost);
 
             this.tickAngerSound();
         } else if (attributeInstance.hasModifier(attackingSpeedBoost)) {
             attributeInstance.removeModifier(attackingSpeedBoost);
         }
 
-        this.func_241359_a_((ServerWorld)this.world, true);
+        this.func_241359_a_((ServerWorld) this.world, true);
         if (this.getAttackTarget() != null) {
             this.tickAngerNearby();
         }
@@ -198,7 +199,8 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         if (this.angerNearbyAlliesTimer > 0) {
             --this.angerNearbyAlliesTimer;
         } else {
-            if (this.getAttackTarget() != null && this.getEntitySenses().canSee(this.getAttackTarget())) this.angerNearbyAllies();
+            if (this.getAttackTarget() != null && this.getEntitySenses().canSee(this.getAttackTarget()))
+                this.angerNearbyAllies();
             this.angerNearbyAlliesTimer = angerAlliesRange.getRandomWithinRange(this.rand);
         }
     }
@@ -208,7 +210,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         AxisAlignedBB axisalignedbb = AxisAlignedBB.fromVector(this.getPositionVec()).grow(range, 10.0D, range);
 
         LivingEntity attackTarget = this.getAttackTarget();
-        if(attackTarget == null) return;
+        if (attackTarget == null) return;
 
         this.world.getLoadedEntitiesWithinAABB(BoletusEntity.class, axisalignedbb).stream()
                 .filter(other -> other != this)
@@ -261,7 +263,7 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        if(stepSoundTimer <= 0) {
+        if (stepSoundTimer <= 0) {
             this.playSound(this.getStepSound(), 0.15F, 1.0F);
             stepSoundTimer = 100;
         }
@@ -288,8 +290,8 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
 
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        if(!world.isRemote) //FORGE: allow this entity to be read from nbt on client. (Fixes MC-189565)
-            this.readAngerNBT((ServerWorld)this.world, compound);
+        if (!world.isRemote) //FORGE: allow this entity to be read from nbt on client. (Fixes MC-189565)
+            this.readAngerNBT((ServerWorld) this.world, compound);
     }
 
     public boolean attackEntityFrom(DamageSource source, float amount) {
@@ -340,5 +342,4 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
             this.puffAnimationEnabled = true;
         }
     }
-
 }

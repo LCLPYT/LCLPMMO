@@ -32,18 +32,16 @@ public class MessageEntityAttack implements IMessage {
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-        if(FMLEnvironment.dist == Dist.CLIENT) handleClient();
-
-
+        if (FMLEnvironment.dist == Dist.CLIENT) handleClient();
     }
 
     @OnlyIn(Dist.CLIENT)
     private void handleClient() {
         World w = Minecraft.getInstance().world;
-        if(w == null) return;
+        if (w == null) return;
 
         Entity en = w.getEntityByID(this.entityId);
-        if(!(en instanceof IMMOAttacker)) return;
+        if (!(en instanceof IMMOAttacker)) return;
 
         Entity victim = w.getEntityByID(this.victimEntityId);
         ((IMMOAttacker) en).onMMOAttack(victim);
@@ -51,7 +49,7 @@ public class MessageEntityAttack implements IMessage {
 
     @ParametersAreNonnullByDefault
     public static <T extends Entity & IMMOAttacker> void sync(T attacker, Entity victim) {
-        if(!attacker.world.isRemote)
+        if (!attacker.world.isRemote)
             MMOPacketHandler.sendToTrackingEntity(attacker, new MessageEntityAttack(attacker, victim));
     }
 
@@ -71,5 +69,4 @@ public class MessageEntityAttack implements IMessage {
             return new MessageEntityAttack(entityId, victimId);
         }
     }
-
 }

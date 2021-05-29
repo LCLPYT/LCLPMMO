@@ -29,5 +29,4 @@ public class FakeWorld extends ClientWorld {
                 BiomeManager.getHashedSeed(new Random().nextLong()) // first 8 bytes of the sha-256 of the world's seed (in this case a dummy seed)
         );
     }
-
 }

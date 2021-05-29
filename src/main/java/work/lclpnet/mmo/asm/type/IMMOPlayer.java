@@ -23,5 +23,4 @@ public interface IMMOPlayer {
     static IMMOPlayer get(PlayerEntity player) {
         return (IMMOPlayer) player;
     }
-
 }

@@ -19,5 +19,4 @@ public class MMOMixinConnector implements IMixinConnector {
             Mixins.addConfiguration("mixins.lclpmmo.dev.json");
         }
     }
-
 }

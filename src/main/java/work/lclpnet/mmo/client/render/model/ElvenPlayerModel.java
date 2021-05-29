@@ -71,7 +71,7 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
                 props
         );
 
-        if(ctx == ModelContext.ARMOR) rArm.postTranslation = new Vector3f(-0.0625F, 0F, 0F);
+        if (ctx == ModelContext.ARMOR) rArm.postTranslation = new Vector3f(-0.0625F, 0F, 0F);
 
         return rArm;
     }
@@ -140,16 +140,16 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
         bipedBodyWear = new MMOModelRenderer(this);
         bipedBodyWear.setRotationPoint(0.0F, 24.0F, 0.0F);
         bipedBodyWear.setTextureOffset(13, 39).addBox(-4.0F, -4.0F, 2.0F, 1.0F, 1.0F, 0.5F, 0.0F, false);
-        bipedBodyWear.setTextureOffset(0 , 37).addBox(-3.0F, -4.0F, 2.0F, 7.0F, 3.0F, 1.0F, 0.0F, false);
+        bipedBodyWear.setTextureOffset(0, 37).addBox(-3.0F, -4.0F, 2.0F, 7.0F, 3.0F, 1.0F, 0.0F, false);
         bipedBodyWear.setTextureOffset(18, 37).addBox(-1.0F, -1.0F, 2.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
-        bipedBodyWear.setTextureOffset(33, 23).addBox( 2.0F, -1.0F, 2.0F, 1.0F, 2.0F, 0.5F, 0.0F, false);
+        bipedBodyWear.setTextureOffset(33, 23).addBox(2.0F, -1.0F, 2.0F, 1.0F, 2.0F, 0.5F, 0.0F, false);
         bipedBodyWear.setTextureOffset(34, 23).addBox(-2.0F, -1.0F, 2.0F, 1.0F, 2.0F, 0.5F, 0.0F, false);
         bipedBodyWear.setTextureOffset(29, 37).addBox(-1.0F, 0.0F, 2.0F, 1.0F, 2.0F, 1.0F, 0.0F, false);
-        bipedBodyWear.setTextureOffset(36, 37).addBox( 0.0F, 0.0F, 2.0F, 2.0F, 2.0F, 0.5F, 0.0F, false);
+        bipedBodyWear.setTextureOffset(36, 37).addBox(0.0F, 0.0F, 2.0F, 2.0F, 2.0F, 0.5F, 0.0F, false);
         bipedBodyWear.setTextureOffset(33, 21).addBox(-1.0F, -4.0F, 3.0F, 2.0F, 2.0F, 0.5F, 0.0F, false);
-        bipedBodyWear.setTextureOffset(34, 21).addBox( 1.0F, -4.0F, 3.0F, 1.0F, 1.0F, 0.5F, 0.0F, false);
+        bipedBodyWear.setTextureOffset(34, 21).addBox(1.0F, -4.0F, 3.0F, 1.0F, 1.0F, 0.5F, 0.0F, false);
         bipedBodyWear.setTextureOffset(44, 38).addBox(-1.0F, 2.0F, 2.0F, 2.0F, 1.0F, 0.5F, 0.0F, false);
-        bipedBodyWear.setTextureOffset(45, 38).addBox( 0.0F, 3.0F, 2.0F, 1.0F, 1.0F, 0.5F, 0.0F, false);
+        bipedBodyWear.setTextureOffset(45, 38).addBox(0.0F, 3.0F, 2.0F, 1.0F, 1.0F, 0.5F, 0.0F, false);
     }
 
     @Override
@@ -193,5 +193,4 @@ public class ElvenPlayerModel extends AbstractMMOPlayerModel {
     public BipedModel<AbstractClientPlayerEntity> getArmorLeggings() {
         return this.getDefaultLeggingsArmor();
     }
-
 }

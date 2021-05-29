@@ -103,5 +103,4 @@ public class MidiMusic extends MusicBase implements MusicInstance {
 
         volumeBefore = volume;
     }
-
 }

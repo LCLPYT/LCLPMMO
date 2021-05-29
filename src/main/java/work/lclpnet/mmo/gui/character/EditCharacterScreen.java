@@ -108,5 +108,4 @@ public class EditCharacterScreen extends MMOScreen {
         this.nameEdit.render(mStack, mouseX, mouseY, partialTicks);
         super.render(mStack, mouseX, mouseY, partialTicks);
     }
-
 }

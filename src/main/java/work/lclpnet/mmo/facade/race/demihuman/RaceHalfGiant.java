@@ -8,5 +8,4 @@ public class RaceHalfGiant extends MMORace {
     public RaceHalfGiant() {
         super("half_giant", new TranslationTextComponent("mmo.race.half_giant.title"));
     }
-
 }

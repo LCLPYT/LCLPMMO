@@ -15,5 +15,4 @@ public class MusicBase {
         this.file = file;
         this.volume = volume;
     }
-
 }

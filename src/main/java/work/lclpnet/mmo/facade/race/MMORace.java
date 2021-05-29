@@ -16,60 +16,58 @@ import java.io.IOException;
 
 public class MMORace extends JsonSerializeable implements MMOSelectionItem, IEntitySizeOverride {
 
-	private final String unlocalizedName;
-	private final transient ITextComponent title;
+    private final String unlocalizedName;
+    private final transient ITextComponent title;
 
-	public MMORace(String unlocalizedName, ITextComponent title) {
-		this.unlocalizedName = unlocalizedName;
-		this.title = title;
-	}
+    public MMORace(String unlocalizedName, ITextComponent title) {
+        this.unlocalizedName = unlocalizedName;
+        this.title = title;
+    }
 
-	@Override
-	public String getUnlocalizedName() {
-		return unlocalizedName;
-	}
+    @Override
+    public String getUnlocalizedName() {
+        return unlocalizedName;
+    }
 
-	@Override
-	public ITextComponent getTitle() {
-		return title;
-	}
+    @Override
+    public ITextComponent getTitle() {
+        return title;
+    }
 
-	public static MMORace getRaceFromPlayer(LivingEntity entity) {
-		if(!(entity instanceof PlayerEntity)) return null;
+    public static MMORace getRaceFromPlayer(LivingEntity entity) {
+        if (!(entity instanceof PlayerEntity)) return null;
 
-		PlayerEntity player = (PlayerEntity) entity;
-		MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
-		if(character == null) return null;
-		return character.getRace();
-	}
+        PlayerEntity player = (PlayerEntity) entity;
+        MMOCharacter character = IMMOUser.getMMOUser(player).getMMOCharacter();
+        if (character == null) return null;
+        return character.getRace();
+    }
 
-	public static class Adapter extends EasyTypeAdapter<MMORace> {
+    public static class Adapter extends EasyTypeAdapter<MMORace> {
 
-		public static final Adapter INSTANCE = new Adapter();
+        public static final Adapter INSTANCE = new Adapter();
 
-		protected Adapter() {
-			super(MMORace.class);
-		}
+        protected Adapter() {
+            super(MMORace.class);
+        }
 
-		@Override
-		public void write(JsonWriter out, MMORace value) throws IOException {
-			out.beginObject();
+        @Override
+        public void write(JsonWriter out, MMORace value) throws IOException {
+            out.beginObject();
 
-			addField("unlocalizedName", out, w -> w.value(value.unlocalizedName));
+            addField("unlocalizedName", out, w -> w.value(value.unlocalizedName));
 
-			out.endObject();
-		}
+            out.endObject();
+        }
 
-		@Override
-		public MMORace read(JsonObject json) {
-			return fromJsonObject(json);
-		}
+        @Override
+        public MMORace read(JsonObject json) {
+            return fromJsonObject(json);
+        }
 
-		public MMORace fromJsonObject(JsonObject json) {
-			String unlocalizedName = json.get("unlocalizedName").getAsString();
-			return Races.getByName(unlocalizedName);
-		}
-
-	}
-
+        public MMORace fromJsonObject(JsonObject json) {
+            String unlocalizedName = json.get("unlocalizedName").getAsString();
+            return Races.getByName(unlocalizedName);
+        }
+    }
 }

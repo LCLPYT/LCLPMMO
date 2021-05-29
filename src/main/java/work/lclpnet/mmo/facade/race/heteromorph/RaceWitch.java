@@ -8,5 +8,4 @@ public class RaceWitch extends MMORace {
     public RaceWitch() {
         super("witch", new TranslationTextComponent("mmo.race.witch.title"));
     }
-
 }

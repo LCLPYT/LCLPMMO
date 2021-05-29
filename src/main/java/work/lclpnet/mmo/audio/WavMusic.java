@@ -83,5 +83,4 @@ public class WavMusic extends MusicBase implements MusicInstance {
             while (!done) wait();
         }
     }
-
 }

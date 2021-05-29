@@ -71,5 +71,4 @@ public class PreIntroScreen extends MMOScreen {
     public boolean shouldCloseOnEsc() {
         return false;
     }
-
 }

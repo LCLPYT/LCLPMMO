@@ -38,5 +38,4 @@ public class FakeClientPlayNetHandler extends ClientPlayNetHandler {
     public NetworkPlayerInfo getPlayerInfo(String name) {
         return this.playerInfo;
     }
-
 }

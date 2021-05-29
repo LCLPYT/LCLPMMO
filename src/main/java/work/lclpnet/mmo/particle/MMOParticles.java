@@ -38,5 +38,4 @@ public class MMOParticles {
         ParticleManager particles = Minecraft.getInstance().particles;
         particles.registerFactory(SPORES, SporeParticle.Factory::new);
     }
-
 }

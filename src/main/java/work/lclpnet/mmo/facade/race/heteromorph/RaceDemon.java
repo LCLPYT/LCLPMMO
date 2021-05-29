@@ -8,5 +8,4 @@ public class RaceDemon extends MMORace {
     public RaceDemon() {
         super("demon", new TranslationTextComponent("mmo.race.demon.title"));
     }
-
 }

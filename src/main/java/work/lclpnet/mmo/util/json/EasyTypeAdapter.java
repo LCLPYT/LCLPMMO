@@ -67,5 +67,4 @@ public abstract class EasyTypeAdapter<T> extends TypeAdapter<T> {
 
         return !annotation.in().isApplicable();
     }
-
 }

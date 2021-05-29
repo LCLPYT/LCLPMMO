@@ -49,5 +49,4 @@ public class LocalLCLPStorage {
             else return true;
         } else return dir.isDirectory();
     }
-
 }

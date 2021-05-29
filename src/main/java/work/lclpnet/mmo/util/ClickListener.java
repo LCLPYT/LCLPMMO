@@ -11,5 +11,4 @@ public interface ClickListener<T extends Entity> {
      * @return If the click should be cancelled.
      */
     boolean onClick(T entity, PlayerEntity clicker);
-
 }

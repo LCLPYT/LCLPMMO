@@ -73,5 +73,4 @@ public abstract class MixinEntityRendererManager {
         cir.setReturnValue(renderer);
         cir.cancel();
     }
-
 }

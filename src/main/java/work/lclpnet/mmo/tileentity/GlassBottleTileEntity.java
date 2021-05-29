@@ -14,77 +14,76 @@ import work.lclpnet.mmo.block.MMOBlocks;
 import work.lclpnet.mmo.block.MMOWaterloggableBlock;
 import work.lclpnet.mmo.util.ItemStackUtils;
 
-public class GlassBottleTileEntity extends TileEntity{
+public class GlassBottleTileEntity extends TileEntity {
 
-	protected final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    protected final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
-	public GlassBottleTileEntity() {
-		super(MMOTileEntites.GLASS_BOTTLE);
-	}
+    public GlassBottleTileEntity() {
+        super(MMOTileEntites.GLASS_BOTTLE);
+    }
 
-	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
-		ItemStackHelper.saveAllItems(compound, items);
-		return compound;
-	}
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        super.write(compound);
+        ItemStackHelper.saveAllItems(compound, items);
+        return compound;
+    }
 
-	@Override
-	public void read(BlockState state, CompoundNBT compound) {
-		super.read(state, compound);
-		ItemStackHelper.loadAllItems(compound, items);
-	}
+    @Override
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
+        ItemStackHelper.loadAllItems(compound, items);
+    }
 
-	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
-		ItemStackUtils.saveAllItemsIncludeEmpty(tag, items);
-		return tag;
-	}
-	
-	@Override
-	public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-		super.handleUpdateTag(state, tag);
-		ItemStackHelper.loadAllItems(tag, items);
-	}
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
+        ItemStackUtils.saveAllItemsIncludeEmpty(tag, items);
+        return tag;
+    }
 
-	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT nbt = new CompoundNBT();
-		ItemStackUtils.saveAllItemsIncludeEmpty(nbt, items);
-		return new SUpdateTileEntityPacket(getPos(), -1, nbt);
-	}
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
+        ItemStackHelper.loadAllItems(tag, items);
+    }
 
-	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		CompoundNBT nbt = pkt.getNbtCompound();
-		ItemStackHelper.loadAllItems(nbt, items);
-	}
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        CompoundNBT nbt = new CompoundNBT();
+        ItemStackUtils.saveAllItemsIncludeEmpty(nbt, items);
+        return new SUpdateTileEntityPacket(getPos(), -1, nbt);
+    }
 
-	public ItemStack getItem() {
-		return items.get(0);
-	}
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        CompoundNBT nbt = pkt.getNbtCompound();
+        ItemStackHelper.loadAllItems(nbt, items);
+    }
 
-	public void setItem(ItemStack item) {
-		items.set(0, item);
-		this.markDirty();
-		updateState();
-		if(!world.isRemote) world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
-	}
+    public ItemStack getItem() {
+        return items.get(0);
+    }
 
-	private void updateState() {
-		BlockState existing = this.world.getBlockState(getPos());
-		if(work.lclpnet.mmo.util.ItemStackUtils.isAir(getItem())
-				&& existing.get(GlassBottleBlock.ENABLED)) setEnabled(false);
-		else if(!existing.get(GlassBottleBlock.ENABLED)) setEnabled(true);
-	}
-	
-	private void setEnabled(boolean enabled) {
-		BlockState state = MMOBlocks.GLASS_BOTTLE.getDefaultState()
-				.with(GlassBottleBlock.ENABLED, enabled)
-				.with(MMOWaterloggableBlock.WATERLOGGED, this.world.getFluidState(this.getPos()).getFluid() == Fluids.WATER);
+    public void setItem(ItemStack item) {
+        items.set(0, item);
+        this.markDirty();
+        updateState();
+        if (!world.isRemote) world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
+    }
 
-		this.world.setBlockState(getPos(), state);
-	}
+    private void updateState() {
+        BlockState existing = this.world.getBlockState(getPos());
+        if (work.lclpnet.mmo.util.ItemStackUtils.isAir(getItem())
+                && existing.get(GlassBottleBlock.ENABLED)) setEnabled(false);
+        else if (!existing.get(GlassBottleBlock.ENABLED)) setEnabled(true);
+    }
 
+    private void setEnabled(boolean enabled) {
+        BlockState state = MMOBlocks.GLASS_BOTTLE.getDefaultState()
+                .with(GlassBottleBlock.ENABLED, enabled)
+                .with(MMOWaterloggableBlock.WATERLOGGED, this.world.getFluidState(this.getPos()).getFluid() == Fluids.WATER);
+
+        this.world.setBlockState(getPos(), state);
+    }
 }

@@ -17,13 +17,11 @@ public class MMONames {
     public static class Block {
 
         public static final String GLASS_BOTTLE = loc("glass_bottle");
-
     }
 
     public static class TileEntity {
 
         public static final String GLASS_BOTTLE = loc("glass_bottle");
-
     }
 
     public static class Entity {
@@ -51,19 +49,15 @@ public class MMONames {
                 ENTITY_BOLETUS_HURT = loc("entity.boletus.hurt"),
                 ENTITY_BOLETUS_ANGRY = loc("entity.boletus.angry"),
                 ENTITY_BOLETUS_SPORES = loc("entity.boletus.spores");
-
     }
 
     public static class Particle {
 
         public static final String SPORES = loc("spores");
-
     }
 
     public static class DataSerializer {
 
         public static final String VECTOR_3D = loc("vec3d");
-
     }
-
 }

@@ -46,5 +46,4 @@ public class MMOSoundEvents {
         SOUNDS.forEach(soundEvent -> event.getRegistry().register(soundEvent));
         SOUNDS.clear();
     }
-
 }

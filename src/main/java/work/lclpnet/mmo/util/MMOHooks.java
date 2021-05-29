@@ -9,5 +9,4 @@ public class MMOHooks {
         MusicSystem.setOverallVolume(MusicSystem.getVolume(), x -> {
         });
     }
-
 }

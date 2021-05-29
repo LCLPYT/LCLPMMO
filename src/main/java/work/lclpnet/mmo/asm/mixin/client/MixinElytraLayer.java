@@ -24,5 +24,4 @@ public class MixinElytraLayer {
         MMORace race = MMORace.getRaceFromPlayer(entity);
         if (race != null) race.doElytraTranslation(matrixStackIn);
     }
-
 }

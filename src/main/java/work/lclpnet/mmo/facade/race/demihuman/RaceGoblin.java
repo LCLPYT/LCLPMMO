@@ -8,5 +8,4 @@ public class RaceGoblin extends MMORace {
     public RaceGoblin() {
         super("goblin", new TranslationTextComponent("mmo.race.goblin.title"));
     }
-
 }

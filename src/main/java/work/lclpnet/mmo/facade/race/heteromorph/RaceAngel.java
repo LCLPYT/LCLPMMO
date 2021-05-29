@@ -8,5 +8,4 @@ public class RaceAngel extends MMORace {
     public RaceAngel() {
         super("angel", new TranslationTextComponent("mmo.race.angel.title"));
     }
-
 }

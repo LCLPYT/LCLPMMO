@@ -152,7 +152,5 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
 
         protected Properties() {
         }
-
     }
-
 }

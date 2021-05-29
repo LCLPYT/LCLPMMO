@@ -44,5 +44,4 @@ public class MMOHorizontalBlock extends MMOBlock {
         super.fillStateContainer(builder);
         builder.add(DIRECTION);
     }
-
 }

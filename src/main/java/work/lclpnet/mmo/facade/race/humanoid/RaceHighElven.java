@@ -8,5 +8,4 @@ public class RaceHighElven extends MMORace {
     public RaceHighElven() {
         super("high_elven", new TranslationTextComponent("mmo.race.high_elven.title"));
     }
-
 }

@@ -23,150 +23,148 @@ import java.util.function.Supplier;
 
 public class MessageDialog implements IMessage {
 
-	private static final byte ACTION_OPEN = 0, ACTION_CLOSE = 1, ACTION_COMPLETE = 2;
+    private static final byte ACTION_OPEN = 0, ACTION_CLOSE = 1, ACTION_COMPLETE = 2;
 
-	private final byte action;
-	private int id;
-	private int entityId;
-	private DialogData data;
-	private boolean dismissable;
+    private final byte action;
+    private int id;
+    private int entityId;
+    private DialogData data;
+    private boolean dismissable;
 
-	public MessageDialog(Dialog dialog) {
-		this(dialog.getId(), dialog.getPartner().getEntityId(), dialog.getData(), dialog.isDismissable());
-	}
+    public MessageDialog(Dialog dialog) {
+        this(dialog.getId(), dialog.getPartner().getEntityId(), dialog.getData(), dialog.isDismissable());
+    }
 
-	protected MessageDialog(int id, int entityId, DialogData data, boolean dismissable) {
-		this(ACTION_OPEN);
-		this.id = id;
-		this.entityId = entityId;
-		this.data = data;
-		this.dismissable = dismissable;
-	}
-	
-	protected MessageDialog(int id) {
-		this(ACTION_COMPLETE);
-		this.id = id;
-	}
-	
-	protected MessageDialog(byte action) {
-		this.action = action;
-	}
-	
-	public static MessageDialog getCloseMessage() {
-		return new MessageDialog(ACTION_CLOSE);
-	}
-	
-	public static MessageDialog getCompleteMessage(int id) {
-		return new MessageDialog(id);
-	}
+    protected MessageDialog(int id, int entityId, DialogData data, boolean dismissable) {
+        this(ACTION_OPEN);
+        this.id = id;
+        this.entityId = entityId;
+        this.data = data;
+        this.dismissable = dismissable;
+    }
 
-	@Override
-	public void handle(Supplier<Context> ctx) {
-		Context c = ctx.get();
-		final ServerPlayerEntity sender = c.getSender();
-		c.enqueueWork(sender != null ? () -> handleServer(sender) : this::handleClient);
-	}
+    protected MessageDialog(int id) {
+        this(ACTION_COMPLETE);
+        this.id = id;
+    }
 
-	public void handleServer(ServerPlayerEntity p) {
-		switch (this.action) {
-		case ACTION_CLOSE:
-			IMMOPlayer.get(p).setCurrentMMODialog(null);
-			break;
-		case ACTION_COMPLETE:
-			MinecraftForge.EVENT_BUS.post(new DialogCompleteEvent(p, this.id));
-			break;
+    protected MessageDialog(byte action) {
+        this.action = action;
+    }
 
-		default:
-			throw new IllegalStateException("Action " + this.action + " is unimplemented!");
-		}
-	}
+    public static MessageDialog getCloseMessage() {
+        return new MessageDialog(ACTION_CLOSE);
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public void handleClient() {
-		Minecraft mc = Minecraft.getInstance();
-		switch (this.action) {
-		case ACTION_OPEN:
-			World w = mc.world;
-			openDialog(mc, new Dialog(id, w.getEntityByID(this.entityId), this.data).setDismissable(this.dismissable));
-			break;
-		case ACTION_CLOSE:
-			closeDialog(mc);
-			break;
+    public static MessageDialog getCompleteMessage(int id) {
+        return new MessageDialog(id);
+    }
 
-		default:
-			throw new IllegalArgumentException("Action " + this.action + " is unimplemented!");
-		}
-	}
+    @Override
+    public void handle(Supplier<Context> ctx) {
+        Context c = ctx.get();
+        final ServerPlayerEntity sender = c.getSender();
+        c.enqueueWork(sender != null ? () -> handleServer(sender) : this::handleClient);
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static void closeDialog(Minecraft mc) {
-		IMMOPlayer.get(mc.player).setCurrentMMODialog(null);
-		mc.displayGuiScreen(null);
-	}
+    public void handleServer(ServerPlayerEntity p) {
+        switch (this.action) {
+            case ACTION_CLOSE:
+                IMMOPlayer.get(p).setCurrentMMODialog(null);
+                break;
+            case ACTION_COMPLETE:
+                MinecraftForge.EVENT_BUS.post(new DialogCompleteEvent(p, this.id));
+                break;
 
-	@OnlyIn(Dist.CLIENT)
-	public static void openDialog(Minecraft mc, Dialog dialog) {
-		IMMOPlayer.get(mc.player).setCurrentMMODialog(dialog);
-		mc.displayGuiScreen(new DialogScreen<>(dialog));
-	}
+            default:
+                throw new IllegalStateException("Action " + this.action + " is unimplemented!");
+        }
+    }
 
-	public static class Serializer implements IMessageSerializer<MessageDialog> {
+    @OnlyIn(Dist.CLIENT)
+    public void handleClient() {
+        Minecraft mc = Minecraft.getInstance();
+        switch (this.action) {
+            case ACTION_OPEN:
+                World w = mc.world;
+                openDialog(mc, new Dialog(id, w.getEntityByID(this.entityId), this.data).setDismissable(this.dismissable));
+                break;
+            case ACTION_CLOSE:
+                closeDialog(mc);
+                break;
 
-		@Override
-		public void encode(MessageDialog message, PacketBuffer buffer) {
-			buffer.writeByte(message.action);
+            default:
+                throw new IllegalArgumentException("Action " + this.action + " is unimplemented!");
+        }
+    }
 
-			switch (message.action) {
-			case ACTION_OPEN:
-				buffer.writeInt(message.id);
-				buffer.writeInt(message.entityId);
+    @OnlyIn(Dist.CLIENT)
+    public static void closeDialog(Minecraft mc) {
+        IMMOPlayer.get(mc.player).setCurrentMMODialog(null);
+        mc.displayGuiScreen(null);
+    }
 
-				List<DialogFragment> structure = message.data.getStructure();
-				buffer.writeInt(structure.size());
-				structure.forEach(f -> DialogFragment.Serializer.serialize(f, buffer));
+    @OnlyIn(Dist.CLIENT)
+    public static void openDialog(Minecraft mc, Dialog dialog) {
+        IMMOPlayer.get(mc.player).setCurrentMMODialog(dialog);
+        mc.displayGuiScreen(new DialogScreen<>(dialog));
+    }
 
-				buffer.writeBoolean(message.dismissable);				
-				break;
-			case ACTION_CLOSE:
-				break;
-			case ACTION_COMPLETE:
-				buffer.writeInt(message.id);
-				break;
+    public static class Serializer implements IMessageSerializer<MessageDialog> {
 
-			default:
-				throw new IllegalStateException("Action " + message.action + " is unimplemented!");
-			}
-		}
+        @Override
+        public void encode(MessageDialog message, PacketBuffer buffer) {
+            buffer.writeByte(message.action);
 
-		@Override
-		public MessageDialog decode(PacketBuffer buffer) {
-			byte action = buffer.readByte();
-			
-			switch (action) {
-			case ACTION_OPEN:
-				int id = buffer.readInt();
-				int entityId = buffer.readInt();
+            switch (message.action) {
+                case ACTION_OPEN:
+                    buffer.writeInt(message.id);
+                    buffer.writeInt(message.entityId);
 
-				List<DialogFragment> structure = new ArrayList<>();
-				int size = buffer.readInt();
-				for (int i = 0; i < size; i++) 
-					structure.add(DialogFragment.Serializer.deserialize(buffer));
-				DialogData data = new DialogData(structure);
+                    List<DialogFragment> structure = message.data.getStructure();
+                    buffer.writeInt(structure.size());
+                    structure.forEach(f -> DialogFragment.Serializer.serialize(f, buffer));
 
-				boolean dismissable = buffer.readBoolean();
+                    buffer.writeBoolean(message.dismissable);
+                    break;
+                case ACTION_CLOSE:
+                    break;
+                case ACTION_COMPLETE:
+                    buffer.writeInt(message.id);
+                    break;
 
-				return new MessageDialog(id, entityId, data, dismissable);
-			case ACTION_CLOSE:
-				return new MessageDialog(ACTION_CLOSE);
-			case ACTION_COMPLETE:
-				int completeId = buffer.readInt();
-				return new MessageDialog(completeId);
+                default:
+                    throw new IllegalStateException("Action " + message.action + " is unimplemented!");
+            }
+        }
 
-			default:
-				throw new IllegalStateException("Action " + action + " is unimplemented!");
-			}
-		}
+        @Override
+        public MessageDialog decode(PacketBuffer buffer) {
+            byte action = buffer.readByte();
 
-	}
+            switch (action) {
+                case ACTION_OPEN:
+                    int id = buffer.readInt();
+                    int entityId = buffer.readInt();
 
+                    List<DialogFragment> structure = new ArrayList<>();
+                    int size = buffer.readInt();
+                    for (int i = 0; i < size; i++)
+                        structure.add(DialogFragment.Serializer.deserialize(buffer));
+                    DialogData data = new DialogData(structure);
+
+                    boolean dismissable = buffer.readBoolean();
+
+                    return new MessageDialog(id, entityId, data, dismissable);
+                case ACTION_CLOSE:
+                    return new MessageDialog(ACTION_CLOSE);
+                case ACTION_COMPLETE:
+                    int completeId = buffer.readInt();
+                    return new MessageDialog(completeId);
+
+                default:
+                    throw new IllegalStateException("Action " + action + " is unimplemented!");
+            }
+        }
+    }
 }

@@ -163,7 +163,6 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
         default ITextComponent getName(T entity) {
             return entity.hasCustomName() ? entity.getCustomName() : entity.getType().getName();
         }
-
     }
 
     static {
@@ -187,5 +186,4 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
             }
         });
     }
-
 }

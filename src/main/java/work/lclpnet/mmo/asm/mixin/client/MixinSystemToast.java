@@ -47,5 +47,4 @@ public class MixinSystemToast {
         cir.setReturnValue(delta - this.firstDrawTime < 5000L ? IToast.Visibility.SHOW : IToast.Visibility.HIDE);
         cir.cancel();
     }
-
 }

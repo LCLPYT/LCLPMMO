@@ -8,5 +8,4 @@ public class RaceBeastTamer extends MMORace {
     public RaceBeastTamer() {
         super("beast_tamer", new TranslationTextComponent("mmo.race.beast_tamer.title"));
     }
-
 }

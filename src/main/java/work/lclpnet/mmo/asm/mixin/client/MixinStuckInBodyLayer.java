@@ -47,5 +47,4 @@ public class MixinStuckInBodyLayer {
             ci.cancel();
         }
     }
-
 }

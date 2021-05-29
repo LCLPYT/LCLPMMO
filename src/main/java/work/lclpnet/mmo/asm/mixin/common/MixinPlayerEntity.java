@@ -153,5 +153,4 @@ public class MixinPlayerEntity implements IMMOUser, IMMOPlayer {
     private void closeMMODialogOnClient() {
         MessageDialog.closeDialog(Minecraft.getInstance());
     }
-
 }

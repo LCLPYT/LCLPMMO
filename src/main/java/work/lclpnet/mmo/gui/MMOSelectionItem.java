@@ -24,5 +24,4 @@ public interface MMOSelectionItem {
     default ITextComponent getToolTip() {
         return null;
     }
-
 }

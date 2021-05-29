@@ -268,5 +268,4 @@ public class MusicSystem {
     public static void playDownloaded(String file, Consumer<ITextComponent> feedback) {
         play(getDownloadedMusicFile(file), feedback);
     }
-
 }

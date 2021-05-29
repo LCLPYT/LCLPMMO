@@ -35,5 +35,4 @@ public class RaceSelectionScreen extends GenericSelectionScreen<MMORace> {
     public CharacterCreatorScreen getCharacterCreatorScreen() {
         return (CharacterCreatorScreen) this.prevScreen;
     }
-
 }

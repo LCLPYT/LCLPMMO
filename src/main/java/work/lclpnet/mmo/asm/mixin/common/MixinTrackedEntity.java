@@ -27,5 +27,4 @@ public class MixinTrackedEntity {
         if (trackedEntity instanceof ILimitTracking && !((ILimitTracking) trackedEntity).shouldBeTrackedBy(p))
             ci.cancel();
     }
-
 }

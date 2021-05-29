@@ -1,16 +1,9 @@
 package work.lclpnet.mmo.client.render.model;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.AnimationProcessor;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.entity.FallenKnightEntity;
-
-import javax.annotation.Nullable;
 
 public class FallenKnightModel extends AnimatedGeoModel<FallenKnightEntity> {
 
@@ -53,5 +46,4 @@ public class FallenKnightModel extends AnimatedGeoModel<FallenKnightEntity> {
         leftLeg.setRotationX(MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * modLimbSwingAmount);
     }
      */
-
 }

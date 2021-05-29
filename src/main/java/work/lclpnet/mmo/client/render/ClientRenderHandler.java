@@ -47,11 +47,10 @@ public class ClientRenderHandler {
     @Nullable
     public static MMOPlayerRenderer getPlayerRenderer(AbstractClientPlayerEntity player) {
         MMOCharacter mmoCharacter = IMMOUser.getMMOUser(player).getMMOCharacter();
-        if(mmoCharacter == null) return null;
+        if (mmoCharacter == null) return null;
 
         MMORace r = mmoCharacter.getRace();
-        if(Races.HUMAN.equals(r)) return humanRenderers.get(player.getSkinType());
+        if (Races.HUMAN.equals(r)) return humanRenderers.get(player.getSkinType());
         else return playerRenderers.get(r);
     }
-
 }

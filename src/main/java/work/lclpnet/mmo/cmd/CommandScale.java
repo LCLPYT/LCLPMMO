@@ -100,5 +100,4 @@ public class CommandScale extends CommandBase {
 
         return 0;
     }
-
 }

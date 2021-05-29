@@ -8,5 +8,4 @@ public class RaceHalfGolem extends MMORace {
     public RaceHalfGolem() {
         super("half_golem", new TranslationTextComponent("mmo.race.half_golem.title"));
     }
-
 }

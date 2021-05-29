@@ -76,5 +76,4 @@ public class SporeParticle extends SpriteTexturedParticle {
             return new SporeParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }
-
 }

@@ -29,5 +29,4 @@ public class MixinParrotVariantLayerDev {
         MMORace race = MMORace.getRaceFromPlayer(playerEntityIn);
         if (race != null) race.doParrotTranslation(matrixStackIn);
     }
-
 }

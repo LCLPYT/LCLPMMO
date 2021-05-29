@@ -10,37 +10,34 @@ import net.minecraftforge.eventbus.api.Cancelable;
 @Cancelable
 public class GlassBottleEvent extends PlayerBlockEvent {
 
-	protected ItemStack item;
-	
-	protected GlassBottleEvent(IWorld world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack item) {
-		super(world, pos, state, player);
-		this.item = item;
-	}
-	
-	public ItemStack getItem() {
-		return item;
-	}
-	
-	public void setItem(ItemStack item) {
-		this.item = item;
-	}
-	
-	@Cancelable
-	public static class Fill extends GlassBottleEvent {
+    protected ItemStack item;
 
-		public Fill(IWorld world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack item) {
-			super(world, pos, state, player, item);
-		}
-		
-	}
-	
-	@Cancelable
-	public static class Empty extends GlassBottleEvent {
+    protected GlassBottleEvent(IWorld world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack item) {
+        super(world, pos, state, player);
+        this.item = item;
+    }
 
-		public Empty(IWorld world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack item) {
-			super(world, pos, state, player, item);
-		}
-		
-	}
-	
+    public ItemStack getItem() {
+        return item;
+    }
+
+    public void setItem(ItemStack item) {
+        this.item = item;
+    }
+
+    @Cancelable
+    public static class Fill extends GlassBottleEvent {
+
+        public Fill(IWorld world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack item) {
+            super(world, pos, state, player, item);
+        }
+    }
+
+    @Cancelable
+    public static class Empty extends GlassBottleEvent {
+
+        public Empty(IWorld world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack item) {
+            super(world, pos, state, player, item);
+        }
+    }
 }

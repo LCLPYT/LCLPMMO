@@ -37,5 +37,4 @@ public class MusicArgumentType implements ArgumentType<String> {
     public static MusicArgumentType music() {
         return new MusicArgumentType();
     }
-
 }

@@ -77,5 +77,4 @@ public class MixinEntity implements IMMOEntity<Entity> {
         return clickListeners.values().stream()
                 .anyMatch(consumer -> consumer.onClick((Entity) (Object) this, clicker));
     }
-
 }

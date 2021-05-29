@@ -128,5 +128,4 @@ public class LCLPNetwork {
             if (FMLEnvironment.dist == Dist.CLIENT) User.reloadUser(user, callback);
         }));
     }
-
 }

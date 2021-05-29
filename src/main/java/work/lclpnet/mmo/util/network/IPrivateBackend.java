@@ -12,5 +12,4 @@ public interface IPrivateBackend {
             return null;
         }
     };
-
 }

@@ -59,5 +59,4 @@ public abstract class EditableGenericSelectionScreen<T extends MMOSelectionItem>
     public abstract void deleteEntry(T elem);
 
     public abstract void copyEntry(T elem);
-
 }

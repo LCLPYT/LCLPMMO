@@ -16,44 +16,42 @@ import java.util.function.Supplier;
 
 public class MessageSendMCLinkToken implements IMessage {
 
-	private static final Map<Context, ServerLoginNetHandler> handlers = new HashMap<>();
+    private static final Map<Context, ServerLoginNetHandler> handlers = new HashMap<>();
 
-	public static void storeLoginHandler(Context ctx, ServerLoginNetHandler handler) {
-		handlers.put(ctx, handler);
-	}
+    public static void storeLoginHandler(Context ctx, ServerLoginNetHandler handler) {
+        handlers.put(ctx, handler);
+    }
 
-	private final String token;
+    private final String token;
 
-	public MessageSendMCLinkToken(String token) {
-		this.token = token;
-	}
+    public MessageSendMCLinkToken(String token) {
+        this.token = token;
+    }
 
-	@Override
-	public void handle(Supplier<Context> ctx) {
-		if(FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
+    @Override
+    public void handle(Supplier<Context> ctx) {
+        if (FMLEnvironment.dist != Dist.DEDICATED_SERVER) return;
 
-		final ServerLoginNetHandler handler = handlers.remove(ctx.get());
-		if(handler == null) throw new IllegalStateException("Sender might not be null!");
+        final ServerLoginNetHandler handler = handlers.remove(ctx.get());
+        if (handler == null) throw new IllegalStateException("Sender might not be null!");
 
-		MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(handler, this.token));
-	}
+        MinecraftForge.EVENT_BUS.post(new MCLinkTokenReceivedEvent(handler, this.token));
+    }
 
-	public static class Serializer implements IMessageSerializer<MessageSendMCLinkToken> {
+    public static class Serializer implements IMessageSerializer<MessageSendMCLinkToken> {
 
-		@Override
-		public void encode(MessageSendMCLinkToken message, PacketBuffer pb) {
-			boolean nonNull = message.token != null;
-			pb.writeBoolean(nonNull);
-			if(nonNull) pb.writeString(message.token, 36);
-		}
+        @Override
+        public void encode(MessageSendMCLinkToken message, PacketBuffer pb) {
+            boolean nonNull = message.token != null;
+            pb.writeBoolean(nonNull);
+            if (nonNull) pb.writeString(message.token, 36);
+        }
 
-		@Override
-		public MessageSendMCLinkToken decode(PacketBuffer buffer) {
-			boolean nonNull = buffer.readBoolean();
-			String token = nonNull ? buffer.readString(36) : null;
-			return new MessageSendMCLinkToken(token);
-		}
-
-	}
-
+        @Override
+        public MessageSendMCLinkToken decode(PacketBuffer buffer) {
+            boolean nonNull = buffer.readBoolean();
+            String token = nonNull ? buffer.readString(36) : null;
+            return new MessageSendMCLinkToken(token);
+        }
+    }
 }

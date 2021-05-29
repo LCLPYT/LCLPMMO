@@ -48,6 +48,5 @@ public class MMOItems {
         public ItemStack createIcon() {
             return new ItemStack(MMOBlocks.GLASS_BOTTLE);
         }
-
     }
 }

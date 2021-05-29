@@ -8,5 +8,4 @@ public class RaceLizardman extends MMORace {
     public RaceLizardman() {
         super("lizardman", new TranslationTextComponent("mmo.race.lizardman.title"));
     }
-
 }

@@ -11,5 +11,4 @@ public interface GenericSelectionSetup<T extends MMOSelectionItem> {
     void setTooltip(List<IReorderingProcessor> tooltip);
 
     void onSelected(T selected);
-
 }

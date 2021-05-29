@@ -13,15 +13,14 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class RenderLayerHandler {
 
-	private static final Map<Block, RenderType> types = new HashMap<>();
-	
-	static {
-		final RenderType translucent = RenderType.getTranslucent();
-		types.put(MMOBlocks.GLASS_BOTTLE, translucent);
-	}
-	
-	public static void init() {
-		types.forEach(RenderTypeLookup::setRenderLayer);
-	}
-	
+    private static final Map<Block, RenderType> types = new HashMap<>();
+
+    static {
+        final RenderType translucent = RenderType.getTranslucent();
+        types.put(MMOBlocks.GLASS_BOTTLE, translucent);
+    }
+
+    public static void init() {
+        types.forEach(RenderTypeLookup::setRenderLayer);
+    }
 }

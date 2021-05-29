@@ -36,5 +36,4 @@ public class MixinPlayerList {
         mmoNew.setMMOCharacter(mmoOld.getMMOCharacter());
         mmoNew.setUser(mmoOld.getUser());
     }
-
 }

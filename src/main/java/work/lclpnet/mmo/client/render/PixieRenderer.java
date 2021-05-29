@@ -10,19 +10,18 @@ import work.lclpnet.mmo.client.render.model.PixieModel;
 import work.lclpnet.mmo.entity.PixieEntity;
 
 public class PixieRenderer extends MobRenderer<PixieEntity, PixieModel> {
-	
-	public PixieRenderer(EntityRendererManager renderManagerIn) {
-		super(renderManagerIn, new PixieModel(), 0.15F);
-	}
 
-	@Override
-	public ResourceLocation getEntityTexture(PixieEntity entity) {
-		return new ResourceLocation(LCLPMMO.MODID, "textures/entity/pixie.png");
-	}
+    public PixieRenderer(EntityRendererManager renderManagerIn) {
+        super(renderManagerIn, new PixieModel(), 0.15F);
+    }
 
-	@Override
-	public void render(PixieEntity entity, float f1, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light) {
-		super.render(entity, f1, partialTicks, matrixStack, renderTypeBuffer, light);
-	}
-	
+    @Override
+    public ResourceLocation getEntityTexture(PixieEntity entity) {
+        return new ResourceLocation(LCLPMMO.MODID, "textures/entity/pixie.png");
+    }
+
+    @Override
+    public void render(PixieEntity entity, float f1, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light) {
+        super.render(entity, f1, partialTicks, matrixStack, renderTypeBuffer, light);
+    }
 }

@@ -21,5 +21,4 @@ public class MixinGameSettings {
     public void onLoadOptions(CallbackInfo ci) {
         this.gamma = MathHelper.clamp(this.gamma, 0D, 1D);
     }
-
 }

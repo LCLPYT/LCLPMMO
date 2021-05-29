@@ -152,5 +152,4 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
             else callback.accept(characters);
         });
     }
-
 }

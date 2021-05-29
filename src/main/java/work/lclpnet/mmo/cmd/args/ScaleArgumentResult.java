@@ -74,5 +74,4 @@ public class ScaleArgumentResult {
         i = 31 * i + this.y.hashCode();
         return i;
     }
-
 }

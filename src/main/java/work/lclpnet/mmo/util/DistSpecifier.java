@@ -22,5 +22,4 @@ public enum DistSpecifier {
         else if (FMLEnvironment.dist == null) return true;
         else return Arrays.asList(this.matches).contains(FMLEnvironment.dist);
     }
-
 }

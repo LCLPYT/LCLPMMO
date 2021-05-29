@@ -65,5 +65,4 @@ public class MMOBlocks {
         BLOCK_ITEMS.forEach(event.getRegistry()::register);
         BLOCK_ITEMS.clear();
     }
-
 }

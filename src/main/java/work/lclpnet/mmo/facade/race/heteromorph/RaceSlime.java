@@ -8,5 +8,4 @@ public class RaceSlime extends MMORace {
     public RaceSlime() {
         super("slime", new TranslationTextComponent("mmo.race.slime.title"));
     }
-
 }

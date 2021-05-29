@@ -44,5 +44,4 @@ public class MMOHorizontalWaterloggableBlock extends MMOWaterloggableBlock {
         super.fillStateContainer(builder);
         builder.add(DIRECTION);
     }
-
 }

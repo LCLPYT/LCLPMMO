@@ -34,5 +34,4 @@ public class DialogWrapper {
     public void next() {
         setStep(step + 1);
     }
-
 }

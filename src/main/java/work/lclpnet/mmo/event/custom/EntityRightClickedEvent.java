@@ -12,21 +12,20 @@ import net.minecraftforge.eventbus.api.Cancelable;
 @Cancelable
 public class EntityRightClickedEvent extends PlayerEvent {
 
-	private final Entity clicked;
-	private final boolean client;
-	
-	public EntityRightClickedEvent(PlayerEntity player, Entity clicked, boolean client) {
-		super(player);
-		this.clicked = clicked;
-		this.client = client;
-	}
-	
-	public Entity getClicked() {
-		return clicked;
-	}
-	
-	public boolean isClient() {
-		return client;
-	}
+    private final Entity clicked;
+    private final boolean client;
 
+    public EntityRightClickedEvent(PlayerEntity player, Entity clicked, boolean client) {
+        super(player);
+        this.clicked = clicked;
+        this.client = client;
+    }
+
+    public Entity getClicked() {
+        return clicked;
+    }
+
+    public boolean isClient() {
+        return client;
+    }
 }

@@ -133,5 +133,4 @@ public class CharacterCreatorScreen extends MMOScreen {
         this.selectedRace = selected;
         this.validate();
     }
-
 }

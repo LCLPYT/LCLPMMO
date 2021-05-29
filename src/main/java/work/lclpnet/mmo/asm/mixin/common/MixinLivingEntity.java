@@ -76,5 +76,4 @@ public class MixinLivingEntity {
         cir.setReturnValue(cir.getReturnValue() * scaleHeight);
         cir.cancel();
     }
-
 }

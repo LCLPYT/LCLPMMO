@@ -294,7 +294,5 @@ public class MMOMainScreen extends MMOScreen {
             this.color = color;
             this.hoverColor = hoverColor;
         }
-
     }
-
 }

@@ -55,5 +55,4 @@ public class MMOWaterloggableBlock extends MMOBlock implements IWaterLoggable {
 
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
-
 }

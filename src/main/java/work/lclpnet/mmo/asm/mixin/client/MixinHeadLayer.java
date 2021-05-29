@@ -24,5 +24,4 @@ public class MixinHeadLayer {
         MMORace race = MMORace.getRaceFromPlayer(entitylivingbaseIn);
         if (race != null) race.doHeadItemTranslation(matrixStackIn);
     }
-
 }

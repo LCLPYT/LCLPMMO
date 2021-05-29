@@ -21,5 +21,4 @@ public class MMOGson {
                 .registerTypeAdapter(MMOCharacter.class, new MMOCharacter.Adapter())
                 .registerTypeAdapter(Quest.class, new Quest.Adapter());
     }
-
 }

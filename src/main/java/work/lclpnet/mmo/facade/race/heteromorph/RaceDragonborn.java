@@ -8,5 +8,4 @@ public class RaceDragonborn extends MMORace {
     public RaceDragonborn() {
         super("dragonborn", new TranslationTextComponent("mmo.race.dragonborn.title"));
     }
-
 }

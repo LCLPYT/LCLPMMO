@@ -75,5 +75,4 @@ public class FancyButton extends Button {
                 ? (this.isHovered() ? hoverFontColor : fontColor)
                 : 10526880; // White : Light Grey
     }
-
 }

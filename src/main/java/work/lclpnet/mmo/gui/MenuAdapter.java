@@ -32,5 +32,4 @@ public class MenuAdapter<T, P> {
         lookup.put(guiScale, value);
         return this;
     }
-
 }
