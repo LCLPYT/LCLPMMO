@@ -26,8 +26,6 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
     @OnlyIn(Dist.CLIENT)
     protected AnimationFactory factory;
 
-    protected float eyeHeight = 4.35F;
-
     public FallenKnightEntity(World worldIn) {
         super(MMOEntities.FALLEN_KNIGHT, worldIn);
         this.ignoreFrustumCheck = true;
@@ -62,14 +60,8 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
         return PlayState.CONTINUE;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public float getEyeHeight(Pose pose) {
-        return this.eyeHeight;
-    }
-
     @Override
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.eyeHeight;
+        return 4.35F;
     }
 }
