@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class DynamicData extends JsonSerializeable {
+public class DynamicData extends JsonSerializable {
 
     public String encryptToString() {
         String json = this.toString();

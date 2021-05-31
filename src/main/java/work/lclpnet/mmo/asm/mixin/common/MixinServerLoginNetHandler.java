@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.network.HTTPResponse;
@@ -126,7 +126,7 @@ public class MixinServerLoginNetHandler {
                 handler.disconnect(new StringTextComponent("Internal server error."));
                 System.err.println(usrResp);
             } else {
-                JsonObject obj = JsonSerializeable.parse(usrResp.getRawResponse(), JsonObject.class);
+                JsonObject obj = JsonSerializable.parse(usrResp.getRawResponse(), JsonObject.class);
                 JsonElement idElem = obj.get("user_id");
                 if (idElem == null) {
                     handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_linked"));

@@ -1,6 +1,6 @@
 package work.lclpnet.mmo.facade.quest;
 
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,6 @@ public class QuestBook {
 
     @Override
     public String toString() {
-        return JsonSerializeable.stringify(this);
+        return JsonSerializable.stringify(this);
     }
 }

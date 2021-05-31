@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.User;
 
 import javax.annotation.Nullable;
@@ -42,7 +42,7 @@ public class LCLPNetwork {
         sendRequest("api/auth/user", "GET", null, resp -> {
             online = !resp.isNoConnection();
             if (resp.getResponseCode() == 200) {
-                User user = JsonSerializeable.parse(resp.getRawResponse(), User.class);
+                User user = JsonSerializable.parse(resp.getRawResponse(), User.class);
                 LOGGER.info("Logged in as {} (#{}).", user.getName(), user.getId());
                 if (FMLEnvironment.dist == Dist.CLIENT) callback.accept(user);
                 else callback.accept(null);

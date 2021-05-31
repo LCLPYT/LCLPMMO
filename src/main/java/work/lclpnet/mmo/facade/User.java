@@ -8,7 +8,7 @@ import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.network.HTTPResponse;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
-public class User extends JsonSerializeable {
+public class User extends JsonSerializable {
 
     private int id;
     private String name;

@@ -5,7 +5,7 @@ import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 import java.util.function.Consumer;
 
-public abstract class NetworkSaveable extends JsonSerializeable {
+public abstract class NetworkSaveable extends JsonSerializable {
 
     protected abstract String getSavePath();
 

@@ -10,7 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
@@ -79,7 +79,7 @@ public class EditCharacterScreen extends MMOScreen {
                 } else {
                     String s = response.getJsonStatusMessage();
                     if (s != null && s.equalsIgnoreCase("Name cannot be changed yet.")) {
-                        String days = JsonSerializeable.parse(response.getRawError(), JsonObject.class)
+                        String days = JsonSerializable.parse(response.getRawError(), JsonObject.class)
                                 .get("extra")
                                 .getAsString()
                                 .split(" ")[0];

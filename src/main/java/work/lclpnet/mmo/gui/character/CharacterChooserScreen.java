@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.EditableGenericSelectionScreen;
@@ -141,10 +141,10 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
 
             List<MMOCharacter> characters = new ArrayList<>();
 
-            JsonArray arr = JsonSerializeable.parse(response.getRawResponse(), JsonArray.class);
+            JsonArray arr = JsonSerializable.parse(response.getRawResponse(), JsonArray.class);
             arr.forEach(e -> {
                 if (e.isJsonObject())
-                    characters.add(JsonSerializeable.cast(e, MMOCharacter.class));
+                    characters.add(JsonSerializable.cast(e, MMOCharacter.class));
             });
 
             if (User.getSelectedCharacter() == null || updateActiveCharacter)

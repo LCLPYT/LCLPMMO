@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.IOUtils;
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,7 +75,7 @@ public class HTTPResponse {
 
         JsonObject json;
         try {
-            json = JsonSerializeable.parse(s, JsonObject.class);
+            json = JsonSerializable.parse(s, JsonObject.class);
         } catch (JsonSyntaxException e) {
             return null;
         }
@@ -102,7 +102,7 @@ public class HTTPResponse {
 
         JsonObject json;
         try {
-            json = JsonSerializeable.parse(rawError, JsonObject.class);
+            json = JsonSerializable.parse(rawError, JsonObject.class);
         } catch (JsonSyntaxException e) {
             return null;
         }
@@ -132,10 +132,10 @@ public class HTTPResponse {
     }
 
     public <T> T getExtra(Class<T> clazz) {
-        JsonObject obj = JsonSerializeable.parse(rawResponse, JsonObject.class);
+        JsonObject obj = JsonSerializable.parse(rawResponse, JsonObject.class);
         JsonElement elem = obj.get("extra");
         if (elem == null || elem.isJsonNull()) return null;
-        else return JsonSerializeable.cast(elem.getAsJsonObject(), clazz);
+        else return JsonSerializable.cast(elem.getAsJsonObject(), clazz);
     }
 
     @Override

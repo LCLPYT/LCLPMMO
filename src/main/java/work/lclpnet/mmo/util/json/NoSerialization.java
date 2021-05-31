@@ -2,7 +2,7 @@ package work.lclpnet.mmo.util.json;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
-import work.lclpnet.mmo.facade.JsonSerializeable;
+import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.util.DistSpecifier;
 
 import java.lang.annotation.Retention;
@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotate a field with this annotation to make it invisible in the JSON tree created with {@link MMOGson}.
- * The {@link JsonSerializeable} type also makes use of it.<br>
+ * The {@link JsonSerializable} type also makes use of it.<br>
  * <br>
  * You may also specify a {@link DistSpecifier} in which this annotation should work and in which not (see {@link #in()}).
  *

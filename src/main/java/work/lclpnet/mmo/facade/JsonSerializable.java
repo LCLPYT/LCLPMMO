@@ -8,7 +8,7 @@ import work.lclpnet.mmo.util.json.NoSerialization;
 
 import static work.lclpnet.mmo.util.json.MMOGson.gson;
 
-public class JsonSerializeable {
+public class JsonSerializable {
 
     @Override
     public String toString() {

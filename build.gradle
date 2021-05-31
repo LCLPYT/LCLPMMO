@@ -147,6 +147,7 @@ dependencies {
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.property('mc_version')}:${project.property('geckolib_version')}")
     implementation fg.deobf("curse.maven:reauth-237701:3105779")
 
+    implementation 'work.lclpnet:lclpnetwork-api:1.2.0'
     compile 'club.minnced:java-discord-rpc:2.0.2'
 }
 
