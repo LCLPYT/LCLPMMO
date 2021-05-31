@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.User;
 
 import javax.annotation.Nullable;
@@ -25,7 +24,6 @@ public class LCLPNetwork {
 
     private static String accessToken = null;
     private static boolean online = false;
-    public static IPrivateBackend BACKEND = IPrivateBackend.NONE;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void setAccessToken(String accessToken) {

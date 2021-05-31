@@ -14,7 +14,7 @@ public class DynamicData extends JsonSerializable {
 
         try (ByteArrayInputStream in = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
              ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            MMOUtils.Data.uncompressedToGzBase64(in, out);
+            MMOUtils.Data.encodeGzBase64(in, out);
             return new String(out.toByteArray(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
@@ -26,7 +26,7 @@ public class DynamicData extends JsonSerializable {
         String json;
         try (ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
              ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            MMOUtils.Data.gzBase64ToUncompressed(in, out);
+            MMOUtils.Data.decodeGzBase64(in, out);
             json = new String(out.toByteArray(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();

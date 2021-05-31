@@ -2,35 +2,34 @@ package work.lclpnet.mmo.facade.character;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import work.lclpnet.mmo.facade.NetworkSaveable;
+import work.lclpnet.lclpnetwork.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
-import work.lclpnet.mmo.util.DistSpecifier;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
-import work.lclpnet.mmo.util.json.NoSerialization;
-import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
-public class MMOCharacter extends NetworkSaveable implements MMOSelectionItem {
+public class MMOCharacter extends JsonSerializable implements MMOSelectionItem {
 
-    @NoSerialization
+    @Expose(serialize = false)
     public Integer id = null;
-    @NoSerialization
+    @Expose(serialize = false)
     public Integer owner = null;
     protected transient String unlocalizedName;
+    @Expose
     protected final String name;
+    @Expose
     protected final MMORace race;
-    @NoSerialization(in = DistSpecifier.CLIENT)
+    @Expose
     private final DynamicCharacterData data;
 
     public MMOCharacter(String name, MMORace race, DynamicCharacterData data) {
@@ -64,6 +63,7 @@ public class MMOCharacter extends NetworkSaveable implements MMOSelectionItem {
 
     @Override
     public String getUnlocalizedName() {
+        if(unlocalizedName == null) generateUnlocalizedName();
         return unlocalizedName;
     }
 
@@ -75,24 +75,6 @@ public class MMOCharacter extends NetworkSaveable implements MMOSelectionItem {
     @Override
     public ResourceLocation getIcon() {
         return this.race.getIcon();
-    }
-
-    @Override
-    protected String getSavePath() {
-        return LCLPNetwork.BACKEND.getCharacterDataSavePath();
-    }
-
-    @Override
-    public void save(Consumer<Boolean> callback) {
-        if (this.id == null || this.data == null) {
-            callback.accept(false);
-            return;
-        }
-        JsonObject body = new JsonObject();
-        body.addProperty("characterId", this.id);
-        body.addProperty("data", this.data.encryptToString());
-
-        postSave(getSavePath(), body, callback);
     }
 
     public static class Adapter extends EasyTypeAdapter<MMOCharacter> {

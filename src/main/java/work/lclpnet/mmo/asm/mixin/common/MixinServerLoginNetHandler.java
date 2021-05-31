@@ -23,7 +23,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
-import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.util.network.HTTPResponse;

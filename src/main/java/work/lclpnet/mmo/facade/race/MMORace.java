@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.entity.IEntitySizeOverride;
-import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOSelectionItem;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;

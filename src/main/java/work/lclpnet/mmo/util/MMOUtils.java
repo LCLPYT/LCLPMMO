@@ -76,7 +76,7 @@ public class MMOUtils {
 
     public static class Data {
 
-        public static void uncompressedToGzBase64(InputStream uncompressedIn, OutputStream gzBase64Out) throws IOException {
+        public static void encodeGzBase64(InputStream uncompressedIn, OutputStream gzBase64Out) throws IOException {
             try (Base64OutputStream base64Out = new Base64OutputStream(gzBase64Out, true, 0, null);
                  GZIPOutputStream gzipOut = new GZIPOutputStream(base64Out)) {
                 byte[] buffer = new byte[1024];
@@ -86,7 +86,7 @@ public class MMOUtils {
             }
         }
 
-        public static void gzBase64ToUncompressed(InputStream gzBase64In, OutputStream uncompressedOut) throws IOException {
+        public static void decodeGzBase64(InputStream gzBase64In, OutputStream uncompressedOut) throws IOException {
             try (Base64InputStream base64In = new Base64InputStream(gzBase64In);
                  GZIPInputStream gzipIn = new GZIPInputStream(base64In)) {
                 byte[] buffer = new byte[1024];

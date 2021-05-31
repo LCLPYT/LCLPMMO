@@ -10,7 +10,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import work.lclpnet.mmo.facade.JsonSerializable;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
