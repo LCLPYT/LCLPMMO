@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -29,6 +30,8 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import work.lclpnet.mmo.util.MMODataSerializers;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
 
@@ -53,6 +56,22 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             factory = new AnimationFactory(this);
         }
+    }
+
+    public Vector3d getHomeLocation() {
+        return this.dataManager.get(HOME_LOCATION);
+    }
+
+    public void setHomeLocation(Vector3d location) {
+        this.dataManager.set(HOME_LOCATION, location);
+    }
+
+    public Float getHomeYaw() {
+        return this.dataManager.get(HOME_YAW);
+    }
+
+    public void setHomeYaw(Float yaw) {
+        this.dataManager.set(HOME_YAW, yaw);
     }
 
     public static AttributeModifierMap.MutableAttribute prepareAttributes() {
@@ -139,6 +158,37 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
             } else {
                 return this.creature.getAttackTarget() == null;
             }
+        }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+
+        Vector3d tar = this.getHomeLocation();
+        compound.putBoolean("HomeLocation", tar != null);
+        if (tar != null) {
+            compound.putDouble("HomeX", tar.x);
+            compound.putDouble("HomeY", tar.y);
+            compound.putDouble("HomeZ", tar.z);
+            compound.putFloat("HomeYaw", this.getHomeYaw());
+        }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+
+        if (compound.getBoolean("HomeLocation")) {
+            double tx = compound.getDouble("HomeX");
+            double ty = compound.getDouble("HomeY");
+            double tz = compound.getDouble("HomeZ");
+            this.setHomeLocation(new Vector3d(tx, ty, tz));
+
+            Float yaw = compound.getFloat("HomeYaw");
+            this.setHomeYaw(yaw);
         }
     }
 }
