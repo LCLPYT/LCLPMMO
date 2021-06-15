@@ -12,6 +12,9 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -25,8 +28,12 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import work.lclpnet.mmo.util.MMODataSerializers;
 
 public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
+
+    public static final DataParameter<Vector3d> HOME_LOCATION = EntityDataManager.createKey(FallenKnightEntity.class, MMODataSerializers.VECTOR_3D);
+    public static final DataParameter<Float> HOME_YAW = EntityDataManager.createKey(FallenKnightEntity.class, DataSerializers.FLOAT);
 
     /*  Client-Only Fields
     ! IMPORTANT !
@@ -57,10 +64,18 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
     }
 
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    protected void registerData() {
+        super.registerData();
+        this.dataManager.register(HOME_LOCATION, new Vector3d(-.5, 60, -.5));
+        this.dataManager.register(HOME_YAW, 0.0F);
+    }
+
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(5, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new FallenKnightReturnGoal((MobEntity) this.getEntity()));
+        this.goalSelector.addGoal(1, new FallenKnightReturnGoal((MobEntity) this.getEntity(), this));
         this.applyEntityAI();
     }
 
@@ -93,9 +108,11 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
     public static class FallenKnightReturnGoal extends Goal {
 
         private final MobEntity creature;
+        private final MonsterEntity creatureClass;
 
-        public FallenKnightReturnGoal(MobEntity entity) {
+        public FallenKnightReturnGoal(MobEntity entity, MonsterEntity fallenKnightEnitity) {
             creature = entity;
+            creatureClass = fallenKnightEnitity;
         }
 
         @Override
@@ -105,16 +122,18 @@ public class FallenKnightEntity extends MonsterEntity implements IAnimatable {
 
         @Override
         public void startExecuting() {
-            Path path = this.creature.getNavigator().pathfind(-0.5D, 60D, -0.50D, 0);
+            Vector3d home_loc = this.creatureClass.getDataManager().get(HOME_LOCATION);
+            Path path = this.creature.getNavigator().pathfind(home_loc.getX(), home_loc.getY(), home_loc.getZ(), 0);
             this.creature.getNavigator().setPath(path, 1);
         }
 
         @Override
         public boolean shouldContinueExecuting() {
             if (!this.creature.getNavigator().hasPath()) {
-                if (this.creature.getPositionVec().isWithinDistanceOf(new Vector3d(0D, 60D, 0D), 1)) {
-                    this.creature.setPosition(-.5D, 60D, -.5D);
-                    this.creature.setPositionAndRotation(-.5D, 60D, -.5D, 0.0F, 0.0F);
+                Vector3d home_loc = this.creatureClass.getDataManager().get(HOME_LOCATION);
+                Float home_yaw = this.creatureClass.getDataManager().get(HOME_YAW);
+                if (this.creature.getPositionVec().isWithinDistanceOf(home_loc, 1)) {
+                    this.creature.setPositionAndRotation(home_loc.getX(), home_loc.getY(), home_loc.getZ(), home_yaw, 0.0F);
                 }
                 return false;
             } else {
