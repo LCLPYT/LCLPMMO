@@ -9,6 +9,7 @@ import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.client.render.model.ElvenPlayerModel;
 import work.lclpnet.mmo.client.render.model.HumanPlayerModel;
 import work.lclpnet.mmo.client.render.model.VampirePlayerModel;
+import work.lclpnet.mmo.entity.EquesterEntity;
 import work.lclpnet.mmo.entity.MMOEntities;
 import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.facade.race.MMORace;
@@ -30,7 +31,7 @@ public class ClientRenderHandler {
         registerEntityRenderingHandler(MMOEntities.PIXIE, PixieRenderer::new);
         registerEntityRenderingHandler(MMOEntities.BOLETUS, BoletusRenderer::new);
         registerEntityRenderingHandler(MMOEntities.FALLEN_KNIGHT, FallenKnightRenderer::new);
-
+        registerEntityRenderingHandler(MMOEntities.EQUESTER, EquesterRenderer::new);
         registerPlayerModels();
     }
 
