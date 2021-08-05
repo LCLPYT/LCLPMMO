@@ -49,7 +49,7 @@ public class EquesterEntity extends MonsterEntity implements IAnimatable {
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 1.5D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 9.0D)
-                .createMutableAttribute(Attributes.ARMOR, 25.0D)
+                .createMutableAttribute(Attributes.ARMOR, 5.0D)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
     }
 
@@ -89,6 +89,6 @@ public class EquesterEntity extends MonsterEntity implements IAnimatable {
 
     @Override
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return 4.35F;
+        return 2.85F;
     }
 }

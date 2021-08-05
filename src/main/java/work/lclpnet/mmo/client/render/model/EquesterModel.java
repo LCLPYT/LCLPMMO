@@ -9,7 +9,7 @@ public class EquesterModel extends AnimatedGeoModel<EquesterEntity> {
 
     @Override
     public ResourceLocation getModelLocation(EquesterEntity equesterEntity) {
-        return new ResourceLocation(LCLPMMO.MODID, "geo/fallen_knight.geo.json");
+        return new ResourceLocation(LCLPMMO.MODID, "geo/equester.geo.json");
     }
 
     @Override
