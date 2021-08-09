@@ -30,7 +30,7 @@ public class ClientRenderHandler {
         registerEntityRenderingHandler(MMOEntities.PIXIE, PixieRenderer::new);
         registerEntityRenderingHandler(MMOEntities.BOLETUS, BoletusRenderer::new);
         registerEntityRenderingHandler(MMOEntities.FALLEN_KNIGHT, FallenKnightRenderer::new);
-
+        registerEntityRenderingHandler(MMOEntities.NPC, NPCRenderer::new);
         registerPlayerModels();
     }
 

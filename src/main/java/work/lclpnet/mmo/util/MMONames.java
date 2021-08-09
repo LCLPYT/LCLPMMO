@@ -28,7 +28,8 @@ public class MMONames {
 
         public static final String PIXIE = loc("pixie"),
                 BOLETUS = loc("boletus"),
-                FALLEN_KNIGHT = loc("fallen_knight");
+                FALLEN_KNIGHT = loc("fallen_knight"),
+                NPC = loc("npc");
     }
 
     public static class Sound {
