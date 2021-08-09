@@ -1,11 +1,12 @@
 package work.lclpnet.mmo.entity;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -70,7 +71,7 @@ public class NPCEntity extends MonsterEntity implements IAnimatable {
     public static AttributeModifierMap.MutableAttribute prepareAttributes() {
         return MonsterEntity.func_234295_eP_()
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 1.5D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 1.0D)
                 .createMutableAttribute(Attributes.ARMOR, 5.0D)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
@@ -86,16 +87,7 @@ public class NPCEntity extends MonsterEntity implements IAnimatable {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(5, new SwimGoal(this));
         this.goalSelector.addGoal(1, new NPCEntity.NPCGoToGoal((MobEntity) this.getEntity(), this));
-        this.goalSelector.addGoal(4, new FindWaterGoal((CreatureEntity) this.getEntity()));
-        this.applyEntityAI();
-    }
-
-    protected void applyEntityAI() {
-        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true));
     }
 
     @Override
@@ -154,6 +146,7 @@ public class NPCEntity extends MonsterEntity implements IAnimatable {
             }
         }
     }
+
 
     @Override
     @ParametersAreNonnullByDefault

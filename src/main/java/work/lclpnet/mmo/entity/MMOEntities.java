@@ -44,5 +44,6 @@ public class MMOEntities {
         event.put(PIXIE, PixieEntity.prepareAttributes().create());
         event.put(BOLETUS, BoletusEntity.prepareAttributes().create());
         event.put(FALLEN_KNIGHT, FallenKnightEntity.prepareAttributes().create());
+        event.put(NPC, NPCEntity.prepareAttributes().create());
     }
 }
