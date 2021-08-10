@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.entity;
 
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
@@ -9,9 +10,19 @@ import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.GuardianEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,11 +36,17 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.EnumSet;
+import java.util.Optional;
+import java.util.UUID;
 
 public class EquesterEntity extends WaterMobEntity implements IAnimatable {
 
 
     private static final EntityPredicate field_213810_bA = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().allowInvulnerable().setIgnoresLineOfSight();
+    private static final Ingredient breedingitems = Ingredient.fromItems(Items.TROPICAL_FISH, Items.COD, Items.SALMON);
+    private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(AbstractHorseEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(AbstractHorseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<Boolean> BABY = EntityDataManager.createKey(AgeableEntity.class, DataSerializers.BOOLEAN);
 
     /*  Client-Only Fields
     ! IMPORTANT !
@@ -37,9 +54,6 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
     */
     @OnlyIn(Dist.CLIENT)
     protected AnimationFactory factory;
-    @OnlyIn(Dist.CLIENT)
-    protected boolean attackAnimationEnabled,
-            shieldAnimationEnabled;
 
     public EquesterEntity(World worldIn) {
         super(MMOEntities.EQUESTER, worldIn);
@@ -61,7 +75,9 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
     @Override
     protected void registerData() {
         super.registerData();
-        //this.dataManager.register(HOME_LOCATION, new Vector3d(-.5, 60, -.5));
+        this.dataManager.register(STATUS, (byte) 0);
+        this.dataManager.register(OWNER_UNIQUE_ID, Optional.empty());
+        this.dataManager.register(BABY, false);
     }
 
     @Override
@@ -160,4 +176,84 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
             }
         }
     }
+
+    public ActionResultType getEntityInteractionResult(PlayerEntity playerIn, Hand hand) {
+        ItemStack itemstack = playerIn.getHeldItem(hand);
+        if (!this.isChild()) {
+            if (this.isBeingRidden()) {
+                return super.getEntityInteractionResult(playerIn, hand);
+            }
+        }
+
+        if (!itemstack.isEmpty()) {
+            if (this.isBreedingItem(itemstack)) {
+                return this.func_241395_b_(playerIn, itemstack);
+            }
+
+            ActionResultType actionresulttype = itemstack.interactWithEntity(playerIn, this, hand);
+            if (actionresulttype.isSuccessOrConsume()) {
+                return actionresulttype;
+            }
+        }
+
+        if (this.isChild()) {
+            return super.getEntityInteractionResult(playerIn, hand);
+        } else {
+            this.mountTo(playerIn);
+            return ActionResultType.func_233537_a_(this.world.isRemote);
+        }
+    }
+
+    protected void mountTo(PlayerEntity player) {
+        if (!this.world.isRemote) {
+            player.rotationYaw = this.rotationYaw;
+            player.rotationPitch = this.rotationPitch;
+            player.startRiding(this);
+        }
+    }
+
+    private boolean isBreedingItem(ItemStack itemstack) {
+        return breedingitems.test(itemstack);
+    }
+
+    public ActionResultType func_241395_b_(PlayerEntity player, ItemStack item) {
+        boolean flag = this.handleEating(item);
+        if (!player.abilities.isCreativeMode) {
+            item.shrink(1);
+        }
+
+        if (this.world.isRemote) {
+            return ActionResultType.CONSUME;
+        } else {
+            return flag ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        }
+    }
+
+    protected boolean handleEating(ItemStack stack) {
+        boolean flag = false;
+        float f = 0.0F;
+        int i = 0;
+        int j = 0;
+        Item item = stack.getItem();
+        if (item == Items.COD) {
+            f = 2.0F;
+            i = 20;
+            j = 3;
+        } else if (item == Items.TROPICAL_FISH) {
+            f = 1.0F;
+            i = 30;
+            j = 3;
+        } else if (item == Items.SALMON) {
+            f = 3.0F;
+            i = 60;
+            j = 3;
+        }
+
+        if (this.getHealth() < this.getMaxHealth() && f > 0.0F) {
+            this.heal(f);
+            flag = true;
+        }
+        return flag;
+    }
+
 }
