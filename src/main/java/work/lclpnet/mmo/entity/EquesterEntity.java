@@ -12,7 +12,6 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -114,69 +113,6 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
         return 2.85F;
     }
 
-    static class SwimWithPlayerGoal extends Goal {
-        private final EquesterEntity equester;
-        private final double speed;
-        private PlayerEntity targetPlayer;
-
-        SwimWithPlayerGoal(EquesterEntity equesterIn, double speedIn) {
-            this.equester = equesterIn;
-            this.speed = speedIn;
-            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        }
-
-        /**
-         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
-         * method as well.
-         */
-        public boolean shouldExecute() {
-            this.targetPlayer = this.equester.world.getClosestPlayer(EquesterEntity.field_213810_bA, this.equester);
-            if (this.targetPlayer == null) {
-                return false;
-            } else {
-                return this.targetPlayer.isSwimming() && this.equester.getAttackTarget() != this.targetPlayer;
-            }
-        }
-
-        /**
-         * Returns whether an in-progress EntityAIBase should continue executing
-         */
-        public boolean shouldContinueExecuting() {
-            return this.targetPlayer != null && this.targetPlayer.isSwimming() && this.equester.getDistanceSq(this.targetPlayer) < 256.0D;
-        }
-
-        /**
-         * Execute a one shot task or start executing a continuous task
-         */
-        public void startExecuting() {
-            this.targetPlayer.addPotionEffect(new EffectInstance(Effects.DOLPHINS_GRACE, 100));
-        }
-
-        /**
-         * Reset the task's internal state. Called when this task is interrupted by another one
-         */
-        public void resetTask() {
-            this.targetPlayer = null;
-            this.equester.getNavigator().clearPath();
-        }
-
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
-        public void tick() {
-            this.equester.getLookController().setLookPositionWithEntity(this.targetPlayer, (float) (this.equester.getHorizontalFaceSpeed() + 20), (float) this.equester.getVerticalFaceSpeed());
-            if (this.equester.getDistanceSq(this.targetPlayer) < 6.25D) {
-                this.equester.getNavigator().clearPath();
-            } else {
-                this.equester.getNavigator().tryMoveToEntityLiving(this.targetPlayer, this.speed);
-            }
-
-            if (this.targetPlayer.isSwimming() && this.targetPlayer.world.rand.nextInt(6) == 0) {
-                this.targetPlayer.addPotionEffect(new EffectInstance(Effects.DOLPHINS_GRACE, 100));
-            }
-        }
-    }
-
     public ActionResultType getEntityInteractionResult(PlayerEntity playerIn, Hand hand) {
         ItemStack itemstack = playerIn.getHeldItem(hand);
         if (!this.isChild()) {
@@ -239,4 +175,66 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
         return flag;
     }
 
+    static class SwimWithPlayerGoal extends Goal {
+        private final EquesterEntity equester;
+        private final double speed;
+        private PlayerEntity targetPlayer;
+
+        SwimWithPlayerGoal(EquesterEntity equesterIn, double speedIn) {
+            this.equester = equesterIn;
+            this.speed = speedIn;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            this.targetPlayer = this.equester.world.getClosestPlayer(EquesterEntity.field_213810_bA, this.equester);
+            if (this.targetPlayer == null) {
+                return false;
+            } else {
+                return this.targetPlayer.isSwimming() && this.equester.getAttackTarget() != this.targetPlayer;
+            }
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            return this.targetPlayer != null && this.targetPlayer.isSwimming() && this.equester.getDistanceSq(this.targetPlayer) < 256.0D;
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void startExecuting() {
+            this.targetPlayer.addPotionEffect(new EffectInstance(Effects.DOLPHINS_GRACE, 100));
+        }
+
+        /**
+         * Reset the task's internal state. Called when this task is interrupted by another one
+         */
+        public void resetTask() {
+            this.targetPlayer = null;
+            this.equester.getNavigator().clearPath();
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            this.equester.getLookController().setLookPositionWithEntity(this.targetPlayer, (float) (this.equester.getHorizontalFaceSpeed() + 20), (float) this.equester.getVerticalFaceSpeed());
+            if (this.equester.getDistanceSq(this.targetPlayer) < 6.25D) {
+                this.equester.getNavigator().clearPath();
+            } else {
+                this.equester.getNavigator().tryMoveToEntityLiving(this.targetPlayer, this.speed);
+            }
+
+            if (this.targetPlayer.isSwimming() && this.targetPlayer.world.rand.nextInt(6) == 0) {
+                this.targetPlayer.addPotionEffect(new EffectInstance(Effects.DOLPHINS_GRACE, 100));
+            }
+        }
+    }
 }
