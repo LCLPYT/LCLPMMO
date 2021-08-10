@@ -43,7 +43,7 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
 
 
     private static final EntityPredicate field_213810_bA = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().allowInvulnerable().setIgnoresLineOfSight();
-    private static final Ingredient breedingitems = Ingredient.fromItems(Items.TROPICAL_FISH, Items.COD, Items.SALMON);
+    private static final Ingredient breedingitems = Ingredient.fromItems(Items.TROPICAL_FISH, Items.COD, Items.SALMON, Items.COOKED_COD, Items.COOKED_SALMON);
     private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(AbstractHorseEntity.class, DataSerializers.BYTE);
     private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(AbstractHorseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     private static final DataParameter<Boolean> BABY = EntityDataManager.createKey(AgeableEntity.class, DataSerializers.BOOLEAN);
@@ -217,7 +217,7 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
     }
 
     public ActionResultType func_241395_b_(PlayerEntity player, ItemStack item) {
-        boolean flag = this.handleEating(item);
+        boolean flag = this.handleEating();
         if (!player.abilities.isCreativeMode) {
             item.shrink(1);
         }
@@ -229,27 +229,10 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
         }
     }
 
-    protected boolean handleEating(ItemStack stack) {
+    protected boolean handleEating() {
         boolean flag = false;
-        float f = 0.0F;
-        int i = 0;
-        int j = 0;
-        Item item = stack.getItem();
-        if (item == Items.COD) {
-            f = 2.0F;
-            i = 20;
-            j = 3;
-        } else if (item == Items.TROPICAL_FISH) {
-            f = 1.0F;
-            i = 30;
-            j = 3;
-        } else if (item == Items.SALMON) {
-            f = 3.0F;
-            i = 60;
-            j = 3;
-        }
-
-        if (this.getHealth() < this.getMaxHealth() && f > 0.0F) {
+        float f = 3.0F;
+        if (this.getHealth() < this.getMaxHealth()) {
             this.heal(f);
             flag = true;
         }
