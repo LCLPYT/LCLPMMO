@@ -1,9 +1,6 @@
 package work.lclpnet.mmo.entity;
 
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
@@ -22,6 +19,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,6 +32,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
@@ -236,5 +235,47 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
                 this.targetPlayer.addPotionEffect(new EffectInstance(Effects.DOLPHINS_GRACE, 100));
             }
         }
+    }
+
+    public void travel(Vector3d travelVector) {
+        if (this.isAlive()) {
+            if (this.isBeingRidden() && this.canBeSteered()) {
+                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
+                this.rotationYaw = livingentity.rotationYaw;
+                this.prevRotationYaw = this.rotationYaw;
+                this.rotationPitch = livingentity.rotationPitch * 0.5F;
+                this.setRotation(this.rotationYaw, this.rotationPitch);
+                this.renderYawOffset = this.rotationYaw;
+                this.rotationYawHead = this.renderYawOffset;
+                float f = livingentity.moveStrafing * 0.5F;
+                float f1 = livingentity.moveForward;
+                if (f1 <= 0.0F) {
+                    f1 *= 0.25F;
+                }
+
+                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+                if (this.canPassengerSteer()) {
+                    this.setAIMoveSpeed((float) this.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                    super.travel(new Vector3d(f, travelVector.y, f1));
+                } else if (livingentity instanceof PlayerEntity) {
+                    this.setMotion(Vector3d.ZERO);
+                }
+
+                this.func_233629_a_(this, false);
+            } else {
+                this.jumpMovementFactor = 0.02F;
+                super.travel(travelVector);
+            }
+        }
+    }
+
+
+    /**
+     * For vehicles, the first passenger is generally considered the controller and "drives" the vehicle. For example,
+     * Pigs, Horses, and Boats are generally "steered" by the controlling passenger.
+     */
+    @Nullable
+    public Entity getControllingPassenger() {
+        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
     }
 }
