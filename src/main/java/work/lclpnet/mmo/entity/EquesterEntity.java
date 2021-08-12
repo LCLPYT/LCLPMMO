@@ -267,6 +267,16 @@ public class EquesterEntity extends WaterMobEntity implements IAnimatable {
                 super.travel(travelVector);
             }
         }
+            if (this.isServerWorld() && this.isInWater()) {
+                this.moveRelative(0.01F, travelVector);
+                this.move(MoverType.SELF, this.getMotion());
+                this.setMotion(this.getMotion().scale(0.9D));
+                if (this.getAttackTarget() == null) {
+                    this.setMotion(this.getMotion().add(0.0D, -0.005D, 0.0D));
+                }
+            } else {
+                super.travel(travelVector);
+            }
     }
 
 
