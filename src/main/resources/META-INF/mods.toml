@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[35,)"
+loaderVersion="[36,)"
 issueTrackerURL="https://github.com/LCLPYT/LCLPMMO/issues"
 displayURL="https://github.com/LCLPYT/LCLPMMO"
 authors="LCLP"
@@ -26,13 +26,13 @@ license="MIT"
     [[dependencies.lclpmmo]]
         modId="forge"
         mandatory=true
-        versionRange="[35,)"
+        versionRange="[36,)"
         ordering="NONE"
         side="BOTH"
     [[dependencies.lclpmmo]]
         modId="minecraft"
         mandatory=true
-        versionRange="[1.16.4]"
+        versionRange="[1.16.5]"
         ordering="NONE"
         side="BOTH"
 
