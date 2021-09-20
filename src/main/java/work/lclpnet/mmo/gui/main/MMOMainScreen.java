@@ -31,6 +31,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
+import work.lclpnet.lclpnetwork.api.APIException;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.gui.FancyButton;
@@ -103,6 +104,7 @@ public class MMOMainScreen extends MMOScreen {
     }
 
     private void setupButtons() {
+        assert this.minecraft != null;
         this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.singleplayer"), b -> this.minecraft.displayGuiScreen(new WorldSelectionScreen(this))));
         this.menuButtons.add(new MMOButtonInfo(new TranslationTextComponent("menu.multiplayer"), b -> {
             if (this.minecraft.gameSettings.skipMultiplayerWarning)
@@ -163,6 +165,7 @@ public class MMOMainScreen extends MMOScreen {
                 b -> this.minecraft.displayGuiScreen(new AccessibilityScreen(this, this.minecraft.gameSettings)),
                 new TranslationTextComponent("narrator.button.accessibility")));
 
+        Integer hoverColor = TextFormatting.RED.getColor();
         FancyButton quitButton = new FancyButton(currentBtnX,
                 quitY,
                 btnWidth,
@@ -170,7 +173,7 @@ public class MMOMainScreen extends MMOScreen {
                 new TranslationTextComponent("menu.quit"),
                 b -> this.minecraft.shutdown(),
                 0xFFFF7070,
-                TextFormatting.RED.getColor());
+                hoverColor != null ? hoverColor : 0xFFFF7070);
         quitButton.scale = buttonScale.get(minecraft, height);
 
         this.addButton(quitButton);
@@ -184,37 +187,47 @@ public class MMOMainScreen extends MMOScreen {
                 this.font.FONT_HEIGHT + 5,
                 logoutText,
                 b -> {
-                    if (!loggedIn) {
-                        LCLPNetwork.setup(() -> {
-                            if (!LCLPNetwork.isOnline()) {
-                                displayToast(new TranslationTextComponent("mmo.no_internet"));
-                            } else {
-                                if (LCLPNetwork.isLoggedIn()) {
-                                    displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
-                                    this.minecraft.displayGuiScreen(new MMOMainScreen(false));
-                                } else {
-                                    this.minecraft.displayGuiScreen(new LoginScreen());
-                                }
-                            }
-                        });
-                    } else this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
-                        if (yes) {
-                            LCLPNetwork.logout();
-                            this.minecraft.displayGuiScreen(new LoginScreen());
-                        } else {
-                            this.minecraft.displayGuiScreen(MMOMainScreen.this);
-                        }
-                    }, new TranslationTextComponent("mmo.menu.confirm_logout"), new TranslationTextComponent("mmo.menu.confirm_logout_desc")));
+                    if (!loggedIn) doLogin();
+                    else doLogout();
                 },
                 0xFFFF7070,
-                TextFormatting.RED.getColor());
+                hoverColor != null ? hoverColor : 0xFFFF7070);
         logoutBtn.scale = 1F;
         this.addButton(logoutBtn);
+    }
+
+    protected void doLogin() {
+        assert this.minecraft != null;
+        LCLPNetwork.setup().thenRun(() -> {
+            if (LCLPNetwork.isLoggedIn()) {
+                displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
+                this.minecraft.displayGuiScreen(new MMOMainScreen(false));
+            } else {
+                this.minecraft.displayGuiScreen(new LoginScreen());
+            }
+        }).exceptionally(err -> {
+            if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.no_internet"));
+            return null;
+        });
+    }
+
+    protected void doLogout() {
+        assert this.minecraft != null;
+        this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
+            if (yes) {
+                LCLPNetwork.logout();
+                this.minecraft.displayGuiScreen(new LoginScreen());
+            } else {
+                this.minecraft.displayGuiScreen(MMOMainScreen.this);
+            }
+        }, new TranslationTextComponent("mmo.menu.confirm_logout"), new TranslationTextComponent("mmo.menu.confirm_logout_desc")));
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void render(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+        assert this.minecraft != null;
+
         if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
             this.firstRenderTime = Util.milliTime();
             this.minecraft.getMusicTicker().timeUntilNextMusic = 0;
@@ -258,6 +271,8 @@ public class MMOMainScreen extends MMOScreen {
 
     @SuppressWarnings("deprecation")
     protected void drawPlayerModel(int mouseX, int mouseY, float alpha) {
+        assert minecraft != null;
+
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
         int x = (int) (this.width * 0.8), y = (int) (this.height * 0.8);
         int scale = (int) (100F * (this.height / 360F));

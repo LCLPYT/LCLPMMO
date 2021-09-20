@@ -11,17 +11,15 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class AccessTokenStorage {
 
-    public static void load(final Consumer<Boolean> callback) {
-        new Thread(() -> {
+    public static CompletableFuture<Void> load() {
+        return CompletableFuture.runAsync(() -> {
             File f = getTokenFileForEnv();
-            if (!f.exists()) {
-                callback.accept(false);
-                return;
-            }
+            if (!f.exists()) throw new CompletionException(new IOException("Token file does not exist."));
 
             try (InputStream in = new FileInputStream(f);
                  ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -31,50 +29,42 @@ public class AccessTokenStorage {
                     out.write(buffer, 0, read);
 
                 LCLPNetwork.setAccessToken(out.toString());
-                callback.accept(true);
             } catch (IOException e) {
-                e.printStackTrace();
-                callback.accept(false);
+                throw new CompletionException(e);
             }
-        }, "access token loader").start();
+        });
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void store(@Nullable String token, final Consumer<Boolean> callback) {
+    public static CompletableFuture<Void> store(@Nullable String token) {
         LCLPNetwork.setAccessToken(token);
 
-        new Thread(() -> {
+        return CompletableFuture.runAsync(() -> {
             File f = getTokenFileForEnv();
-            if (!f.exists()) {
-                if (token == null) {
-                    callback.accept(true);
-                    return;
+            if (token == null) {
+                if (f.exists()) {
+                    // delete token; if successful, token was successfully unset
+                    if (!f.delete()) throw new CompletionException(new IOException("Could not delete token file"));
+                }
+            } else {
+                if (!f.exists()) { // if file does not exist, create it
+                    if (!f.getParentFile().exists() && !f.getParentFile().mkdirs()) throw new IllegalStateException("Could not create directory.");
+
+                    File readme = new File(f.getParentFile(), "README.txt");
+                    try (OutputStream out = new FileOutputStream(readme)) {
+                        out.write(I18n.format("warn.auth.token").getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
-                if (!f.getParentFile().exists() && !f.getParentFile().mkdirs())
-                    throw new IllegalStateException("Could not create directory.");
-
-                File readme = new File(f.getParentFile(), "README.txt");
-                try (OutputStream out = new FileOutputStream(readme)) {
-                    out.write(I18n.format("warn.auth.token").getBytes(StandardCharsets.UTF_8));
+                try (OutputStream out = new FileOutputStream(f)) {
+                    out.write(token.getBytes());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new CompletionException(e);
                 }
             }
-
-            if (f.exists() && token == null) {
-                callback.accept(f.delete());
-                return;
-            }
-
-            try (OutputStream out = new FileOutputStream(f)) {
-                out.write(token.getBytes());
-                callback.accept(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-                callback.accept(false);
-            }
-        }, "access token saver").start();
+        });
     }
 
     private static File getTokenFileForEnv() {

@@ -11,8 +11,8 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import work.lclpnet.mmo.asm.type.IMMOUser;
-import work.lclpnet.mmo.facade.User;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
+import work.lclpnet.mmo.facade.DummyMMOUser;
+import work.lclpnet.mmo.util.network.LCLPNetwork;
 
 import java.util.function.Consumer;
 
@@ -24,7 +24,10 @@ public class HelperServerLoginNetHandler {
         if (FMLEnvironment.dist != Dist.CLIENT) return false;
 
         if (server instanceof IntegratedServer && server.isServerOwner(profile)) {
-            resolve(serverplayerentity, handler, server, loginGameProfile, networkManager, User.getSelectedCharacter(), User.getCurrent(), playerSetter);
+            IMMOUser mmo = new DummyMMOUser();
+            mmo.setUser(LCLPNetwork.getUser());
+            mmo.setMMOCharacter(LCLPNetwork.getSelectedCharacter());
+            resolve(serverplayerentity, handler, server, loginGameProfile, networkManager, mmo, playerSetter);
             return true;
         }
 
@@ -32,7 +35,7 @@ public class HelperServerLoginNetHandler {
     }
 
     public static void resolve(ServerPlayerEntity serverplayerentity, ServerLoginNetHandler handler, MinecraftServer server,
-                               GameProfile loginGameProfile, NetworkManager networkManager, MMOCharacter character, User tmpUser,
+                               GameProfile loginGameProfile, NetworkManager networkManager, IMMOUser user,
                                Consumer<ServerPlayerEntity> playerSetter) {
 
         networkManager.sendPacket(new SLoginSuccessPacket(loginGameProfile));
@@ -43,13 +46,13 @@ public class HelperServerLoginNetHandler {
             ServerPlayerEntity player = server.getPlayerList().createPlayerForUser(loginGameProfile);
             playerSetter.accept(player);
             IMMOUser mmo = IMMOUser.getMMOUser(player);
-            mmo.setMMOCharacter(character);
-            mmo.setUser(tmpUser);
+            mmo.setMMOCharacter(user.getMMOCharacter());
+            mmo.setUser(user.getUser());
         } else {
             ServerPlayerEntity created = server.getPlayerList().createPlayerForUser(loginGameProfile);
             IMMOUser mmo = IMMOUser.getMMOUser(created);
-            mmo.setMMOCharacter(character);
-            mmo.setUser(tmpUser);
+            mmo.setMMOCharacter(user.getMMOCharacter());
+            mmo.setUser(user.getUser());
 
             server.getPlayerList().initializeConnectionToPlayer(networkManager, created);
         }

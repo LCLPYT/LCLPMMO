@@ -9,10 +9,6 @@ import work.lclpnet.mmo.facade.race.MMORace;
 public class MMOGson {
 
     public static final Gson gson = builder()
-            .addSerializationExclusionStrategy(new NoSerialization.Strategy())
-            .create(),
-
-    allSerializerGson = builder()
             .create();
 
     private static GsonBuilder builder() {

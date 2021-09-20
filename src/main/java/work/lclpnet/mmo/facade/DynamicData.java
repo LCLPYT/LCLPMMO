@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.facade;
 
+import work.lclpnet.lclpnetwork.facade.JsonSerializable;
 import work.lclpnet.mmo.util.MMOUtils;
 
 import java.io.ByteArrayInputStream;

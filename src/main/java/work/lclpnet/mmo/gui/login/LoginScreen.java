@@ -7,13 +7,21 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import work.lclpnet.lclpnetwork.api.APIException;
+import work.lclpnet.lclpnetwork.api.APIResponse;
+import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 import work.lclpnet.mmo.event.EventListener;
-import work.lclpnet.mmo.facade.User;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.gui.PreIntroScreen;
 import work.lclpnet.mmo.util.Color;
+import work.lclpnet.mmo.util.network.AccessTokenStorage;
 import work.lclpnet.mmo.util.network.AuthManager;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
+import work.lclpnet.mmo.util.network.MMOAPI;
+
+import java.util.concurrent.CompletableFuture;
 
 public class LoginScreen extends MMOScreen {
 
@@ -33,6 +41,7 @@ public class LoginScreen extends MMOScreen {
     }
 
     protected void init() {
+        assert this.minecraft != null;
         this.minecraft.keyboardListener.enableRepeatEvents(true);
         this.textFieldEmail = new TextFieldWidget(this.font, this.width / 2 - 100, 76, 200, 20, new TranslationTextComponent("mmo.menu.login.email"));
         this.textFieldEmail.setFocused2(true);
@@ -47,29 +56,36 @@ public class LoginScreen extends MMOScreen {
 
         this.buttonLogin = this.addButton(new Button(this.width / 2 - 100, 146, 200, 20, new TranslationTextComponent("mmo.menu.login.login"), (p_213030_1_) -> {
             this.buttonLogin.active = false;
-            authManager.login(textFieldEmail.getText(), textFieldPassword.getText(), success -> {
+            authManager.login(textFieldEmail.getText(), textFieldPassword.getText()).thenAccept(success -> {
+                if (success == null) return; // already in progress
+
                 this.buttonLogin.active = true;
-                if (success == null) {
-                    displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
-                            new TranslationTextComponent("mmo.no_internet"));
-                } else if (success) {
+
+                if (success) {
                     displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
-                    loadUserAndResolve(this.minecraft);
+                    loadUserAndResolve(this.minecraft, this);
                 } else {
                     loginFailed = true;
                     displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                             new TranslationTextComponent("mmo.menu.login.check_credentials"));
                 }
+            }).exceptionally(err -> {
+                loginFailed = true;
+                if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
+                        new TranslationTextComponent("mmo.no_internet"));
+                else {
+                    err.printStackTrace();
+                    displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"));
+                }
+                return null;
             });
         }));
 
-        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20, new TranslationTextComponent("mmo.menu.login.register"), (p_213031_1_) -> {
-            this.minecraft.displayGuiScreen(new RegisterScreen());
-        }));
+        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20,
+                new TranslationTextComponent("mmo.menu.login.register"), (p_213031_1_) -> this.minecraft.displayGuiScreen(new RegisterScreen())));
 
-        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20, new TranslationTextComponent("mmo.menu.login.play_offline"), (p_213029_1_) -> {
-            resolve(this.minecraft);
-        }));
+        this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20,
+                new TranslationTextComponent("mmo.menu.login.play_offline"), (p_213029_1_) -> resolve(this.minecraft)));
 
         this.validate();
     }
@@ -80,8 +96,29 @@ public class LoginScreen extends MMOScreen {
         mc.displayGuiScreen(startingScreen);
     }
 
-    public static void loadUserAndResolve(Minecraft mc) {
-        LCLPNetwork.checkAccessToken(user -> User.reloadUser(user, () -> resolve(mc)));
+    public static CompletableFuture<Void> loadUserAndResolve(Minecraft mc, MMOScreen screen) {
+        return MMOAPI.PUBLIC.getCurrentUser().thenAccept(user -> {
+            System.out.printf("Logged in as %s (#%s).\n", user.getName(), user.getId());
+            if (FMLEnvironment.dist != Dist.CLIENT) return;
+
+            LCLPNetwork.reloadUser(user)
+                    .thenRun(() -> resolve(mc))
+                    .exceptionally(err -> {
+                        err.printStackTrace();
+                        screen.displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"));
+                        return null;
+                    });
+        }).exceptionally(err -> {
+            if (APIException.NO_CONNECTION.equals(err)) System.err.println("No connection to check validity");
+            else if (err instanceof ResponseEvaluationException) {
+                APIResponse response = ((ResponseEvaluationException) err).getResponse();
+                if (response.getResponseCode() != 200) {
+                    System.err.println("Access token is no longer valid!");
+                    if (FMLEnvironment.dist == Dist.CLIENT) AccessTokenStorage.store(null);
+                }
+            }
+            return null;
+        });
     }
 
     private void changed(String s) {
@@ -106,6 +143,7 @@ public class LoginScreen extends MMOScreen {
     @Override
     public void onClose() {
         super.onClose();
+        assert this.minecraft != null;
         this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 

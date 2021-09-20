@@ -1,129 +1,94 @@
 package work.lclpnet.mmo.util.network;
 
-import com.google.gson.JsonElement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.lclpnet.lclpnetwork.api.APIAccess;
+import work.lclpnet.lclpnetwork.api.APIAuthAccess;
+import work.lclpnet.lclpnetwork.facade.User;
 import work.lclpnet.mmo.Config;
-import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.facade.User;
+import work.lclpnet.mmo.facade.character.MMOCharacter;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 public class LCLPNetwork {
 
-    private static String accessToken = null;
-    private static boolean online = false;
     private static final Logger LOGGER = LogManager.getLogger();
+    private static MMOAPI API = null;
+    private static MMOCharacter selectedCharacter;
+    private static User user;
 
-    public static void setAccessToken(String accessToken) {
-        LCLPNetwork.accessToken = accessToken;
+    public static MMOAPI getAPI() {
+        return API;
     }
 
-    public static String getAccessToken() {
-        return accessToken;
+    public static CompletableFuture<Void> setAccessToken(String accessToken) {
+        APIAuthAccess authAccess = new APIAuthAccess(accessToken);
+        authAccess.setHost(Config.getEffectiveHost());
+
+        return APIAccess.withAuthCheck(authAccess)
+                .thenAccept(access -> API = new MMOAPI(access));
     }
 
-    public static void checkAccessToken(Consumer<User> callback) {
-        LOGGER.info("Checking access token validity...");
+    public static CompletableFuture<Boolean> logout() {
+        return LCLPNetwork.API.revokeCurrentToken().handle((result, err) -> {
+           // unload without considering the result
+            AccessTokenStorage.store(null);
+            reloadUser(null);
 
-        sendRequest("api/auth/user", "GET", null, resp -> {
-            online = !resp.isNoConnection();
-            if (resp.getResponseCode() == 200) {
-                User user = JsonSerializable.parse(resp.getRawResponse(), User.class);
-                LOGGER.info("Logged in as {} (#{}).", user.getName(), user.getId());
-                if (FMLEnvironment.dist == Dist.CLIENT) callback.accept(user);
-                else callback.accept(null);
-            } else {
-                if (resp.isNoConnection()) {
-                    LOGGER.info("No connection to check validity.");
-                    callback.accept(null);
-                    return;
-                }
-
-                LOGGER.info("Access token is no longer valid!");
-                if (FMLEnvironment.dist == Dist.CLIENT) AccessTokenStorage.store(null, b -> {
-                });
-                else {
-                    LCLPMMO.shutdownServer("Server access token is not valid!");
-                    throw new IllegalStateException("Server access token is not valid!");
-                }
-                callback.accept(null);
-            }
-        });
-    }
-
-    public static void sendRequest(String path, String requestMethod, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
-        Objects.requireNonNull(path);
-        Objects.requireNonNull(requestMethod);
-
-        new Thread(() -> {
-            try {
-                URL url = new URL(String.format("%s/%s", Config.getEffectiveHost(), path));
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod(requestMethod);
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-                if (accessToken != null)
-                    conn.setRequestProperty("Authorization", String.format("Bearer %s", accessToken));
-
-                if (body != null) {
-                    conn.setDoOutput(true);
-                    try (OutputStream out = conn.getOutputStream()) {
-                        out.write(body.toString().getBytes(StandardCharsets.UTF_8));
-                        out.flush();
-                    }
-                }
-
-                HTTPResponse response = HTTPResponse.fromRequest(conn);
-
-                conn.disconnect();
-
-                if (callback != null) callback.accept(response);
-            } catch (ConnectException e) {
-                if (callback != null) callback.accept(HTTPResponse.NO_CONNECTION);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }, "HTTP Request").start();
-    }
-
-    public static void post(String path, @Nullable JsonElement body, @Nullable Consumer<HTTPResponse> callback) {
-        sendRequest(path, "POST", body, callback);
-    }
-
-    public static void logout() {
-        sendRequest("api/auth/revoke-token", "GET", null, resp -> {
-            AccessTokenStorage.store(null, b -> {
-            });
-            User.reloadUser(null, () -> {
-            });
+            if (err != null) return false;
+            else return result;
         });
     }
 
     @OnlyIn(Dist.CLIENT)
     public static boolean isLoggedIn() {
-        return accessToken != null && User.getCurrent() != null;
+        return user != null;
     }
 
-    public static boolean isOnline() {
-        return online;
+    public static User getUser() {
+        if (FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+        return user;
     }
 
-    public static void setup(Runnable callback) {
-        AccessTokenStorage.load(loaded -> LCLPNetwork.checkAccessToken(user -> {
-            if (FMLEnvironment.dist == Dist.CLIENT) User.reloadUser(user, callback);
-        }));
+    public static MMOCharacter getSelectedCharacter() {
+        if (FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+        return selectedCharacter;
+    }
+
+    public static void setUser(User user) {
+        if (FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+        LCLPNetwork.user = user;
+    }
+
+    public static void setSelectedCharacter(MMOCharacter selectedCharacter) {
+        if (FMLEnvironment.dist != Dist.CLIENT) throw new RuntimeException("Wrong side.");
+        LCLPNetwork.selectedCharacter = selectedCharacter;
+    }
+
+    public static CompletableFuture<Void> setup() {
+        return AccessTokenStorage.load()
+                .thenCompose(result -> LCLPNetwork.API.getCurrentUser())
+                .thenAccept(user -> {
+                    if (FMLEnvironment.dist == Dist.CLIENT) LCLPNetwork.reloadUser(user);
+                });
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static CompletableFuture<Void> reloadUser() {
+        return reloadUser(LCLPNetwork.user);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static CompletableFuture<Void> reloadUser(@Nullable User user) {
+        if (user == null) return CompletableFuture.completedFuture(null);
+
+        LCLPNetwork.user = user;
+
+        return MMOAPI.PUBLIC.getActiveCharacterByUserId(user.getId(), true)
+                .thenAccept(character -> LCLPNetwork.selectedCharacter = character);
     }
 }

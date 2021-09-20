@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.entity;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
@@ -13,6 +14,7 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
@@ -37,6 +39,7 @@ import work.lclpnet.mmo.particle.MMOParticles;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -115,8 +118,8 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     }
 
     protected void applyEntityAI() {
-        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(3, new BoletusMeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setCallsForHelp(BoletusEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::func_233680_b_));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PixieEntity.class, 10, false, false, le -> !((PixieEntity) le).isTamed()));
@@ -340,6 +343,178 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff"));
             controller.markNeedsReload();
             this.puffAnimationEnabled = true;
+        }
+    }
+
+    public static class BoletusMeleeAttackGoal extends Goal {
+
+        protected final CreatureEntity attacker;
+        private final double speedTowardsTarget;
+        private final boolean longMemory;
+        private Path path;
+        private double targetX;
+        private double targetY;
+        private double targetZ;
+        private int delayCounter;
+        private int swingCooldown;
+        private final int attackInterval = 20;
+        private long lastCheckTime;
+        private int failedPathFindingPenalty = 0;
+        private boolean canPenalize = false;
+
+        public BoletusMeleeAttackGoal(CreatureEntity creature, double speedIn, boolean useLongMemory) {
+            this.attacker = creature;
+            this.speedTowardsTarget = speedIn;
+            this.longMemory = useLongMemory;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            long i = this.attacker.world.getGameTime();
+            if (i - this.lastCheckTime < 20L) {
+                return false;
+            } else {
+                this.lastCheckTime = i;
+                LivingEntity livingentity = this.attacker.getAttackTarget();
+                if (livingentity == null) {
+                    return false;
+                } else if (!livingentity.isAlive()) {
+                    return false;
+                } else {
+                    if (canPenalize) {
+                        if (--this.delayCounter <= 0) {
+                            this.path = this.attacker.getNavigator().pathfind(livingentity, 0);
+                            this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+                            return this.path != null;
+                        } else {
+                            return true;
+                        }
+                    }
+                    this.path = this.attacker.getNavigator().pathfind(livingentity, 0);
+                    if (this.path != null) {
+                        return true;
+                    } else {
+                        return this.getAttackReachSqr(livingentity) >= this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
+                    }
+                }
+            }
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            LivingEntity livingentity = this.attacker.getAttackTarget();
+            if (livingentity == null) {
+                return false;
+            } else if (!livingentity.isAlive()) {
+                return false;
+            } else if (!this.longMemory) {
+                return !this.attacker.getNavigator().noPath();
+            } else if (!this.attacker.isWithinHomeDistanceFromPosition(livingentity.getPosition())) {
+                return false;
+            } else {
+                return !(livingentity instanceof PlayerEntity) || !livingentity.isSpectator() && !((PlayerEntity)livingentity).isCreative();
+            }
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void startExecuting() {
+            this.attacker.getNavigator().setPath(this.path, this.speedTowardsTarget);
+            this.attacker.setAggroed(true);
+            this.delayCounter = 0;
+            this.swingCooldown = 0;
+        }
+
+        /**
+         * Reset the task's internal state. Called when this task is interrupted by another one
+         */
+        public void resetTask() {
+            LivingEntity livingentity = this.attacker.getAttackTarget();
+            if (!EntityPredicates.CAN_AI_TARGET.test(livingentity)) {
+                this.attacker.setAttackTarget((LivingEntity)null);
+            }
+
+            this.attacker.setAggroed(false);
+            this.attacker.getNavigator().clearPath();
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            LivingEntity livingentity = this.attacker.getAttackTarget();
+            if(livingentity == null) return;
+
+            this.attacker.getLookController().setLookPositionWithEntity(livingentity, 30.0F, 30.0F);
+            double d0 = this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
+            this.delayCounter = Math.max(this.delayCounter - 1, 0);
+            if ((this.longMemory || this.attacker.getEntitySenses().canSee(livingentity)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
+                this.targetX = livingentity.getPosX();
+                this.targetY = livingentity.getPosY();
+                this.targetZ = livingentity.getPosZ();
+                this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+                if (this.canPenalize) {
+                    this.delayCounter += failedPathFindingPenalty;
+                    if (this.attacker.getNavigator().getPath() != null) {
+                        net.minecraft.pathfinding.PathPoint finalPathPoint = this.attacker.getNavigator().getPath().getFinalPathPoint();
+                        if (finalPathPoint != null && livingentity.getDistanceSq(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) < 1)
+                            failedPathFindingPenalty = 0;
+                        else
+                            failedPathFindingPenalty += 10;
+                    } else {
+                        failedPathFindingPenalty += 10;
+                    }
+                }
+                if (d0 > 1024.0D) {
+                    this.delayCounter += 10;
+                } else if (d0 > 256.0D) {
+                    this.delayCounter += 5;
+                }
+
+                if (!this.attacker.getNavigator().tryMoveToEntityLiving(livingentity, this.speedTowardsTarget)) {
+                    this.delayCounter += 15;
+                }
+            }
+
+            this.swingCooldown = Math.max(this.swingCooldown - 1, 0);
+            this.checkAndPerformAttack(livingentity, d0);
+        }
+
+        protected void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
+            double d0 = this.getAttackReachSqr(enemy);
+            if (distToEnemySqr <= d0 && this.swingCooldown <= 0) {
+                this.resetSwingCooldown();
+                this.attacker.swingArm(Hand.MAIN_HAND);
+                this.attacker.attackEntityAsMob(enemy);
+            }
+
+        }
+
+        protected void resetSwingCooldown() {
+            this.swingCooldown = 20;
+        }
+
+        protected boolean isSwingOnCooldown() {
+            return this.swingCooldown <= 0;
+        }
+
+        protected int getSwingCooldown() {
+            return this.swingCooldown;
+        }
+
+        protected int func_234042_k_() {
+            return 20;
+        }
+
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
+            return (double)(this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth());
         }
     }
 }

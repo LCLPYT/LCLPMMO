@@ -60,11 +60,6 @@ public abstract class EasyTypeAdapter<T> extends TypeAdapter<T> {
 
     public static boolean outputAllowed(Field f) {
         if (MMOUtils.isDebug()) return true;
-        else if (Modifier.isTransient(f.getModifiers())) return false;
-
-        NoSerialization annotation = f.getAnnotation(NoSerialization.class);
-        if (annotation == null) return true;
-
-        return !annotation.in().isApplicable();
+        else return !Modifier.isTransient(f.getModifiers());
     }
 }

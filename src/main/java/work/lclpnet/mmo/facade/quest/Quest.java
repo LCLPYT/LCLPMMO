@@ -2,6 +2,7 @@ package work.lclpnet.mmo.facade.quest;
 
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import work.lclpnet.lclpnetwork.facade.JsonSerializable;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
 import java.io.IOException;

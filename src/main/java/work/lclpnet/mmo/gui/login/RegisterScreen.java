@@ -81,7 +81,7 @@ public class RegisterScreen extends MMOScreen {
 
                 if (error == null) {
                     displayToast(new TranslationTextComponent("mmo.menu.register.success"));
-                    LoginScreen.loadUserAndResolve(this.minecraft);
+                    LoginScreen.loadUserAndResolve(this.minecraft, this);
                 } else {
                     registerFailed = false;
                     mailError = false;

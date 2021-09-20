@@ -1,7 +1,5 @@
 package work.lclpnet.mmo.network.msg;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -19,22 +17,12 @@ public class MessageRequestMCLink implements IMessage {
     public void handle(Supplier<Context> ctx) {
         if (FMLEnvironment.dist != Dist.CLIENT) return;
 
-        LCLPNetwork.post("api/mc/request-mclink-token", null, response -> {
-
-            String token;
-            try {
-                if (response.isNoConnection() || response.getResponseCode() != 201) throw new IllegalStateException();
-
-                token = new Gson()
-                        .fromJson(response.getRawResponse(), JsonObject.class)
-                        .get("token")
-                        .getAsString();
-            } catch (Exception e) {
-                token = null;
-            }
-
-            MMOPacketHandler.INSTANCE.reply(new MessageSendMCLinkToken(token), ctx.get());
-        });
+        LCLPNetwork.getAPI().requestMCLinkToken()
+                .thenAccept(token -> MMOPacketHandler.INSTANCE.reply(new MessageSendMCLinkToken(token), ctx.get()))
+                .exceptionally(err -> {
+                    err.printStackTrace();
+                    return null;
+                });
     }
 
     public static class Serializer implements IMessageSerializer<MessageRequestMCLink> {

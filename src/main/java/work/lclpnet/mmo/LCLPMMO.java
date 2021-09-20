@@ -62,12 +62,11 @@ public class LCLPMMO {
         if (FMLEnvironment.dist == Dist.CLIENT) GeckoLib.initialize();
     }
 
-    private void setup(final FMLCommonSetupEvent event) { //preinit
+    private void setup(final FMLCommonSetupEvent event) {
         LOGGER.info("LCLPMMO initializing...");
 
         Config.load();
-        LCLPNetwork.setup(() -> {
-        });
+        LCLPNetwork.setup();
         MMOPacketHandler.init();
         MMOCommands.registerArgumentTypes();
 

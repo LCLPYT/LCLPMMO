@@ -7,13 +7,14 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import work.lclpnet.mmo.facade.character.DynamicCharacterData;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
+import work.lclpnet.lclpnetwork.api.APIError;
+import work.lclpnet.lclpnetwork.api.APIException;
+import work.lclpnet.lclpnetwork.api.APIResponse;
+import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 import work.lclpnet.mmo.facade.race.MMORace;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.Colors;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
-import work.lclpnet.mmo.util.network.ValidationViolations;
 
 public class CharacterCreatorScreen extends MMOScreen {
 
@@ -24,7 +25,7 @@ public class CharacterCreatorScreen extends MMOScreen {
     protected String characterName = "";
     protected final CharacterChooserScreen prevScreen;
     protected MMORace selectedRace = null;
-    protected boolean createFirst = false;
+    protected boolean createFirst;
 
     public CharacterCreatorScreen(CharacterChooserScreen prevScreen, boolean createFirst) {
         super(new TranslationTextComponent("mmo.menu.create_character.title"));
@@ -34,6 +35,7 @@ public class CharacterCreatorScreen extends MMOScreen {
 
     @Override
     protected void init() {
+        assert this.minecraft != null;
         this.minecraft.keyboardListener.enableRepeatEvents(true);
         this.characterNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, new TranslationTextComponent("mmo.menu.create_character.character_name"));
         this.characterNameField.setText(this.characterName);
@@ -43,16 +45,10 @@ public class CharacterCreatorScreen extends MMOScreen {
         });
         this.children.add(this.characterNameField);
 
-        this.btnRaceSel = this.addButton(new Button(this.width / 2 - 75, 110, 150, 20, new TranslationTextComponent("mmo.menu.create_character.choose_race"), (p_214321_1_) -> {
-            this.minecraft.displayGuiScreen(new RaceSelectionScreen(this));
-        }));
-        this.btnCreateCharacter = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, new TranslationTextComponent("mmo.menu.create_character.create"), (p_214318_1_) -> {
-            this.createCharacter();
-        }));
+        this.btnRaceSel = this.addButton(new Button(this.width / 2 - 75, 110, 150, 20, new TranslationTextComponent("mmo.menu.create_character.choose_race"), (p_214321_1_) -> this.minecraft.displayGuiScreen(new RaceSelectionScreen(this))));
+        this.btnCreateCharacter = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, new TranslationTextComponent("mmo.menu.create_character.create"), (p_214318_1_) -> this.createCharacter()));
         this.btnCreateCharacter.active = !this.characterName.isEmpty();
-        this.addButton(new Button(this.width / 2 + 5, this.height - 28, 150, 20, new TranslationTextComponent("gui.cancel"), (p_214317_1_) -> {
-            this.minecraft.displayGuiScreen(this.prevScreen);
-        }));
+        this.addButton(new Button(this.width / 2 + 5, this.height - 28, 150, 20, new TranslationTextComponent("gui.cancel"), (p_214317_1_) -> this.minecraft.displayGuiScreen(this.prevScreen)));
 
         this.setFocusedDefault(this.characterNameField);
     }
@@ -82,6 +78,7 @@ public class CharacterCreatorScreen extends MMOScreen {
     @Override
     public void onClose() {
         super.onClose();
+        assert this.minecraft != null;
         this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 
@@ -99,33 +96,33 @@ public class CharacterCreatorScreen extends MMOScreen {
     public void createCharacter() {
         if (!validate()) return;
 
-        MMOCharacter character = new MMOCharacter(this.characterName, this.selectedRace, DynamicCharacterData.empty());
+        LCLPNetwork.getAPI().addCharacter(characterName, this.selectedRace.getUnlocalizedName()).thenRun(() -> {
 
-        LCLPNetwork.post("api/ls5/add-character", character.toJson(), response -> {
-            if (response.isNoConnection()) {
-                displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"),
-                        new TranslationTextComponent("mmo.no_internet"));
-            } else if (response.getResponseCode() == 201) {
-                displayToast(new TranslationTextComponent("mmo.menu.create_character.created"));
-                CharacterChooserScreen.updateContentAndShow(this.minecraft, prevScreen.getPrevScreen(), createFirst);
-            } else {
-                ITextComponent reason;
-                if (response.hasValidationViolations()) {
-                    ValidationViolations violations = response.getValidationViolations();
-                    if (violations.has("name", "The name has already been taken."))
-                        reason = new TranslationTextComponent("mmo.menu.create_character.error_name_taken");
-                    else reason = new StringTextComponent(violations.getFirst());
-                } else if (response.hasJsonStatusMessage() && "Too many characters.".equals(response.getJsonStatusMessage())) {
-                    reason = new TranslationTextComponent("mmo.menu.create_character.error_too_many");
-                } else {
-                    System.err.println(response);
-                    reason = new TranslationTextComponent("error.unknown");
+        }).exceptionally(err -> {
+            if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"),
+                    new TranslationTextComponent("mmo.no_internet"));
+            else if (err instanceof ResponseEvaluationException) {
+                APIResponse response = ((ResponseEvaluationException) err).getResponse();
+                if (response.getResponseCode() != 201) {
+                    ITextComponent reason;
+                    if (response.hasValidationViolations()) {
+                        APIError violations = response.getValidationViolations();
+                        if (violations.has("name", "The name has already been taken."))
+                            reason = new TranslationTextComponent("mmo.menu.create_character.error_name_taken");
+                        else reason = new StringTextComponent(violations.getFirst());
+                    } else if (response.hasJsonStatusMessage() && "Too many characters.".equals(response.getJsonStatusMessage())) {
+                        reason = new TranslationTextComponent("mmo.menu.create_character.error_too_many");
+                    } else {
+                        System.err.println(response);
+                        reason = new TranslationTextComponent("error.unknown");
+                    }
+
+                    displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"), reason);
+
+                    this.setError(reason);
                 }
-
-                displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"), reason);
-
-                this.setError(reason);
             }
+            return null;
         });
     }
 

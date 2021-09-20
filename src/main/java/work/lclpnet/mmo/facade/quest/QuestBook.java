@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.facade.quest;
 
+import work.lclpnet.lclpnetwork.facade.JsonSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
 

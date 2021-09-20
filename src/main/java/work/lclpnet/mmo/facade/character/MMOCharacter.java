@@ -14,6 +14,7 @@ import work.lclpnet.mmo.gui.MMOSelectionItem;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -122,4 +123,7 @@ public class MMOCharacter extends JsonSerializable implements MMOSelectionItem {
             return character;
         }
     }
+
+    public static class List extends ArrayList<MMOCharacter> {}
+
 }

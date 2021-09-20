@@ -1,73 +1,54 @@
 package work.lclpnet.mmo.util.network;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import work.lclpnet.lclpnetwork.api.APIException;
+import work.lclpnet.lclpnetwork.api.APIResponse;
+import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class AuthManager {
 
-    private static final String LS5_IDENTIFICATION = "$2y$10$PuKeoJ/jUBVy9fBYhr3x3egoyyA7N84zjVlnFr9q0fPjUkf8gOH.6";
     private boolean requestInProgress = false;
 
-    public void login(String user, String password, Consumer<Boolean> callback) {
+    public CompletableFuture<Boolean> login(String user, String password) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
-        Objects.requireNonNull(callback);
 
-        if (requestInProgress) return;
-
+        if (requestInProgress) return CompletableFuture.completedFuture(null);
         requestInProgress = true;
 
-        JsonObject body = new JsonObject();
-        body.addProperty("email", user);
-        body.addProperty("password", password);
-        body.addProperty("identification", LS5_IDENTIFICATION);
+        return MMOAPI.PUBLIC.getAccessToken(user, password).handle((token, err) -> {
+           if (err != null) {
+               err.printStackTrace();
+               return null;
+           } else return token;
+        }).thenCompose(token -> {
+            if (token == null) return CompletableFuture.completedFuture(null);
 
-        LCLPNetwork.post("api/auth/ls5/access-token", body, resp -> {
-            requestInProgress = false;
-
-            if (resp.isNoConnection()) {
-                callback.accept(null);
-                return;
-            }
-
-            if (resp.getResponseCode() != 200) callback.accept(false);
-            else {
-                JsonObject obj = new Gson().fromJson(resp.getRawResponse(), JsonObject.class);
-                JsonElement elem = obj.get("accessToken");
-
-                if (elem == null) callback.accept(false);
-                else {
-                    String token = elem.getAsString();
-                    AccessTokenStorage.store(token, success -> {
-                        if (!success) throw new IllegalStateException("Could not store access token");
-                        callback.accept(true);
-                    });
-                }
-            }
-        });
+            return AccessTokenStorage.store(token).handle((result, err) -> {
+                if (err != null) err.printStackTrace(); // Saving the token failed, but the token is still valid
+                return true;
+            });
+        }).whenComplete((result, err) -> requestInProgress = false);
     }
 
-    public void checkEmailVerified(Consumer<Boolean> callback) {
-        if (requestInProgress) return;
+    public CompletableFuture<Boolean> checkEmailVerified() {
+        if (requestInProgress) return CompletableFuture.completedFuture(null);
         requestInProgress = true;
 
-        LCLPNetwork.sendRequest("api/auth/verified", "GET", null, resp -> {
-            requestInProgress = false;
+        return LCLPNetwork.getAPI().isCurrentUserVerified().whenComplete((result, err) -> {
 
-            if (resp.isNoConnection()) callback.accept(null);
-            else if (resp.getResponseCode() != 200) callback.accept(false);
-            else {
-                JsonObject obj = new Gson().fromJson(resp.getRawResponse(), JsonObject.class);
-                JsonElement elem = obj.get("email_verified");
-
-                if (elem == null) callback.accept(false);
-                else callback.accept(elem.getAsBoolean());
+        }).exceptionally(err -> {
+            if (APIException.NO_CONNECTION.equals(err)) return null;
+            else if (err instanceof ResponseEvaluationException) {
+                APIResponse response = ((ResponseEvaluationException) err).getResponse();
+                if (response.getResponseCode() != 200) return false;
             }
-        });
+            else err.printStackTrace();
+            return null;
+        }).whenComplete((result, err) -> requestInProgress = false);
     }
 
     public void register(String user, String password, String confirmPassword, Consumer<String> callback) {

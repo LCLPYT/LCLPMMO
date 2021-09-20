@@ -248,7 +248,7 @@ public class GenericSelectionList<T extends MMOSelectionItem, S extends Screen &
         private final S screen;
         private final T entry;
         private long field_214455_h;
-        protected boolean preSelected = false;
+        protected boolean preSelected;
 
         public Entry(GenericSelectionList<T, S> p_i50631_2_, T entry, boolean preSelected) {
             this.screen = p_i50631_2_.getGuiScreen();

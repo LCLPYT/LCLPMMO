@@ -49,9 +49,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
         this.minecraft.keyboardListener.enableRepeatEvents(true);
         this.searchField = new TextFieldWidget(this.font, this.width / 2 - 100, 22, 200, 20, this.searchField, new TranslationTextComponent("mmo.menu.generic.search"));
         this.searchField.setResponder((p_214329_1_) -> {
-            this.selectionList.search(() -> {
-                return p_214329_1_;
-            }, false);
+            this.selectionList.search(() -> p_214329_1_, false);
         });
         updateSelectionList();
         this.children.add(this.searchField);
@@ -84,7 +82,7 @@ public abstract class GenericSelectionScreen<T extends MMOSelectionItem> extends
     }
 
     public void updateSelectionList() {
-        this.selectionList = new GenericSelectionList<T, GenericSelectionScreen<T>>(this, this.minecraft, this.width, this.height, 48, props.selectionListHeight.apply(this.height), 36, this::getEntries, () -> {
+        this.selectionList = new GenericSelectionList<>(this, this.minecraft, this.width, this.height, 48, props.selectionListHeight.apply(this.height), 36, this::getEntries, () -> {
             return this.searchField.getText();
         }, this.selectionList, preSelected);
         if (background != null) this.selectionList.setBgTexture(background);

@@ -1,7 +1,5 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.IPacket;
@@ -22,13 +20,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import work.lclpnet.lclpnetwork.api.APIException;
+import work.lclpnet.lclpnetwork.api.APIResponse;
+import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 import work.lclpnet.mmo.asm.helpers.HelperServerLoginNetHandler;
-import work.lclpnet.mmo.facade.User;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.util.network.HTTPResponse;
-import work.lclpnet.mmo.util.network.LCLPNetwork;
+import work.lclpnet.mmo.asm.type.IMMOUser;
+import work.lclpnet.mmo.facade.DummyMMOUser;
+import work.lclpnet.mmo.util.network.MMOAPI;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletionException;
 
 @Mixin(ServerLoginNetHandler.class)
 public class MixinServerLoginNetHandler {
@@ -43,8 +43,6 @@ public class MixinServerLoginNetHandler {
     @Shadow
     @Final
     public NetworkManager networkManager;
-
-    private User tmpUser = null;
 
     @Inject(
             method = "tryAcceptPlayer()V",
@@ -63,81 +61,56 @@ public class MixinServerLoginNetHandler {
 
         ci.cancel();
 
-        // If in singleplayer (integrated server)
-        if (FMLEnvironment.dist == Dist.CLIENT &&
-                HelperServerLoginNetHandler.ifOnClient(this.server, profile, serverplayerentity, handler,
-                        this.loginGameProfile, this.networkManager, x -> this.player = x))
+        if (profile == null) return;
+
+        if (FMLEnvironment.dist == Dist.CLIENT
+                && HelperServerLoginNetHandler.ifOnClient(this.server, profile, serverplayerentity, handler, this.loginGameProfile, this.networkManager, x -> this.player = x))
             return;
 
-        JsonObject usrBody = new JsonObject();
-        usrBody.addProperty("uuid", profile.getId().toString());
+        IMMOUser mmo = new DummyMMOUser();
+        MMOAPI.PUBLIC.getActiveCharacterByUuid(profile.getId().toString(), true)
+                .whenComplete((character, err) -> {
+                    if (err == null) return;
 
-        Consumer<HTTPResponse> charConsumer = charResp -> {
-            if (charResp.isNoConnection())
-                handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
-            else if (charResp.getResponseCode() == 406) {
-                handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.no_character"));
-            } else if (charResp.getResponseCode() != 200) {
-                handler.disconnect(new StringTextComponent("Internal server error."));
-                System.err.println(charResp);
-            } else {
-                MMOCharacter character = charResp.getExtra(MMOCharacter.class);
-                if (character == null) {
-                    handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.no_character"));
-                    return;
-                }
+                    if (APIException.NO_CONNECTION.equals(err)) handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
+                    else if (err instanceof ResponseEvaluationException) {
+                        APIResponse resp = ((ResponseEvaluationException) err).getResponse();
+                        if (resp.getResponseCode() == 406) handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_linked"));
+                    } else {
+                        handler.disconnect(new StringTextComponent("Internal server error."));
+                        err.printStackTrace();
+                    }
 
-                HelperServerLoginNetHandler.resolve(serverplayerentity, handler, this.server, loginGameProfile, this.networkManager,
-                        character, this.tmpUser, x -> this.player = x);
-            }
-        };
+                    throw new CompletionException(new IllegalStateException("Could not fetch active character."));
+                })
+                .thenCompose(character -> {
+                    if (character == null) {
+                        handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.no_character"));
+                        throw new NullPointerException("No character");
+                    } else {
+                        mmo.setMMOCharacter(character);
+                        return MMOAPI.PUBLIC.getUserById(character.owner);
+                    }
+                })
+                .whenComplete((character, err) -> {
+                    if (err == null) return;
 
-        Consumer<HTTPResponse> idConsumer = idResp -> {
-            if (idResp.isNoConnection())
-                handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
-            else if (idResp.getResponseCode() != 200) {
-                handler.disconnect(new StringTextComponent("Internal server error."));
-                System.err.println(idResp);
-            } else {
-                User user = idResp.getExtra(User.class);
-                if (user == null) {
-                    handler.disconnect(new StringTextComponent("Internal server error."));
-                    System.err.println("User is null.");
-                    return;
-                }
+                    if (APIException.NO_CONNECTION.equals(err)) handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
+                    else if (err instanceof ResponseEvaluationException) {
+                        APIResponse resp = ((ResponseEvaluationException) err).getResponse();
+                        if (resp.getResponseCode() == 204) handler.disconnect(new StringTextComponent("User not found."));
+                    } else {
+                        handler.disconnect(new StringTextComponent("Internal server error."));
+                        err.printStackTrace();
+                    }
 
-                tmpUser = user;
-
-                JsonObject charBody = new JsonObject();
-                charBody.addProperty("userId", user.getId());
-                charBody.addProperty("fetchData", true);
-
-                LCLPNetwork.post("api/ls5/get-active-character", charBody, charConsumer);
-            }
-        };
-
-        LCLPNetwork.post("api/mc/get-user", usrBody, usrResp -> {
-            if (usrResp.isNoConnection())
-                handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.lclpnetwork_down"));
-            else if (usrResp.getResponseCode() == 404) {
-                handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_linked"));
-            } else if (usrResp.getResponseCode() != 200) {
-                handler.disconnect(new StringTextComponent("Internal server error."));
-                System.err.println(usrResp);
-            } else {
-                JsonObject obj = JsonSerializable.parse(usrResp.getRawResponse(), JsonObject.class);
-                JsonElement idElem = obj.get("user_id");
-                if (idElem == null) {
-                    handler.disconnect(new TranslationTextComponent("multiplayer.disconnect.not_linked"));
-                    return;
-                }
-
-                JsonObject idBody = new JsonObject();
-                idBody.addProperty("userId", idElem.getAsInt());
-
-                LCLPNetwork.post("api/auth/user-by-id", idBody, idConsumer);
-            }
-        });
+                    throw new CompletionException(new IllegalStateException("Could not fetch user."));
+                })
+                .thenAccept(user -> {
+                    mmo.setUser(user);
+                    HelperServerLoginNetHandler.resolve(serverplayerentity, handler, this.server, loginGameProfile, this.networkManager, mmo, x -> this.player = x);
+                })
+                .exceptionally(err -> null); // handle uncaught exceptions (ignore them)
     }
 
     @Redirect(

@@ -42,7 +42,7 @@ public class EventListener {
     public static void onGui(GuiOpenEvent e) {
         if (e.getGui() instanceof MainMenuScreen) {
             e.setCanceled(true);
-            if (LCLPNetwork.getAccessToken() == null) Minecraft.getInstance().displayGuiScreen(new LoginScreen());
+            if (!LCLPNetwork.isLoggedIn()) Minecraft.getInstance().displayGuiScreen(new LoginScreen());
             else Minecraft.getInstance().displayGuiScreen(getStartingScreen());
         }
     }

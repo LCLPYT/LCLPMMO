@@ -18,11 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.entity.MMOMonsterAttributes;
-import work.lclpnet.mmo.facade.User;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.network.MMOPacketHandler;
 import work.lclpnet.mmo.network.msg.MessageDisconnectMe;
-import work.lclpnet.mmo.util.network.LCLPNetwork;
+import work.lclpnet.mmo.util.network.MMOAPI;
 
 import java.util.Iterator;
 
@@ -63,27 +61,16 @@ public class MixinClientPlayNetHandler {
         JsonObject body = new JsonObject();
         body.addProperty("uuid", remoteclientplayerentity.getGameProfile().getId().toString());
 
-        LCLPNetwork.post("api/ls5/get-active-character-by-uuid", body, response -> {
-            final MMOCharacter character = User.handleActiveCharacterResponse(response);
-            if (character == null) {
-                MMOPacketHandler.INSTANCE.sendToServer(new MessageDisconnectMe(new TranslationTextComponent("mmo.player_load_failed")));
-                return;
-            }
-
-            JsonObject body2 = new JsonObject();
-            body2.addProperty("userId", character.owner);
-
-            LCLPNetwork.post("api/auth/user-by-id", body2, resp -> {
-                User user = User.handleUserResponse(resp);
-                if (user == null) {
+        IMMOUser mmo = IMMOUser.getMMOUser(remoteclientplayerentity);
+        MMOAPI.PUBLIC.getActiveCharacterByUuid(remoteclientplayerentity.getGameProfile().getId().toString(), true)
+                .thenCompose(character -> {
+                    mmo.setMMOCharacter(character);
+                    return MMOAPI.PUBLIC.getUserById(character.owner);
+                })
+                .thenAccept(mmo::setUser)
+                .exceptionally(err -> {
                     MMOPacketHandler.INSTANCE.sendToServer(new MessageDisconnectMe(new TranslationTextComponent("mmo.player_load_failed")));
-                    return;
-                }
-
-                IMMOUser mmo = IMMOUser.getMMOUser(remoteclientplayerentity);
-                mmo.setUser(user);
-                mmo.setMMOCharacter(character);
-            });
-        });
+                    return null;
+                });
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.IOUtils;
+import work.lclpnet.lclpnetwork.facade.JsonSerializable;
 
 import java.io.IOException;
 import java.io.InputStream;
