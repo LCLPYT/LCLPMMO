@@ -7,8 +7,8 @@
         "1.16.3-recommended": "1.4.31",
         "1.16.4-latest": "1.5.1",
         "1.16.4-recommended": "1.5.1",
-        "1.16.5-latest": "1.6.18",
-        "1.16.5-recommended": "1.6.18"
+        "1.16.5-latest": "1.6.42",
+        "1.16.5-recommended": "1.6.42"
     },
     "1.15.2": {
         "1.1.0": "EntityScale attributes added.",
@@ -27,6 +27,6 @@
         "1.5.1": "Compatible with 1.16.4"
     },
     "1.16.5": {
-        "1.6.18": "Compatible with LCLPNetwork backend again"
+        "1.6.42": "Compatible with LCLPNetwork backend again"
     }
 }
