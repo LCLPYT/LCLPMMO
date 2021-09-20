@@ -19,9 +19,9 @@ import work.lclpnet.mmo.util.Color;
 import work.lclpnet.mmo.util.network.AccessTokenStorage;
 import work.lclpnet.mmo.util.network.AuthManager;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
-import work.lclpnet.mmo.util.network.MMOAPI;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class LoginScreen extends MMOScreen {
 
@@ -69,7 +69,10 @@ public class LoginScreen extends MMOScreen {
                     displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                             new TranslationTextComponent("mmo.menu.login.check_credentials"));
                 }
-            }).exceptionally(err -> {
+            }).exceptionally(completionError -> {
+                Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
+                if (err == null) err = completionError;
+
                 loginFailed = true;
                 if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"),
                         new TranslationTextComponent("mmo.no_internet"));
@@ -97,18 +100,21 @@ public class LoginScreen extends MMOScreen {
     }
 
     public static CompletableFuture<Void> loadUserAndResolve(Minecraft mc, MMOScreen screen) {
-        return MMOAPI.PUBLIC.getCurrentUser().thenAccept(user -> {
+        return LCLPNetwork.getAPI().getCurrentUser().thenAccept(user -> {
             System.out.printf("Logged in as %s (#%s).\n", user.getName(), user.getId());
             if (FMLEnvironment.dist != Dist.CLIENT) return;
 
-            LCLPNetwork.reloadUser(user)
+            LCLPNetwork.loadActiveCharacter(user)
                     .thenRun(() -> resolve(mc))
                     .exceptionally(err -> {
                         err.printStackTrace();
                         screen.displayToast(new TranslationTextComponent("mmo.menu.login.login_failed"));
                         return null;
                     });
-        }).exceptionally(err -> {
+        }).exceptionally(completionError -> {
+            Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
+            if (err == null) err = completionError;
+
             if (APIException.NO_CONNECTION.equals(err)) System.err.println("No connection to check validity");
             else if (err instanceof ResponseEvaluationException) {
                 APIResponse response = ((ResponseEvaluationException) err).getResponse();

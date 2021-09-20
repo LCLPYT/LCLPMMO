@@ -17,7 +17,7 @@ import java.util.concurrent.CompletionException;
 public class AccessTokenStorage {
 
     public static CompletableFuture<Void> load() {
-        return CompletableFuture.runAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             File f = getTokenFileForEnv();
             if (!f.exists()) throw new CompletionException(new IOException("Token file does not exist."));
 
@@ -28,11 +28,11 @@ public class AccessTokenStorage {
                 while ((read = in.read(buffer, 0, buffer.length)) != -1)
                     out.write(buffer, 0, read);
 
-                LCLPNetwork.setAccessToken(out.toString());
+                return out.toString();
             } catch (IOException e) {
                 throw new CompletionException(e);
             }
-        });
+        }).thenCompose(LCLPNetwork::setAccessToken);
     }
 
     @OnlyIn(Dist.CLIENT)

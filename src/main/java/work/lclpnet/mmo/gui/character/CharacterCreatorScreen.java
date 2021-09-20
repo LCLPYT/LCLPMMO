@@ -16,6 +16,8 @@ import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.Colors;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
+import java.util.concurrent.CompletionException;
+
 public class CharacterCreatorScreen extends MMOScreen {
 
     protected ITextComponent error = null;
@@ -97,8 +99,11 @@ public class CharacterCreatorScreen extends MMOScreen {
         if (!validate()) return;
 
         LCLPNetwork.getAPI().addCharacter(characterName, this.selectedRace.getUnlocalizedName()).thenRun(() -> {
-
-        }).exceptionally(err -> {
+            displayToast(new TranslationTextComponent("mmo.menu.create_character.created"));
+            CharacterChooserScreen.updateContentAndShow(this.minecraft, prevScreen.getPrevScreen(), createFirst);
+        }).exceptionally(completionError -> {
+            Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
+            if (err == null) err = completionError;
             if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.menu.create_character.error_creation_failed"),
                     new TranslationTextComponent("mmo.no_internet"));
             else if (err instanceof ResponseEvaluationException) {

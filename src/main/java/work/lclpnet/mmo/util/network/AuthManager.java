@@ -6,6 +6,7 @@ import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
 public class AuthManager {
@@ -19,12 +20,7 @@ public class AuthManager {
         if (requestInProgress) return CompletableFuture.completedFuture(null);
         requestInProgress = true;
 
-        return MMOAPI.PUBLIC.getAccessToken(user, password).handle((token, err) -> {
-           if (err != null) {
-               err.printStackTrace();
-               return null;
-           } else return token;
-        }).thenCompose(token -> {
+        return MMOAPI.PUBLIC.getAccessToken(user, password).thenCompose(token -> {
             if (token == null) return CompletableFuture.completedFuture(null);
 
             return AccessTokenStorage.store(token).handle((result, err) -> {
@@ -40,7 +36,10 @@ public class AuthManager {
 
         return LCLPNetwork.getAPI().isCurrentUserVerified().whenComplete((result, err) -> {
 
-        }).exceptionally(err -> {
+        }).exceptionally(completionError -> {
+            Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
+            if (err == null) err = completionError;
+
             if (APIException.NO_CONNECTION.equals(err)) return null;
             else if (err instanceof ResponseEvaluationException) {
                 APIResponse response = ((ResponseEvaluationException) err).getResponse();

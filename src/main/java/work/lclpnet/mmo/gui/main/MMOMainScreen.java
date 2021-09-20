@@ -31,7 +31,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
-import work.lclpnet.lclpnetwork.api.APIException;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.gui.FancyButton;
@@ -206,7 +205,7 @@ public class MMOMainScreen extends MMOScreen {
                 this.minecraft.displayGuiScreen(new LoginScreen());
             }
         }).exceptionally(err -> {
-            if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.no_internet"));
+            this.minecraft.displayGuiScreen(new LoginScreen());
             return null;
         });
     }

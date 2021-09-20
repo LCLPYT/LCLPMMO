@@ -18,6 +18,8 @@ import work.lclpnet.mmo.facade.character.MMOCharacter;
 import work.lclpnet.mmo.gui.MMOScreen;
 import work.lclpnet.mmo.util.network.LCLPNetwork;
 
+import java.util.concurrent.CompletionException;
+
 public class EditCharacterScreen extends MMOScreen {
 
     private Button saveButton;
@@ -73,7 +75,10 @@ public class EditCharacterScreen extends MMOScreen {
             LCLPNetwork.getAPI().renameCharacter(character.id, name).thenRun(() -> {
                 displayToast(new TranslationTextComponent("mmo.menu.edit_character.edit_success"));
                 CharacterChooserScreen.updateContentAndShow(minecraft, prevScreen);
-            }).exceptionally(err -> {
+            }).exceptionally(completionError -> {
+                Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
+                if (err == null) err = completionError;
+
                 if (APIException.NO_CONNECTION.equals(err)) {
                     displayToast(new TranslationTextComponent("mmo.menu.edit_character.edit_failed"),
                             new TranslationTextComponent("mmo.no_internet"));

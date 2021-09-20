@@ -19,6 +19,7 @@ import work.lclpnet.mmo.util.network.LCLPNetwork;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
 public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCharacter> {
@@ -50,7 +51,10 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
         LCLPNetwork.getAPI().setActiveCharacter(selected.id).thenRun(() -> {
             LCLPNetwork.setSelectedCharacter(selected);
             QueueWorker.enqueueOnRender(() -> Minecraft.getInstance().displayGuiScreen(new MMOMainScreen(false)));
-        }).exceptionally(err -> {
+        }).exceptionally(completionError -> {
+            Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
+            if (err == null) err = completionError;
+
             if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslationTextComponent("mmo.no_internet"));
             else if (err instanceof ResponseEvaluationException) {
                 APIResponse response = ((ResponseEvaluationException) err).getResponse();
@@ -136,7 +140,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<MMOCh
                 QueueWorker.enqueueOnRender(() -> mc.displayGuiScreen(new CharacterChooserScreen(prevScreen, characters)));
 
         LCLPNetwork.getAPI().getCharacters().thenAccept(characters -> {
-            if (LCLPNetwork.getSelectedCharacter() == null || updateActiveCharacter) LCLPNetwork.reloadUser()
+            if (LCLPNetwork.getSelectedCharacter() == null || updateActiveCharacter) LCLPNetwork.loadActiveCharacter()
                     .thenRun(() -> update.accept(characters))
                     .exceptionally(err -> {
                         err.printStackTrace();

@@ -25,7 +25,11 @@ public class LCLPNetwork {
         return API;
     }
 
-    public static CompletableFuture<Void> setAccessToken(String accessToken) {
+    public static CompletableFuture<Void> setAccessToken(@Nullable String accessToken) {
+        if (accessToken == null) {
+            API = null;
+            return CompletableFuture.completedFuture(null);
+        }
         APIAuthAccess authAccess = new APIAuthAccess(accessToken);
         authAccess.setHost(Config.getEffectiveHost());
 
@@ -37,7 +41,9 @@ public class LCLPNetwork {
         return LCLPNetwork.API.revokeCurrentToken().handle((result, err) -> {
            // unload without considering the result
             AccessTokenStorage.store(null);
-            reloadUser(null);
+            LCLPNetwork.setUser(null);
+            LCLPNetwork.setSelectedCharacter(null);
+            loadActiveCharacter(null);
 
             if (err != null) return false;
             else return result;
@@ -73,17 +79,17 @@ public class LCLPNetwork {
         return AccessTokenStorage.load()
                 .thenCompose(result -> LCLPNetwork.API.getCurrentUser())
                 .thenAccept(user -> {
-                    if (FMLEnvironment.dist == Dist.CLIENT) LCLPNetwork.reloadUser(user);
+                    if (FMLEnvironment.dist == Dist.CLIENT) LCLPNetwork.loadActiveCharacter(user);
                 });
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static CompletableFuture<Void> reloadUser() {
-        return reloadUser(LCLPNetwork.user);
+    public static CompletableFuture<Void> loadActiveCharacter() {
+        return loadActiveCharacter(LCLPNetwork.user);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static CompletableFuture<Void> reloadUser(@Nullable User user) {
+    public static CompletableFuture<Void> loadActiveCharacter(@Nullable User user) {
         if (user == null) return CompletableFuture.completedFuture(null);
 
         LCLPNetwork.user = user;
