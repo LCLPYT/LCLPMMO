@@ -121,7 +121,6 @@ public class MMOCharacter extends JsonSerializable implements MMOSelectionItem {
             if (json.has("owner")) character.owner = json.get("owner").getAsInt();
 
             character.generateUnlocalizedName();
-            System.out.printf("-> %s\n", character);
             return character;
         }
     }
