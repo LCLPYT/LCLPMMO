@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.facade.race;
 
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 public class MMORace extends JsonSerializable implements MMOSelectionItem, IEntitySizeOverride {
 
+    @Expose
     private final String unlocalizedName;
     private final transient ITextComponent title;
 

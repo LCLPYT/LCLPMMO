@@ -100,6 +100,7 @@ public class MMOCharacter extends JsonSerializable implements MMOSelectionItem {
 
         @Override
         public MMOCharacter read(JsonObject json) {
+            System.out.print(json);
             String name = json.get("name").getAsString();
             MMORace race = MMORace.Adapter.INSTANCE.fromJsonObject(json.getAsJsonObject("race"));
             DynamicCharacterData data = null;
@@ -120,6 +121,7 @@ public class MMOCharacter extends JsonSerializable implements MMOSelectionItem {
             if (json.has("owner")) character.owner = json.get("owner").getAsInt();
 
             character.generateUnlocalizedName();
+            System.out.printf("-> %s\n", character);
             return character;
         }
     }

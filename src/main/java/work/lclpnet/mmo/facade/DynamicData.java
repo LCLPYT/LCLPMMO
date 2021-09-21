@@ -2,6 +2,7 @@ package work.lclpnet.mmo.facade;
 
 import work.lclpnet.lclpnetwork.facade.JsonSerializable;
 import work.lclpnet.mmo.util.MMOUtils;
+import work.lclpnet.mmo.util.json.MMOGson;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +34,6 @@ public class DynamicData extends JsonSerializable {
             e.printStackTrace();
             return null;
         }
-
-        return parse(json, clazz);
+        return parse(json, clazz, MMOGson.gson);
     }
 }
