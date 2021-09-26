@@ -206,6 +206,7 @@ public class MMOMainScreen extends MMOScreen {
             }
         }).exceptionally(err -> {
             this.minecraft.displayGuiScreen(new LoginScreen());
+            err.printStackTrace();
             return null;
         });
     }
@@ -214,7 +215,10 @@ public class MMOMainScreen extends MMOScreen {
         assert this.minecraft != null;
         this.minecraft.displayGuiScreen(new ConfirmScreen(yes -> {
             if (yes) {
-                LCLPNetwork.logout();
+                LCLPNetwork.logout().exceptionally(err -> {
+                    err.printStackTrace();
+                    return null;
+                });
                 this.minecraft.displayGuiScreen(new LoginScreen());
             } else {
                 this.minecraft.displayGuiScreen(MMOMainScreen.this);

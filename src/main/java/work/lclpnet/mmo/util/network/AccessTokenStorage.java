@@ -37,9 +37,7 @@ public class AccessTokenStorage {
 
     @OnlyIn(Dist.CLIENT)
     public static CompletableFuture<Void> store(@Nullable String token) {
-        LCLPNetwork.setAccessToken(token);
-
-        return CompletableFuture.runAsync(() -> {
+        return LCLPNetwork.setAccessToken(token).thenCompose(voidResult -> CompletableFuture.runAsync(() -> {
             File f = getTokenFileForEnv();
             if (token == null) {
                 if (f.exists()) {
@@ -64,7 +62,7 @@ public class AccessTokenStorage {
                     throw new CompletionException(e);
                 }
             }
-        });
+        }));
     }
 
     private static File getTokenFileForEnv() {

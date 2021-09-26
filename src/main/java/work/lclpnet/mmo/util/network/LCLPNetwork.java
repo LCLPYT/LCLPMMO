@@ -3,8 +3,6 @@ package work.lclpnet.mmo.util.network;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import work.lclpnet.lclpnetwork.api.APIAccess;
 import work.lclpnet.lclpnetwork.api.APIAuthAccess;
 import work.lclpnet.lclpnetwork.facade.User;
@@ -16,7 +14,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class LCLPNetwork {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private static MMOAPI API = null;
     private static MMOCharacter selectedCharacter;
     private static User user;
@@ -95,6 +92,7 @@ public class LCLPNetwork {
         LCLPNetwork.user = user;
 
         return MMOAPI.PUBLIC.getActiveCharacterByUserId(user.getId(), true)
-                .thenAccept(character -> LCLPNetwork.selectedCharacter = character);
+                .thenAccept(character -> LCLPNetwork.selectedCharacter = character)
+                .exceptionally(err -> null);
     }
 }
