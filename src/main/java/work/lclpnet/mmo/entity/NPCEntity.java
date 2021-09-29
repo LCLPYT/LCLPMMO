@@ -107,7 +107,7 @@ public class NPCEntity extends MonsterEntity implements IAnimatable {
 
     @Override
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return 4.35F;
+        return 1.8F;
     }
 
     public static class NPCGoToGoal extends Goal {

@@ -8,16 +8,17 @@ import work.lclpnet.mmo.LCLPMMO;
 public class NPCModel extends AnimatedGeoModel {
     @Override
     public ResourceLocation getModelLocation(Object o) {
-        return new ResourceLocation(LCLPMMO.MODID, "geo/fallen_knight.geo.json");
+        return new ResourceLocation(LCLPMMO.MODID, "geo/npc.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureLocation(Object o) {
-        return new ResourceLocation(LCLPMMO.MODID, "textures/entity/fallen_knight.png");
+        return new ResourceLocation(LCLPMMO.MODID, "textures/entity/npc.png");
     }
 
     @Override
     public ResourceLocation getAnimationFileLocation(Object o) {
         return new ResourceLocation(LCLPMMO.MODID, "animations/fallen_knight.animation.json");
     }
+
 }
