@@ -1,4 +1,11 @@
 package work.lclpnet.mmo;
 
-public class LCLPMMO {
+import net.fabricmc.api.ModInitializer;
+
+public class LCLPMMO implements ModInitializer {
+
+    @Override
+    public void onInitialize() {
+
+    }
 }

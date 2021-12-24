@@ -21,6 +21,9 @@
   "entrypoints": {
     "main": [
       "work.lclpnet.mmo.LCLPMMO"
+    ],
+    "client": [
+      "work.lclpnet.mmo.client.LCLPMMOClient"
     ]
   },
   "mixins": [
@@ -34,5 +37,5 @@
     "mmocontent": "1.2.x"
   },
   "suggests": {},
-  "accessWidener": "mmofurniture.accesswidener"
+  "accessWidener": "lclpmmo.accesswidener"
 }
