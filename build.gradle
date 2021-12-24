@@ -19,6 +19,13 @@ repositories {
     maven {
         url "https://repo.lclpnet.work/repository/internal"
     }
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -27,7 +34,13 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Mods that are on the client later on (used to resemble a production environment as close as possible)
     modImplementation "work.lclpnet.mods:mmocontent:${project.mmocontent_version}"
+    modImplementation "work.lclpnet.mods:mmoquark:${project.mmoquark_version}"
+    modImplementation "work.lclpnet.mods:mmofurniture:${project.mmofurniture_version}"
+    modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
+    modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
