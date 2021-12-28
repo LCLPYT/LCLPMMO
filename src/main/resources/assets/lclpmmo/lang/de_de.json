@@ -112,7 +112,7 @@
     "cmd.scale.set.no_valid": "In deiner Auswahl befindet sich keine einzige lebende Entität.",
     "cmd.scale.set.success": "Größenskalierung wurde auf %s für %s gesetzt.",
     "cmd.scale.set.success_rel": "Größenskalierung wurde für %s gesetzt.",
-    "itemGroup.lclpmmo": "LCLPMMO",
+    "itemGroup.lclpmmo.decorations": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glasflasche",
     "item.lclpmmo.boletus_spawn_egg": "Boletus-Spawn-Ei",
     "entity.lclpmmo.boletus": "Boletus",

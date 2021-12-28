@@ -112,7 +112,7 @@
     "cmd.scale.set.no_valid": "There is no living entity target in your selection.",
     "cmd.scale.set.success": "Set entity size scale to %s for %s.",
     "cmd.scale.set.success_rel": "Set entity size scale for %s.",
-    "itemGroup.lclpmmo": "LCLPMMO",
+    "itemGroup.lclpmmo.decorations": "LCLPMMO",
     "block.lclpmmo.glass_bottle": "Glass Bottle",
     "item.lclpmmo.boletus_spawn_egg": "Boletus Spawn Egg",
     "entity.lclpmmo.boletus": "Boletus",

@@ -80,7 +80,7 @@ dependencies {
 }
 
 loom {
-    accessWidener = file("src/main/resources/lclpmmo.accesswidener")
+    accessWidenerPath = file("src/main/resources/lclpmmo.accesswidener")
 }
 
 processResources {
