@@ -72,8 +72,6 @@ dependencies {
 
     // Preprocessing library used on shaders
     modImplementation "org.anarres:jcpp:1.4.14"
-    //include "org.anarres:jcpp:1.4.14"
-    //include 'org.slf4j:slf4j-api:1.7.32'
 
     // For annotations, like @Nullable
     implementation 'com.google.code.findbugs:jsr305:3.0.2'

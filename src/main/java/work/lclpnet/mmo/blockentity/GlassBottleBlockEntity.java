@@ -36,7 +36,8 @@ public class GlassBottleBlockEntity extends BlockEntity implements IUpdatePacket
 
     @Override
     public CompoundTag toInitialChunkDataTag() {
-        return writeData(new CompoundTag());
+        CompoundTag tag = super.toInitialChunkDataTag();
+        return writeData(tag);
     }
 
     @Nullable
@@ -57,6 +58,7 @@ public class GlassBottleBlockEntity extends BlockEntity implements IUpdatePacket
     }
 
     private CompoundTag writeData(CompoundTag compound) {
+//        ItemStackSerializerHelper.saveAllItemsIncludeEmpty(compound, items, true);
         Inventories.toTag(compound, items);
         return compound;
     }
