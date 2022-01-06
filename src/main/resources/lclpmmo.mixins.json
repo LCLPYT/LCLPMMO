@@ -3,9 +3,12 @@
   "minVersion": "0.8",
   "package": "work.lclpnet.mmo.asm.mixin",
   "compatibilityLevel": "JAVA_8",
-  "client": [],
+  "client": [
+    "sodium.MixinSodiumBlockRenderer"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": []
+  "mixins": [
+  ]
 }

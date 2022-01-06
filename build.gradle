@@ -58,7 +58,6 @@ dependencies {
     // CurseForge
     modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
     modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
-    modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
     modImplementation "curse.maven:oauth-fabric-515054:${project.oauth_version}"
     modImplementation "curse.maven:bobby-409301:${project.bobby_version}"
     modImplementation "curse.maven:sodium-extra-447673:${project.sodiumextra_version}"
@@ -70,8 +69,9 @@ dependencies {
     // others
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-    // Preprocessing library used on shaders
-    modImplementation "org.anarres:jcpp:1.4.14"
+    // Iris support
+    modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
+    modImplementation "org.anarres:jcpp:${project.jcpp_version}" // Preprocessing library used on shaders
 
     // For annotations, like @Nullable
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
