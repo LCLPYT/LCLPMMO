@@ -9,11 +9,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
+import work.lclpnet.mmo.module.PixieModule;
+import work.lclpnet.mmo.network.LMNetworking;
 import work.lclpnet.mmo.sound.MMOSounds;
-import work.lclpnet.mmofurniture.MMOFurniture;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class LCLPMMO implements ModInitializer {
@@ -21,7 +20,8 @@ public class LCLPMMO implements ModInitializer {
     public static final String MOD_ID = "lclpmmo";
 
     private static Set<IModule> modules = ImmutableSet.of(
-            new DecorationsModule()
+            new DecorationsModule(),
+            new PixieModule()
     );
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
@@ -31,6 +31,9 @@ public class LCLPMMO implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        LMNetworking.registerPackets();
+        LMNetworking.registerServerPacketHandlers();
+
         MMOSounds.init();
 
         modules.forEach(IModule::register);
