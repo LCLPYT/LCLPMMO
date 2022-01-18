@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -38,6 +40,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 import work.lclpnet.mmo.module.PixieModule;
 import work.lclpnet.mmo.network.MMODataSerializers;
 import work.lclpnet.mmo.sound.MMOSounds;
@@ -47,7 +56,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 
-public class PixieEntity extends TameableEntity implements Npc, Flutterer {
+public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnimatable {
 
     public static final TrackedData<Vec3d> TARGET = DataTracker.registerData(PixieEntity.class, MMODataSerializers.VEC3D);
     public static final TrackedData<Boolean> STRICT_TARGET = DataTracker.registerData(PixieEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -58,9 +67,14 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer {
     private SwimGoal swimGoal;
     private FollowOwnerGoal followOwnerGoal;
 
+    @Environment(EnvType.CLIENT)
+    protected AnimationFactory factory;
+
     public PixieEntity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
         this.moveControl = new FlightMoveControl(this, 20, true);
+
+        if (world.isClient) this.factory = new AnimationFactory(this);
     }
 
     public PixieEntity(World world) {
@@ -269,6 +283,21 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer {
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.7D)
                 .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.6D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 48D);
+    }
+
+    private <E extends IAnimatable> PlayState flutterPredicate(AnimationEvent<E> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pixie.flutter", true));
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public void registerControllers(AnimationData animationData) {
+        animationData.addAnimationController(new AnimationController<>(this, "flutter", 0, this::flutterPredicate));
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return factory;
     }
 
     class WanderToGoal extends Goal {
