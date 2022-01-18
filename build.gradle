@@ -40,6 +40,11 @@ repositories {
         name = "Terraformersmc"
         url = "https://maven.terraformersmc.com/releases"
     }
+
+    // for GeckoLib
+    maven {
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+    }
 }
 
 dependencies {
@@ -68,6 +73,7 @@ dependencies {
 
     // others
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
 
     // Iris support
     modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"

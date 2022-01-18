@@ -2,6 +2,7 @@ package work.lclpnet.mmo.client;
 
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ClientModInitializer;
+import work.lclpnet.mmo.client.module.BoletusClientModule;
 import work.lclpnet.mmo.client.module.DecorationsClientModule;
 import work.lclpnet.mmo.client.module.IClientModule;
 import work.lclpnet.mmo.client.module.PixieClientModule;
@@ -13,7 +14,8 @@ public class LCLPMMOClient implements ClientModInitializer {
 
     private static Set<IClientModule> modules = ImmutableSet.of(
             new DecorationsClientModule(),
-            new PixieClientModule()
+            new PixieClientModule(),
+            new BoletusClientModule()
     );
 
     @Override

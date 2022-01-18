@@ -3,10 +3,9 @@ package work.lclpnet.mmo.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.apache.logging.log4j.LogManager;
+import work.lclpnet.mmo.network.packet.MMOEntityAnimationPacket;
 import work.lclpnet.mmocontent.networking.MMOPacketRegistrar;
 import work.lclpnet.mmocontent.util.Env;
-import work.lclpnet.mmofurniture.network.packet.DoorMatMessagePacket;
-import work.lclpnet.mmofurniture.network.packet.LockCratePacket;
 
 public class LMNetworking {
 
@@ -16,7 +15,7 @@ public class LMNetworking {
         if (registrar != null) return; // already registered
 
         registrar = new MMOPacketRegistrar(LogManager.getLogger());
-        registrar.register(LockCratePacket.ID, new LockCratePacket.Decoder());
+        registrar.register(MMOEntityAnimationPacket.ID, new MMOEntityAnimationPacket.Decoder());
 
         // register serializers
         MMODataSerializers.registerSerializers();

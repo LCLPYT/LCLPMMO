@@ -7,6 +7,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import work.lclpnet.mmo.module.BoletusModule;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
 import work.lclpnet.mmo.module.PixieModule;
@@ -21,7 +22,8 @@ public class LCLPMMO implements ModInitializer {
 
     private static Set<IModule> modules = ImmutableSet.of(
             new DecorationsModule(),
-            new PixieModule()
+            new PixieModule(),
+            new BoletusModule()
     );
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
