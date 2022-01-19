@@ -20,6 +20,8 @@ public class Config {
 
     public Misc misc = new Misc();
     public Networking networking = new Networking();
+    public Game game = new Game();
+    public Debug debug = new Debug();
 
     public static class Misc {
         public boolean skipIntro = false,
@@ -96,5 +98,9 @@ public class Config {
 
     public static boolean shouldSkipIntro() {
         return config.misc.skipIntro;
+    }
+
+    public static boolean isMinecraftMusicDisabled() {
+        return config.game.disableMinecraftMusic;
     }
 }

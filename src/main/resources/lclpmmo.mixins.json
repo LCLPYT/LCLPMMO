@@ -9,6 +9,7 @@
     "client.MusicTrackerAccessor",
     "client.SystemToastAccessor",
     "client.TitleScreenAccessor",
+    "client.MixinMusicTracker",
     "sodium.MixinSodiumBlockRenderer"
   ],
   "injectors": {
