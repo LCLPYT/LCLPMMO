@@ -13,7 +13,8 @@ public class LCLPMMOClient implements ClientModInitializer {
             new DecorationsClientModule(),
             new PixieClientModule(),
             new BoletusClientModule(),
-            new TitleScreenClientModule()
+            new TitleScreenClientModule(),
+            new MusicClientModule()
     );
 
     @Override
