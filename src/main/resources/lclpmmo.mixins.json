@@ -4,11 +4,18 @@
   "package": "work.lclpnet.mmo.asm.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "client.ClientConnectionAccessor",
+    "client.MixinMinecraftClient",
+    "client.MusicTrackerAccessor",
+    "client.SystemToastAccessor",
+    "client.TitleScreenAccessor",
     "sodium.MixinSodiumBlockRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
+    "common.DimensionTypeAccessor",
+    "common.PlayerEntityAccessor"
   ]
 }

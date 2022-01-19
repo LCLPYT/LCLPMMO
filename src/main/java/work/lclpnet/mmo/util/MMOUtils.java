@@ -6,7 +6,11 @@ import java.util.Random;
 
 public class MMOUtils {
 
-    public static boolean isSpecialDay(Date d) {
+    public static boolean isSpecialDate() {
+        return isSpecialDate(new Date());
+    }
+
+    public static boolean isSpecialDate(Date d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
 

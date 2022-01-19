@@ -1,1 +1,4 @@
 accessWidener v1 named
+
+# SystemToast
+accessible method net/minecraft/client/toast/SystemToast <init> (Lnet/minecraft/client/toast/SystemToast$Type;Lnet/minecraft/text/Text;Ljava/util/List;I)V

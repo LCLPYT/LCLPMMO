@@ -7,6 +7,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.lclpnet.mmo.module.BoletusModule;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class LCLPMMO implements ModInitializer {
 
     public static final String MOD_ID = "lclpmmo";
+    private static final Logger logger = LogManager.getLogger();
 
     private static Set<IModule> modules = ImmutableSet.of(
             new DecorationsModule(),
@@ -33,6 +36,13 @@ public class LCLPMMO implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        Config.load()
+                .thenRun(() -> logger.info("Config loaded successfully."))
+                .exceptionally(ex -> {
+                    logger.error("Config could not be loaded", ex);
+                    return null;
+                });
+
         LMNetworking.registerPackets();
         LMNetworking.registerServerPacketHandlers();
 
