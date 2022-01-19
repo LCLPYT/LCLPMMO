@@ -3,21 +3,18 @@ package work.lclpnet.mmo;
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import software.bernie.example.GeckoLibMod;
 import work.lclpnet.mmo.module.BoletusModule;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
 import work.lclpnet.mmo.module.PixieModule;
 import work.lclpnet.mmo.network.LMNetworking;
 import work.lclpnet.mmo.sound.MMOSounds;
-import work.lclpnet.mmocontent.util.Env;
 
 import java.util.Set;
 
@@ -36,10 +33,6 @@ public class LCLPMMO implements ModInitializer {
             LCLPMMO.identifier("decorations"),
             () -> new ItemStack(Registry.BLOCK.get(LCLPMMO.identifier("glass_bottle")))
     );
-
-    static {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) GeckoLibMod.DISABLE_IN_DEV = true;
-    }
 
     @Override
     public void onInitialize() {

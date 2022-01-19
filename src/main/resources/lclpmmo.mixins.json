@@ -9,9 +9,11 @@
     "client.MixinMusicTracker",
     "client.MixinSoundOptionsScreen",
     "client.MusicTrackerAccessor",
+    "client.ScreenAccessor",
     "client.SystemToastAccessor",
     "client.TitleScreenAccessor",
-    "client.ScreenAccessor",
+    "geckolib.MixinGeckoLibMod",
+    "geckolib.MixinGeckoLibCache",
     "sodium.MixinSodiumBlockRenderer"
   ],
   "injectors": {
