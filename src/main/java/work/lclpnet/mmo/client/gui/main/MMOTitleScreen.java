@@ -239,7 +239,7 @@ public class MMOTitleScreen extends MMOScreen {
 
         float alpha = this.showFadeInAnimation ? MathHelper.clamp(alphaRaw - 1.0F, 0.0F, 1.0F) : 1.0F;
         int l = MathHelper.ceil(alpha * 255.0F) << 24;
-        if ((l & -67108864) != 0) { //Prevent "flicker" when fading
+        if ((l & -67108864) != 0) {  // Prevent "flicker" when fading
             final float scale = 1F / (360F / this.height);
 
             // Logo

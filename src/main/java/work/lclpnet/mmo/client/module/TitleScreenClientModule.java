@@ -22,6 +22,7 @@ public class TitleScreenClientModule implements IClientModule {
                     if (cancel) return null;
 
                     if (!Config.shouldSkipIntro()) return new PreIntroScreen();
+                    else return new MMOTitleScreen(true);
                 }
 
                 return new MMOTitleScreen(false);

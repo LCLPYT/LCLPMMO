@@ -2,6 +2,7 @@ package work.lclpnet.mmo;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -46,6 +47,7 @@ public class Config {
 
     private static Config config = null;
     private static final Logger logger = LogManager.getLogger();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @NotNull
     protected static File getConfigFile() {
@@ -63,7 +65,7 @@ public class Config {
             }
 
             try (JsonReader reader = new JsonReader(new FileReader(configFile))) {
-                config = new Gson().fromJson(reader, Config.class);
+                config = gson.fromJson(reader, Config.class);
                 if (config == null) config = new Config(); // default config
             } catch (Exception e) {
                 logger.error("Could not load config", e);
@@ -83,8 +85,7 @@ public class Config {
                 return;
             }
 
-            try (JsonWriter writer = new JsonWriter(new FileWriter(configFile))) {
-                Gson gson = new Gson();
+            try (JsonWriter writer = gson.newJsonWriter(new FileWriter(configFile))) {
                 JsonElement json = gson.toJsonTree(config);
                 gson.toJson(json, writer);
             } catch (Exception e) {
