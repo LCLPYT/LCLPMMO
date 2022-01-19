@@ -96,11 +96,25 @@ public class Config {
         });
     }
 
+    public static void dispatchHandledSave() {
+        save().exceptionally(ex -> {
+            logger.error("Failed to save config", ex);
+            return null;
+        });
+    }
+
     public static boolean shouldSkipIntro() {
         return config.misc.skipIntro;
     }
 
     public static boolean isMinecraftMusicDisabled() {
         return config.game.disableMinecraftMusic;
+    }
+
+    public static void setMinecraftMusicDisabled(boolean disable) {
+        if (config.game.disableMinecraftMusic != disable) {
+            config.game.disableMinecraftMusic = disable;
+            dispatchHandledSave();
+        }
     }
 }

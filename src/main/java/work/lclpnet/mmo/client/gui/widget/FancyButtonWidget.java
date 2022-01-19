@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.client.gui;
+package work.lclpnet.mmo.client.gui.widget;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,13 +21,13 @@ public class FancyButtonWidget extends ButtonWidget {
     private boolean hover = false;
     public float scale = 1.5F;
 
-    public FancyButtonWidget(int widthIn, int heightIn, int width, int height, Text text, PressAction onPress) {
-        this(widthIn, heightIn, width, height, text, onPress, Objects.requireNonNull(Formatting.WHITE.getColorValue()),
+    public FancyButtonWidget(int x, int y, int width, int height, Text text, PressAction onPress) {
+        this(x, y, width, height, text, onPress, Objects.requireNonNull(Formatting.WHITE.getColorValue()),
                 Objects.requireNonNull(Formatting.YELLOW.getColorValue()));
     }
 
-    public FancyButtonWidget(int widthIn, int heightIn, int width, int height, Text text, PressAction onPress, int fontColor, int hoverFontColor) {
-        super(widthIn, heightIn, width, height, text, onPress);
+    public FancyButtonWidget(int x, int y, int width, int height, Text text, PressAction onPress, int fontColor, int hoverFontColor) {
+        super(x, y, width, height, text, onPress);
         this.fontColor = fontColor;
         this.hoverFontColor = hoverFontColor;
     }

@@ -6,10 +6,12 @@
   "client": [
     "client.ClientConnectionAccessor",
     "client.MixinMinecraftClient",
+    "client.MixinMusicTracker",
+    "client.MixinSoundOptionsScreen",
     "client.MusicTrackerAccessor",
     "client.SystemToastAccessor",
     "client.TitleScreenAccessor",
-    "client.MixinMusicTracker",
+    "client.ScreenAccessor",
     "sodium.MixinSodiumBlockRenderer"
   ],
   "injectors": {
