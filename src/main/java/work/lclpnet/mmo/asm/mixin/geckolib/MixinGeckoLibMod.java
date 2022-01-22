@@ -10,11 +10,12 @@ import software.bernie.example.GeckoLibMod;
 @Mixin(GeckoLibMod.class)
 public class MixinGeckoLibMod {
 
-    @Shadow public static boolean DISABLE_IN_DEV;
+    @Shadow(remap = false) public static boolean DISABLE_IN_DEV;
 
     @Inject(
             method = "onInitialize",
-            at = @At("HEAD")
+            at = @At("HEAD"),
+            remap = false
     )
     public void disableInDev(CallbackInfo ci) {
         DISABLE_IN_DEV = true;

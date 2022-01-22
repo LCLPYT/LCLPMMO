@@ -22,7 +22,8 @@ public class MixinGeckoLibCache {
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/Collection;iterator()Ljava/util/Iterator;"
-            )
+            ),
+            remap = false
     )
     private static void preventGeckoLibResourceLoad(Function<?, ?> existing, Executor executor, Collection<Identifier> resources, CallbackInfoReturnable<Map<?, ?>> cir) {
         resources.removeIf(r -> r.getNamespace().equals(GeckoLib.ModID));
