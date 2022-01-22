@@ -1,16 +1,15 @@
-import java.util.stream.Collectors
-
 plugins {
     id 'fabric-loom'
     id 'maven-publish'
+    id 'gradle-build-utils'
 }
 
-def privateProps = loadPrivateProps()
+Properties props = loadProperties.call('publish.properties')
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = getVersion()
+version = gitVersion.call()
 group = project.maven_group
 
 repositories {
@@ -51,35 +50,32 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // Mods that are on the client later on (used to resemble a production environment as close as possible)
-    // first party
+    /* Mods that are on the client later on (used to resemble a production environment as close as possible) */
+    // LCLPNetwork artifacts
     modImplementation "work.lclpnet.mods:mmocontent:${project.mmocontent_version}"
     modImplementation "work.lclpnet.mods:mmoquark:${project.mmoquark_version}"
     modImplementation "work.lclpnet.mods:mmofurniture:${project.mmofurniture_version}"
 
-    // CurseForge
+    // CurseForge mods
     modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
     modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
     modImplementation "curse.maven:oauth-fabric-515054:${project.oauth_version}"
     modImplementation "curse.maven:bobby-409301:${project.bobby_version}"
     modImplementation "curse.maven:sodium-extra-447673:${project.sodiumextra_version}"
     modImplementation "curse.maven:reeses-sodium-options-511319:${project.sodiumoptions_version}"
+    modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
 
-    // Modrinth
+    // Modrinth mods
     modImplementation "maven.modrinth:sodium:${project.sodium_version}"
 
-    // others
+    // other mods
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
+    modImplementation "org.anarres:jcpp:${project.jcpp_version}" // Preprocessing library used by Iris
 
-    // Iris support
-    modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
-    modImplementation "org.anarres:jcpp:${project.jcpp_version}" // Preprocessing library used on shaders
-
-    // For annotations, like @Nullable
+    /* other Java dependencies */
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
@@ -103,7 +99,7 @@ tasks.withType(JavaCompile).configureEach {
     // We'll use that if it's available, but otherwise we'll use the older option.
     def targetVersion = 8
     if (JavaVersion.current().isJava9Compatible()) {
-        it.options.release = targetVersion
+        it.options.release.set(targetVersion)
     }
 }
 
@@ -148,70 +144,15 @@ publishing {
                 }
                 url env.get("DEPLOY_URL")
             }
-            else if (Arrays.stream("mavenHost", "mavenUser", "mavenPassword").allMatch(privateProps.&containsKey)) {
+            else if (Arrays.stream("mavenHost", "mavenUser", "mavenPassword").allMatch(props.&containsKey)) {
                 credentials {
-                    username privateProps.getProperty('mavenUser')
-                    password privateProps.getProperty('mavenPassword')
+                    username props.getProperty('mavenUser')
+                    password props.getProperty('mavenPassword')
                 }
-                url privateProps.getProperty('mavenHost')
+                url props.getProperty('mavenHost')
             } else {
                 url "file:///${project.projectDir}/repo"
             }
         }
     }
-}
-
-// helper functions
-def getVersion() {
-    try {
-        String version
-        if (System.getenv().containsKey("CI_VERSION")) version = System.getenv().get("CI_VERSION")
-        else {
-            // First, fetch all tags, to ensure all the tags are found
-            execProcess("git", "fetch", "--tags", "--force")
-
-            // now actually get latest tag with git describe
-            def (exitCode, out, err) = execProcess("git", "describe", "--tags", "--abbrev=0")
-
-            // log outputs
-            println out
-            if (!err.isEmpty()) System.err.println err
-
-            // throw on error
-            if (exitCode != 0) throw new IOException("Git error, make sure you have at least one tag")
-
-            version = out.toString().trim().split("\\r?\\n")[0]
-        }
-
-        if (!version.matches('^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z0-9]+)?$')) throw new IllegalStateException("Latest tag '${version}' does not match the required versioning scheme")
-
-        return version
-    } catch (Exception ex) {
-        IllegalStateException wrapper = new IllegalStateException("Could not determine version")
-        wrapper.addSuppressed(ex)
-        throw wrapper
-    }
-}
-
-Tuple3<Integer, String, String> execProcess(String... args) {
-    ProcessBuilder builder = new ProcessBuilder(args)
-    builder.directory(project.projectDir)
-    println "Executing '" + builder.command().stream().collect(Collectors.joining(" ")) + "' in '" + builder.directory().getAbsolutePath() + "' ..."
-    Process process = builder.start()
-    StringBuilder stdout = new StringBuilder(), stderr = new StringBuilder()
-    process.consumeProcessOutput(stdout, stderr)
-    int exitCode = process.waitFor()
-    println "Process exited with code " + exitCode
-    return new Tuple3<>(exitCode, stdout.toString(), stderr.toString())
-}
-
-Properties loadPrivateProps() {
-    Properties privateProps = new Properties()
-    File privatePropsFile = new File(project.projectDir, "private.properties")
-    if (privatePropsFile.exists()) {
-        privatePropsFile.withInputStream {
-            privateProps.load(it)
-        }
-    }
-    return privateProps
 }
