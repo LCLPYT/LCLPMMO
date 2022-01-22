@@ -2,6 +2,7 @@ plugins {
     id 'fabric-loom'
     id 'maven-publish'
     id 'gradle-build-utils'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 Properties props = loadProperties.call('publish.properties')
@@ -53,7 +54,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     /* Mods that are on the client later on (used to resemble a production environment as close as possible) */
-    // LCLPNetwork artifacts
+    // LCLPNetwork mods
     modImplementation "work.lclpnet.mods:mmocontent:${project.mmocontent_version}"
     modImplementation "work.lclpnet.mods:mmoquark:${project.mmoquark_version}"
     modImplementation "work.lclpnet.mods:mmofurniture:${project.mmofurniture_version}"
@@ -77,6 +78,17 @@ dependencies {
 
     /* other Java dependencies */
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'work.lclpnet:lclpnetwork-api:1.3.0'
+}
+
+shadowJar {
+    exclude 'mappings/mappings.tiny'
+
+    dependencies {
+        include(dependency('work.lclpnet:lclpnetwork-api'))
+    }
+
+    archiveClassifier.set('')
 }
 
 loom {
