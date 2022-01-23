@@ -88,6 +88,8 @@ shadowJar {
         include(dependency('work.lclpnet:lclpnetwork-api'))
     }
 
+    relocate 'work.lclpnet.lclpnetwork', 'mmodep.work.lclpnet.lclpnetwork'
+
     archiveClassifier.set('')
 }
 
@@ -125,6 +127,8 @@ jar {
         rename { "${it}_${project.archivesBaseName}"}
     }
 }
+
+tasks.build.dependsOn(shadowJar)
 
 // configure the maven publication
 publishing {
