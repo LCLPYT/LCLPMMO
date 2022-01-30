@@ -1,7 +1,10 @@
 package work.lclpnet.mmo.client.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.util.math.MathHelper;
 
+@Environment(EnvType.CLIENT)
 public class Color {
 
     public static final int WHITE = 0xffffffff,

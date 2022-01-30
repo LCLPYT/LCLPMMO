@@ -14,6 +14,7 @@ import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
 import work.lclpnet.mmo.module.PixieModule;
 import work.lclpnet.mmo.network.LMNetworking;
+import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 import work.lclpnet.mmo.sound.MMOSounds;
 
 import java.util.Set;
@@ -50,6 +51,8 @@ public class LCLPMMO implements ModInitializer {
 
         modules.forEach(IModule::register);
         modules = null;
+
+        LCLPNetworkSession.startup();
     }
 
     public static Identifier identifier(String path) {

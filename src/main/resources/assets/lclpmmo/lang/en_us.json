@@ -150,5 +150,6 @@
     "subtitle.entity.boletus.step": "Boletus walks",
     "subtitle.entity.boletus.hurt": "Boletus takes damage",
     "subtitle.entity.boletus.angry": "Boletus is angry",
-    "subtitle.entity.boletus.spores": "Boletus spreads spores"
+    "subtitle.entity.boletus.spores": "Boletus spreads spores",
+    "unavailable.temporary": "Temporarily unavailable"
 }

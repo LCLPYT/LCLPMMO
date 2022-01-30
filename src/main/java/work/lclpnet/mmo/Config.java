@@ -18,10 +18,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class Config {
 
-    public Misc misc = new Misc();
-    public Networking networking = new Networking();
-    public Game game = new Game();
-    public Debug debug = new Debug();
+    public final Misc misc = new Misc();
+    public final Networking networking = new Networking();
+    public final Game game = new Game();
+    public final Debug debug = new Debug();
+
+    protected transient final Computed _computed = new Computed();
 
     public static class Misc {
         public boolean skipIntro = false,
@@ -43,6 +45,10 @@ public class Config {
 
     public static class Debug {
         public boolean cape = false;
+    }
+
+    private static class Computed {
+        public String effectiveHost = null;
     }
 
     // IO logic
@@ -103,6 +109,8 @@ public class Config {
         });
     }
 
+    /* - */
+
     public static boolean shouldSkipIntro() {
         return config.misc.skipIntro;
     }
@@ -116,5 +124,26 @@ public class Config {
             config.game.disableMinecraftMusic = disable;
             dispatchHandledSave();
         }
+    }
+
+    public static String getNetworkingProvider() {
+        return config.networking.selectedProvider;
+    }
+
+    public static String getEffectiveHost() {
+        if (config._computed.effectiveHost == null) {
+            String provider = config.networking.selectedProvider;
+            if (provider == null) throw new IllegalStateException("networking.provider must be set in the config");
+
+            Map<String, String> providers = config.networking.providers;
+            if (providers == null) throw new IllegalStateException("networking.providers must be set in the config");
+
+            String host = providers.get(provider);
+            if (host == null) throw new IllegalStateException("networking.provider is not mapped by networking.providers in the config");
+
+            config._computed.effectiveHost = host;
+        }
+
+        return config._computed.effectiveHost;
     }
 }
