@@ -34,8 +34,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.asm.mixin.common.PlayerEntityAccessor;
-import work.lclpnet.mmo.client.gui.widget.FancyButtonWidget;
 import work.lclpnet.mmo.client.gui.MMOScreen;
+import work.lclpnet.mmo.client.gui.login.LoginScreen;
+import work.lclpnet.mmo.client.gui.widget.FancyButtonWidget;
+import work.lclpnet.mmo.client.MMOClient;
+import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ public class MMOTitleScreen extends MMOScreen {
     private static final Identifier PANORAMA_OVERLAY_TEXTURES = LCLPMMO.identifier("textures/gui/main/panorama_overlay.png"),
             MINECRAFT_TITLE_TEXTURES = LCLPMMO.identifier("textures/gui/main/title.png"),
             ACCESSIBILITY_TEXTURES = new Identifier("textures/gui/accessibility.png");
+
     private final RotatingCubeMapRenderer panorama = new RotatingCubeMapRenderer(PANORAMA_RESOURCES);
     private final boolean showFadeInAnimation;
     private long firstRenderTime = 0L;
@@ -67,7 +71,7 @@ public class MMOTitleScreen extends MMOScreen {
         ClientPlayNetworkHandler netHandler = new FakeClientPlayNetworkHandler(client);
         ClientWorld world = new FakeClientWorld(netHandler, new ClientWorld.Properties(Difficulty.NORMAL, false, false));
         player = new ClientPlayerEntity(client, world, netHandler, null, null, false, false);
-        // TODO init mmo player data here
+        MMOClient.initializeMyPlayer(player);
 
         TrackedData<Byte> PLAYER_MODEL_FLAG = PlayerEntityAccessor.getPlayerModelFlag();
         int modelParts = 0;
@@ -143,8 +147,7 @@ public class MMOTitleScreen extends MMOScreen {
 
         this.addButton(quitButton);
 
-//        final boolean loggedIn = LCLPNetwork.isLoggedIn(); TODO implement
-        final boolean loggedIn = false;
+        final boolean loggedIn = LCLPNetworkSession.isLoggedIn();
         Text logoutText = new TranslatableText(loggedIn ? "mmo.menu.logout" : "mmo.menu.login");
         FancyButtonWidget logoutBtn = new FancyButtonWidget(
                 this.width - this.textRenderer.getWidth(logoutText) - 10,
@@ -180,25 +183,25 @@ public class MMOTitleScreen extends MMOScreen {
             if (this.client != null)
                 this.client.openScreen(new OptionsScreen(this, this.client.options));
         }));
+        // TODO implement
 //        this.menuButtons.add(new MMOButtonInfo(new TranslatableText("mmo.menu.btn_create_character"), b -> CharacterChooserScreen.updateContentAndShow(this.minecraft, this)));
     }
 
     protected void doLogin() {
-        if (client == null) throw new AssertionError();
+        Objects.requireNonNull(client);
 
-//        LCLPNetwork.setup().thenRun(() -> {
-//            if (LCLPNetwork.isLoggedIn()) {
-//                displayToast(new TranslationTextComponent("mmo.menu.login.login_successful"));
-//                this.minecraft.displayGuiScreen(new MMOTitleScreen(false));
-//            } else {
-//                this.minecraft.displayGuiScreen(new LoginScreen());
-//            }
-//        }).exceptionally(err -> {
-//            this.minecraft.displayGuiScreen(new LoginScreen());
-//            err.printStackTrace();
-//            return null;
-//        });
-        // TODO implement
+        LCLPNetworkSession.startup().thenRun(() -> {
+            if (LCLPNetworkSession.isLoggedIn()) {
+                displayToast(new TranslatableText("mmo.menu.login.login_successful"));
+                this.client.openScreen(new MMOTitleScreen(false));
+            } else {
+                this.client.openScreen(new LoginScreen());
+            }
+        }).exceptionally(err -> {
+            this.client.openScreen(new LoginScreen());
+            err.printStackTrace();
+            return null;
+        });
     }
 
     protected void doLogout() {
@@ -206,12 +209,11 @@ public class MMOTitleScreen extends MMOScreen {
 
         this.client.openScreen(new ConfirmScreen(accepted -> {
             if (accepted) {
-                // TODO implement
-//                LCLPNetwork.logout().exceptionally(err -> {
-//                    err.printStackTrace();
-//                    return null;
-//                });
-//                this.minecraft.displayGuiScreen(new LoginScreen());
+                MMOClient.logout().exceptionally(err -> {
+                    err.printStackTrace();
+                    return null;
+                });
+                this.client.openScreen(new LoginScreen());
             } else {
                 this.client.openScreen(MMOTitleScreen.this);
             }

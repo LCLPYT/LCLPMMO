@@ -20,7 +20,7 @@ public interface IMMOPlayer {
         return getCurrentMMODialog() != null;
     }
 
-    static IMMOPlayer get(PlayerEntity player) {
+    static IMMOPlayer of(PlayerEntity player) {
         return (IMMOPlayer) player;
     }
 }

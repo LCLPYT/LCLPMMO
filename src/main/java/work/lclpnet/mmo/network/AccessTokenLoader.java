@@ -21,7 +21,7 @@ public class AccessTokenLoader {
                 throw new CompletionException(e);
             }
 
-            if (!f.exists()) throw new CompletionException(new IOException("Token file does not exist."));
+            if (!f.exists()) throw new CompletionException(new FileNotFoundException("Token file does not exist."));
 
             try (InputStream in = new FileInputStream(f);
                  ByteArrayOutputStream out = new ByteArrayOutputStream()) {

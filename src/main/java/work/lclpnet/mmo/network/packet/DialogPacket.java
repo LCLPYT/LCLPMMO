@@ -93,7 +93,7 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
     public void handleServer(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketSender responseSender) {
         switch (this.action) {
             case ACTION_CLOSE:
-                IMMOPlayer.get(player).setCurrentMMODialog(null);
+                IMMOPlayer.of(player).setCurrentMMODialog(null);
                 break;
             case ACTION_COMPLETE:
                 DialogCompleteCallback.EVENT.invoker().completeDialog(this.id);
@@ -124,7 +124,7 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
     @Environment(EnvType.CLIENT)
     public static void closeDialogClient() {
         MinecraftClient client = MinecraftClient.getInstance();
-        Objects.requireNonNull(IMMOPlayer.get(client.player))
+        Objects.requireNonNull(IMMOPlayer.of(client.player))
                 .setCurrentMMODialog(null);
         client.openScreen(null);
     }
@@ -132,7 +132,7 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
     @Environment(EnvType.CLIENT)
     public static void openDialogClient(Dialog dialog) {
         MinecraftClient client = MinecraftClient.getInstance();
-        Objects.requireNonNull(IMMOPlayer.get(client.player))
+        Objects.requireNonNull(IMMOPlayer.of(client.player))
                 .setCurrentMMODialog(dialog);
         client.openScreen(new DialogScreen<>(dialog));
     }

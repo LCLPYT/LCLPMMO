@@ -2,7 +2,6 @@ package work.lclpnet.mmo.network.backend;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.lclpnet.lclpnetwork.LCLPNetworkAPI;
@@ -10,13 +9,14 @@ import work.lclpnet.lclpnetwork.api.APIAccess;
 import work.lclpnet.lclpnetwork.api.APIAuthAccess;
 import work.lclpnet.lclpnetwork.model.User;
 import work.lclpnet.mmo.Config;
-import work.lclpnet.mmo.client.util.MMOClient;
+import work.lclpnet.mmo.client.MMOClient;
 import work.lclpnet.mmo.network.AccessTokenLoader;
 import work.lclpnet.mmocontent.util.Env;
 
 import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 public class LCLPNetworkSession {
 
@@ -32,9 +32,19 @@ public class LCLPNetworkSession {
         return user;
     }
 
-    public static void startup() {
-        AccessTokenLoader.load()
-                .thenCompose(LCLPNetworkSession::init);
+    public static void setUser(User user) {
+        LCLPNetworkSession.user = user;
+    }
+
+    public static CompletableFuture<Void> startup() {
+        return AccessTokenLoader.load()
+                .thenCompose(LCLPNetworkSession::init)
+                .exceptionally(err -> {
+                    if (err.getCause() instanceof FileNotFoundException) return null;
+                    else logger.error("Could not startup LCLPNetwork session", err);
+
+                    return null;
+                });
     }
 
     private static CompletableFuture<MMOAPI> createApiConnection(String accessToken) {

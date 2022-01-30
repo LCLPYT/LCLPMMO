@@ -8,10 +8,12 @@
     "client.MixinMinecraftClient",
     "client.MixinMusicTracker",
     "client.MixinSoundOptionsScreen",
+    "client.MixinSystemToast",
     "client.MusicTrackerAccessor",
     "client.ScreenAccessor",
     "client.SystemToastAccessor",
     "client.TitleScreenAccessor",
+    "client.MixinClientPlayerInteractionManager",
     "geckolib.MixinGeckoLibCache",
     "geckolib.MixinGeckoLibMod",
     "sodium.MixinSodiumBlockRenderer"
