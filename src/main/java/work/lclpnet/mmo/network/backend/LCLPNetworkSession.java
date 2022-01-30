@@ -15,7 +15,6 @@ import work.lclpnet.mmocontent.util.Env;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 public class LCLPNetworkSession {

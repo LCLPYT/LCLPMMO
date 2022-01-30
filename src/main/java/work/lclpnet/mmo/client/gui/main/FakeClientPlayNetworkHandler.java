@@ -17,7 +17,7 @@ import java.util.UUID;
 @Environment(EnvType.CLIENT)
 public class FakeClientPlayNetworkHandler extends ClientPlayNetworkHandler {
 
-    private PlayerListEntry playerInfo;
+    private final PlayerListEntry playerInfo;
 
     public FakeClientPlayNetworkHandler(MinecraftClient client) {
         super(client, client.currentScreen, new FakeClientConnection(NetworkSide.CLIENTBOUND), client.getSession().getProfile());

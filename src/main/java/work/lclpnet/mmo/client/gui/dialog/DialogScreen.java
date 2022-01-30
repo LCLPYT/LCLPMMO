@@ -137,7 +137,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 
     @Override
     public void onClose() {
-        Objects.requireNonNull(IMMOPlayer.get(MinecraftClient.getInstance().player))
+        Objects.requireNonNull(IMMOPlayer.of(MinecraftClient.getInstance().player))
                 .closeMMODialog();
     }
 
