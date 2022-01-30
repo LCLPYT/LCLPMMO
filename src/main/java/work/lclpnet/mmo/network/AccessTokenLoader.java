@@ -2,7 +2,6 @@ package work.lclpnet.mmo.network;
 
 import net.fabricmc.loader.api.FabricLoader;
 import work.lclpnet.mmo.Config;
-import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 import work.lclpnet.storage.LocalLCLPStorage;
 
 import java.io.*;

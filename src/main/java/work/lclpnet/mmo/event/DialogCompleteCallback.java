@@ -2,7 +2,6 @@ package work.lclpnet.mmo.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.world.World;
 
 public interface DialogCompleteCallback {
 

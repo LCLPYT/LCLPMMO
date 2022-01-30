@@ -1,9 +1,7 @@
 package work.lclpnet.mmo.client.util;
 
-import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import work.lclpnet.lclpnetwork.api.APIException;
 import work.lclpnet.lclpnetwork.api.APIResponse;
 import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 import work.lclpnet.mmo.network.backend.MMOAPI;

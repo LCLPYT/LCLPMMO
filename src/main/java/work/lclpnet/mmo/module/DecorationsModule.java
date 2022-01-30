@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.module;
 
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.util.registry.Registry;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.block.GlassBottleBlock;

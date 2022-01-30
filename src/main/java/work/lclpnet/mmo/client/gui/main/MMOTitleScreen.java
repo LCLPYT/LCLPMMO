@@ -34,10 +34,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.asm.mixin.common.PlayerEntityAccessor;
+import work.lclpnet.mmo.client.MMOClient;
 import work.lclpnet.mmo.client.gui.MMOScreen;
 import work.lclpnet.mmo.client.gui.login.LoginScreen;
 import work.lclpnet.mmo.client.gui.widget.FancyButtonWidget;
-import work.lclpnet.mmo.client.MMOClient;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 
 import javax.annotation.Nonnull;
