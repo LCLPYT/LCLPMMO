@@ -36,6 +36,7 @@ import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.asm.mixin.common.PlayerEntityAccessor;
 import work.lclpnet.mmo.client.MMOClient;
 import work.lclpnet.mmo.client.gui.MMOScreen;
+import work.lclpnet.mmo.client.gui.character.CharacterChooserScreen;
 import work.lclpnet.mmo.client.gui.login.LoginScreen;
 import work.lclpnet.mmo.client.gui.widget.FancyButtonWidget;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
@@ -183,12 +184,15 @@ public class MMOTitleScreen extends MMOScreen {
             if (this.client != null)
                 this.client.openScreen(new OptionsScreen(this, this.client.options));
         }));
-        // TODO implement
-//        this.menuButtons.add(new MMOButtonInfo(new TranslatableText("mmo.menu.btn_create_character"), b -> CharacterChooserScreen.updateContentAndShow(this.minecraft, this)));
+
+        this.menuButtons.add(new MMOButtonInfo(new TranslatableText("mmo.menu.btn_create_character"),
+                b -> CharacterChooserScreen.updateContentAndShow(this.client, this)));
     }
 
     protected void doLogin() {
         Objects.requireNonNull(client);
+
+        // TODO make stateful and add a loading indicator
 
         LCLPNetworkSession.startup().thenRun(() -> {
             if (LCLPNetworkSession.isLoggedIn()) {

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import work.lclpnet.mmo.data.character.MMOCharacter;
 import work.lclpnet.mmo.data.quest.Quest;
-import work.lclpnet.mmo.data.race.IMMORace;
+import work.lclpnet.mmo.data.race.MMORace;
 
 public class MMOGson {
 
@@ -13,7 +13,7 @@ public class MMOGson {
 
     private static GsonBuilder builder() {
         return new GsonBuilder()
-                .registerTypeAdapter(IMMORace.class, IMMORace.Adapter.INSTANCE)
+                .registerTypeAdapter(MMORace.class, MMORace.Adapter.INSTANCE)
                 .registerTypeAdapter(MMOCharacter.class, new MMOCharacter.Adapter())
                 .registerTypeAdapter(Quest.class, new Quest.Adapter());
     }

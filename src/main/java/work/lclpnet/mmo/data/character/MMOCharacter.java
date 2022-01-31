@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonWriter;
 import work.lclpnet.lclpnetwork.model.JsonSerializable;
-import work.lclpnet.mmo.data.race.IMMORace;
+import work.lclpnet.mmo.data.race.MMORace;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
 import java.io.IOException;
@@ -24,27 +24,31 @@ public class MMOCharacter extends JsonSerializable {
     @Expose
     protected final String name;
     @Expose
-    protected final IMMORace race;
+    protected final MMORace race;
     @Expose
     private final DynamicCharacterData data;
 
-    public MMOCharacter(String name, IMMORace race, DynamicCharacterData data) {
+    public MMOCharacter(String name, MMORace race, DynamicCharacterData data) {
         this.name = Objects.requireNonNull(name); // maybe add CharMatcher.ascii().matchesAllOf(name);
         generateUnlocalizedName();
         this.race = Objects.requireNonNull(race);
         this.data = Optional.ofNullable(data).orElse(DynamicCharacterData.empty());
     }
 
-    public void generateUnlocalizedName() {
+    protected void generateUnlocalizedName() {
         if (this.unlocalizedName == null)
             this.unlocalizedName = this.name.toLowerCase(Locale.ROOT).replace(' ', '_');
+    }
+
+    public String getUnlocalizedName() {
+        return unlocalizedName;
     }
 
     public String getName() {
         return name;
     }
 
-    public IMMORace getRace() {
+    public MMORace getRace() {
         return race;
     }
 
@@ -66,7 +70,7 @@ public class MMOCharacter extends JsonSerializable {
             addField("owner", out, w -> w.value(value.owner));
             addField("name", out, w -> w.value(value.name));
             addField("unlocalizedName", out, w -> w.value(value.unlocalizedName)); // DEBUG ONLY
-            addField("race", out, w -> IMMORace.Adapter.INSTANCE.write(w, value.race));
+            addField("race", out, w -> MMORace.Adapter.INSTANCE.write(w, value.race));
             addField("data", out, w -> w.value(value.data.encryptToString()));
 
             out.endObject();
@@ -75,7 +79,7 @@ public class MMOCharacter extends JsonSerializable {
         @Override
         public MMOCharacter read(JsonObject json) {
             String name = json.get("name").getAsString();
-            IMMORace race = IMMORace.Adapter.INSTANCE.fromJsonObject(json.getAsJsonObject("race"));
+            MMORace race = MMORace.Adapter.INSTANCE.fromJsonObject(json.getAsJsonObject("race"));
             DynamicCharacterData data = null;
             if (json.has("data")) {
                 JsonElement e = json.get("data");

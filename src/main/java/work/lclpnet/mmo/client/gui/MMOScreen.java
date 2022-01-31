@@ -81,12 +81,17 @@ public class MMOScreen extends Screen {
         SystemToast systemtoast = toastGui.getToast(SystemToast.class, type);
         if (systemtoast == null) {
             SystemToast toast;
-            if (text == null) toast = new SystemToast(type, title, text);
+            if (text == null) toast = new SystemToast(type, title, null);
             else {
+                final int maxToastWidth = 200;
+                final int iconPadding = 18;
+                final int maxTextWidth = maxToastWidth - iconPadding;
+
                 TextRenderer textRenderer = toastGui.getGame().textRenderer;
-                List<OrderedText> lines = textRenderer.wrapLines(text, 160);
-                int i = Math.max(160, lines.stream().mapToInt(textRenderer::getWidth).max().orElse(160));
-                toast = new SystemToast(type, title, lines, i <= 160 ? i : i + 30);
+                List<OrderedText> lines = textRenderer.wrapLines(text, maxTextWidth);
+                int width = 18 + lines.stream().mapToInt(textRenderer::getWidth).max().orElse(maxTextWidth); // 18 = padding for icon
+
+                toast = new SystemToast(type, title, lines, Math.min(maxToastWidth, width + iconPadding));
             }
             toastGui.add(toast);
         } else {

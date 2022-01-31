@@ -14,13 +14,13 @@ import work.lclpnet.mmo.util.json.EasyTypeAdapter;
 
 import java.io.IOException;
 
-public class IMMORace extends JsonSerializable implements IMMOSelectionItem {
+public class MMORace extends JsonSerializable implements IMMOSelectionItem {
 
     @Expose
     private final String unlocalizedName;
     private final transient Text title;
 
-    public IMMORace(String unlocalizedName, Text title) {
+    public MMORace(String unlocalizedName, Text title) {
         this.unlocalizedName = unlocalizedName;
         this.title = title;
     }
@@ -33,7 +33,7 @@ public class IMMORace extends JsonSerializable implements IMMOSelectionItem {
         return title;
     }
 
-    public static IMMORace of(LivingEntity entity) {
+    public static MMORace of(LivingEntity entity) {
         if (!(entity instanceof PlayerEntity)) return null;
 
         PlayerEntity player = (PlayerEntity) entity;
@@ -41,16 +41,16 @@ public class IMMORace extends JsonSerializable implements IMMOSelectionItem {
         return character != null ? character.getRace() : null;
     }
 
-    public static class Adapter extends EasyTypeAdapter<IMMORace> {
+    public static class Adapter extends EasyTypeAdapter<MMORace> {
 
         public static final Adapter INSTANCE = new Adapter();
 
         protected Adapter() {
-            super(IMMORace.class);
+            super(MMORace.class);
         }
 
         @Override
-        public void write(JsonWriter out, IMMORace value) throws IOException {
+        public void write(JsonWriter out, MMORace value) throws IOException {
             out.beginObject();
 
             addField("unlocalizedName", out, w -> w.value(value.unlocalizedName));
@@ -59,11 +59,11 @@ public class IMMORace extends JsonSerializable implements IMMOSelectionItem {
         }
 
         @Override
-        public IMMORace read(JsonObject json) {
+        public MMORace read(JsonObject json) {
             return fromJsonObject(json);
         }
 
-        public IMMORace fromJsonObject(JsonObject json) {
+        public MMORace fromJsonObject(JsonObject json) {
             String unlocalizedName = json.get("unlocalizedName").getAsString();
             return Races.getByName(unlocalizedName);
         }

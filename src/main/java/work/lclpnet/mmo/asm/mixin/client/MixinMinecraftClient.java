@@ -21,6 +21,7 @@ import work.lclpnet.mmo.client.audio.MMOMusicSound;
 import work.lclpnet.mmo.client.event.LeaveWorldCallback;
 import work.lclpnet.mmo.client.event.ScreenOpenCallback;
 import work.lclpnet.mmo.client.gui.main.FakeClientWorld;
+import work.lclpnet.mmo.client.util.RenderWorker;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
@@ -78,5 +79,17 @@ public abstract class MixinMinecraftClient {
     )
     public void fireLeaveWorldEventOnLoad(ClientWorld world, CallbackInfo ci) {
         if (this.world != null) LeaveWorldCallback.EVENT.invoker().leaveWorld(this.world);
+    }
+
+    @Inject(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/toast/ToastManager;draw(Lnet/minecraft/client/util/math/MatrixStack;)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    public void afterRender(boolean tick, CallbackInfo ci) {
+        RenderWorker.doWork();
     }
 }

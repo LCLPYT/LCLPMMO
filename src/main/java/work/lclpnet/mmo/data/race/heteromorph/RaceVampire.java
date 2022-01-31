@@ -3,9 +3,9 @@ package work.lclpnet.mmo.data.race.heteromorph;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import work.lclpnet.mmo.LCLPMMO;
-import work.lclpnet.mmo.data.race.IMMORace;
+import work.lclpnet.mmo.data.race.MMORace;
 
-public class RaceVampire extends IMMORace {
+public class RaceVampire extends MMORace {
 
     public RaceVampire() {
         super("vampire", new TranslatableText("mmo.race.vampire.title"));

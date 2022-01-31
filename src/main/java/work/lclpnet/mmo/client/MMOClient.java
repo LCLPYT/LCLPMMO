@@ -1,6 +1,8 @@
 package work.lclpnet.mmo.client;
 
 import net.minecraft.client.network.ClientPlayerEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.lclpnet.lclpnetwork.model.User;
 import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.client.util.ClientAccessTokenSaver;
@@ -12,7 +14,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class MMOClient {
 
+    private static final Logger logger = LogManager.getLogger();
     private static MMOCharacter activeCharacter;
+
+    public static void setActiveCharacter(MMOCharacter activeCharacter) {
+        MMOClient.activeCharacter = activeCharacter;
+    }
 
     public static MMOCharacter getActiveCharacter() {
         return activeCharacter;
@@ -27,12 +34,15 @@ public class MMOClient {
     }
 
     public static CompletableFuture<Boolean> logout() {
-        return LCLPNetworkSession.getAuthorizedApi().revokeCurrentToken().handle((result, err) -> {
-            // unload without considering the result
-            ClientAccessTokenSaver.store(null);
-            LCLPNetworkSession.setUser(null);
-            activeCharacter = null;
+        LCLPNetworkSession.setUser(null);
+        activeCharacter = null;
 
+        return ClientAccessTokenSaver.store(null).thenCompose(nil -> LCLPNetworkSession.getAuthorizedApi()
+                .revokeCurrentToken().handle((result, err) -> {
+                    if (err != null) return false;
+                    else return result;
+                })
+        ).handle((result, err) -> {
             if (err != null) return false;
             else return result;
         });
@@ -46,5 +56,9 @@ public class MMOClient {
         IMMOUser user = IMMOUser.of(player);
         user.setUser(LCLPNetworkSession.getUser());
         user.setMMOCharacter(MMOClient.getActiveCharacter());
+    }
+
+    public static void logActiveCharacterLoaded(MMOCharacter character) {
+        logger.info("Loaded active character {}#{}", character.getName(), character.id);
     }
 }

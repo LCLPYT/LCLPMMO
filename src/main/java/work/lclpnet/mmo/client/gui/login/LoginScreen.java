@@ -99,6 +99,8 @@ public class LoginScreen extends MMOScreen {
     protected void login(ButtonWidget buttonWidget) {
         this.buttonLogin.active = false;
 
+        // TODO make stateful and add loading indicator
+
         authManager.login(textFieldEmail.getText(), textFieldPassword.getText()).thenAccept(success -> {
             if (success == null) return; // already in progress
 

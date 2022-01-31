@@ -33,6 +33,8 @@ public class SingleRequestManager {
             Throwable ex = err instanceof CompletionException ? err.getCause() : err;
             if (ex == null) ex = err;
 
+            locked = false;
+
             if (ex instanceof ResponseEvaluationException) {
                 APIResponse resp = ((ResponseEvaluationException) ex).getResponse();
                 if (resp.getResponseCode() == 401) return false;

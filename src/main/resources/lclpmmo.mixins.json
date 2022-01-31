@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "client.ClientConnectionAccessor",
+    "client.MixinClientPlayerInteractionManager",
     "client.MixinMinecraftClient",
     "client.MixinMusicTracker",
     "client.MixinSoundOptionsScreen",
@@ -13,7 +14,7 @@
     "client.ScreenAccessor",
     "client.SystemToastAccessor",
     "client.TitleScreenAccessor",
-    "client.MixinClientPlayerInteractionManager",
+    "client.EntryListWidgetAccessor",
     "geckolib.MixinGeckoLibCache",
     "geckolib.MixinGeckoLibMod",
     "sodium.MixinSodiumBlockRenderer"
