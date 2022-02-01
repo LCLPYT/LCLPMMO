@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.client.gui.main;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -21,6 +22,7 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerModelPart;
+import net.minecraft.client.util.Session;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.data.TrackedData;
@@ -68,7 +70,8 @@ public class MMOTitleScreen extends MMOScreen {
     }
 
     private void setupEntity() {
-        if (client == null || (player != null && MinecraftClient.getInstance().getNetworkHandler() != null)) return;
+        if (client == null || (player != null && client.getNetworkHandler() != null && !hasGameProfileChanged())) return;
+
         ClientPlayNetworkHandler netHandler = new FakeClientPlayNetworkHandler(client);
         ClientWorld world = new FakeClientWorld(netHandler, new ClientWorld.Properties(Difficulty.NORMAL, false, false));
         player = new ClientPlayerEntity(client, world, netHandler, null, null, false, false);
@@ -84,6 +87,16 @@ public class MMOTitleScreen extends MMOScreen {
 
         client.player = player;
         client.getEntityRenderDispatcher().configure(world, client.gameRenderer.getCamera(), player);
+    }
+
+    private boolean hasGameProfileChanged() {
+        Session session = Objects.requireNonNull(client).getSession();
+        if (session == null) return false;
+
+        GameProfile dummyPlayerProfile = player.getGameProfile();
+        if (dummyPlayerProfile == null) return false;
+
+        return !dummyPlayerProfile.equals(session.getProfile());
     }
 
     @Override
