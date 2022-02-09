@@ -17,6 +17,7 @@ import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 
 import java.util.Objects;
 import java.util.concurrent.CompletionException;
+import java.util.function.Consumer;
 
 import static net.minecraft.client.resource.language.I18n.translate;
 
@@ -27,14 +28,12 @@ public class CharacterCreatorScreen extends MMOScreen {
     protected ButtonWidget btnCreateCharacter;
     protected TextFieldWidget characterNameField;
     protected String characterName = "";
-    protected final CharacterChooserScreen prevScreen;
     protected MMORace selectedRace = null;
-    protected boolean createFirst;
+    protected final Consumer<Boolean> resolver;
 
-    public CharacterCreatorScreen(CharacterChooserScreen prevScreen, boolean createFirst) {
+    public CharacterCreatorScreen(Consumer<Boolean> resolver) {
         super(new TranslatableText("mmo.menu.create_character.title"));
-        this.prevScreen = prevScreen;
-        this.createFirst = createFirst;
+        this.resolver = resolver;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CharacterCreatorScreen extends MMOScreen {
                 buttonWidget -> this.client.openScreen(new RaceSelectionScreen(this))));
         this.btnCreateCharacter = this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 28, 150, 20, new TranslatableText("mmo.menu.create_character.create"), buttonWidget -> this.createCharacter()));
         this.btnCreateCharacter.active = !this.characterName.isEmpty();
-        this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableText("gui.cancel"), (p_214317_1_) -> this.client.openScreen(this.prevScreen)));
+        this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableText("gui.cancel"), buttonWidget -> resolver.accept(false)));
 
         this.setFocused(this.characterNameField);
     }
@@ -84,8 +83,8 @@ public class CharacterCreatorScreen extends MMOScreen {
 
     @Override
     public void onClose() {
-        super.onClose();
         Objects.requireNonNull(this.client).keyboard.setRepeatEvents(false);
+        resolver.accept(false);
     }
 
     public void setError(Text error) {
@@ -106,7 +105,7 @@ public class CharacterCreatorScreen extends MMOScreen {
 
         LCLPNetworkSession.getAuthorizedApi().addCharacter(characterName, this.selectedRace.getUnlocalizedName()).thenRun(() -> {
             displayToast(new TranslatableText("mmo.menu.create_character.created"));
-            CharacterChooserScreen.updateContentAndShow(this.client, prevScreen.getPreviousScreen(), createFirst);
+            resolver.accept(true);
         }).exceptionally(completionError -> {
             Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
             if (err == null) err = completionError;

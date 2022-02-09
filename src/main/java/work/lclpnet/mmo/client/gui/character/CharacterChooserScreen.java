@@ -7,8 +7,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import work.lclpnet.lclpnetwork.api.APIException;
 import work.lclpnet.lclpnetwork.api.APIResponse;
 import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
@@ -90,7 +88,10 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
 
     @Override
     public void addEntry() {
-        Objects.requireNonNull(this.client).openScreen(new CharacterCreatorScreen(this, characters.isEmpty()));
+        Objects.requireNonNull(this.client).openScreen(new CharacterCreatorScreen(success -> {
+            if (success) CharacterChooserScreen.updateContentAndShow(this.client, this.getPreviousScreen(), characters.isEmpty());
+            else this.client.openScreen(this);
+        }));
     }
 
     @Override
@@ -146,23 +147,10 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
     }
 
     public static void updateContentAndShow(final MinecraftClient mc, Screen prevScreen, boolean updateActiveCharacter) {
-        final Consumer<List<MMOCharacter>> update = characters ->
-                RenderWorker.push(() -> mc.openScreen(new CharacterChooserScreen(prevScreen, characters)));
-
-        LCLPNetworkSession.getAuthorizedApi().getCharacters().thenAccept(characters -> {
-            if (MMOClient.getActiveCharacter() == null || updateActiveCharacter) {
-                MMOClient.loadActiveCharacter()
-                        .thenRun(() -> update.accept(characters))
-                        .exceptionally(err -> {
-                            err.printStackTrace();
-                            return null;
-                        });
-            } else {
-                update.accept(characters);
-            }
-        }).exceptionally(err -> {
-            update.accept(new ArrayList<>());
-            return null;
-        });
+        MMOClient.fetchAndCacheCharacters(updateActiveCharacter)
+                .exceptionally(err -> new ArrayList<>())
+                .thenAccept(characters -> {
+                    RenderWorker.push(() -> mc.openScreen(new CharacterChooserScreen(prevScreen, characters)));
+                });
     }
 }

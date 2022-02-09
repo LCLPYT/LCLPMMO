@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import work.lclpnet.mmo.client.audio.MMOMusic;
@@ -22,6 +21,8 @@ import work.lclpnet.mmo.client.event.LeaveWorldCallback;
 import work.lclpnet.mmo.client.event.ScreenOpenCallback;
 import work.lclpnet.mmo.client.gui.main.FakeClientWorld;
 import work.lclpnet.mmo.client.util.RenderWorker;
+
+import java.util.Objects;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
@@ -32,14 +33,27 @@ public abstract class MixinMinecraftClient {
 
     @Shadow @Nullable public ClientWorld world;
 
-    @ModifyVariable(
-            method = "openScreen(Lnet/minecraft/client/gui/screen/Screen;)V",
+    @Shadow public abstract void openScreen(@Nullable Screen screen);
+
+    @Inject(
+            method = "openScreen",
             at = @At("HEAD"),
-            argsOnly = true
+            cancellable = true
     )
-    public Screen modifyOpenedScreen(Screen original) {
-        Screen modified = ScreenOpenCallback.EVENT.invoker().onScreenOpen(original);
-        return modified != null ? modified : original;
+    public void onOpenScreen(Screen screen, CallbackInfo ci) {
+        ScreenOpenCallback.Info info = new ScreenOpenCallback.Info(screen);
+        ScreenOpenCallback.EVENT.invoker().onScreenOpen(info);
+
+        if (info.isCancelled()) {
+            ci.cancel();
+            return;
+        }
+
+        Screen changed = info.getScreen();
+        if (Objects.equals(screen, changed)) return;
+
+        ci.cancel();
+        openScreen(changed);
     }
 
     @Inject(

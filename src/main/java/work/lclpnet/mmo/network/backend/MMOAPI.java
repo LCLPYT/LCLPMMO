@@ -119,9 +119,8 @@ public class MMOAPI extends LCLPMinecraftAPI {
                 .beginObject("race")
                 .set("unlocalizedName", unlocalizedRaceName)
                 .endObject()
-                .createObject()).thenApply(resp -> {
+                .createObject()).thenAccept(resp -> {
             if (resp.getResponseCode() != 201) throw new ResponseEvaluationException(resp);
-            return null;
         });
     }
 

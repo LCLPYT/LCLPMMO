@@ -7,20 +7,42 @@ import net.minecraft.client.gui.screen.Screen;
 public interface ScreenOpenCallback {
 
     Event<ScreenOpenCallback> EVENT = EventFactory.createArrayBacked(ScreenOpenCallback.class,
-            (listeners) -> screen -> {
+            (listeners) -> info -> {
                 for (ScreenOpenCallback listener : listeners) {
-                    Screen result = listener.onScreenOpen(screen);
-                    if (result != null) return result;
+                    if (info.isCancelled()) break;
+                    listener.onScreenOpen(info);
                 }
-
-                return null;
             });
 
     /**
      * Called, before a new screen is opened on the client.
      *
-     * @param screen The screen to be opened.
-     * @return Return a screen that should be opened instead, or null, to open the original screen
+     * @param screen The event info with the screen to be opened.
      */
-    Screen onScreenOpen(Screen screen);
+    void onScreenOpen(Info screen);
+
+    class Info {
+        protected Screen screen;
+        protected boolean cancelled = false;
+
+        public Info(Screen screen) {
+            this.screen = screen;
+        }
+
+        public void setScreen(Screen screen) {
+            this.screen = screen;
+        }
+
+        public Screen getScreen() {
+            return screen;
+        }
+
+        public void cancel() {
+            this.cancelled = true;
+        }
+
+        public boolean isCancelled() {
+            return cancelled;
+        }
+    }
 }

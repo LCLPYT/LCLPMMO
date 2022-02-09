@@ -80,7 +80,11 @@ public class LCLPNetworkSession {
     @Environment(EnvType.CLIENT)
     public static CompletableFuture<Void> startupClient() {
         if (user == null) throw new IllegalStateException("User not initialized.");
-        return MMOClient.loadActiveCharacter()
+        return authorizedApi.getCharacters()
+                .thenCompose(characters -> {
+                    MMOClient.setCachedCharacters(characters);
+                    return MMOClient.loadActiveCharacter();
+                })
                 .thenAccept(MMOClient::logActiveCharacterLoaded)
                 .exceptionally(err -> {
                     logger.error("Failed to fetch active character", err);

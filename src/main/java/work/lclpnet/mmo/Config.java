@@ -9,6 +9,7 @@ import com.google.gson.stream.JsonWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import work.lclpnet.mmo.network.backend.MMOAPI;
 
 import java.io.File;
 import java.io.FileReader;
@@ -62,6 +63,10 @@ public class Config {
         return new File("config", "lclpmmo.json");
     }
 
+    private static void onChange() {
+        MMOAPI.PUBLIC.getAPIAccess().setHost(getEffectiveHost());
+    }
+
     public static CompletableFuture<Void> load() {
         return CompletableFuture.runAsync(() -> {
             File configFile = getConfigFile();
@@ -79,6 +84,8 @@ public class Config {
                 logger.error("Could not load config", e);
                 config = new Config(); // default config
             }
+
+            onChange();
         });
     }
 
