@@ -13,6 +13,7 @@ import work.lclpnet.mmo.client.event.ScreenOpenCallback;
 import work.lclpnet.mmo.client.gui.character.CharacterChooserScreen;
 import work.lclpnet.mmo.client.gui.character.CharacterCreatorScreen;
 import work.lclpnet.mmo.client.gui.login.LoginScreen;
+import work.lclpnet.mmo.client.gui.main.FakeClientWorld;
 import work.lclpnet.mmo.client.gui.main.MMOTitleScreen;
 import work.lclpnet.mmo.client.gui.main.PreIntroScreen;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
@@ -24,7 +25,8 @@ public class TitleScreenClientModule implements IClientModule {
         ScreenOpenCallback.EVENT.register(info -> {
             final Screen screen = info.getScreen();
 
-            if (screen == null || screen instanceof TitleScreen) {
+            final boolean nullTitleScreen = screen == null && (MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().world instanceof FakeClientWorld);
+            if (nullTitleScreen || screen instanceof TitleScreen) {
                 // fade will only be true, if it is the first call after the game has loaded
                 boolean fade = screen != null && ((TitleScreenAccessor) screen).doBackgroundFade();
 
