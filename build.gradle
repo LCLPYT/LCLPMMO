@@ -59,6 +59,7 @@ dependencies {
     modImplementation "work.lclpnet.mods:mmoquark:${project.mmoquark_version}"
     modImplementation "work.lclpnet.mods:mmofurniture:${project.mmofurniture_version}"
     modImplementation "work.lclpnet.mods:mmofoliage:${project.mmofoliage_version}"
+    modImplementation "work.lclpnet.mods:mcct:${project.mcct_version}"
 
     // CurseForge mods
     modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
