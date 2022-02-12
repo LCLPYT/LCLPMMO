@@ -3,19 +3,12 @@ package work.lclpnet.mmo;
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.lclpnet.mcct.transform.ChunkTransformContext;
-import work.lclpnet.mcct.transform.IChunkTransformer;
-import work.lclpnet.mcct.transform.MCCT;
 import work.lclpnet.mmo.module.BoletusModule;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
@@ -61,35 +54,9 @@ public class LCLPMMO implements ModInitializer {
 
         LCLPNetworkSession.startup();
 
-        MCCT.registerTransformer(ctx -> {
-            CompoundTag chunkData = ctx.getCompound();
-            if (!chunkData.contains("Level", NbtType.COMPOUND)) return;
-
-            CompoundTag level = chunkData.getCompound("Level");
-            if (!level.contains("Sections", NbtType.LIST)) return;
-
-            ListTag sections = level.getList("Sections", NbtType.COMPOUND);
-            sections.forEach(sectionTag -> {
-                if (!(sectionTag instanceof CompoundTag)) return;
-
-                CompoundTag section = (CompoundTag) sectionTag;
-                if (!section.contains("Palette", NbtType.LIST)) return;
-
-                ListTag palette = section.getList("Palette", NbtType.COMPOUND);
-                palette.forEach(paletteEntryTag -> {
-                    if (!(paletteEntryTag instanceof CompoundTag)) return;
-
-                    CompoundTag paletteEntry = (CompoundTag) paletteEntryTag;
-                    if (!paletteEntry.contains("Name", NbtType.STRING)) return;
-
-                    String blockId = paletteEntry.getString("Name");
-                    if (!"minecraft:diamond_block".equals(blockId)) return;
-
-                    paletteEntry.putString("Name", "minecraft:gold_block");
-                    ctx.markDirty();
-                });
-            });
-        });
+//        MCCT.registerTransformer(new ChunkTransformer.Builder()
+//                .addTransformation(new StringFindReplaceChunkTransformer("modid_from:", "modid_to:"))
+//                .create());
     }
 
     public static Identifier identifier(String path) {
