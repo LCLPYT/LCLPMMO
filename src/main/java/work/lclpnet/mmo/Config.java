@@ -154,4 +154,8 @@ public class Config {
 
         return config._computed.effectiveHost;
     }
+
+    public static boolean isDiscordIntegrationEnabled() {
+        return config.misc.discordIntegration;
+    }
 }

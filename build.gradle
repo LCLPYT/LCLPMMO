@@ -45,6 +45,10 @@ repositories {
     maven {
         url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
     }
+
+    maven {
+        url 'https://jcenter.bintray.com/'
+    }
 }
 
 dependencies {
@@ -81,6 +85,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation "work.lclpnet:lclpnetwork-api:${project.lclpnetwork_api_version}"
     implementation "work.lclpnet:lclpstorage:${project.lclpstorage_version}"
+    implementation "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
 }
 
 shadowJar {
@@ -88,9 +93,12 @@ shadowJar {
 
     dependencies {
         include(dependency('work.lclpnet:lclpnetwork-api'))
+        include(dependency('club.minnced:java-discord-rpc'))
+        include(dependency('club.minnced:discord-rpc-release'))
     }
 
     relocate 'work.lclpnet.lclpnetwork', 'mmodep.work.lclpnet.lclpnetwork'
+    relocate 'club.minnced.discord.rpc', 'mmodep.club.minnced.discord.rpc'
 
     archiveClassifier.set('')
 }
