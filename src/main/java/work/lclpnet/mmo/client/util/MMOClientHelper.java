@@ -1,4 +1,4 @@
-package work.lclpnet.mmo.client;
+package work.lclpnet.mmo.client.util;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;

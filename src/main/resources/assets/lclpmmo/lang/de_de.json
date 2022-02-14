@@ -151,5 +151,8 @@
     "subtitle.entity.boletus.hurt": "Boletus nimmt Schaden",
     "subtitle.entity.boletus.angry": "Boletus ist wütend",
     "subtitle.entity.boletus.spores": "Boletus verteilt Sporen",
-    "unavailable.temporary": "Vorübergehend nicht verfügbar"
+    "unavailable.temporary": "Vorübergehend nicht verfügbar",
+    "mmo.screen.multiplayer.attention": "Achtung",
+    "mmo.screen.multiplayer.create_character_first": "Du musst zuerst einen Charakter erstellen!",
+    "mmo.screen.multiplayer.choose_character_first": "Du musst zuerst einen Charakter auswählen!"
 }

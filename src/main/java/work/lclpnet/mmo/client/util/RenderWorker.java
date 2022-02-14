@@ -7,17 +7,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Environment(EnvType.CLIENT)
 public class RenderWorker {
 
+    private static final AtomicBoolean dirty = new AtomicBoolean(false);
+    private static final ReentrantLock lock = new ReentrantLock();
+    private static final List<Runnable> preQueue = new ArrayList<>();
     private static final List<Runnable> renderQueue = Collections.synchronizedList(new ArrayList<>());
 
     public static void push(Runnable run) {
-        renderQueue.add(run);
+        lock.lock();
+        preQueue.add(run);
+        dirty.set(true);
+        lock.unlock();
     }
 
     public static void doWork() {
+        if (dirty.get()) {
+            lock.lock();
+            renderQueue.addAll(preQueue);
+            preQueue.clear();
+            dirty.set(false);
+            lock.unlock();
+        }
+
         if (renderQueue.isEmpty()) return;
 
         synchronized (renderQueue) {

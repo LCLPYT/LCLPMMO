@@ -5,12 +5,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerWarningScreen;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.text.TranslatableText;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.asm.mixin.client.TitleScreenAccessor;
 import work.lclpnet.mmo.client.MMOClient;
 import work.lclpnet.mmo.client.event.MMOFirstScreenOpenCallback;
 import work.lclpnet.mmo.client.event.ScreenOpenCallback;
+import work.lclpnet.mmo.client.gui.MMOScreen;
 import work.lclpnet.mmo.client.gui.character.CharacterChooserScreen;
 import work.lclpnet.mmo.client.gui.character.CharacterCreatorScreen;
 import work.lclpnet.mmo.client.gui.login.LoginScreen;
@@ -47,18 +50,26 @@ public class TitleScreenClientModule implements IClientModule {
                 info.setScreen(new MMOTitleScreen(false));
             } else if (screen instanceof MultiplayerScreen || screen instanceof MultiplayerWarningScreen) {
                 if (MMOClient.getActiveCharacter() == null) {
+                    final MinecraftClient instance = MinecraftClient.getInstance();
                     if (MMOClient.getCachedCharacters().isEmpty()) {
-                        final Screen screenBefore = MinecraftClient.getInstance().currentScreen;
+                        MMOScreen.addOrUpdateMultilineToast(instance.getToastManager(), SystemToast.Type.WORLD_BACKUP,
+                                new TranslatableText("mmo.screen.multiplayer.attention"),
+                                new TranslatableText("mmo.screen.multiplayer.create_character_first"));
+
                         info.setScreen(new CharacterCreatorScreen(success -> {
                             if (success) {
                                 MMOClient.fetchAndCacheCharacters(true).thenRun(() -> deferOpenScreen(screen));
                             } else {
-                                RenderWorker.push(() -> deferOpenScreen(screenBefore instanceof MMOTitleScreen ? screenBefore : null));
+                                RenderWorker.push(() -> deferOpenScreen(null));
                             }
                         }));
                     } else {
+                        MMOScreen.addOrUpdateMultilineToast(instance.getToastManager(), SystemToast.Type.WORLD_BACKUP,
+                                new TranslatableText("mmo.screen.multiplayer.attention"),
+                                new TranslatableText("mmo.screen.multiplayer.choose_character_first"));
+
                         info.cancel();
-                        CharacterChooserScreen.updateContentAndShow(MinecraftClient.getInstance(), screen, true);
+                        CharacterChooserScreen.updateContentAndShow(instance, screen, true);
                     }
                 }
             }

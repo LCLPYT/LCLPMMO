@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ClientModInitializer;
 import work.lclpnet.mmo.client.module.*;
 import work.lclpnet.mmo.network.LMNetworking;
+import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 
 import java.util.Set;
 
@@ -24,5 +25,7 @@ public class LCLPMMOClient implements ClientModInitializer {
 
         modules.forEach(IClientModule::register);
         modules = null;
+
+        LCLPNetworkSession.startup();
     }
 }

@@ -8,7 +8,7 @@ import work.lclpnet.mmo.client.render.entity.BoletusRenderer;
 import work.lclpnet.mmo.module.BoletusModule;
 import work.lclpnet.mmo.particle.SporesParticle;
 
-import static work.lclpnet.mmo.client.MMOClientHelper.registerEntityRenderer;
+import static work.lclpnet.mmo.client.util.MMOClientHelper.registerEntityRenderer;
 
 public class BoletusClientModule implements IClientModule {
 

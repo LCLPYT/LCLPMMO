@@ -51,8 +51,6 @@ public class LCLPMMO implements ModInitializer {
 
         modules.forEach(IModule::register);
         modules = null;
-
-        LCLPNetworkSession.startup();
     }
 
     public static Identifier identifier(String path) {

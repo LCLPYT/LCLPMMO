@@ -2,6 +2,7 @@ package work.lclpnet.mmo.network.backend;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.lclpnet.lclpnetwork.LCLPNetworkAPI;
@@ -35,14 +36,16 @@ public class LCLPNetworkSession {
         LCLPNetworkSession.user = user;
     }
 
-    public static CompletableFuture<Void> startup() {
+    public static CompletableFuture<Boolean> startup() {
         return AccessTokenLoader.load()
                 .thenCompose(LCLPNetworkSession::init)
-                .exceptionally(err -> {
-                    if (err.getCause() instanceof FileNotFoundException) return null;
-                    else logger.error("Could not startup LCLPNetwork session", err);
-
-                    return null;
+                .handle((result, err) -> {
+                    // on the client, the user will be prompted to log in
+                    if (err.getCause() instanceof FileNotFoundException && Env.isClient()) return true;
+                    else {
+                        logger.error("Could not startup LCLPNetwork session", err);
+                        return false;
+                    }
                 });
     }
 
