@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletionException;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CharacterChooserScreen extends EditableGenericSelectionScreen<CharacterSelectionItem> {
@@ -66,8 +65,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
 
             if (APIException.NO_CONNECTION.equals(err)) {
                 displayToast(new TranslatableText("mmo.no_internet"));
-            }
-            else if (err instanceof ResponseEvaluationException) {
+            } else if (err instanceof ResponseEvaluationException) {
                 APIResponse response = ((ResponseEvaluationException) err).getResponse();
                 Text reason = new TranslatableText("error.unknown");
                 if (response.hasValidationViolations())
@@ -89,7 +87,8 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
     @Override
     public void addEntry() {
         Objects.requireNonNull(this.client).openScreen(new CharacterCreatorScreen(success -> {
-            if (success) CharacterChooserScreen.updateContentAndShow(this.client, this.getPreviousScreen(), characters.isEmpty());
+            if (success)
+                CharacterChooserScreen.updateContentAndShow(this.client, this.getPreviousScreen(), characters.isEmpty());
             else this.client.openScreen(this);
         }));
     }
@@ -113,8 +112,9 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
     protected void deleteCharacter(MMOCharacter character) {
         LCLPNetworkSession.getAuthorizedApi().deleteCharacter(character.id).handle((result, err) -> {
             if (err != null) {
-                if (APIException.NO_CONNECTION.equals(err)) displayToast(new TranslatableText("mmo.menu.select_character.delete_failed"),
-                        new TranslatableText("mmo.no_internet"));
+                if (APIException.NO_CONNECTION.equals(err))
+                    displayToast(new TranslatableText("mmo.menu.select_character.delete_failed"),
+                            new TranslatableText("mmo.no_internet"));
                 else if (err instanceof ResponseEvaluationException) {
                     APIResponse response = ((ResponseEvaluationException) err).getResponse();
                     if (response.getResponseCode() != 200) {

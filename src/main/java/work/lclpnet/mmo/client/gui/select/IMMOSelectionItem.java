@@ -10,6 +10,7 @@ public interface IMMOSelectionItem {
     /**
      * Provide some kind of language independent string, used to compare items.
      * The string should be unique for the item.
+     *
      * @return Some kind of unlocalized string, unique for the item.
      */
     String getUnlocalizedName();

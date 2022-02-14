@@ -2,7 +2,6 @@ package work.lclpnet.mmo.network.backend;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.lclpnet.lclpnetwork.LCLPNetworkAPI;

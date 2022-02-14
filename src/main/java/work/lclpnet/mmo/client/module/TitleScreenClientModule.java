@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerWarningScreen;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.TranslatableText;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.asm.mixin.client.TitleScreenAccessor;
 import work.lclpnet.mmo.client.MMOClient;
@@ -82,6 +81,7 @@ public class TitleScreenClientModule implements IClientModule {
 
     /**
      * Gets an instance of the starting screen (the screen that appears at normal startup; after any logins, agreements etc.)
+     *
      * @return An instance of the starting screen.
      */
     public static Screen getStartScreen() {

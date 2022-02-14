@@ -34,7 +34,8 @@ public class ClientAccessTokenSaver {
                 }
             } else {
                 if (!file.exists()) { // if file does not exist, create it
-                    if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) throw new IllegalStateException("Could not create directory.");
+                    if (!file.getParentFile().exists() && !file.getParentFile().mkdirs())
+                        throw new IllegalStateException("Could not create directory.");
 
                     File readme = new File(file.getParentFile(), "README.txt");
                     try (OutputStream out = new FileOutputStream(readme)) {

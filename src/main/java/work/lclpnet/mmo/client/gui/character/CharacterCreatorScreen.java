@@ -40,7 +40,7 @@ public class CharacterCreatorScreen extends MMOScreen {
     protected void init() {
         Objects.requireNonNull(this.client).keyboard.setRepeatEvents(true);
 
-        this.characterNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 60, 200, 20, 
+        this.characterNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 60, 200, 20,
                 new TranslatableText("mmo.menu.create_character.character_name"));
         this.characterNameField.setText(this.characterName);
         this.characterNameField.setChangedListener(s -> {

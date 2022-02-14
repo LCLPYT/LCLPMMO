@@ -329,8 +329,7 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
                 controller.markNeedsReload();
                 controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff", false));
             }
-        }
-        else if (state == ANIMATION_ATTACK) {
+        } else if (state == ANIMATION_ATTACK) {
             final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, getUuid().hashCode(), "attack");
             if (controller.getAnimationState() == AnimationState.Stopped) {
                 controller.markNeedsReload();
@@ -412,7 +411,7 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
             } else if (!this.attacker.isInWalkTargetRange(target.getBlockPos())) {
                 return false;
             } else {
-                return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
+                return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity) target).isCreative();
             }
         }
 
@@ -447,16 +446,16 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
         @Override
         public void tick() {
             LivingEntity target = this.attacker.getTarget();
-            if(target == null) return;
+            if (target == null) return;
 
             this.attacker.getLookControl().lookAt(target, 30.0F, 30.0F);
             double d0 = this.attacker.squaredDistanceTo(target);
             this.delayCounter = Math.max(this.delayCounter - 1, 0);
             if ((this.longMemory || this.attacker.getVisibilityCache().canSee(target))
                     && this.delayCounter <= 0 && (
-                            this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
-                                    || target.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0D
-                                    || this.attacker.getRandom().nextFloat() < 0.05F
+                    this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
+                            || target.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0D
+                            || this.attacker.getRandom().nextFloat() < 0.05F
             )) {
                 this.targetX = target.getX();
                 this.targetY = target.getY();

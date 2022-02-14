@@ -15,9 +15,12 @@ import work.lclpnet.mmocontent.networking.MMONetworking;
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity implements IMMOPlayer, IMMOUser {
 
-    @Unique private transient User user = null;
-    @Unique private transient MMOCharacter character = null;
-    @Unique private transient Dialog currentDialog = null;
+    @Unique
+    private transient User user = null;
+    @Unique
+    private transient MMOCharacter character = null;
+    @Unique
+    private transient Dialog currentDialog = null;
 
     @Override
     public void openMMODialog(Dialog dialog) {

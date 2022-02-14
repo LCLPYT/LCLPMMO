@@ -27,13 +27,20 @@ import java.util.Objects;
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
 
-    @Shadow @Nullable public ClientPlayerEntity player;
+    @Shadow
+    @Nullable
+    public ClientPlayerEntity player;
 
-    @Shadow @Final private MusicTracker musicTracker;
+    @Shadow
+    @Final
+    private MusicTracker musicTracker;
 
-    @Shadow @Nullable public ClientWorld world;
+    @Shadow
+    @Nullable
+    public ClientWorld world;
 
-    @Shadow public abstract void openScreen(@Nullable Screen screen);
+    @Shadow
+    public abstract void openScreen(@Nullable Screen screen);
 
     @Inject(
             method = "openScreen",

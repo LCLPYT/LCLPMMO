@@ -102,5 +102,6 @@ public class MMOCharacter extends JsonSerializable {
         }
     }
 
-    public static class List extends ArrayList<MMOCharacter> {}
+    public static class List extends ArrayList<MMOCharacter> {
+    }
 }

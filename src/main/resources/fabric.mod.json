@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "lclpmmo",
   "version": "${version}",
-
   "name": "LCLPMMO",
   "description": "A mod that adds MMO RPG content to Minecraft. Intended to be used on LCLPServer 5.0",
   "authors": [
@@ -13,10 +12,8 @@
     "homepage": "https://github.com/LCLPYT/LCLPMMO",
     "sources": "https://github.com/LCLPYT/LCLPMMO"
   },
-
   "license": "MIT",
   "icon": "assets/lclpmmo/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -32,7 +29,6 @@
   "mixins": [
     "lclpmmo.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.12.12",
     "fabric": "*",

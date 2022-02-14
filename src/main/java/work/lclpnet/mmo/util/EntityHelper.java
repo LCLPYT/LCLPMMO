@@ -26,14 +26,14 @@ public class EntityHelper {
             ChunkPos chunkPos = new ChunkPos(new BlockPos(x, y, z));
             world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, target.getEntityId());
             target.stopRiding();
-            if (((ServerPlayerEntity)target).isSleeping()) {
-                ((ServerPlayerEntity)target).wakeUp(true, true);
+            if (((ServerPlayerEntity) target).isSleeping()) {
+                ((ServerPlayerEntity) target).wakeUp(true, true);
             }
 
             if (world == target.world) {
-                ((ServerPlayerEntity)target).networkHandler.teleportRequest(x, y, z, yaw, pitch, flags);
+                ((ServerPlayerEntity) target).networkHandler.teleportRequest(x, y, z, yaw, pitch, flags);
             } else {
-                ((ServerPlayerEntity)target).teleport(world, x, y, z, yaw, pitch);
+                ((ServerPlayerEntity) target).teleport(world, x, y, z, yaw, pitch);
             }
 
             target.setHeadYaw(yaw);
@@ -60,13 +60,13 @@ public class EntityHelper {
             }
         }
 
-        if (!(target instanceof LivingEntity) || !((LivingEntity)target).isFallFlying()) {
+        if (!(target instanceof LivingEntity) || !((LivingEntity) target).isFallFlying()) {
             target.setVelocity(target.getVelocity().multiply(1.0D, 0.0D, 1.0D));
             target.setOnGround(true);
         }
 
         if (target instanceof PathAwareEntity) {
-            ((PathAwareEntity)target).getNavigation().stop();
+            ((PathAwareEntity) target).getNavigation().stop();
         }
     }
 
@@ -75,6 +75,6 @@ public class EntityHelper {
     }
 
     public static void teleportToEntity(Entity which, Entity destination) {
-        teleport(which, (ServerWorld)destination.world, destination.getX(), destination.getY(), destination.getZ(), EnumSet.noneOf(PlayerPositionLookS2CPacket.Flag.class), destination.yaw, destination.pitch);
+        teleport(which, (ServerWorld) destination.world, destination.getX(), destination.getY(), destination.getZ(), EnumSet.noneOf(PlayerPositionLookS2CPacket.Flag.class), destination.yaw, destination.pitch);
     }
 }

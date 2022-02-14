@@ -55,7 +55,8 @@ public class LoginScreen extends MMOScreen {
         this.buttonLogin = this.addButton(new ButtonWidget(this.width / 2 - 100, 146, 200, 20, new TranslatableText("mmo.menu.login.login"), this::login));
 
         ButtonWidget registerButton = new ButtonWidget(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20,
-                new TranslatableText("mmo.menu.login.register"), button -> {},
+                new TranslatableText("mmo.menu.login.register"), button -> {
+        },
                 (button, matrices, mouseX, mouseY) -> LoginScreen.this.renderTooltip(matrices, new TranslatableText("unavailable.temporary"), mouseX, mouseY));
         registerButton.active = false; // disabled until REST API provides a new register mechanism
         this.addButton(registerButton);

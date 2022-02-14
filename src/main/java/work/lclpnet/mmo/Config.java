@@ -146,7 +146,8 @@ public class Config {
             if (providers == null) throw new IllegalStateException("networking.providers must be set in the config");
 
             String host = providers.get(provider);
-            if (host == null) throw new IllegalStateException("networking.provider is not mapped by networking.providers in the config");
+            if (host == null)
+                throw new IllegalStateException("networking.provider is not mapped by networking.providers in the config");
 
             config._computed.effectiveHost = host;
         }

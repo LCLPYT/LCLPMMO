@@ -14,7 +14,6 @@ import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
 import work.lclpnet.mmo.module.PixieModule;
 import work.lclpnet.mmo.network.LMNetworking;
-import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 import work.lclpnet.mmo.sound.MMOSounds;
 
 import java.util.Set;

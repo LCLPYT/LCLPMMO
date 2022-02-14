@@ -13,7 +13,7 @@ public class LCLPMMOServer implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
         LCLPNetworkSession.startup().thenAccept(success -> {
-           if (!success) shutdown();
+            if (!success) shutdown();
         });
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {

@@ -42,7 +42,7 @@ public class EditCharacterScreen extends MMOScreen {
     @Override
     protected void init() {
         Objects.requireNonNull(this.client).keyboard.setRepeatEvents(true);
-        
+
         this.saveButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20,
                 new TranslatableText("mmo.menu.edit_character.save"), buttonWidget -> this.saveChanges()));
 

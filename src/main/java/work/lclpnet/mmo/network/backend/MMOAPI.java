@@ -57,7 +57,7 @@ public class MMOAPI extends LCLPMinecraftAPI {
     /**
      * Fetches the active character of a user by id.
      *
-     * @param userId The id of the user.
+     * @param userId    The id of the user.
      * @param fetchData Whether to fetch character data.
      * @return A completable future that will contain the active {@link MMOCharacter}.
      */
@@ -66,7 +66,7 @@ public class MMOAPI extends LCLPMinecraftAPI {
                 .set("userId", userId)
                 .set("fetchData", fetchData)
                 .createObject()).thenApply(resp -> {
-            if(resp.getResponseCode() != 200) throw new ResponseEvaluationException(resp);
+            if (resp.getResponseCode() != 200) throw new ResponseEvaluationException(resp);
             else return getExtra(resp, MMOCharacter.class); // use MMOGson because of type adapters
         });
     }
@@ -82,13 +82,14 @@ public class MMOAPI extends LCLPMinecraftAPI {
                 .set("uuid", uuid)
                 .set("fetchData", fetchData)
                 .createObject()).thenApply(resp -> {
-            if(resp.getResponseCode() != 200) throw new ResponseEvaluationException(resp);
+            if (resp.getResponseCode() != 200) throw new ResponseEvaluationException(resp);
             else return getExtra(resp, MMOCharacter.class);
         });
     }
 
     /**
      * Fetches a list of all characters of the current user.
+     *
      * @return A completable future that will contain a list of all the {@link MMOCharacter}s of a user.
      */
     @AuthRequired
@@ -107,7 +108,7 @@ public class MMOAPI extends LCLPMinecraftAPI {
     /**
      * Creates a new MMO character for the current user.
      *
-     * @param name The character's name.
+     * @param name                The character's name.
      * @param unlocalizedRaceName The character's race.
      * @return A completable future that will be completed, if the character was created.
      */
@@ -128,7 +129,7 @@ public class MMOAPI extends LCLPMinecraftAPI {
      * Renames an existing MMO character of the current user.
      *
      * @param characterId The character's id.
-     * @param name The new name.
+     * @param name        The new name.
      * @return A completable future that will complete with true, if the renaming was successful, false if the renaming is still on cooldown.
      */
     @AuthRequired

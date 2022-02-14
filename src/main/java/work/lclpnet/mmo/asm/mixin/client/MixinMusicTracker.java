@@ -23,11 +23,15 @@ import work.lclpnet.mmocontent.asm.mixin.common.SoundEventAccessor;
 @Mixin(MusicTracker.class)
 public class MixinMusicTracker {
 
-    @Shadow private @Nullable SoundInstance current;
+    @Shadow
+    private @Nullable SoundInstance current;
 
-    @Shadow @Final private MinecraftClient client;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
-    @Shadow private int timeUntilNextSong;
+    @Shadow
+    private int timeUntilNextSong;
 
     @Inject(
             method = "play(Lnet/minecraft/sound/MusicSound;)V",

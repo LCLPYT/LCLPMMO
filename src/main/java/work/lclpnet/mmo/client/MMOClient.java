@@ -83,6 +83,7 @@ public class MMOClient {
 
     /**
      * Adjusts a client player's data to match with this client's data.
+     *
      * @param player The own player. Should not be an instance of another user's player.
      */
     public static void initializeMyPlayer(ClientPlayerEntity player) {

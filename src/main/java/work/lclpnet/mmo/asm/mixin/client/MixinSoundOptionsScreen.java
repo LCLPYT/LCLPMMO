@@ -17,7 +17,7 @@ public abstract class MixinSoundOptionsScreen {
             at = @At("TAIL")
     )
     public void addMMOMusicOnlyButton(CallbackInfo ci) {
-        MMOCheckboxWidget checkbox = new MMOCheckboxWidget(10,10, 150, 20, new TranslatableText("options_screen.audio.only_mmo"), Config.isMinecraftMusicDisabled());
+        MMOCheckboxWidget checkbox = new MMOCheckboxWidget(10, 10, 150, 20, new TranslatableText("options_screen.audio.only_mmo"), Config.isMinecraftMusicDisabled());
         checkbox.setChangeListener(Config::setMinecraftMusicDisabled);
         ((ScreenAccessor) this).invokeAddButton(checkbox);
     }

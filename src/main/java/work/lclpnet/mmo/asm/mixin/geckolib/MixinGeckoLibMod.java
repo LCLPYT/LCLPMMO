@@ -10,7 +10,8 @@ import software.bernie.example.GeckoLibMod;
 @Mixin(GeckoLibMod.class)
 public class MixinGeckoLibMod {
 
-    @Shadow(remap = false) public static boolean DISABLE_IN_DEV;
+    @Shadow(remap = false)
+    public static boolean DISABLE_IN_DEV;
 
     @Inject(
             method = "onInitialize",

@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.CubeMapRenderer;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -70,7 +69,8 @@ public class MMOTitleScreen extends MMOScreen {
     }
 
     private void setupEntity() {
-        if (client == null || (player != null && client.getNetworkHandler() != null && !hasGameProfileChanged())) return;
+        if (client == null || (player != null && client.getNetworkHandler() != null && !hasGameProfileChanged()))
+            return;
 
         ClientPlayNetworkHandler netHandler = new FakeClientPlayNetworkHandler(client);
         ClientWorld world = new FakeClientWorld(netHandler, new ClientWorld.Properties(Difficulty.NORMAL, false, false));

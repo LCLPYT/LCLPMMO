@@ -17,11 +17,14 @@ import java.util.List;
 @Mixin(SystemToast.class)
 public class MixinSystemToast {
 
-    @Shadow private List<OrderedText> lines;
+    @Shadow
+    private List<OrderedText> lines;
 
-    @Shadow private Text title;
+    @Shadow
+    private Text title;
 
-    @Shadow private long startTime;
+    @Shadow
+    private long startTime;
 
     /**
      * Makes the unreachable condition with <code>SystemToast.field_238531_e_ == null</code> possible again.
