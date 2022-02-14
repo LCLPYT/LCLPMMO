@@ -16,7 +16,6 @@
     "client.TitleScreenAccessor",
     "client.EntryListWidgetAccessor",
     "geckolib.MixinGeckoLibCache",
-    "geckolib.MixinGeckoLibMod",
     "sodium.MixinSodiumBlockRenderer"
   ],
   "injectors": {
@@ -25,6 +24,7 @@
   "mixins": [
     "common.DimensionTypeAccessor",
     "common.MixinPlayerEntity",
-    "common.PlayerEntityAccessor"
+    "common.PlayerEntityAccessor",
+    "geckolib.MixinGeckoLibMod"
   ]
 }

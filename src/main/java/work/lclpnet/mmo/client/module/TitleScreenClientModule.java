@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerWarningScreen;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.mmo.asm.mixin.client.TitleScreenAccessor;
 import work.lclpnet.mmo.client.MMOClient;
@@ -16,6 +17,7 @@ import work.lclpnet.mmo.client.gui.login.LoginScreen;
 import work.lclpnet.mmo.client.gui.main.FakeClientWorld;
 import work.lclpnet.mmo.client.gui.main.MMOTitleScreen;
 import work.lclpnet.mmo.client.gui.main.PreIntroScreen;
+import work.lclpnet.mmo.client.util.RenderWorker;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 
 public class TitleScreenClientModule implements IClientModule {
@@ -46,15 +48,12 @@ public class TitleScreenClientModule implements IClientModule {
             } else if (screen instanceof MultiplayerScreen || screen instanceof MultiplayerWarningScreen) {
                 if (MMOClient.getActiveCharacter() == null) {
                     if (MMOClient.getCachedCharacters().isEmpty()) {
-                        final MinecraftClient client = MinecraftClient.getInstance();
-                        final Screen screenBefore = client.currentScreen;
+                        final Screen screenBefore = MinecraftClient.getInstance().currentScreen;
                         info.setScreen(new CharacterCreatorScreen(success -> {
                             if (success) {
-                                MMOClient.fetchAndCacheCharacters(true)
-                                        .thenRun(() -> client.openScreen(screen));
+                                MMOClient.fetchAndCacheCharacters(true).thenRun(() -> deferOpenScreen(screen));
                             } else {
-                                if (screenBefore instanceof MMOTitleScreen) client.openScreen(screenBefore);
-                                else client.openScreen(null);
+                                RenderWorker.push(() -> deferOpenScreen(screenBefore instanceof MMOTitleScreen ? screenBefore : null));
                             }
                         }));
                     } else {
@@ -64,6 +63,10 @@ public class TitleScreenClientModule implements IClientModule {
                 }
             }
         });
+    }
+
+    private static void deferOpenScreen(final Screen screen) {
+        RenderWorker.push(() -> MinecraftClient.getInstance().openScreen(screen));
     }
 
     /**

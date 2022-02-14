@@ -149,8 +149,6 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
     public static void updateContentAndShow(final MinecraftClient mc, Screen prevScreen, boolean updateActiveCharacter) {
         MMOClient.fetchAndCacheCharacters(updateActiveCharacter)
                 .exceptionally(err -> new ArrayList<>())
-                .thenAccept(characters -> {
-                    RenderWorker.push(() -> mc.openScreen(new CharacterChooserScreen(prevScreen, characters)));
-                });
+                .thenAccept(characters -> RenderWorker.push(() -> mc.openScreen(new CharacterChooserScreen(prevScreen, characters))));
     }
 }
