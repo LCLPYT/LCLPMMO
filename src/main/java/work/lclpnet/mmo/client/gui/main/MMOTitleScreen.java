@@ -148,6 +148,10 @@ public class MMOTitleScreen extends MMOScreen {
                 b -> this.client.openScreen(new AccessibilityOptionsScreen(this, this.client.options)),
                 new TranslatableText("narrator.button.accessibility")));
 
+        CustomImageButton replayModViewer = ReplayModIntegration.getWidget(currentBtnX + 50, imgBtnY, imgBtnDim);
+        if (replayModViewer != null)
+            this.addButton(replayModViewer);
+
         Integer hoverColor = Formatting.RED.getColorValue();
         FancyButtonWidget quitButton = new FancyButtonWidget(currentBtnX,
                 quitY,

@@ -92,6 +92,8 @@ dependencies {
     implementation "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
     include "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
     include "club.minnced:discord-rpc-release:${project.discord_rpc_natives_version}"
+
+//    modImplementation files('libs/replaymod-1.16.4-2.6.3.jar')
 }
 
 loom {

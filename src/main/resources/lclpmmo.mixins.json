@@ -14,6 +14,7 @@
     "client.MusicTrackerAccessor",
     "client.ScreenAccessor",
     "client.SystemToastAccessor",
+    "client.TexturedButtonWidgetAccessor",
     "client.TitleScreenAccessor",
     "geckolib.MixinGeckoLibCache",
     "sodium.MixinSodiumBlockRenderer"
