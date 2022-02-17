@@ -2,7 +2,6 @@ plugins {
     id 'fabric-loom'
     id 'maven-publish'
     id 'gradle-build-utils'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 Properties props = loadProperties.call('publish.properties')
@@ -83,24 +82,16 @@ dependencies {
 
     /* other Java dependencies */
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
     implementation "work.lclpnet:lclpnetwork-api:${project.lclpnetwork_api_version}"
+    include "work.lclpnet:lclpnetwork-api:${project.lclpnetwork_api_version}"
+
     implementation "work.lclpnet:lclpstorage:${project.lclpstorage_version}"
+    include "work.lclpnet:lclpstorage:${project.lclpstorage_version}"
+
     implementation "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
-}
-
-shadowJar {
-    exclude 'mappings/mappings.tiny'
-
-    dependencies {
-        include(dependency('work.lclpnet:lclpnetwork-api'))
-        include(dependency('club.minnced:java-discord-rpc'))
-        include(dependency('club.minnced:discord-rpc-release'))
-    }
-
-    relocate 'work.lclpnet.lclpnetwork', 'mmodep.work.lclpnet.lclpnetwork'
-    relocate 'club.minnced.discord.rpc', 'mmodep.club.minnced.discord.rpc'
-
-    archiveClassifier.set('')
+    include "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
+    include "club.minnced:discord-rpc-release:${project.discord_rpc_natives_version}"
 }
 
 loom {
@@ -137,8 +128,6 @@ jar {
         rename { "${it}_${project.archivesBaseName}"}
     }
 }
-
-tasks.build.dependsOn(shadowJar)
 
 // configure the maven publication
 publishing {
