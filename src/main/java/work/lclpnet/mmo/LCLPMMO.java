@@ -9,6 +9,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.lclpnet.mcct.transform.ChunkTransformer;
+import work.lclpnet.mcct.transform.MCCT;
+import work.lclpnet.mcct.transform.impl.StringFindReplaceChunkTransformer;
 import work.lclpnet.mmo.module.BoletusModule;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmo.module.IModule;
@@ -16,6 +19,7 @@ import work.lclpnet.mmo.module.PixieModule;
 import work.lclpnet.mmo.network.LMNetworking;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 import work.lclpnet.mmo.sound.MMOSounds;
+import work.lclpnet.mmo.util.SnowLayerFixTransformer;
 
 import java.util.Set;
 
@@ -54,9 +58,10 @@ public class LCLPMMO implements ModInitializer {
 
         LCLPNetworkSession.startup();
 
-//        MCCT.registerTransformer(new ChunkTransformer.Builder()
-//                .addTransformation(new StringFindReplaceChunkTransformer("modid_from:", "modid_to:"))
-//                .create());
+        MCCT.registerTransformer(new ChunkTransformer.Builder()
+                .addTransformation(new StringFindReplaceChunkTransformer("modid_from:", "modid_to:"))
+                .addTransformation(new SnowLayerFixTransformer())
+                .create());
     }
 
     public static Identifier identifier(String path) {
