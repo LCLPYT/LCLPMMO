@@ -1,31 +1,41 @@
 package work.lclpnet.mmo.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.IAngerable;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.ai.Durations;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.ai.pathing.PathNode;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.Angerable;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.IntRange;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -33,24 +43,24 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import work.lclpnet.mmo.audio.MMOSoundEvents;
-import work.lclpnet.mmo.network.msg.MessageEntityAttack;
-import work.lclpnet.mmo.particle.MMOParticles;
+import software.bernie.geckolib3.util.GeckoLibUtil;
+import work.lclpnet.mmo.module.BoletusModule;
+import work.lclpnet.mmo.sound.MMOSounds;
+import work.lclpnet.mmo.util.MMOAnimations;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimatable, IMMOAttacker, IEntityAnimatable {
+public class BoletusEntity extends HostileEntity implements Angerable, IAnimatable, IEntitySyncable {
 
     private static final UUID entityUUID = UUID.fromString("6CC930D2-9F85-11EB-A8B3-0242AC130003");
-    private static final RangedInteger angerTimeRange = TickRangeConverter.convertRange(20, 39);
-    private static final RangedInteger angerAlliesRange = TickRangeConverter.convertRange(4, 6);
-    private static final RangedInteger angerSoundRange = TickRangeConverter.convertRange(0, 1);
-    private static final RangedInteger puffRange = TickRangeConverter.convertRange(10, 20);
-    private static final AttributeModifier attackingSpeedBoost = new AttributeModifier(entityUUID, "Attacking speed boost", 0.175D, AttributeModifier.Operation.ADDITION);
+    private static final IntRange angerTimeRange = Durations.betweenSeconds(20, 39);
+    private static final IntRange angerAlliesRange = Durations.betweenSeconds(4, 6);
+    private static final IntRange angerSoundRange = Durations.betweenSeconds(0, 1);
+    private static final IntRange puffRange = Durations.betweenSeconds(10, 20);
+    private static final EntityAttributeModifier attackingSpeedBoost = new EntityAttributeModifier(entityUUID, "Attacking speed boost", 0.175D, EntityAttributeModifier.Operation.ADDITION);
+    private static final short ANIMATION_PUFF = 0, ANIMATION_ATTACK = 1;
 
     protected int angerTime;
     protected int angerNearbyAlliesTimer;
@@ -60,28 +70,20 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     protected int stepSoundTimer;
     protected UUID angerTarget;
 
-    /*  Client-Only Fields
-    ! IMPORTANT !
-    Do not to initialize them here, since an exception will be thrown on the server.
-    */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected AnimationFactory factory;
-    @OnlyIn(Dist.CLIENT)
-    protected boolean puffAnimationEnabled;
-    @OnlyIn(Dist.CLIENT)
-    protected boolean attackAnimationEnabled;
 
-    public BoletusEntity(World worldIn) {
-        super(MMOEntities.BOLETUS, worldIn);
-        this.ignoreFrustumCheck = true;
+    public BoletusEntity(EntityType<? extends HostileEntity> entityType, World world) {
+        super(entityType, world);
 
-        // Initialize client-only fields here to prevent exceptions on the server.
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            factory = new AnimationFactory(this);
-            puffAnimationEnabled = false;
-            attackAnimationEnabled = false;
-        }
-        this.puffTimer = puffRange.getRandomWithinRange(this.rand);
+        this.ignoreCameraFrustum = true;
+
+        if (world.isClient) factory = new AnimationFactory(this);
+        this.puffTimer = puffRange.choose(this.random);
+    }
+
+    public BoletusEntity(World world) {
+        this(BoletusModule.boletusEntityType, world);
     }
 
     @Override
@@ -90,103 +92,99 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     }
 
     @Override
-    public void setAngerTime(int time) {
-        this.angerTime = time;
+    public void setAngerTime(int ticks) {
+        this.angerTime = ticks;
     }
 
     @Nullable
     @Override
-    public UUID getAngerTarget() {
+    public UUID getAngryAt() {
         return this.angerTarget;
     }
 
     @Override
-    public void setAngerTarget(@Nullable UUID target) {
-        this.angerTarget = target;
+    public void setAngryAt(@Nullable UUID uuid) {
+        this.angerTarget = uuid;
     }
 
     @Override
-    public void func_230258_H__() {
-        this.setAngerTime(angerTimeRange.getRandomWithinRange(this.rand));
+    public void chooseRandomAngerTime() {
+        this.setAngerTime(angerTimeRange.choose(this.random));
     }
 
     @Override
-    protected void registerGoals() {
-        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
-        this.applyEntityAI();
+    protected void initGoals() {
+        this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(8, new LookAroundGoal(this));
+
+        this.goalSelector.add(3, new BoletusMeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
+        this.targetSelector.add(1, new RevengeGoal(this).setGroupRevenge(BoletusEntity.class));
+        this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::shouldAngerAt));
+        this.targetSelector.add(3, new FollowTargetGoal<>(this, PixieEntity.class, 10, false, false, le -> !((PixieEntity) le).isTamed()));
+        this.targetSelector.add(4, new FollowTargetGoal<>(this, IronGolemEntity.class, true));
+        this.targetSelector.add(3, new UniversalAngerGoal<>(this, true));
     }
 
-    protected void applyEntityAI() {
-        this.goalSelector.addGoal(3, new BoletusMeleeAttackGoal(this, 1.0D, false));
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setCallsForHelp(BoletusEntity.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::func_233680_b_));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PixieEntity.class, 10, false, false, le -> !((PixieEntity) le).isTamed()));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
-        this.targetSelector.addGoal(3, new ResetAngerGoal<>(this, true));
-    }
-
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MonsterEntity.func_234295_eP_()
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 35.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.5D)
-                .createMutableAttribute(Attributes.ARMOR, 1.5D)
-                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
+    public static DefaultAttributeContainer.Builder createMobAttributes() {
+        return MobEntity.createMobAttributes()
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
+                .add(EntityAttributes.GENERIC_ARMOR, 1.5D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (!this.world.isRemote) {
+        if (!this.world.isClient) {
             if (stepSoundTimer > 0) stepSoundTimer--;
 
             if (puffDelayTimer > 0 && --puffDelayTimer <= 0) {
                 ServerWorld sw = (ServerWorld) this.world;
-                double x = this.getPosX();
-                double y = this.getPosYEye() + 0.2D;
-                double z = this.getPosZ();
-                sw.spawnParticle(MMOParticles.SPORES, x, y, z, 30, 0.5D, 0.1D, 0.5D, 0.035D);
-                sw.playSound(null, x, y, z, MMOSoundEvents.ENTITY_BOLETUS_SPORES, SoundCategory.HOSTILE, this.getSoundVolume(), this.getSoundPitch());
+                double x = this.getX();
+                double y = this.getEyeY() + 0.2D;
+                double z = this.getZ();
+                sw.spawnParticles(BoletusModule.sporesParticleType, x, y, z, 30, 0.5D, 0.1D, 0.5D, 0.035D);
+                sw.playSound(null, x, y, z, MMOSounds.ENTITY_BOLETUS_SPORES, SoundCategory.HOSTILE, this.getSoundVolume(), this.getSoundPitch());
 
                 double distance = 6D;
-                Vector3d min = new Vector3d(x - distance, y - distance, z - distance);
-                Vector3d max = new Vector3d(x + distance, y + distance, z + distance);
-                List<PlayerEntity> entities = this.world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(min, max), en -> en.getDistanceSq(x, y, z) <= distance * distance);
-                entities.forEach(p -> p.addPotionEffect(new EffectInstance(Effects.NAUSEA, 250, 1)));
+                Vec3d min = new Vec3d(x - distance, y - distance, z - distance);
+                Vec3d max = new Vec3d(x + distance, y + distance, z + distance);
+                List<PlayerEntity> entities = this.world.getEntitiesByClass(PlayerEntity.class, new Box(min, max), en -> en.squaredDistanceTo(x, y, z) <= distance * distance);
+                entities.forEach(p -> p.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 250, 1)));
             }
 
-            if (!this.isAIDisabled() && puffTimer-- <= 0) {
-                puffTimer = puffRange.getRandomWithinRange(this.rand);
-                playAnimation(this, MMOEntityAnimations.BOLETUS_PUFF);
+            if (!this.isAiDisabled() && puffTimer-- <= 0) {
+                puffTimer = puffRange.choose(this.random);
+                MMOAnimations.syncEntityAnimation(this, ANIMATION_PUFF);
                 puffDelayTimer = 9;
             }
         }
     }
 
-    protected void updateAITasks() {
-        ModifiableAttributeInstance attributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
+    @Override
+    protected void mobTick() {
+        EntityAttributeInstance attributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
         if (attributeInstance == null) return;
 
-        if (this.isAngry()) {
+        if (this.hasAngerTime()) {
             if (!attributeInstance.hasModifier(attackingSpeedBoost))
-                attributeInstance.applyNonPersistentModifier(attackingSpeedBoost);
+                attributeInstance.addTemporaryModifier(attackingSpeedBoost);
 
             this.tickAngerSound();
         } else if (attributeInstance.hasModifier(attackingSpeedBoost)) {
             attributeInstance.removeModifier(attackingSpeedBoost);
         }
 
-        this.func_241359_a_((ServerWorld) this.world, true);
-        if (this.getAttackTarget() != null) {
-            this.tickAngerNearby();
-        }
+        this.tickAngerLogic((ServerWorld) this.world, true);
+        if (this.getTarget() != null) this.tickAngerNearby();
 
-        if (this.isAngry()) this.recentlyHit = this.ticksExisted;
+        if (this.hasAngerTime()) this.playerHitTimer = this.age;
 
-        super.updateAITasks();
+        super.mobTick();
     }
 
     private void tickAngerSound() {
@@ -202,70 +200,64 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         if (this.angerNearbyAlliesTimer > 0) {
             --this.angerNearbyAlliesTimer;
         } else {
-            if (this.getAttackTarget() != null && this.getEntitySenses().canSee(this.getAttackTarget()))
+            if (this.getTarget() != null && this.getVisibilityCache().canSee(this.getTarget())) {
                 this.angerNearbyAllies();
-            this.angerNearbyAlliesTimer = angerAlliesRange.getRandomWithinRange(this.rand);
+            }
+
+            this.angerNearbyAlliesTimer = angerAlliesRange.choose(this.random);
         }
     }
 
     private void angerNearbyAllies() {
-        double range = this.getAttributeValue(Attributes.FOLLOW_RANGE);
-        AxisAlignedBB axisalignedbb = AxisAlignedBB.fromVector(this.getPositionVec()).grow(range, 10.0D, range);
+        double range = this.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE);
+        Box box = Box.method_29968(this.getPos()).expand(range, 10.0D, range);
 
-        LivingEntity attackTarget = this.getAttackTarget();
+        LivingEntity attackTarget = this.getTarget();
         if (attackTarget == null) return;
 
-        this.world.getLoadedEntitiesWithinAABB(BoletusEntity.class, axisalignedbb).stream()
+        this.world.getEntitiesIncludingUngeneratedChunks(BoletusEntity.class, box).stream()
                 .filter(other -> other != this)
-                .filter(other -> other.getAttackTarget() == null)
-                .filter(other -> !other.isOnSameTeam(attackTarget))
-                .forEach(other -> other.setAttackTarget(attackTarget));
-    }
-
-    public void setAttackTarget(@Nullable LivingEntity entity) {
-        if (this.getAttackTarget() == null && entity != null) {
-            this.angerSoundTimer = angerSoundRange.getRandomWithinRange(this.rand);
-            this.angerNearbyAlliesTimer = angerAlliesRange.getRandomWithinRange(this.rand);
-        }
-
-        if (entity instanceof PlayerEntity) this.setAttackingPlayer((PlayerEntity) entity);
-
-        super.setAttackTarget(entity);
+                .filter(other -> other.getTarget() == null)
+                .filter(other -> !other.isTeammate(attackTarget))
+                .forEach(other -> other.setTarget(attackTarget));
     }
 
     @Override
-    public int getTalkInterval() {
+    public void setTarget(@Nullable LivingEntity target) {
+        if (this.getTarget() == null && target != null) {
+            this.angerSoundTimer = angerSoundRange.choose(this.random);
+            this.angerNearbyAlliesTimer = angerAlliesRange.choose(this.random);
+        }
+
+        if (target instanceof PlayerEntity)
+            this.setAttacking((PlayerEntity) target);
+
+        super.setTarget(target);
+    }
+
+    @Override
+    public int getMinAmbientSoundDelay() {
         return 100;
     }
 
     @Override
-    public boolean attackEntityAsMob(@Nonnull Entity entityIn) {
-        MessageEntityAttack.sync(this, entityIn);
-        return super.attackEntityAsMob(entityIn);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void onMMOAttack(Entity victim) {
-        AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
-        AnimationController<?> controller = data.getAnimationControllers().get("attack");
-        controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.attack"));
-        controller.markNeedsReload();
-        this.attackAnimationEnabled = true;
+    public boolean tryAttack(Entity target) {
+        MMOAnimations.syncEntityAnimation(this, ANIMATION_ATTACK);
+        return super.tryAttack(target);
     }
 
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return MMOSoundEvents.ENTITY_BOLETUS_IDLE;
+        return MMOSounds.ENTITY_BOLETUS_IDLE;
     }
 
     protected SoundEvent getStepSound() {
-        return MMOSoundEvents.ENTITY_BOLETUS_STEP;
+        return MMOSounds.ENTITY_BOLETUS_STEP;
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState state) {
         if (stepSoundTimer <= 0) {
             this.playSound(this.getStepSound(), 0.15F, 1.0F);
             stepSoundTimer = 100;
@@ -273,39 +265,34 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     }
 
     private void playAngerSound() {
-        this.playSound(MMOSoundEvents.ENTITY_BOLETUS_ANGRY, this.getSoundVolume(), this.getSoundPitch() * 1.3F);
+        this.playSound(MMOSounds.ENTITY_BOLETUS_ANGRY, this.getSoundVolume(), this.getSoundPitch() * 1.3F);
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return MMOSoundEvents.ENTITY_BOLETUS_HURT;
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return MMOSounds.ENTITY_BOLETUS_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MMOSoundEvents.ENTITY_BOLETUS_DEATH;
+        return MMOSounds.ENTITY_BOLETUS_DEATH;
     }
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        this.writeAngerNBT(compound);
+    @Override
+    public void writeCustomDataToTag(CompoundTag tag) {
+        super.writeCustomDataToTag(tag);
+        this.angerToTag(tag);
     }
 
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        if (!world.isRemote) //FORGE: allow this entity to be read from nbt on client. (Fixes MC-189565)
-            this.readAngerNBT((ServerWorld) this.world, compound);
+    @Override
+    public void readCustomDataFromTag(CompoundTag tag) {
+        super.readCustomDataFromTag(tag);
+        this.angerFromTag((ServerWorld) this.world, tag);
     }
 
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        return !this.isInvulnerableTo(source) && super.attackEntityFrom(source, amount);
-    }
-
-    /**
-     * Player tries to sleep. Check if this entity is angry or if the player can sleep.
-     */
-    public boolean func_230292_f_(PlayerEntity p_230292_1_) {
-        return this.func_233680_b_(p_230292_1_);
+    @Override
+    public boolean isAngryAt(PlayerEntity player) {
+        return this.shouldAngerAt(player);
     }
 
     private <E extends IAnimatable> PlayState idlePredicate(AnimationEvent<E> event) {
@@ -314,41 +301,46 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
     }
 
     private <E extends IAnimatable> PlayState puffPredicate(AnimationEvent<E> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff"));
-        return puffAnimationEnabled ? PlayState.CONTINUE : PlayState.STOP;
+        return PlayState.CONTINUE;
     }
 
     private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.boletus.attack"));
-        return attackAnimationEnabled ? PlayState.CONTINUE : PlayState.STOP;
+        return PlayState.CONTINUE;
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "idle", 0, this::idlePredicate));
-        data.addAnimationController(new AnimationController<>(this, "puff", 0, this::puffPredicate));
-        data.addAnimationController(new AnimationController<>(this, "attack", 0, this::attackPredicate));
+    public void registerControllers(AnimationData animationData) {
+        animationData.addAnimationController(new AnimationController<>(this, "idle", 0, this::idlePredicate));
+        // for these animations, specify a transition tick, otherwise they will not be playing
+        animationData.addAnimationController(new AnimationController<>(this, "puff", 1, this::puffPredicate));
+        animationData.addAnimationController(new AnimationController<>(this, "attack", 1, this::attackPredicate));
     }
 
     @Override
     public AnimationFactory getFactory() {
-        return this.factory;
+        return factory;
     }
 
     @Override
-    public void onAnimation(short animationId) {
-        if (animationId == MMOEntityAnimations.BOLETUS_PUFF) {
-            AnimationData data = this.factory.getOrCreateAnimationData(this.getEntityId());
-            AnimationController<?> controller = data.getAnimationControllers().get("puff");
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff"));
-            controller.markNeedsReload();
-            this.puffAnimationEnabled = true;
+    public void onEntityAnimationSync(int state) {
+        if (state == ANIMATION_PUFF) {
+            final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, getUuid().hashCode(), "puff");
+            if (controller.getAnimationState() == AnimationState.Stopped) {
+                controller.markNeedsReload();
+                controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.puff", false));
+            }
+        } else if (state == ANIMATION_ATTACK) {
+            final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, getUuid().hashCode(), "attack");
+            if (controller.getAnimationState() == AnimationState.Stopped) {
+                controller.markNeedsReload();
+                controller.setAnimation(new AnimationBuilder().addAnimation("animation.boletus.attack", false));
+            }
         }
     }
 
     public static class BoletusMeleeAttackGoal extends Goal {
 
-        protected final CreatureEntity attacker;
+        protected final PathAwareEntity attacker;
         private final double speedTowardsTarget;
         private final boolean longMemory;
         private Path path;
@@ -357,29 +349,29 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         private double targetZ;
         private int delayCounter;
         private int swingCooldown;
-        private final int attackInterval = 20;
         private long lastCheckTime;
         private int failedPathFindingPenalty = 0;
-        private boolean canPenalize = false;
+        private final boolean canPenalize = false;
 
-        public BoletusMeleeAttackGoal(CreatureEntity creature, double speedIn, boolean useLongMemory) {
+        public BoletusMeleeAttackGoal(PathAwareEntity creature, double speedIn, boolean useLongMemory) {
             this.attacker = creature;
             this.speedTowardsTarget = speedIn;
             this.longMemory = useLongMemory;
-            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+            this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
         }
 
         /**
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
-            long i = this.attacker.world.getGameTime();
+        @Override
+        public boolean canStart() {
+            long i = this.attacker.world.getTime();
             if (i - this.lastCheckTime < 20L) {
                 return false;
             } else {
                 this.lastCheckTime = i;
-                LivingEntity livingentity = this.attacker.getAttackTarget();
+                LivingEntity livingentity = this.attacker.getTarget();
                 if (livingentity == null) {
                     return false;
                 } else if (!livingentity.isAlive()) {
@@ -387,18 +379,18 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
                 } else {
                     if (canPenalize) {
                         if (--this.delayCounter <= 0) {
-                            this.path = this.attacker.getNavigator().pathfind(livingentity, 0);
-                            this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+                            this.path = this.attacker.getNavigation().findPathTo(livingentity, 0);
+                            this.delayCounter = 4 + this.attacker.getRandom().nextInt(7);
                             return this.path != null;
                         } else {
                             return true;
                         }
                     }
-                    this.path = this.attacker.getNavigator().pathfind(livingentity, 0);
+                    this.path = this.attacker.getNavigation().findPathTo(livingentity, 0);
                     if (this.path != null) {
                         return true;
                     } else {
-                        return this.getAttackReachSqr(livingentity) >= this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
+                        return this.getAttackReachSqr(livingentity) >= this.attacker.squaredDistanceTo(livingentity);
                     }
                 }
             }
@@ -407,27 +399,29 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean shouldContinueExecuting() {
-            LivingEntity livingentity = this.attacker.getAttackTarget();
-            if (livingentity == null) {
+        @Override
+        public boolean shouldContinue() {
+            LivingEntity target = this.attacker.getTarget();
+            if (target == null) {
                 return false;
-            } else if (!livingentity.isAlive()) {
+            } else if (!target.isAlive()) {
                 return false;
             } else if (!this.longMemory) {
-                return !this.attacker.getNavigator().noPath();
-            } else if (!this.attacker.isWithinHomeDistanceFromPosition(livingentity.getPosition())) {
+                return !this.attacker.getNavigation().isIdle();
+            } else if (!this.attacker.isInWalkTargetRange(target.getBlockPos())) {
                 return false;
             } else {
-                return !(livingentity instanceof PlayerEntity) || !livingentity.isSpectator() && !((PlayerEntity)livingentity).isCreative();
+                return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity) target).isCreative();
             }
         }
 
         /**
          * Execute a one shot task or start executing a continuous task
          */
-        public void startExecuting() {
-            this.attacker.getNavigator().setPath(this.path, this.speedTowardsTarget);
-            this.attacker.setAggroed(true);
+        @Override
+        public void start() {
+            this.attacker.getNavigation().startMovingAlong(this.path, this.speedTowardsTarget);
+            this.attacker.setAttacking(true);
             this.delayCounter = 0;
             this.swingCooldown = 0;
         }
@@ -435,39 +429,47 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
         /**
          * Reset the task's internal state. Called when this task is interrupted by another one
          */
-        public void resetTask() {
-            LivingEntity livingentity = this.attacker.getAttackTarget();
-            if (!EntityPredicates.CAN_AI_TARGET.test(livingentity)) {
-                this.attacker.setAttackTarget((LivingEntity)null);
+        @Override
+        public void stop() {
+            LivingEntity target = this.attacker.getTarget();
+            if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
+                this.attacker.setTarget(null);
             }
 
-            this.attacker.setAggroed(false);
-            this.attacker.getNavigator().clearPath();
+            this.attacker.setAttacking(false);
+            this.attacker.getNavigation().stop();
         }
 
         /**
          * Keep ticking a continuous task that has already been started
          */
+        @Override
         public void tick() {
-            LivingEntity livingentity = this.attacker.getAttackTarget();
-            if(livingentity == null) return;
+            LivingEntity target = this.attacker.getTarget();
+            if (target == null) return;
 
-            this.attacker.getLookController().setLookPositionWithEntity(livingentity, 30.0F, 30.0F);
-            double d0 = this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
+            this.attacker.getLookControl().lookAt(target, 30.0F, 30.0F);
+            double d0 = this.attacker.squaredDistanceTo(target);
             this.delayCounter = Math.max(this.delayCounter - 1, 0);
-            if ((this.longMemory || this.attacker.getEntitySenses().canSee(livingentity)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
-                this.targetX = livingentity.getPosX();
-                this.targetY = livingentity.getPosY();
-                this.targetZ = livingentity.getPosZ();
-                this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+            if ((this.longMemory || this.attacker.getVisibilityCache().canSee(target))
+                    && this.delayCounter <= 0 && (
+                    this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
+                            || target.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0D
+                            || this.attacker.getRandom().nextFloat() < 0.05F
+            )) {
+                this.targetX = target.getX();
+                this.targetY = target.getY();
+                this.targetZ = target.getZ();
+                this.delayCounter = 4 + this.attacker.getRandom().nextInt(7);
                 if (this.canPenalize) {
                     this.delayCounter += failedPathFindingPenalty;
-                    if (this.attacker.getNavigator().getPath() != null) {
-                        net.minecraft.pathfinding.PathPoint finalPathPoint = this.attacker.getNavigator().getPath().getFinalPathPoint();
-                        if (finalPathPoint != null && livingentity.getDistanceSq(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) < 1)
+                    if (this.attacker.getNavigation().getCurrentPath() != null) {
+                        PathNode end = this.attacker.getNavigation().getCurrentPath().getEnd();
+                        if (end != null && target.squaredDistanceTo(end.x, end.y, end.z) < 1) {
                             failedPathFindingPenalty = 0;
-                        else
+                        } else {
                             failedPathFindingPenalty += 10;
+                        }
                     } else {
                         failedPathFindingPenalty += 10;
                     }
@@ -478,43 +480,30 @@ public class BoletusEntity extends MonsterEntity implements IAngerable, IAnimata
                     this.delayCounter += 5;
                 }
 
-                if (!this.attacker.getNavigator().tryMoveToEntityLiving(livingentity, this.speedTowardsTarget)) {
+                if (!this.attacker.getNavigation().startMovingTo(target, this.speedTowardsTarget)) {
                     this.delayCounter += 15;
                 }
             }
 
             this.swingCooldown = Math.max(this.swingCooldown - 1, 0);
-            this.checkAndPerformAttack(livingentity, d0);
+            this.checkAndPerformAttack(target, d0);
         }
 
         protected void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
             double d0 = this.getAttackReachSqr(enemy);
             if (distToEnemySqr <= d0 && this.swingCooldown <= 0) {
                 this.resetSwingCooldown();
-                this.attacker.swingArm(Hand.MAIN_HAND);
-                this.attacker.attackEntityAsMob(enemy);
+                this.attacker.swingHand(Hand.MAIN_HAND);
+                this.attacker.tryAttack(enemy);
             }
-
         }
 
         protected void resetSwingCooldown() {
             this.swingCooldown = 20;
         }
 
-        protected boolean isSwingOnCooldown() {
-            return this.swingCooldown <= 0;
-        }
-
-        protected int getSwingCooldown() {
-            return this.swingCooldown;
-        }
-
-        protected int func_234042_k_() {
-            return 20;
-        }
-
         protected double getAttackReachSqr(LivingEntity attackTarget) {
-            return (double)(this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth());
+            return this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth();
         }
     }
 }

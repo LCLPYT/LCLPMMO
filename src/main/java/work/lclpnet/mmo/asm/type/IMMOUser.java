@@ -1,9 +1,8 @@
 package work.lclpnet.mmo.asm.type;
 
 import net.minecraft.entity.player.PlayerEntity;
-import work.lclpnet.lclpnetwork.facade.User;
-import work.lclpnet.mmo.facade.character.MMOCharacter;
-import work.lclpnet.mmo.util.network.LCLPNetwork;
+import work.lclpnet.lclpnetwork.model.User;
+import work.lclpnet.mmo.data.character.MMOCharacter;
 
 public interface IMMOUser {
 
@@ -15,13 +14,7 @@ public interface IMMOUser {
 
     void setMMOCharacter(MMOCharacter character);
 
-    static IMMOUser getMMOUser(PlayerEntity player) {
+    static IMMOUser of(PlayerEntity player) {
         return (IMMOUser) player;
-    }
-
-    static void initMyPlayer(PlayerEntity player) {
-        IMMOUser user = (IMMOUser) player;
-        user.setUser(LCLPNetwork.getUser());
-        user.setMMOCharacter(LCLPNetwork.getSelectedCharacter());
     }
 }

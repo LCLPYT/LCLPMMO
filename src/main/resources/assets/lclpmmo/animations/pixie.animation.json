@@ -1,0 +1,183 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.pixie.flutter": {
+      "loop": true,
+      "animation_length": 0.22222,
+      "bones": {
+        "wing_right_top": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -35.41318,
+                -8.17773,
+                5.77509
+              ]
+            },
+            "0.0556": {
+              "vector": [
+                -24.40401,
+                -37.22543,
+                -44.81443
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1111": {
+              "vector": [
+                -35.41318,
+                -8.17773,
+                5.77509
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1667": {
+              "vector": [
+                -26.7763,
+                12.75851,
+                39.33034
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.2222": {
+              "vector": [
+                -35.41318,
+                -8.17773,
+                5.77509
+              ],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "wing_right_bottom": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -38.28761,
+                22.22485,
+                -16.62484
+              ]
+            },
+            "0.0556": {
+              "vector": [
+                -19.2223,
+                -2.20738,
+                -59.39302
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1111": {
+              "vector": [
+                -38.28761,
+                22.22485,
+                -16.62484
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1667": {
+              "vector": [
+                -38.30012,
+                44.85156,
+                16.5717
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.2222": {
+              "vector": [
+                -38.28761,
+                22.22485,
+                -16.62484
+              ],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "wing_left_top": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -35.41318,
+                8.1777,
+                -5.7751
+              ]
+            },
+            "0.0556": {
+              "vector": [
+                -24.40401,
+                37.2254,
+                44.8144
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1111": {
+              "vector": [
+                -35.41318,
+                8.1777,
+                -5.7751
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1667": {
+              "vector": [
+                -26.7763,
+                -12.7585,
+                -39.3303
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.2222": {
+              "vector": [
+                -35.41318,
+                8.1777,
+                -5.7751
+              ],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "wing_left_bottom": {
+          "rotation": {
+            "0.0": {
+              "vector": [
+                -38.28761,
+                -22.2249,
+                16.6248
+              ]
+            },
+            "0.0556": {
+              "vector": [
+                -19.2223,
+                2.2074,
+                59.393
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1111": {
+              "vector": [
+                -38.28761,
+                -22.2249,
+                16.6248
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.1667": {
+              "vector": [
+                -38.30012,
+                -44.8516,
+                -16.5717
+              ],
+              "easing": "easeInOutSine"
+            },
+            "0.2222": {
+              "vector": [
+                -38.28761,
+                -22.2249,
+                16.6248
+              ],
+              "easing": "easeInOutSine"
+            }
+          }
+        }
+      }
+    }
+  }
+}

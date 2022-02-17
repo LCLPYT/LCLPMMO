@@ -1,1 +1,0 @@
-MixinConnector: work.lclpnet.mmo.asm.MMOMixinConnector

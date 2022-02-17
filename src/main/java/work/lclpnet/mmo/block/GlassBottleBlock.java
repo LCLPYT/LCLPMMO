@@ -1,214 +1,174 @@
 package work.lclpnet.mmo.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.entity.EntityType;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.play.server.SChangeBlockPacket;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.item.PotionItem;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import work.lclpnet.mmo.event.custom.GlassBottleEvent;
-import work.lclpnet.mmo.tileentity.GlassBottleTileEntity;
-import work.lclpnet.mmo.util.ItemStackUtils;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
+import work.lclpnet.mmo.blockentity.GlassBottleBlockEntity;
 import work.lclpnet.mmo.util.MMOUtils;
+import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
 
-@SuppressWarnings("deprecation")
-public class GlassBottleBlock extends MMOHorizontalWaterloggableBlock implements ITileEntityProvider {
+public class GlassBottleBlock extends FurnitureHorizontalWaterloggedBlock implements BlockEntityProvider {
 
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(4.5D, 0D, 4.5D, 11.5D, 10.5D, 11.5D);
-    public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+    private static final VoxelShape SHAPE = Block.createCuboidShape(4.5D, 0D, 4.5D, 11.5D, 10.5D, 11.5D);
+    public static final BooleanProperty ENABLED = Properties.ENABLED;
 
-    public GlassBottleBlock(Properties properties) {
-        super(properties);
-        setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(WATERLOGGED, false).with(ENABLED, false));
+    public GlassBottleBlock() {
+        super(Settings.of(Material.SUPPORTED)
+                .strength(0F, 0F)
+                .sounds(BlockSoundGroup.GLASS)
+                .nonOpaque()
+                .noCollision());
+        setDefaultState(getDefaultState().with(DIRECTION, Direction.NORTH).with(WATERLOGGED, false).with(ENABLED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(ENABLED);
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return super.getStateForPlacement(context).with(ENABLED, false);
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
-                                             Hand hand, BlockRayTraceResult hit) {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
-        if (!(tileentity instanceof GlassBottleTileEntity)) return ActionResultType.PASS;
+    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+        return SHAPE;
+    }
 
-        ItemStack heldItem = player.getHeldItem(hand);
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
 
-        GlassBottleTileEntity bottle = (GlassBottleTileEntity) tileentity;
-        if (ItemStackUtils.isAir(bottle.getItem())) {
-            //The bottle is empty.
-            if (offHandCheck(player, hand)) return ActionResultType.FAIL;
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+        return direction == Direction.DOWN && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
+    }
 
-            if (ItemStackUtils.isPotion(heldItem)) {
-                //Add to bottle
-                GlassBottleEvent.Fill event = new GlassBottleEvent.Fill(worldIn, pos, state, player, heldItem);
-                MinecraftForge.EVENT_BUS.post(event);
-                if (event.isCanceled()) {
-                    updateBlock(worldIn, pos, player, bottle);
-                    return ActionResultType.FAIL;
+    @Override
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        BlockPos below = pos.down();
+        return !world.getBlockState(below).getCollisionShape(world, below).getFace(Direction.UP).isEmpty();
+    }
+
+    @Override
+    public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState state = super.getPlacementState(ctx);
+        return state == null ? null : state.with(ENABLED, false);
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        // off hand interaction
+        if (hand == Hand.OFF_HAND && !player.getMainHandStack().isEmpty()) return ActionResult.FAIL;
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof GlassBottleBlockEntity)) return ActionResult.PASS;
+
+        GlassBottleBlockEntity bottle = (GlassBottleBlockEntity) blockEntity;
+        final ItemStack bottleItem = bottle.getItem();
+        final ItemStack playerItem = player.getStackInHand(hand);
+
+        if (bottleItem.isEmpty()) { // The bottle block is empty.
+            if (playerItem.getItem() instanceof PotionItem) {
+                ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, world, hand, hit);
+                if (result != ActionResult.PASS) return result;
+
+                if (world.isClient) {
+                    return playerItem.getItem() == Items.GLASS_BOTTLE ? ActionResult.PASS : ActionResult.SUCCESS;
                 }
 
-                ItemStack fluid = event.getItem().copy();
+                // put the potion inside the bottle block
+
+                ItemStack fluid = playerItem.copy();
                 fluid.setCount(1);
                 bottle.setItem(fluid);
-                player.world.playSound(player, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5F, MMOUtils.randomPitch(1.1F, 1.3F));
-                if (!player.isCreative()) {
-                    heldItem.shrink(1);
-                    player.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
-                }
-                return ActionResultType.SUCCESS;
-            }
-        } else {
-            //Something is inside the bottle.
-            if (offHandCheck(player, hand)) return ActionResultType.FAIL;
+                player.world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5F, MMOUtils.randomPitch(world.random, 1.1F, 1.3F));
 
-            if (ItemStackUtils.isItem(heldItem, Items.GLASS_BOTTLE)) {
-                //Retrieve from bottle
-                GlassBottleEvent.Empty event = new GlassBottleEvent.Empty(worldIn, pos, state, player, bottle.getItem());
-                MinecraftForge.EVENT_BUS.post(event);
-                if (event.isCanceled()) {
-                    updateBlock(worldIn, pos, player, bottle);
-                    return ActionResultType.FAIL;
+                if (!player.isCreative()) {
+                    playerItem.decrement(1);
+                    player.giveItemStack(new ItemStack(Items.GLASS_BOTTLE));
                 }
 
-                player.world.playSound(player, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5F, MMOUtils.randomPitch(0F, 0.3F));
-                if (!player.isCreative()) {
-                    heldItem.shrink(1);
-                    player.addItemStackToInventory(event.getItem());
-                }
-                bottle.setItem(ItemStack.EMPTY);
-                return ActionResultType.SUCCESS;
+                return ActionResult.SUCCESS;
             }
+        } else if (playerItem.getItem() == Items.GLASS_BOTTLE) {
+            // Retrieve potion from bottle block
+            ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, world, hand, hit);
+            if (result != ActionResult.PASS) return result;
+
+            if (world.isClient) return ActionResult.SUCCESS;
+
+            if (!player.isCreative()) {
+                playerItem.decrement(1);
+                player.giveItemStack(bottleItem.copy());
+            }
+
+            bottle.setItem(ItemStack.EMPTY);
+            player.world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5F, MMOUtils.randomPitch(world.random, 0F, 0.3F));
+
+            return ActionResult.SUCCESS;
         }
 
-        return ActionResultType.PASS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
-    private void updateBlock(World worldIn, BlockPos pos, PlayerEntity player, GlassBottleTileEntity bottle) {
-        if (worldIn.isRemote) return;
-
-        ServerPlayerEntity p = (ServerPlayerEntity) player;
-        p.sendContainerToPlayer(p.openContainer);
-        p.connection.sendPacket(new SChangeBlockPacket(player.world, pos));
-        p.connection.sendPacket(bottle.getUpdatePacket());
-    }
-
-    /**
-     * @return True, if the interaction was made with off_hand and if the main_hand item is something.
-     */
-    private boolean offHandCheck(PlayerEntity player, Hand hand) {
-        return hand == Hand.OFF_HAND && !ItemStackUtils.isAir(player.getHeldItemMainhand());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    @Override
+    public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
         return 1.0F;
     }
 
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-        return true;
-    }
-
-    public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return false;
-    }
-
-    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return false;
-    }
-
-    public boolean canEntitySpawn(BlockState state, IBlockReader worldIn, BlockPos pos, EntityType<?> type) {
-        return false;
-    }
-
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return SHAPE;
-    }
-
-    @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return SHAPE;
-    }
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
-                                        ISelectionContext context) {
-        return SHAPE;
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (!state.isValidPosition(worldIn, pos)) {
-            worldIn.playEvent(2001, pos, Block.getStateId(worldIn.getBlockState(pos)));
-            spawnDrops(state, worldIn, pos);
-            worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
-        }
-    }
-
-    @Override
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        BlockPos blockpos = pos.down();
-        return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos);
-    }
-
-    protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return !state.getCollisionShape(worldIn, pos).project(Direction.UP).isEmpty();
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
+    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new GlassBottleTileEntity();
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;  // block will be rendered by GlassBottleBlockEntityRenderer, for sodium compat
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockView world) {
+        return new GlassBottleBlockEntity();
     }
 
     @Override
-    public TileEntity createNewTileEntity(IBlockReader worldIn) {
-        return new GlassBottleTileEntity();
-    }
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (state.isOf(newState.getBlock())) return;
 
-    @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        super.onBlockHarvested(worldIn, pos, state, player);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof GlassBottleBlockEntity)) return;
 
-        if (player.isCreative()) return;
-
-        TileEntity en = worldIn.getTileEntity(pos);
-        if (!(en instanceof GlassBottleTileEntity)) return;
-
-        GlassBottleTileEntity bottle = (GlassBottleTileEntity) en;
+        GlassBottleBlockEntity bottle = (GlassBottleBlockEntity) blockEntity;
         ItemStack item = bottle.getItem();
-        if (!item.isEmpty()) Block.spawnAsEntity(worldIn, pos, item);
+        if (!item.isEmpty()) Block.dropStack(world, pos, item);
+
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "work.lclpnet.mmo.asm.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "client.ClientConnectionAccessor",
+    "client.EntryListWidgetAccessor",
+    "client.MixinClientPlayerInteractionManager",
+    "client.MixinMinecraftClient",
+    "client.MixinMusicTracker",
+    "client.MixinSoundOptionsScreen",
+    "client.MixinSystemToast",
+    "client.MusicTrackerAccessor",
+    "client.ScreenAccessor",
+    "client.SystemToastAccessor",
+    "client.TitleScreenAccessor",
+    "geckolib.MixinGeckoLibCache",
+    "sodium.MixinSodiumBlockRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "common.DimensionTypeAccessor",
+    "common.MixinPlayerEntity",
+    "common.PlayerEntityAccessor",
+    "geckolib.MixinGeckoLibMod"
+  ]
+}

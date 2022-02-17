@@ -1,172 +1,204 @@
 {
-    "intro_theme": {
-        "sounds": [{
-            "name": "lclpmmo:intro_theme",
-            "stream": false,
-            "weight": 500
-        },
-        {
-            "name": "lclpmmo:intro_theme_alt",
-            "stream": false,
-            "weight": 1,
-            "volume": 0.8
-        }]
-    },
-    "intro_theme_alt": {
-        "sounds": [{
-            "name": "lclpmmo:intro_theme_alt",
-            "stream": false,
-            "volume": 0.8
-        }]
-    },
-    "ui.button.hover": {
-        "sounds": [{
-            "name": "lclpmmo:ui/buttonhover",
-            "stream": false
-        }]
-    },
-    "music.ls5": {
-        "sounds": [{
-            "name": "lclpmmo:music/ls5",
-            "stream": true,
-            "volume": 0.5
-        }]
-    },
-    "entity.pixie.hurt": {
-        "sounds": [{
-            "name": "lclpmmo:entity/pixie/pixie_hurt1",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/pixie/pixie_hurt2",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.pixie.hurt"
-    },
-    "entity.pixie.death": {
-        "sounds": [{
-            "name": "lclpmmo:entity/pixie/pixie_death",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.pixie.death"
-    },
-    "entity.pixie.ambient": {
-        "sounds": [{
-            "name": "lclpmmo:entity/pixie/pixie_ambient1",
-            "stream": false,
-            "volume": 0.8
-        },
-        {
-            "name": "lclpmmo:entity/pixie/pixie_ambient2",
-            "stream": false,
-            "volume": 0.8
-        },
-        {
-            "name": "lclpmmo:entity/pixie/pixie_ambient3",
-            "stream": false,
-            "volume": 0.8
-        },
-        {
-            "name": "lclpmmo:entity/pixie/pixie_ambient4",
-            "stream": false,
-            "volume": 0.8
-        }],
-        "subtitle": "subtitle.entity.pixie.ambient"
-    },
-    "entity.pixie.say": {
-        "sounds": [{
-            "name": "lclpmmo:entity/pixie/pixie_say1",
-            "stream": false,
-            "volume": 0.8
-        },
-        {
-            "name": "lclpmmo:entity/pixie/pixie_say2",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.pixie.say"
-    },
-    "entity.boletus.idle": {
-        "sounds": [{
-            "name": "lclpmmo:entity/boletus/boletus_idle1",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_idle2",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.boletus.idle"
-    },
-    "entity.boletus.death": {
-        "sounds": [{
-            "name": "lclpmmo:entity/boletus/boletus_death1",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_death2",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.boletus.death"
-    },
-    "entity.boletus.hurt": {
-        "sounds": [{
-            "name": "lclpmmo:entity/boletus/boletus_hurt1",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_hurt2",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.boletus.hurt"
-    },
-    "entity.boletus.step": {
-        "sounds": [{
-            "name": "lclpmmo:entity/boletus/boletus_step1",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_step2",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_step3",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.boletus.step"
-    },
-    "entity.boletus.angry": {
-        "sounds": [{
-            "name": "lclpmmo:entity/boletus/boletus_angry",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.boletus.angry"
-    },
-    "entity.boletus.spores": {
-        "sounds": [{
-            "name": "lclpmmo:entity/boletus/boletus_spores1",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_spores2",
-            "stream": false
-        },
-        {
-            "name": "lclpmmo:entity/boletus/boletus_spores3",
-            "stream": false
-        }],
-        "subtitle": "subtitle.entity.boletus.spores"
-    },
-    "music.tutorial_01": {
-        "sounds": [{
-            "name": "lclpmmo:music/tutorial_01",
-            "stream": true,
-            "volume": 1
-        }]
-    },
-    "music.tutorial_02": {
-        "sounds": [{
-            "name": "lclpmmo:music/tutorial_02",
-            "stream": true,
-            "volume": 0.9
-        }]
-    }
+  "intro_theme": {
+    "sounds": [
+      {
+        "name": "lclpmmo:intro_theme",
+        "stream": false,
+        "weight": 500
+      },
+      {
+        "name": "lclpmmo:intro_theme_alt",
+        "stream": false,
+        "weight": 1,
+        "volume": 0.8
+      }
+    ]
+  },
+  "intro_theme_alt": {
+    "sounds": [
+      {
+        "name": "lclpmmo:intro_theme_alt",
+        "stream": false,
+        "volume": 0.8
+      }
+    ]
+  },
+  "ui.button.hover": {
+    "sounds": [
+      {
+        "name": "lclpmmo:ui/buttonhover",
+        "stream": false
+      }
+    ]
+  },
+  "music.ls5": {
+    "sounds": [
+      {
+        "name": "lclpmmo:music/ls5",
+        "stream": true,
+        "volume": 0.5
+      }
+    ]
+  },
+  "entity.pixie.hurt": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/pixie/pixie_hurt1",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/pixie/pixie_hurt2",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.pixie.hurt"
+  },
+  "entity.pixie.death": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/pixie/pixie_death",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.pixie.death"
+  },
+  "entity.pixie.ambient": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/pixie/pixie_ambient1",
+        "stream": false,
+        "volume": 0.8
+      },
+      {
+        "name": "lclpmmo:entity/pixie/pixie_ambient2",
+        "stream": false,
+        "volume": 0.8
+      },
+      {
+        "name": "lclpmmo:entity/pixie/pixie_ambient3",
+        "stream": false,
+        "volume": 0.8
+      },
+      {
+        "name": "lclpmmo:entity/pixie/pixie_ambient4",
+        "stream": false,
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitle.entity.pixie.ambient"
+  },
+  "entity.pixie.say": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/pixie/pixie_say1",
+        "stream": false,
+        "volume": 0.8
+      },
+      {
+        "name": "lclpmmo:entity/pixie/pixie_say2",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.pixie.say"
+  },
+  "entity.boletus.idle": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/boletus/boletus_idle1",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_idle2",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.boletus.idle"
+  },
+  "entity.boletus.death": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/boletus/boletus_death1",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_death2",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.boletus.death"
+  },
+  "entity.boletus.hurt": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/boletus/boletus_hurt1",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_hurt2",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.boletus.hurt"
+  },
+  "entity.boletus.step": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/boletus/boletus_step1",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_step2",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_step3",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.boletus.step"
+  },
+  "entity.boletus.angry": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/boletus/boletus_angry",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.boletus.angry"
+  },
+  "entity.boletus.spores": {
+    "sounds": [
+      {
+        "name": "lclpmmo:entity/boletus/boletus_spores1",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_spores2",
+        "stream": false
+      },
+      {
+        "name": "lclpmmo:entity/boletus/boletus_spores3",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitle.entity.boletus.spores"
+  },
+  "music.tutorial_01": {
+    "sounds": [
+      {
+        "name": "lclpmmo:music/tutorial_01",
+        "stream": true,
+        "volume": 1
+      }
+    ]
+  },
+  "music.tutorial_02": {
+    "sounds": [
+      {
+        "name": "lclpmmo:music/tutorial_02",
+        "stream": true,
+        "volume": 0.9
+      }
+    ]
+  }
 }

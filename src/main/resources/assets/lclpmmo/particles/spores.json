@@ -1,11 +1,11 @@
 {
-    "textures": [
-      "lclpmmo:spores_6",
-      "lclpmmo:spores_5",
-      "lclpmmo:spores_4",
-      "lclpmmo:spores_3",
-      "lclpmmo:spores_2",
-      "lclpmmo:spores_1",
-      "lclpmmo:spores_0"
-    ]
-  }
+  "textures": [
+    "lclpmmo:spores_6",
+    "lclpmmo:spores_5",
+    "lclpmmo:spores_4",
+    "lclpmmo:spores_3",
+    "lclpmmo:spores_2",
+    "lclpmmo:spores_1",
+    "lclpmmo:spores_0"
+  ]
+}

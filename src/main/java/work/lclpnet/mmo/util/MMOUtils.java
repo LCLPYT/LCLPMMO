@@ -1,46 +1,24 @@
 package work.lclpnet.mmo.util;
 
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
-import org.apache.commons.io.FileUtils;
-import work.lclpnet.corebase.util.MessageType;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class MMOUtils {
 
-    public static final Vector3f ZERO = new Vector3f(0F, 0F, 0F);
-    public static final MessageType WARN = new MessageType(itc -> itc.mergeStyle(TextFormatting.YELLOW));
-    private static final Random ran = new Random();
-    static boolean debug = false;
-
-    public static void setDebug(boolean debug) {
-        MMOUtils.debug = debug;
+    public static boolean isSpecialDate() {
+        return isSpecialDate(new Date());
     }
 
-    public static boolean isDebug() {
-        return debug;
-    }
-
-    public static <T> void applyFilteredAction(Collection<T> list, Predicate<T> filter, Consumer<Collection<T>> action) {
-        action.accept(list.stream().filter(filter).collect(Collectors.toList()));
-    }
-
-    public static boolean isSpecialDay(Date d) {
+    public static boolean isSpecialDate(Date d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
 
@@ -57,20 +35,7 @@ public class MMOUtils {
         return aprilFirst || newYear || christmas || leapYearDay || stPatrick || devBirthday || halloween || stNicholas;
     }
 
-    public static File getTmpDir() {
-        return new File("_tmp");
-    }
-
-    public static void deleteTmpDir() {
-        try {
-            File tmpDir = getTmpDir();
-            if (tmpDir.exists()) FileUtils.forceDelete(tmpDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static float randomPitch(float min, float max) {
+    public static float randomPitch(Random ran, float min, float max) {
         return min + ran.nextFloat() * (max - min);
     }
 

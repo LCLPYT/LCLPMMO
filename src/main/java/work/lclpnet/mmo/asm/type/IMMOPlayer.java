@@ -1,7 +1,7 @@
 package work.lclpnet.mmo.asm.type;
 
 import net.minecraft.entity.player.PlayerEntity;
-import work.lclpnet.mmo.facade.dialog.Dialog;
+import work.lclpnet.mmo.data.dialog.Dialog;
 
 public interface IMMOPlayer {
 
@@ -20,7 +20,7 @@ public interface IMMOPlayer {
         return getCurrentMMODialog() != null;
     }
 
-    static IMMOPlayer get(PlayerEntity player) {
+    static IMMOPlayer of(PlayerEntity player) {
         return (IMMOPlayer) player;
     }
 }

@@ -1,133 +1,161 @@
 package work.lclpnet.mmo;
 
-import com.electronwill.nightconfig.core.file.FileConfig;
-import work.lclpnet.mmo.util.Holder;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import work.lclpnet.mmo.network.backend.MMOAPI;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class Config {
 
-    private static FileConfig config = null;
-    private static final Map<String, Object> register = new HashMap<>();
+    public final Misc misc = new Misc();
+    public final Networking networking = new Networking();
+    public final Game game = new Game();
+    public final Debug debug = new Debug();
 
-    public static final String KEY_SKIP_INTRO = "misc.skip-intro",
-            KEY_DISCORD_INTEGRATION = "misc.enable-discord-integration",
-            KEY_NETWORK_STAGING = "network.staging",
-            KEY_NETWORK_HOST_STAGING = "network.host-staging",
-            KEY_NETWORK_HOST_LIVE = "network.host-live",
-            KEY_MINECRAFT_MUSIC_DISABLED = "game.disable-minecraft-music",
-            KEY_DEBUG_CAPE = "debug.cape";
+    protected transient final Computed _computed = new Computed();
 
-    static {
-        register.put(KEY_SKIP_INTRO, false);
-        register.put(KEY_DISCORD_INTEGRATION, true);
-        register.put(KEY_NETWORK_STAGING, false);
-        register.put(KEY_NETWORK_HOST_STAGING, "http://localhost:8000");
-        register.put(KEY_NETWORK_HOST_LIVE, "https://lclpnet.work");
-        register.put(KEY_MINECRAFT_MUSIC_DISABLED, false);
-        register.put(KEY_DEBUG_CAPE, false);
+    public static class Misc {
+        public boolean skipIntro = false,
+                discordIntegration = true;
     }
 
-    public static void load() {
-        File configDir = new File("config");
-        File configFile = new File(configDir, "lclpmmo.toml");
+    public static class Networking {
+        public String selectedProvider = "production";
+        public Map<String, String> providers = ImmutableMap.of(
+                "production", "https://lclpnet.work",
+                "staging", "https://staging.lclpnet.work",
+                "dev", "http://localhost:8000"
+        );
+    }
 
-        if (!configFile.exists()) {
-            try {
-                createConfigFile(configFile);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public static class Game {
+        public boolean disableMinecraftMusic = false;
+    }
+
+    public static class Debug {
+        public boolean cape = false;
+    }
+
+    private static class Computed {
+        public String effectiveHost = null;
+    }
+
+    // IO logic
+
+    private static Config config = null;
+    private static final Logger logger = LogManager.getLogger();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    @NotNull
+    protected static File getConfigFile() {
+        return new File("config", "lclpmmo.json");
+    }
+
+    private static void onChange() {
+        MMOAPI.PUBLIC.getAPIAccess().setHost(getEffectiveHost());
+    }
+
+    public static CompletableFuture<Void> load() {
+        return CompletableFuture.runAsync(() -> {
+            File configFile = getConfigFile();
+
+            if (!configFile.exists()) {
+                config = new Config(); // default config
+                save(); // do not chain save, this can be done separately
+                return;
             }
-        }
-        config = FileConfig.builder(configFile).build();
-        config.load();
-        config.close();
 
-        populateConfig();
+            try (JsonReader reader = new JsonReader(new FileReader(configFile))) {
+                config = gson.fromJson(reader, Config.class);
+                if (config == null) config = new Config(); // default config
+            } catch (Exception e) {
+                logger.error("Could not load config", e);
+                config = new Config(); // default config
+            }
+
+            onChange();
+        });
     }
 
-    private static void populateConfig() {
-        Holder<Boolean> modified = new Holder<>(false);
+    public static CompletableFuture<Void> save() {
+        return CompletableFuture.runAsync(() -> {
+            if (config == null) throw new IllegalStateException("Tried to save null config");
 
-        register.forEach((path, defaultValue) -> {
-            if (!config.contains(path)) {
-                config.set(path, defaultValue);
-                if (!modified.value) modified.value = true;
+            File configFile = getConfigFile();
+
+            if (!configFile.getParentFile().exists() && !configFile.getParentFile().mkdirs()) {
+                logger.error("Could not create config directory.");
+                return;
+            }
+
+            try (JsonWriter writer = gson.newJsonWriter(new FileWriter(configFile))) {
+                JsonElement json = gson.toJsonTree(config);
+                gson.toJson(json, writer);
+            } catch (Exception e) {
+                logger.error("Could not write config file", e);
             }
         });
-
-        if (modified.value) save();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static void createConfigFile(File config) throws IOException {
-        config.getParentFile().mkdirs();
-        config.createNewFile();
+    public static void dispatchHandledSave() {
+        save().exceptionally(ex -> {
+            logger.error("Failed to save config", ex);
+            return null;
+        });
     }
 
-    private static void set(String path, Object val) {
-        config.set(path, val);
-        save();
-    }
-
-    private static <T> T get(String path) {
-        ensureConfigNonNull();
-        if (!config.contains(path)) {
-            if (!register.containsKey(path)) throw new IllegalStateException("Path not registered.");
-            set(path, register.get(path));
-        }
-        return config.get(path);
-    }
-
-    private static void ensureConfigNonNull() {
-        if (config == null) load();
-    }
-
-    private static void save() {
-        new Thread(() -> {
-            FileConfig newConfig = FileConfig.builder(config.getFile()).build();
-            newConfig.putAll(config);
-            newConfig.save();
-            newConfig.close();
-        }, "Config Saver").start();
-    }
+    /* - */
 
     public static boolean shouldSkipIntro() {
-        return get(KEY_SKIP_INTRO);
-    }
-
-    public static boolean enableDiscordIntegration() {
-        return get(KEY_DISCORD_INTEGRATION);
-    }
-
-    public static boolean isNetworkStagingMode() {
-        return get(KEY_NETWORK_STAGING);
-    }
-
-    public static String getHostStaging() {
-        return get(KEY_NETWORK_HOST_STAGING);
-    }
-
-    public static String getHostLive() {
-        return get(KEY_NETWORK_HOST_LIVE);
-    }
-
-    public static String getEffectiveHost() {
-        return isNetworkStagingMode() ? getHostStaging() : getHostLive();
-    }
-
-    public static void setMinecraftMusicDisabled(boolean disabled) {
-        set(KEY_MINECRAFT_MUSIC_DISABLED, disabled);
+        return config.misc.skipIntro;
     }
 
     public static boolean isMinecraftMusicDisabled() {
-        return get(KEY_MINECRAFT_MUSIC_DISABLED);
+        return config.game.disableMinecraftMusic;
     }
 
-    public static boolean isDebugCape() {
-        return get(KEY_DEBUG_CAPE);
+    public static void setMinecraftMusicDisabled(boolean disable) {
+        if (config.game.disableMinecraftMusic != disable) {
+            config.game.disableMinecraftMusic = disable;
+            dispatchHandledSave();
+        }
+    }
+
+    public static String getNetworkingProvider() {
+        return config.networking.selectedProvider;
+    }
+
+    public static String getEffectiveHost() {
+        if (config._computed.effectiveHost == null) {
+            String provider = config.networking.selectedProvider;
+            if (provider == null) throw new IllegalStateException("networking.provider must be set in the config");
+
+            Map<String, String> providers = config.networking.providers;
+            if (providers == null) throw new IllegalStateException("networking.providers must be set in the config");
+
+            String host = providers.get(provider);
+            if (host == null)
+                throw new IllegalStateException("networking.provider is not mapped by networking.providers in the config");
+
+            config._computed.effectiveHost = host;
+        }
+
+        return config._computed.effectiveHost;
+    }
+
+    public static boolean isDiscordIntegrationEnabled() {
+        return config.misc.discordIntegration;
     }
 }

@@ -1,246 +1,173 @@
-buildscript {
-    repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = "https://repo.spongepowered.org/maven" }
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id 'org.ajoberstar.grgit' version '3.1.1'
-    id 'com.github.johnrengelman.shadow' version '1.2.4'
+    id 'fabric-loom'
+    id 'maven-publish'
+    id 'gradle-build-utils'
 }
 
-apply plugin: 'java'
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
+Properties props = loadProperties.call('publish.properties')
 
-ext {
-    SPEC_VERSION = '1.4'
-}
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-def getVersion = {
-    //TAG-offset-hash
-    def raw = grgit.describe(longDescr: true, tags:true)
-    def desc = (raw == null ? '0.0-0-unknown' : grgit.describe(longDescr: true, tags:true)).split('-') as List
-    def hash = desc.remove(desc.size() - 1)
-    def offset = desc.remove(desc.size() - 1)
-    def tag = desc.join('-')
-    def branch = grgit.branch.current().name
-    if (branch in ['master', 'HEAD'])
-        branch = null
-    SPEC_VERSION = tag
-    return "${tag}.${offset}${t -> if (branch != null) t << '-' + branch}".toString()
-}
-
-def privateProps = new Properties()
-def privatePropsFile = file("private.properties");
-if(privatePropsFile.exists())
-    privatePropsFile.withInputStream { privateProps.load(it) }
-
-version = getVersion()
-group = 'work.lclpnet.mods'
-archivesBaseName = 'lclpmmo'
-
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-
-minecraft {
-    mappings channel: (String) project.property('mapping_channel'), version: (String) project.property('mapping_version')
-    
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            
-            // Mixin debug
-            property "mixin.debug.export", "true"
-            property "mixin.debug", "true"
-            property "mixin.env.shiftByViolation", "ignore"
-            property "mixin.env.disableRefMap", "true"
-
-            environment("PULSE_RUNTIME_PATH", "/run/user/1000/pulse") // Required to hear sound in some distributions (using pulse audio)
-            
-            args '--mixin', 'mixins.lclpmmo.json', '--mixin', 'mixins.corebase.json'
-
-            mods {
-                lclpmmo {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            
-            // Mixin debug
-            property "mixin.debug.export", "true"
-            property "mixin.debug", "true"
-            property "mixin.env.shiftByViolation", "ignore"
-            property "mixin.env.disableRefMap", "true"
-            
-            args '--mixin', 'mixins.lclpmmo.json', '--mixin', 'mixins.corebase.json'
-
-            mods {
-                lclpmmo {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'lclpmmo', '--all', '--output', file('src/generated/resources/')
-
-            mods {
-                lclpmmo {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
-mixin {
-    add sourceSets.main, "mmo.refmap.json"
-}
+archivesBaseName = project.archives_base_name
+version = gitVersion.call()
+group = project.maven_group
 
 repositories {
-    maven { url = "https://repo.spongepowered.org/maven" }
-    maven { url 'https://repo.repsy.io/mvn/gandiber/geckolib' }
-    maven { url "https://www.cursemaven.com" }
-    jcenter()
-    maven { url 'https://repo.lclpnet.work/repository/internal' }
+    mavenCentral()
+
+    maven {
+        url "https://repo.lclpnet.work/repository/internal"
+    }
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+
+    // for Mod Menu
+    maven {
+        name = "Terraformersmc"
+        url = "https://maven.terraformersmc.com/releases"
+    }
+
+    // for GeckoLib
+    maven {
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+    }
+
+    maven {
+        url 'https://jcenter.bintray.com/'
+    }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.property('mc_version')}-${project.property('forge_version')}"
-    implementation "org.spongepowered:mixin:0.8.2"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    implementation fg.deobf("work.lclpnet.mods:CoreBase:${project.property('corebase_version')}") // required by LCLPMMO
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.property('mc_version')}:${project.property('geckolib_version')}")
-    implementation fg.deobf("curse.maven:reauth-237701:3105779")
+    /* Mods that are on the client later on (used to resemble a production environment as close as possible) */
+    // LCLPNetwork mods
+    modImplementation "work.lclpnet.mods:mmocontent:${project.mmocontent_version}"
+    modImplementation "work.lclpnet.mods:mmoquark:${project.mmoquark_version}"
+    modImplementation "work.lclpnet.mods:mmofurniture:${project.mmofurniture_version}"
+    modImplementation "work.lclpnet.mods:mmofoliage:${project.mmofoliage_version}"
 
-    compile 'work.lclpnet:lclpnetwork-api:1.2.0'
-    compile 'club.minnced:java-discord-rpc:2.0.2'
+    // CurseForge mods
+    modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
+    modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
+    modImplementation "curse.maven:oauth-fabric-515054:${project.oauth_version}"
+    modImplementation "curse.maven:bobby-409301:${project.bobby_version}"
+    modImplementation "curse.maven:sodium-extra-447673:${project.sodiumextra_version}"
+    modImplementation "curse.maven:reeses-sodium-options-511319:${project.sodiumoptions_version}"
+    modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
+
+    // Modrinth mods
+    modImplementation "maven.modrinth:sodium:${project.sodium_version}"
+
+    // other mods
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
+    modImplementation "org.anarres:jcpp:${project.jcpp_version}" // Preprocessing library used by Iris
+
+    /* other Java dependencies */
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation "work.lclpnet:lclpnetwork-api:${project.lclpnetwork_api_version}"
+    include "work.lclpnet:lclpnetwork-api:${project.lclpnetwork_api_version}"
+
+    implementation "work.lclpnet:lclpstorage:${project.lclpstorage_version}"
+    include "work.lclpnet:lclpstorage:${project.lclpstorage_version}"
+
+    implementation "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
+    include "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
+    include "club.minnced:discord-rpc-release:${project.discord_rpc_natives_version}"
 }
 
-shadowJar {
-    dependencies {
-        include(dependency('club.minnced:java-discord-rpc:.*'))
-        include(dependency('club.minnced:discord-rpc-release:.*'))
-        include(dependency('work.lclpnet:lclpnetwork-api:.*'))
-    }
-
-    // Relocate to prevent conflicts with other mods that include it
-    relocate 'club.minnced.discord.rpc', 'mmodep.club.minnced.discord.rpc'
-
-    classifier = '' // Replace the default JAR
-}
-
-reobf {
-    shadowJar {} // Reobfuscate the shadowed JAR
-}
-
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "LCLPMMO",
-            "Specification-Vendor": "LCLPNetwork",
-            "Specification-Version": SPEC_VERSION,
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"LCLPNetwork",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConnector": "work.lclpnet.mmo.asm.MMOMixinConnector"
-        ])
-    }
-}
-
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
-}
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact reobfArtifact
-            artifact sourcesJar
-        }
-    }
-    repositories {
-        maven {
-            if (privateProps.containsKey('mavenPassword')
-                    && privateProps.containsKey('mavenHost')
-                    && privateProps.containsKey('mavenUser')) {
-                credentials {
-                    username privateProps.getProperty('mavenUser');
-                    password privateProps.getProperty('mavenPassword');
-                }
-                url privateProps.getProperty('mavenHost');
-            } else {
-                url "file:///${project.projectDir}/mcmodsrepo"
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-task deobfJar(type: Jar) { // Generate deobfuscated
-    from sourceSets.main.output
-    classifier = 'deobf'
-}
-tasks.build.dependsOn('sourcesJar', 'deobfJar', 'shadowJar')
-
-artifacts {
-    archives deobfJar
-    archives sourcesJar
-}
-
-javadoc {
-    source = sourceSets.main.allJava
-    classpath = sourceSets.main.compileClasspath
+loom {
+    accessWidenerPath = file("src/main/resources/lclpmmo.accesswidener")
 }
 
 processResources {
-	inputs.property 'version', project.version
+    inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include 'META-INF/mods.toml'
-		expand 'version':project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'META-INF/mods.toml'
-	}
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+
+    // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
+    // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
+    // We'll use that if it's available, but otherwise we'll use the older option.
+    def targetVersion = 8
+    if (JavaVersion.current().isJava9Compatible()) {
+        it.options.release.set(targetVersion)
+    }
+}
+
+java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present
+    withSourcesJar()
+}
+
+jar {
+    from("LICENSE.md") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.archives_base_name
+
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+
+            pom {
+                name = 'LCLPMMO'
+                description = 'A mod that adds MMO RPG content to Minecraft. Indended to be used on LCLPServer 5.0'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            def env = System.getenv()
+            if (Arrays.stream("DEPLOY_URL", "DEPLOY_USER", "DEPLOY_PASSWORD").allMatch(env.&containsKey)) {
+                credentials {
+                    username env.get("DEPLOY_USER")
+                    password env.get("DEPLOY_PASSWORD")
+                }
+                url env.get("DEPLOY_URL")
+            }
+            else if (Arrays.stream("mavenHost", "mavenUser", "mavenPassword").allMatch(props.&containsKey)) {
+                credentials {
+                    username props.getProperty('mavenUser')
+                    password props.getProperty('mavenPassword')
+                }
+                url props.getProperty('mavenHost')
+            } else {
+                url "file:///${project.projectDir}/repo"
+            }
+        }
+    }
 }
