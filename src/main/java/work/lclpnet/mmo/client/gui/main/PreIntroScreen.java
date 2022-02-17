@@ -55,7 +55,7 @@ public class PreIntroScreen extends MMOScreen {
             soundPlayed = true;
             Identifier introSound = LCLPMMO.identifier(MMOUtils.isSpecialDate() ? "intro_theme_alt" : "intro_theme");
             if (client != null) {
-                client.getSoundManager().play(new PositionedSoundInstance(introSound, SoundCategory.RECORDS, 1F, 1F, false, 0, SoundInstance.AttenuationType.NONE, 0F, 0F, 0F, true));
+                client.getSoundManager().play(new PositionedSoundInstance(introSound, SoundCategory.RECORDS, 0.5F, 1F, false, 0, SoundInstance.AttenuationType.NONE, 0F, 0F, 0F, true));
             }
         }
 

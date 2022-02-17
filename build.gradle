@@ -67,7 +67,6 @@ dependencies {
     modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
     modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
     modImplementation "curse.maven:oauth-fabric-515054:${project.oauth_version}"
-    modImplementation "curse.maven:bobby-409301:${project.bobby_version}"
     modImplementation "curse.maven:sodium-extra-447673:${project.sodiumextra_version}"
     modImplementation "curse.maven:reeses-sodium-options-511319:${project.sodiumoptions_version}"
     modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
