@@ -64,15 +64,15 @@ dependencies {
     modImplementation "work.lclpnet.mods:mmofoliage:${project.mmofoliage_version}"
 
     // CurseForge mods
-    modImplementation "curse.maven:lazydfu-433518:${project.lazydfu_version}"
     modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
-    modImplementation "curse.maven:oauth-fabric-515054:${project.oauth_version}"
-    modImplementation "curse.maven:sodium-extra-447673:${project.sodiumextra_version}"
-    modImplementation "curse.maven:reeses-sodium-options-511319:${project.sodiumoptions_version}"
-    modImplementation "curse.maven:irisshaders-455508:${project.irisshaders_version}"
 
     // Modrinth mods
     modImplementation "maven.modrinth:sodium:${project.sodium_version}"
+    modImplementation "maven.modrinth:lazydfu:${project.lazydfu_version}"
+    modImplementation "maven.modrinth:oauth:${project.oauth_version}"
+    modImplementation "maven.modrinth:iris:${project.iris_version}"
+    modImplementation "maven.modrinth:sodium-extra:${project.sodiumextra_version}"
+    modImplementation "maven.modrinth:reeses-sodium-options:${project.sodiumoptions_version}"
 
     // other mods
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
