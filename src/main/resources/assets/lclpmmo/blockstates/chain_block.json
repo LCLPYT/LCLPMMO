@@ -1,0 +1,62 @@
+{
+  "variants": {
+    "axis=y,facing=north": {
+      "model": "lclpmmo:block/chain_block",
+      "y": 0
+    },
+    "axis=y,facing=east": {
+      "model": "lclpmmo:block/chain_block",
+      "y": 270
+    },
+    "axis=y,facing=south": {
+      "model": "lclpmmo:block/chain_block",
+      "y": 180
+    },
+    "axis=y,facing=west": {
+      "model": "lclpmmo:block/chain_block",
+      "y": 90
+    },
+
+    "axis=z,facing=north": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 90,
+      "y": 0
+    },
+    "axis=z,facing=east": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 270,
+      "y": 0
+    },
+    "axis=z,facing=south": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 270,
+      "y": 180
+    },
+    "axis=z,facing=west": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 90,
+      "y": 180
+    },
+
+    "axis=x,facing=north": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,facing=east": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 90,
+      "y": 270
+    },
+    "axis=x,facing=south": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 270,
+      "y": 270
+    },
+    "axis=x,facing=west": {
+      "model": "lclpmmo:block/chain_block",
+      "x": 270,
+      "y": 90
+    }
+  }
+}
