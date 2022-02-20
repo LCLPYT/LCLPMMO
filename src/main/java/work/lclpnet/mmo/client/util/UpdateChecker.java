@@ -75,7 +75,6 @@ public class UpdateChecker {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = in.readLine()) != null) {
-                    System.out.println(line);
                     if ("[update-check]: Result -> NEEDS_UPDATE".equals(line)) {
                         updateRequired.set(true);
                         break;
