@@ -5,6 +5,8 @@
   "mmo.menu.confirm_logout_desc": "Do you really want to log out? You will have to log back in, if you want to play again.",
   "mmo.menu.logout": "Log out",
   "mmo.menu.login": "Log in",
+  "mmo.menu.error": "Error",
+  "mmo.menu.login_first": "You need to login first!",
   "mmo.menu.btn_create_character": "Choose character...",
   "mmo.menu.select_character.title": "Choose a character",
   "mmo.menu.select_character.entry_desc": "Race: %s",

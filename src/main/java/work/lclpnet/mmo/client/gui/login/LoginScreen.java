@@ -68,6 +68,11 @@ public class LoginScreen extends MMOScreen {
     }
 
     @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
+
+    @Override
     public void resize(MinecraftClient client, int width, int height) {
         String email = this.textFieldEmail.getText(),
                 password = this.textFieldPassword.getText();

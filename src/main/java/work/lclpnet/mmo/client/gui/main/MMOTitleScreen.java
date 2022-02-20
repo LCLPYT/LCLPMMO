@@ -10,7 +10,6 @@ import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerWarningScreen;
 import net.minecraft.client.gui.screen.options.AccessibilityOptionsScreen;
 import net.minecraft.client.gui.screen.options.LanguageOptionsScreen;
 import net.minecraft.client.gui.screen.options.OptionsScreen;
@@ -188,15 +187,19 @@ public class MMOTitleScreen extends MMOScreen {
             if (this.client != null)
                 this.client.openScreen(new SelectWorldScreen(this));
         }));
+
         this.menuButtons.add(new MMOButtonInfo(new TranslatableText("menu.multiplayer"), b -> {
             if (this.client == null) return;
 
-            if (this.client.options.skipMultiplayerWarning) {
-                this.client.openScreen(new MultiplayerScreen(this));
-            } else {
-                this.client.openScreen(new MultiplayerWarningScreen(this));
+            if (!LCLPNetworkSession.isLoggedIn()) {
+                displayToast(new TranslatableText("mmo.menu.error"), new TranslatableText("mmo.menu.login_first"));
+                client.openScreen(new LoginScreen());
+                return;
             }
+
+            this.client.openScreen(new MultiplayerScreen(this));
         }));
+
         this.menuButtons.add(new MMOButtonInfo(new TranslatableText("menu.options"), b -> {
             if (this.client != null)
                 this.client.openScreen(new OptionsScreen(this, this.client.options));

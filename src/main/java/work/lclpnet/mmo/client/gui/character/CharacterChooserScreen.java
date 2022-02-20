@@ -11,6 +11,8 @@ import work.lclpnet.lclpnetwork.api.APIException;
 import work.lclpnet.lclpnetwork.api.APIResponse;
 import work.lclpnet.lclpnetwork.api.ResponseEvaluationException;
 import work.lclpnet.mmo.client.MMOClient;
+import work.lclpnet.mmo.client.gui.MMOScreen;
+import work.lclpnet.mmo.client.gui.login.LoginScreen;
 import work.lclpnet.mmo.client.gui.main.MMOTitleScreen;
 import work.lclpnet.mmo.client.gui.select.EditableGenericSelectionScreen;
 import work.lclpnet.mmo.client.util.RenderWorker;
@@ -147,6 +149,12 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
     }
 
     public static void updateContentAndShow(final MinecraftClient mc, Screen prevScreen, boolean updateActiveCharacter) {
+        if (!LCLPNetworkSession.isLoggedIn()) {
+            MMOScreen.displayToast(mc, new TranslatableText("mmo.menu.error"), new TranslatableText("mmo.menu.login_first"));
+            mc.openScreen(new LoginScreen());
+            return;
+        }
+
         MMOClient.fetchAndCacheCharacters(updateActiveCharacter)
                 .exceptionally(err -> new ArrayList<>())
                 .thenAccept(characters -> RenderWorker.push(() -> mc.openScreen(new CharacterChooserScreen(prevScreen, characters))));

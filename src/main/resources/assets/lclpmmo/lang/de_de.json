@@ -6,6 +6,8 @@
   "mmo.menu.btn_create_character": "Charakter auswählen...",
   "mmo.menu.logout": "Abmelden",
   "mmo.menu.login": "Anmelden",
+  "mmo.menu.error": "Fehler",
+  "mmo.menu.login_first": "Du musst dich zuerst anmelden!",
   "mmo.menu.select_character.title": "Wähle einen Charakter",
   "mmo.menu.select_character.entry_desc": "Rasse: %s",
   "mmo.menu.select_character.delete_failed": "Löschen fehlgeschlagen.",

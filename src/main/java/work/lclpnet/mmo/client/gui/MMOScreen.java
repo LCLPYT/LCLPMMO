@@ -73,8 +73,12 @@ public class MMOScreen extends Screen {
     }
 
     public void displayToast(Text title, Text text) {
-        if (this.client != null)
-            addOrUpdateMultilineToast(this.client.getToastManager(), SystemToast.Type.WORLD_BACKUP, title, text);
+        displayToast(this.client, title, text);
+    }
+
+    public static void displayToast(MinecraftClient client, Text title, Text text) {
+        if (client != null)
+            addOrUpdateMultilineToast(client.getToastManager(), SystemToast.Type.WORLD_BACKUP, title, text);
     }
 
     public static void addOrUpdateMultilineToast(ToastManager toastGui, SystemToast.Type type, Text title, @Nullable Text text) {
