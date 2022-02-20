@@ -3,6 +3,7 @@ package work.lclpnet.mmo.client;
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ClientModInitializer;
 import work.lclpnet.mmo.client.module.*;
+import work.lclpnet.mmo.client.util.UpdateChecker;
 import work.lclpnet.mmo.network.LMNetworking;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
 
@@ -20,6 +21,8 @@ public class LCLPMMOClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        UpdateChecker.checkForUpdates();
+
         LMNetworking.registerPackets();
         LMNetworking.registerClientPacketHandlers();
 

@@ -156,5 +156,10 @@
   "unavailable.temporary": "Temporarily unavailable",
   "mmo.screen.multiplayer.attention": "Attention",
   "mmo.screen.multiplayer.create_character_first": "You need to create a character first!",
-  "mmo.screen.multiplayer.choose_character_first": "You need to choose a character first!"
+  "mmo.screen.multiplayer.choose_character_first": "You need to choose a character first!",
+  "lclpupdater.title": "Update available",
+  "lclpupdater.desc": "LCLPServer 5.0 requires an update.\nPlease update the game through LCLPLauncher.",
+  "lclpupdater.update": "Update",
+  "lclpupdater.cancel": "Cancel",
+  "lclpupdater.startfailed": "Could not start LCLPLauncher automatically.\nPlease exit Minecraft and start it manually.\n\nPlease Note: You have to click the 'Update' button in the LCLPServer 5.0 Tab!"
 }
