@@ -3,6 +3,7 @@ package work.lclpnet.mmo.module;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 import work.lclpnet.mmo.block.BigChainBlock;
+import work.lclpnet.mmo.block.BigChainCornerBlock;
 import work.lclpnet.mmo.block.GlassBottleBlock;
 import work.lclpnet.mmo.blockentity.GlassBottleBlockEntity;
 import work.lclpnet.mmocontent.block.MMOBlockRegistrar;
@@ -27,5 +28,8 @@ public class DecorationsModule implements IModule {
 
         new MMOBlockRegistrar(new BigChainBlock())
                 .register(identifier("chain_block"), ITEM_GROUP);
+
+        new MMOBlockRegistrar(new BigChainCornerBlock())
+                .register(identifier("chain_corner_block"), ITEM_GROUP);
     }
 }

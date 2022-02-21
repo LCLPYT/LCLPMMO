@@ -6,9 +6,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
-import net.minecraft.block.enums.BlockHalf;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.StringIdentifiable;
@@ -16,7 +18,7 @@ import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
 
 public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock {
 
-    public static final EnumProperty<BlockHalf> DIRECTION = Properties.BLOCK_HALF;
+    public static final BooleanProperty UP = Properties.UP;
     public static final EnumProperty<ChainDock> DOCK = EnumProperty.of("dock", ChainDock.class);
 
     public BigChainCornerBlock() {
@@ -28,14 +30,19 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock {
                 .sounds(BlockSoundGroup.METAL));
 
         setDefaultState(getDefaultState()
-                .with(DIRECTION, BlockHalf.TOP)
+                .with(UP, false)
                 .with(DOCK, ChainDock.HORIZONTAL));
+    }
+
+    @Override
+    public BlockItem provideBlockItem(Item.Settings settings) {
+        return null;
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(DIRECTION, DOCK);
+        builder.add(UP, DOCK);
     }
 
     public enum ChainDock implements StringIdentifiable {
