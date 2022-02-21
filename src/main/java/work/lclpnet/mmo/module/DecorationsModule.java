@@ -16,6 +16,8 @@ public class DecorationsModule implements IModule {
     public static BlockEntityType<GlassBottleBlockEntity> glassBottleBlockEntity;
 
     public static GlassBottleBlock glassBottleBlock;
+    public static BigChainBlock bigChainBlock;
+    public static BigChainCornerBlock bigChainCornerBlock;
 
     @Override
     public void register() {
@@ -26,10 +28,12 @@ public class DecorationsModule implements IModule {
         glassBottleBlockEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier("glass_bottle"),
                 BlockEntityType.Builder.create(GlassBottleBlockEntity::new, glassBottleBlock).build(null));
 
-        new MMOBlockRegistrar(new BigChainBlock())
+        bigChainBlock = new BigChainBlock();
+        new MMOBlockRegistrar(bigChainBlock)
                 .register(identifier("chain_block"), ITEM_GROUP);
 
-        new MMOBlockRegistrar(new BigChainCornerBlock())
+        bigChainCornerBlock = new BigChainCornerBlock();
+        new MMOBlockRegistrar(bigChainCornerBlock)
                 .register(identifier("chain_corner_block"), ITEM_GROUP);
     }
 }

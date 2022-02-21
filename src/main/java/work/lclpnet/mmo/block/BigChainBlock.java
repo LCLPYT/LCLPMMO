@@ -18,10 +18,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmocontent.block.ext.MMOPillarBlock;
+import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
 
-public class BigChainBlock extends MMOPillarBlock implements Waterloggable {
+public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBigChainBlock {
 
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
@@ -78,12 +81,122 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable {
         final BlockPos pos = ctx.getBlockPos();
         FluidState fluidState = ctx.getWorld().getFluidState(pos);
 
-        final BlockPos againstPos = pos.offset(ctx.getSide().getOpposite());
+        final Direction direction = ctx.getSide();
+        final BlockPos againstPos = pos.offset(direction.getOpposite());
         BlockState against = ctx.getWorld().getBlockState(againstPos);
         if (against.getBlock() instanceof BigChainBlock) {
-            placementState = placementState.with(FACING, against.get(FACING).rotateYClockwise());
+            final Direction.Axis axis = against.get(AXIS);
+            if (direction.getAxis() != axis) {
+                final Direction newDirection;
+                if (axis == Direction.Axis.Y) {
+                    final boolean up = shouldCornerBeUp(ctx.getWorld(), againstPos);
+                    newDirection = getPlacementDirection(axis, against.get(FACING), direction, up);
+                } else {
+                    newDirection = Direction.NORTH;
+                }
+                placementState = placementState.with(FACING, newDirection);
+            } else {
+                placementState = placementState.with(FACING, against.get(FACING).rotateYClockwise());
+            }
         }
         return placementState.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+    }
+
+    /**
+     * @param oldDirection The direction property
+     * @param pointDirection The direction, the new corner should point to.
+     * @param up Whether the corner chain block should go up or not.
+     * @return The direction for the currently placed chain block.
+     */
+    private Direction getPlacementDirection(Direction.Axis axis, Direction oldDirection, Direction pointDirection, boolean up) {
+        final Direction.Axis chainAxis = oldDirection.getAxis();
+
+        if (axis == Direction.Axis.Y) {
+            /* Chain axis is X/Z */
+            int shift = chainAxis == Direction.Axis.Z ? 1 : 0;
+            if (up) shift = (shift + 1) % 2;
+
+            int idx = pointDirection.ordinal() - 2;
+            idx = Math.floorMod(idx - shift, 4);
+            idx = new int[]{0, 3, 1, 2}[idx] + 2;
+
+            return Direction.byId(idx);
+        }
+
+        throw new AssertionError();
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+        final BlockState original = super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
+
+        if (!(newState.getBlock() instanceof IBigChainBlock)) return original;
+
+        final Direction.Axis placementAxis = direction.getAxis();
+        final Direction.Axis currentAxis = state.get(AXIS);
+        if (placementAxis == currentAxis) return original;
+
+        // determine the upwards property
+        boolean up = shouldCornerBeUp(world, pos);
+
+        // determine the dock and direction
+        final Tuple properties;
+        if (currentAxis == Direction.Axis.Y) {
+            final Direction currentFacing = state.get(FACING);
+            properties = getProperties(currentAxis, currentFacing, direction, up);
+        } else {
+            // TODO implement
+            properties = new Tuple(BigChainCornerBlock.ChainDock.HORIZONTAL, Direction.NORTH);
+        }
+
+        return DecorationsModule.bigChainCornerBlock.getDefaultState()
+                .with(FurnitureHorizontalWaterloggedBlock.DIRECTION, properties.direction)
+                .with(BigChainCornerBlock.UP, up)
+                .with(BigChainCornerBlock.DOCK, properties.dock);
+    }
+
+    private boolean shouldCornerBeUp(WorldAccess world, BlockPos pos) {
+        final BlockPos above = pos.up(), below = pos.down();
+        final boolean isChainOrOtherAbove = world.getBlockState(above).getBlock() instanceof IBigChainBlock || !world.isAir(above);
+        final boolean isChainOrOtherBelow = world.getBlockState(below).getBlock() instanceof IBigChainBlock || !world.isAir(below);
+
+        return isChainOrOtherAbove && !isChainOrOtherBelow;
+    }
+
+    /**
+     * @param axis The axis property of the old chain.
+     * @param oldDirection The facing property of the old chain, which is about to be converted to a corner.
+     * @param pointDirection The direction the corner piece should point.
+     * @param up Whether the new corner piece should point up or not.
+     * @return A tuple with properties for the new chain.
+     */
+    private Tuple getProperties(final Direction.Axis axis, final Direction oldDirection, final Direction pointDirection, final boolean up) {
+        /* Chain axis is X/Z */
+        final Direction.Axis chainAxis = oldDirection.getAxis();
+        final Direction.Axis placedAxis = pointDirection.getAxis();
+
+        if (axis == Direction.Axis.Y) {
+            Tuple dock = getPropertiesY(chainAxis, placedAxis, pointDirection);
+            return up ? dock.invert() : dock;
+        }
+
+        throw new AssertionError();
+    }
+
+    private Tuple getPropertiesY(final Direction.Axis chainAxis, final Direction.Axis placedAxis, final Direction pointDirection) {
+        /* Placed axis can only be X/Z */
+        if (chainAxis == Direction.Axis.X) {  // east,west
+            return new Tuple(
+                    placedAxis == Direction.Axis.X ? BigChainCornerBlock.ChainDock.HORIZONTAL : BigChainCornerBlock.ChainDock.VERTICAL,
+                    placedAxis == Direction.Axis.X ? pointDirection : pointDirection.getOpposite()
+            );
+        } else if (chainAxis == Direction.Axis.Z) {  // north,south
+            return new Tuple(
+                    placedAxis == Direction.Axis.X ? BigChainCornerBlock.ChainDock.VERTICAL : BigChainCornerBlock.ChainDock.HORIZONTAL,
+                    placedAxis == Direction.Axis.X ? pointDirection.getOpposite() : pointDirection
+            );
+        }
+        throw new AssertionError();
     }
 
     @Override
@@ -99,5 +212,22 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable {
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
         builder.add(WATERLOGGED, FACING);
+    }
+
+    private static class Tuple {
+        public BigChainCornerBlock.ChainDock dock;
+        public Direction direction;
+
+        private Tuple(BigChainCornerBlock.ChainDock dock, Direction direction) {
+            this.dock = dock;
+            if (!direction.getAxis().isHorizontal()) throw new IllegalArgumentException("Direction is not horizontal");
+            this.direction = direction;
+        }
+
+        public Tuple invert() {
+            dock = dock.getOpposite();
+            direction = direction.getOpposite();
+            return this;
+        }
     }
 }

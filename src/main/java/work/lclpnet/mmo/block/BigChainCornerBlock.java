@@ -8,15 +8,19 @@ import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
 
-public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock {
+public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock implements IBigChainBlock {
 
     public static final BooleanProperty UP = Properties.UP;
     public static final EnumProperty<ChainDock> DOCK = EnumProperty.of("dock", ChainDock.class);
@@ -34,9 +38,16 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock {
                 .with(DOCK, ChainDock.HORIZONTAL));
     }
 
+    // TODO consider shape
+
     @Override
     public BlockItem provideBlockItem(Item.Settings settings) {
         return null;
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        return new ItemStack(DecorationsModule.bigChainBlock);
     }
 
     @Override
@@ -51,8 +62,12 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock {
 
         private final String name;
 
-        private ChainDock(String name) {
+        ChainDock(String name) {
             this.name = name;
+        }
+
+        ChainDock getOpposite() {
+            return this == VERTICAL ? HORIZONTAL : VERTICAL;
         }
 
         @Override
