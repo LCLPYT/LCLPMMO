@@ -2,12 +2,10 @@
   "variants": {
     "axis=y,up=true,facing=north,dock=horizontal": {
       "model": "lclpmmo:block/chain_block_corner",
-      "y": 0,
       "x": 180
     },
     "axis=y,up=true,facing=north,dock=vertical": {
       "model": "lclpmmo:block/chain_block_corner2",
-      "y": 0,
       "x": 180
     },
     "axis=y,up=true,facing=east,dock=horizontal": {
@@ -57,12 +55,10 @@
       "y": 270
     },
     "axis=y,up=false,facing=south,dock=horizontal": {
-      "model": "lclpmmo:block/chain_block_corner",
-      "y": 0
+      "model": "lclpmmo:block/chain_block_corner"
     },
     "axis=y,up=false,facing=south,dock=vertical": {
-      "model": "lclpmmo:block/chain_block_corner2",
-      "y": 0
+      "model": "lclpmmo:block/chain_block_corner2"
     },
     "axis=y,up=false,facing=west,dock=horizontal": {
       "model": "lclpmmo:block/chain_block_corner",
@@ -71,6 +67,142 @@
     "axis=y,up=false,facing=west,dock=vertical": {
       "model": "lclpmmo:block/chain_block_corner2",
       "y": 90
+    },
+    "axis=x,up=true,facing=north,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 270,
+      "x": 180
+    },
+    "axis=x,up=true,facing=north,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3"
+    },
+    "axis=x,up=true,facing=east,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "y": 270,
+      "x": 180
+    },
+    "axis=x,up=true,facing=east,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "y": 90,
+      "x": 180
+    },
+    "axis=x,up=true,facing=south,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 90
+    },
+    "axis=x,up=true,facing=south,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "x": 180
+    },
+    "axis=x,up=true,facing=west,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "y": 90
+    },
+    "axis=x,up=true,facing=west,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "y": 270
+    },
+    "axis=x,up=false,facing=north,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 180
+    },
+    "axis=x,up=false,facing=north,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 90,
+      "x": 180
+    },
+    "axis=x,up=false,facing=east,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "y": 90
+    },
+    "axis=x,up=false,facing=east,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "y": 270
+    },
+    "axis=x,up=false,facing=south,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 180,
+      "x": 180
+    },
+    "axis=x,up=false,facing=south,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 270
+    },
+    "axis=x,up=false,facing=west,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "x": 180,
+      "y": 270
+    },
+    "axis=x,up=false,facing=west,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "x": 180,
+      "y": 90
+    },
+    "axis=z,up=true,facing=north,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "y": 180,
+      "x": 180
+    },
+    "axis=z,up=true,facing=north,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "x": 180
+    },
+    "axis=z,up=true,facing=east,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 90,
+      "x": 180
+    },
+    "axis=z,up=true,facing=east,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 180
+    },
+    "axis=z,up=true,facing=south,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner"
+    },
+    "axis=z,up=true,facing=south,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "y": 180
+    },
+    "axis=z,up=true,facing=west,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 90
+    },
+    "axis=z,up=true,facing=west,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "x": 180
+    },
+    "axis=z,up=false,facing=north,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner2"
+    },
+    "axis=z,up=false,facing=north,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "y": 180
+    },
+    "axis=z,up=false,facing=east,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3"
+    },
+    "axis=z,up=false,facing=east,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 270,
+      "x": 180
+    },
+    "axis=z,up=false,facing=south,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner2",
+      "y": 180,
+      "x": 180
+    },
+    "axis=z,up=false,facing=south,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner",
+      "x": 180
+    },
+    "axis=z,up=false,facing=west,dock=horizontal": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "x": 180,
+      "y": 180
+    },
+    "axis=z,up=false,facing=west,dock=vertical": {
+      "model": "lclpmmo:block/chain_block_corner3",
+      "y": 270
     }
   }
 }
