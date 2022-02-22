@@ -16,6 +16,7 @@ import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
@@ -24,6 +25,7 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock imp
 
     public static final BooleanProperty UP = Properties.UP;
     public static final EnumProperty<ChainDock> DOCK = EnumProperty.of("dock", ChainDock.class);
+    public static final EnumProperty<Direction.Axis> AXIS = Properties.AXIS;
 
     public BigChainCornerBlock() {
         super(FabricBlockSettings.of(Material.METAL, MaterialColor.GRAY)
@@ -35,7 +37,8 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock imp
 
         setDefaultState(getDefaultState()
                 .with(UP, false)
-                .with(DOCK, ChainDock.HORIZONTAL));
+                .with(DOCK, ChainDock.HORIZONTAL)
+                .with(AXIS, Direction.Axis.Y));
     }
 
     // TODO consider shape
@@ -53,7 +56,7 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock imp
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(UP, DOCK);
+        builder.add(UP, DOCK, AXIS);
     }
 
     public enum ChainDock implements StringIdentifiable {

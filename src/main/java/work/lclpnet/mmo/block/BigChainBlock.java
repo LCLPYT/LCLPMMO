@@ -89,7 +89,7 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
             if (direction.getAxis() != axis) {
                 final Direction newDirection;
                 if (axis == Direction.Axis.Y) {
-                    final boolean up = shouldCornerBeUp(ctx.getWorld(), againstPos);
+                    final boolean up = getEdgeDirection(ctx.getWorld(), againstPos, axis);
                     newDirection = getPlacementDirection(axis, against.get(FACING), direction, up);
                 } else {
                     newDirection = Direction.NORTH;
@@ -137,7 +137,7 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         if (placementAxis == currentAxis) return original;
 
         // determine the upwards property
-        boolean up = shouldCornerBeUp(world, pos);
+        boolean up = getEdgeDirection(world, pos, currentAxis);
 
         // determine the dock and direction
         final Tuple properties;
@@ -152,15 +152,36 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         return DecorationsModule.bigChainCornerBlock.getDefaultState()
                 .with(FurnitureHorizontalWaterloggedBlock.DIRECTION, properties.direction)
                 .with(BigChainCornerBlock.UP, up)
-                .with(BigChainCornerBlock.DOCK, properties.dock);
+                .with(BigChainCornerBlock.DOCK, properties.dock)
+                .with(BigChainCornerBlock.AXIS, currentAxis);
     }
 
-    private boolean shouldCornerBeUp(WorldAccess world, BlockPos pos) {
-        final BlockPos above = pos.up(), below = pos.down();
-        final boolean isChainOrOtherAbove = world.getBlockState(above).getBlock() instanceof IBigChainBlock || !world.isAir(above);
-        final boolean isChainOrOtherBelow = world.getBlockState(below).getBlock() instanceof IBigChainBlock || !world.isAir(below);
+    private boolean getEdgeDirection(WorldAccess world, BlockPos pos, Direction.Axis currentAxis) {
+        Direction dir = getAxisDirection(currentAxis, false);
+        BlockPos down = pos.offset(dir);
+        BlockState rel = world.getBlockState(down);
+        if (rel.getBlock() instanceof IBigChainBlock) return false;
 
-        return isChainOrOtherAbove && !isChainOrOtherBelow;
+        dir = getAxisDirection(currentAxis, true);
+        BlockPos up = pos.offset(dir);
+        rel = world.getBlockState(up);
+
+        if (rel.getBlock() instanceof IBigChainBlock) return true;
+
+        return !world.isAir(up) && world.isAir(down);
+    }
+
+    private Direction getAxisDirection(Direction.Axis axis, boolean up) {
+        switch (axis) {
+            case Y:
+                return up ? Direction.UP : Direction.DOWN;
+            case X:
+                return up ? Direction.EAST : Direction.WEST;
+            case Z:
+                return up ? Direction.SOUTH : Direction.NORTH;
+            default:
+                throw new AssertionError();
+        }
     }
 
     /**
