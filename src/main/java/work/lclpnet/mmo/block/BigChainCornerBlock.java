@@ -18,7 +18,6 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
-import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
 
 public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock implements IBigChainBlock {
@@ -26,6 +25,8 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock imp
     public static final BooleanProperty UP = Properties.UP;
     public static final EnumProperty<ChainDock> DOCK = EnumProperty.of("dock", ChainDock.class);
     public static final EnumProperty<Direction.Axis> AXIS = Properties.AXIS;
+
+    public BigChainBlock baseBlock = null;
 
     public BigChainCornerBlock() {
         super(FabricBlockSettings.of(Material.METAL, MaterialColor.GRAY)
@@ -50,7 +51,7 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock imp
 
     @Override
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return new ItemStack(DecorationsModule.bigChainBlock);
+        return new ItemStack(baseBlock);
     }
 
     @Override

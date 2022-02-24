@@ -20,9 +20,10 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
-import work.lclpnet.mmo.module.DecorationsModule;
 import work.lclpnet.mmocontent.block.ext.MMOPillarBlock;
 import work.lclpnet.mmofurniture.block.FurnitureHorizontalWaterloggedBlock;
+
+import java.util.function.Predicate;
 
 public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBigChainBlock {
 
@@ -32,6 +33,8 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
     protected static final VoxelShape Y_SHAPE = Block.createCuboidShape(1D, 0D, 1D, 15D, 16D, 15D);
     protected static final VoxelShape Z_SHAPE = Block.createCuboidShape(1D, 1D, 0D, 15D, 15D, 16D);
     protected static final VoxelShape X_SHAPE = Block.createCuboidShape(0D, 1D, 1D, 16D, 15D, 15D);
+
+    public BigChainCornerBlock cornerBlock = null;
 
     public BigChainBlock() {
         super(FabricBlockSettings.of(Material.METAL, MaterialColor.GRAY)
@@ -161,7 +164,7 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         final Direction currentFacing = state.get(FACING);
         final Tuple properties = getProperties(currentAxis, currentFacing, direction, up);
 
-        return DecorationsModule.bigChainCornerBlock.getDefaultState()
+        return cornerBlock.getDefaultState()
                 .with(FurnitureHorizontalWaterloggedBlock.DIRECTION, properties.direction)
                 .with(BigChainCornerBlock.UP, up)
                 .with(BigChainCornerBlock.DOCK, properties.dock)
@@ -172,13 +175,17 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         Direction dir = getAxisDirection(currentAxis, false);
         BlockPos down = pos.offset(dir);
         BlockState rel = world.getBlockState(down);
-        if (rel.getBlock() instanceof IBigChainBlock) return false;
+
+        final Predicate<BlockState> relPredicate = state -> state.getBlock() instanceof IBigChainBlock &&
+                (!(state.getBlock() instanceof BigChainBlock) || state.get(AXIS).isVertical());
+
+        if (relPredicate.test(rel)) return false;
 
         dir = getAxisDirection(currentAxis, true);
         BlockPos up = pos.offset(dir);
         rel = world.getBlockState(up);
 
-        if (rel.getBlock() instanceof IBigChainBlock) return true;
+        if (relPredicate.test(rel)) return true;
 
         return !world.isAir(up) && world.isAir(down);
     }
