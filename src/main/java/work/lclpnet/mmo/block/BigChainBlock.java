@@ -87,13 +87,9 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         if (against.getBlock() instanceof BigChainBlock) {
             final Direction.Axis axis = against.get(AXIS);
             if (direction.getAxis() != axis) {
-                final Direction newDirection;
-                if (axis == Direction.Axis.Y) {
-                    final boolean up = getEdgeDirection(ctx.getWorld(), againstPos, axis);
-                    newDirection = getPlacementDirection(axis, against.get(FACING), direction, up);
-                } else {
-                    newDirection = Direction.NORTH;
-                }
+                final boolean up = getEdgeAxisUpwards(ctx.getWorld(), againstPos, axis);
+                final Direction newDirection = getPlacementDirection(axis, against.get(FACING), direction, up);
+
                 placementState = placementState.with(FACING, newDirection);
             } else {
                 placementState = placementState.with(FACING, against.get(FACING).rotateYClockwise());
@@ -112,6 +108,7 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         final Direction.Axis chainAxis = oldDirection.getAxis();
 
         if (axis == Direction.Axis.Y) {
+            // please don't ask
             /* Chain axis is X/Z */
             int shift = chainAxis == Direction.Axis.Z ? 1 : 0;
             if (up) shift = (shift + 1) % 2;
@@ -121,9 +118,27 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
             idx = new int[]{0, 3, 1, 2}[idx] + 2;
 
             return Direction.byId(idx);
+        } else if (axis == Direction.Axis.X) {
+            Direction newDir;
+            if (pointDirection.getDirection() == Direction.AxisDirection.POSITIVE) {
+                // arbitrary for some variation
+                newDir = pointDirection.getAxis() == Direction.Axis.Y ? Direction.EAST : Direction.WEST;
+            } else {
+                newDir = pointDirection.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.SOUTH;
+            }
+            if (chainAxis == Direction.Axis.Z) newDir = newDir.rotateYClockwise();
+            return up ? newDir.rotateYClockwise() : newDir;
+        } else {
+            Direction newDir;
+            if (pointDirection.getDirection() == Direction.AxisDirection.POSITIVE) {
+                // arbitrary for some variation
+                newDir = pointDirection.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.SOUTH;
+            } else {
+                newDir = pointDirection.getAxis() == Direction.Axis.Y ? Direction.EAST : Direction.WEST;
+            }
+            if (chainAxis == Direction.Axis.X) newDir = newDir.rotateYClockwise();
+            return up ? newDir.rotateYClockwise() : newDir;
         }
-
-        throw new AssertionError();
     }
 
     @Override
@@ -137,17 +152,11 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         if (placementAxis == currentAxis) return original;
 
         // determine the upwards property
-        boolean up = getEdgeDirection(world, pos, currentAxis);
+        boolean up = getEdgeAxisUpwards(world, pos, currentAxis); // implemented for all axes
 
         // determine the dock and direction
-        final Tuple properties;
-        if (currentAxis == Direction.Axis.Y) {
-            final Direction currentFacing = state.get(FACING);
-            properties = getProperties(currentAxis, currentFacing, direction, up);
-        } else {
-            // TODO implement
-            properties = new Tuple(BigChainCornerBlock.ChainDock.HORIZONTAL, Direction.NORTH);
-        }
+        final Direction currentFacing = state.get(FACING);
+        final Tuple properties = getProperties(currentAxis, currentFacing, direction, up);
 
         return DecorationsModule.bigChainCornerBlock.getDefaultState()
                 .with(FurnitureHorizontalWaterloggedBlock.DIRECTION, properties.direction)
@@ -156,7 +165,7 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
                 .with(BigChainCornerBlock.AXIS, currentAxis);
     }
 
-    private boolean getEdgeDirection(WorldAccess world, BlockPos pos, Direction.Axis currentAxis) {
+    private boolean getEdgeAxisUpwards(WorldAccess world, BlockPos pos, Direction.Axis currentAxis) {
         Direction dir = getAxisDirection(currentAxis, false);
         BlockPos down = pos.offset(dir);
         BlockState rel = world.getBlockState(down);
@@ -199,9 +208,46 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
         if (axis == Direction.Axis.Y) {
             Tuple dock = getPropertiesY(chainAxis, placedAxis, pointDirection);
             return up ? dock.invert() : dock;
+        } else if (axis == Direction.Axis.X) {
+            Direction rotated = rotateDirection(pointDirection, axis, up);
+            Tuple dock = getPropertiesX(chainAxis, placedAxis, rotated);
+
+            // don't ask why it is inconsistent to Y-Axis, it's 3 AM
+            if (up && dock.direction.getAxis() == Direction.Axis.Z) {
+                dock.direction = dock.direction.getOpposite();
+            }
+
+            return dock;
+        } else {
+            Direction rotated = rotateDirection(pointDirection, axis, up);
+            Tuple dock = getPropertiesZ(chainAxis, placedAxis, rotated);
+
+            // don't ask why it is inconsistent to Y-Axis, it's 3 AM
+            if (up && dock.direction.getAxis() == Direction.Axis.X) {
+                dock.direction = dock.direction.getOpposite();
+            }
+
+            return dock;
+        }
+    }
+
+    private Direction rotateDirection(Direction direction, Direction.Axis axis, boolean up) {
+        final Direction.Axis dirAxis = direction.getAxis();
+        if (axis == dirAxis) {
+            throw new IllegalArgumentException("Invalid direction for axis " + axis);
         }
 
-        throw new AssertionError();
+        if (dirAxis != Direction.Axis.Y) return direction;
+
+        if (axis == Direction.Axis.X) {
+            if (up) return direction == Direction.UP ? Direction.EAST : Direction.WEST;
+            else return direction == Direction.UP ? Direction.WEST : Direction.EAST;
+        } else if (axis == Direction.Axis.Z) {
+            if (up) return direction == Direction.UP ? Direction.SOUTH : Direction.NORTH;
+            else return direction == Direction.UP ? Direction.NORTH : Direction.SOUTH;
+        }
+
+        return direction;
     }
 
     private Tuple getPropertiesY(final Direction.Axis chainAxis, final Direction.Axis placedAxis, final Direction pointDirection) {
@@ -218,6 +264,29 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
             );
         }
         throw new AssertionError();
+    }
+
+    private Tuple getPropertiesX(final Direction.Axis chainAxis, final Direction.Axis placedAxis, final Direction pointDirection) {
+        /* Placed axis can only be X/Z */
+        if (chainAxis == Direction.Axis.X) {  // east,west
+            return new Tuple(
+                    BigChainCornerBlock.ChainDock.HORIZONTAL,
+                    placedAxis == Direction.Axis.Y ? pointDirection : pointDirection.getOpposite()
+            );
+        } else if (chainAxis == Direction.Axis.Z) {  // north,south
+            return new Tuple(
+                    BigChainCornerBlock.ChainDock.VERTICAL,
+                    placedAxis == Direction.Axis.Y ? pointDirection : pointDirection.getOpposite()
+            );
+        }
+        throw new AssertionError();
+    }
+
+    private Tuple getPropertiesZ(final Direction.Axis chainAxis, final Direction.Axis placedAxis, final Direction pointDirection) {
+        return new Tuple(
+                chainAxis == Direction.Axis.X ? BigChainCornerBlock.ChainDock.HORIZONTAL : BigChainCornerBlock.ChainDock.VERTICAL,
+                placedAxis == Direction.Axis.Y ? pointDirection.getOpposite() : pointDirection
+        );
     }
 
     @Override
