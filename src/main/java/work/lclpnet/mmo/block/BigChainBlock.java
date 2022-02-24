@@ -99,6 +99,9 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
     }
 
     /**
+     * WARNING: This method is completely messy due to inconsistent block state definitions.
+     *
+     * @param axis The current axis.
      * @param oldDirection The direction property
      * @param pointDirection The direction, the new corner should point to.
      * @param up Whether the corner chain block should go up or not.
@@ -194,6 +197,8 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
     }
 
     /**
+     * WARNING: This method is completely messy due to inconsistent block state definitions.
+     *
      * @param axis The axis property of the old chain.
      * @param oldDirection The facing property of the old chain, which is about to be converted to a corner.
      * @param pointDirection The direction the corner piece should point.
