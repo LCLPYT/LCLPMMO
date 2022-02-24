@@ -45,6 +45,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Environment(EnvType.CLIENT)
 public class MMOTitleScreen extends MMOScreen {
@@ -53,6 +54,7 @@ public class MMOTitleScreen extends MMOScreen {
     private static final Identifier PANORAMA_OVERLAY_TEXTURES = LCLPMMO.identifier("textures/gui/main/panorama_overlay.png"),
             MINECRAFT_TITLE_TEXTURES = LCLPMMO.identifier("textures/gui/main/title.png"),
             ACCESSIBILITY_TEXTURES = new Identifier("textures/gui/accessibility.png");
+    private static final AtomicBoolean initialTitleScreenShown = new AtomicBoolean(false);
 
     private final RotatingCubeMapRenderer panorama = new RotatingCubeMapRenderer(PANORAMA_RESOURCES);
     private final boolean showFadeInAnimation;
@@ -67,8 +69,12 @@ public class MMOTitleScreen extends MMOScreen {
         setupButtons();
     }
 
+    public static void setInitialTitleScreenShown() {
+        initialTitleScreenShown.set(true);
+    }
+
     private void setupEntity() {
-        if (client == null || (player != null && client.getNetworkHandler() != null && !hasGameProfileChanged()))
+        if (client == null || (player != null && client.getNetworkHandler() != null && !hasGameProfileChanged()) || !initialTitleScreenShown.get())
             return;
 
         ClientPlayNetworkHandler netHandler = new FakeClientPlayNetworkHandler(client);

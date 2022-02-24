@@ -16,6 +16,7 @@
     "client.SystemToastAccessor",
     "client.TexturedButtonWidgetAccessor",
     "client.TitleScreenAccessor",
+    "distanthorizons.MixinClientProxy",
     "geckolib.MixinGeckoLibCache",
     "sodium.MixinSodiumBlockRenderer"
   ],

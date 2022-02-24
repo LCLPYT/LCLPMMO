@@ -1,6 +1,7 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.MusicTracker;
@@ -20,6 +21,7 @@ import work.lclpnet.mmo.client.audio.MMOMusicSound;
 import work.lclpnet.mmo.client.event.LeaveWorldCallback;
 import work.lclpnet.mmo.client.event.ScreenOpenCallback;
 import work.lclpnet.mmo.client.gui.main.FakeClientWorld;
+import work.lclpnet.mmo.client.gui.main.MMOTitleScreen;
 import work.lclpnet.mmo.client.util.RenderWorker;
 
 import java.util.Objects;
@@ -41,6 +43,20 @@ public abstract class MixinMinecraftClient {
 
     @Shadow
     public abstract void openScreen(@Nullable Screen screen);
+
+    @Inject(
+            method = "<init>",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    public void afterInitialTitleScreen(RunArgs args, CallbackInfo ci) {
+        // title screen will be opened when the Splash screen starts up.
+        // track the event to prevent MMOTitleScreen FakeWorld initialization for compat with Distant Horizons mod.
+        MMOTitleScreen.setInitialTitleScreenShown();
+    }
 
     @Inject(
             method = "openScreen",

@@ -73,6 +73,7 @@ dependencies {
     modImplementation "maven.modrinth:iris:${project.iris_version}"
     modImplementation "maven.modrinth:sodium-extra:${project.sodiumextra_version}"
     modImplementation "maven.modrinth:reeses-sodium-options:${project.sodiumoptions_version}"
+//    modImplementation "maven.modrinth:distanthorizons:${project.distanthorizons_version}"
 
     // other mods
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
