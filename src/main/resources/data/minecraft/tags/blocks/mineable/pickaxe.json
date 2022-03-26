@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "lclpmmo:chain_corner_block",
+    "lclpmmo:chain_block",
+    "lclpmmo:iron_chain_corner_block",
+    "lclpmmo:iron_chain_block"
+  ]
+}

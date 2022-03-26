@@ -4,18 +4,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import work.lclpnet.mmo.blockentity.GlassBottleBlockEntity;
 
 import java.util.Random;
 
-public class GlassBottleBlockEntityRenderer extends BlockEntityRenderer<GlassBottleBlockEntity> {
-
-    public GlassBottleBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-    }
+public class GlassBottleBlockEntityRenderer implements BlockEntityRenderer<GlassBottleBlockEntity> {
 
     @Override
     public void render(GlassBottleBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {

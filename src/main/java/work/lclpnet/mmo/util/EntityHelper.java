@@ -24,14 +24,14 @@ public class EntityHelper {
     public static void teleport(Entity target, ServerWorld world, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> flags, float yaw, float pitch) {
         if (target instanceof ServerPlayerEntity) {
             ChunkPos chunkPos = new ChunkPos(new BlockPos(x, y, z));
-            world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, target.getEntityId());
+            world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, target.getId());
             target.stopRiding();
             if (((ServerPlayerEntity) target).isSleeping()) {
                 ((ServerPlayerEntity) target).wakeUp(true, true);
             }
 
             if (world == target.world) {
-                ((ServerPlayerEntity) target).networkHandler.teleportRequest(x, y, z, yaw, pitch, flags);
+                ((ServerPlayerEntity) target).networkHandler.requestTeleport(x, y, z, yaw, pitch, flags);
             } else {
                 ((ServerPlayerEntity) target).teleport(world, x, y, z, yaw, pitch);
             }
@@ -56,7 +56,7 @@ public class EntityHelper {
                 target.refreshPositionAndAngles(x, y, z, f, g);
                 target.setHeadYaw(f);
                 world.onDimensionChanged(target);
-                entity.removed = true;
+                entity.discard();
             }
         }
 
@@ -75,6 +75,6 @@ public class EntityHelper {
     }
 
     public static void teleportToEntity(Entity which, Entity destination) {
-        teleport(which, (ServerWorld) destination.world, destination.getX(), destination.getY(), destination.getZ(), EnumSet.noneOf(PlayerPositionLookS2CPacket.Flag.class), destination.yaw, destination.pitch);
+        teleport(which, (ServerWorld) destination.world, destination.getX(), destination.getY(), destination.getZ(), EnumSet.noneOf(PlayerPositionLookS2CPacket.Flag.class), destination.getYaw(), destination.getPitch());
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.ToastManager;
@@ -52,15 +53,14 @@ public class MMOScreen extends Screen {
         renderBackgroundTexture(0, texture);
     }
 
-    @SuppressWarnings("deprecation")
     public void renderBackgroundTexture(int vOffset, Identifier texture) {
         if (this.client == null) return;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         this.client.getTextureManager().bindTexture(texture);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
         bufferbuilder.vertex(0.0D, this.height, 0.0D).texture(0.0F, (float) this.height / 32.0F + (float) vOffset).color(64, 64, 64, 255).next();
         bufferbuilder.vertex(this.width, this.height, 0.0D).texture((float) this.width / 32.0F, (float) this.height / 32.0F + (float) vOffset).color(64, 64, 64, 255).next();
         bufferbuilder.vertex(this.width, 0.0D, 0.0D).texture((float) this.width / 32.0F, (float) vOffset).color(64, 64, 64, 255).next();
@@ -91,7 +91,7 @@ public class MMOScreen extends Screen {
                 final int iconPadding = 18;
                 final int maxTextWidth = maxToastWidth - iconPadding;
 
-                TextRenderer textRenderer = toastGui.getGame().textRenderer;
+                TextRenderer textRenderer = toastGui.getClient().textRenderer;
                 List<OrderedText> lines = textRenderer.wrapLines(text, maxTextWidth);
                 int width = 18 + lines.stream().mapToInt(textRenderer::getWidth).max().orElse(maxTextWidth); // 18 = padding for icon
 

@@ -8,7 +8,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Flutterer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Npc;
-import net.minecraft.entity.ai.TargetFinder;
+import net.minecraft.entity.ai.AboveGroundTargeting;
+import net.minecraft.entity.ai.NoPenaltySolidTargeting;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.goal.EscapeDangerGoal;
 import net.minecraft.entity.ai.goal.FollowOwnerGoal;
@@ -28,7 +29,7 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -155,7 +156,7 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
     }
 
     @Override
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
+    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 
@@ -186,6 +187,11 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
     }
 
     @Override
+    public boolean isInAir() {
+        return !this.onGround;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         boolean client = this.world.isClient;
@@ -195,7 +201,7 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
             if (sqDis >= 0.06D && sqDis <= 1D) {
                 this.navigation.stop();
                 Vec3d target = this.getPixieTarget();
-                EntityHelper.teleport(this, (ServerWorld) this.world, target.x, target.y, target.z, this.yaw, this.pitch);
+                EntityHelper.teleport(this, (ServerWorld) this.world, target.x, target.y, target.z, this.getYaw(), this.getPitch());
             }
         }
 
@@ -216,7 +222,7 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
     }
 
     @Override
-    protected int getCurrentExperience(PlayerEntity player) {
+    protected int getXpToDrop(PlayerEntity player) {
         return 1 + this.world.random.nextInt(2);
     }
 
@@ -249,8 +255,8 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
     }
 
     @Override
-    public void writeCustomDataToTag(CompoundTag tag) {
-        super.writeCustomDataToTag(tag);
+    public void writeCustomDataToNbt(NbtCompound tag) {
+        super.writeCustomDataToNbt(tag);
 
         Vec3d target = this.getPixieTarget();
         if (target != null) {
@@ -263,8 +269,8 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
     }
 
     @Override
-    public void readCustomDataFromTag(CompoundTag tag) {
-        super.readCustomDataFromTag(tag);
+    public void readCustomDataFromNbt(NbtCompound tag) {
+        super.readCustomDataFromNbt(tag);
 
         if (tag.contains("TargetX") && tag.contains("TargetY") && tag.contains("TargetZ")) {
             double tx = tag.getDouble("TargetX");
@@ -303,7 +309,7 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
     class WanderToGoal extends Goal {
 
         WanderToGoal() {
-            this.setControls(EnumSet.of(Goal.Control.MOVE));
+            this.setControls(EnumSet.of(Control.MOVE));
         }
 
         @Override
@@ -355,7 +361,7 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
 
     class WanderGoal extends Goal {
         WanderGoal() {
-            this.setControls(EnumSet.of(Goal.Control.MOVE));
+            this.setControls(EnumSet.of(Control.MOVE));
         }
 
         /**
@@ -385,8 +391,12 @@ public class PixieEntity extends TameableEntity implements Npc, Flutterer, IAnim
         @Nullable
         protected Vec3d getTargetLocation() {
             Vec3d rotation = PixieEntity.this.getRotationVec(0.0F);
-            Vec3d randomPos = TargetFinder.findAirTarget(PixieEntity.this, 8, 7, rotation, (float) Math.PI / 2F, 2, 1);
-            return randomPos != null ? randomPos : TargetFinder.findGroundTarget(PixieEntity.this, 8, 4, -2, rotation, Math.PI / 2D);
+            Vec3d randomPos = AboveGroundTargeting.find(PixieEntity.this, 8, 7, rotation.x, rotation.z, (float) Math.PI / 2F, 4, 1);
+
+            if (randomPos == null)
+                randomPos = NoPenaltySolidTargeting.find(PixieEntity.this, 8, 4, -2, rotation.x, rotation.z, Math.PI / 2D);
+
+            return randomPos;
         }
     }
 }

@@ -23,9 +23,9 @@ public class SporesParticle extends SpriteBillboardParticle {
         this.velocityZ += motionZ;
 
         float tint = 1.0F - (float) (Math.random() * (double) 0.3F);
-        this.colorRed = tint;
-        this.colorGreen = tint;
-        this.colorBlue = tint;
+        this.red = tint;
+        this.green = tint;
+        this.blue = tint;
 
         this.scale *= 0.75F;
 

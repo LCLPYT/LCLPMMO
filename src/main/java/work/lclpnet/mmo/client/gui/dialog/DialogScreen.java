@@ -68,7 +68,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
 
     @Override
     protected void init() {
-        nextButton = this.addButton(new ButtonWidget(this.width / 2 - 30, this.height - 50, 100, 20,
+        nextButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 30, this.height - 50, 100, 20,
                 new TranslatableText(dialog.hasNext() ? "mmo.screen.dialog.next" : "mmo.screen.dialog.end"), buttonWidget -> {
             if (!this.dialog.hasNext()) {
                 DialogPacket.sendDialogCompleteToServer(this.id);

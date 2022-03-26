@@ -2,13 +2,13 @@ package work.lclpnet.mmo.client.gui.main;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import work.lclpnet.mmo.LCLPMMO;
 import work.lclpnet.mmo.client.gui.MMOScreen;
@@ -21,7 +21,7 @@ public class PreIntroScreen extends MMOScreen {
     private static final long FADEIN_DELAY = 2000,
             FADEIN_TIME = 2000,
             INTRO_LENGTH = 6000;
-    private static final int bgColor = BackgroundHelper.ColorMixer.getArgb(255, 239, 50, 61);
+    private static final int bgColor = ColorHelper.Argb.getArgb(255, 239, 50, 61);
 
     private long firstRenderTime = 0L, firstTitleRenderTime = 0L;
     private boolean soundPlayed = false;
@@ -42,7 +42,7 @@ public class PreIntroScreen extends MMOScreen {
             this.firstRenderTime = System.currentTimeMillis();
             this.firstTitleRenderTime = firstRenderTime + FADEIN_DELAY;
         } else if (System.currentTimeMillis() - this.firstRenderTime >= INTRO_LENGTH) {
-            if (client != null) client.openScreen(new MMOTitleScreen(true));
+            if (client != null) client.setScreen(new MMOTitleScreen(true));
             return;
         }
 

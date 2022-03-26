@@ -6,7 +6,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.Durations;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.ai.pathing.PathNode;
@@ -23,16 +22,17 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.IntRange;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.AnimationState;
@@ -55,10 +55,10 @@ import java.util.UUID;
 public class BoletusEntity extends HostileEntity implements Angerable, IAnimatable, IEntitySyncable {
 
     private static final UUID entityUUID = UUID.fromString("6CC930D2-9F85-11EB-A8B3-0242AC130003");
-    private static final IntRange angerTimeRange = Durations.betweenSeconds(20, 39);
-    private static final IntRange angerAlliesRange = Durations.betweenSeconds(4, 6);
-    private static final IntRange angerSoundRange = Durations.betweenSeconds(0, 1);
-    private static final IntRange puffRange = Durations.betweenSeconds(10, 20);
+    private static final UniformIntProvider angerTimeRange = TimeHelper.betweenSeconds(20, 39);
+    private static final UniformIntProvider angerAlliesRange = TimeHelper.betweenSeconds(4, 6);
+    private static final UniformIntProvider angerSoundRange = TimeHelper.betweenSeconds(0, 1);
+    private static final UniformIntProvider puffRange = TimeHelper.betweenSeconds(10, 20);
     private static final EntityAttributeModifier attackingSpeedBoost = new EntityAttributeModifier(entityUUID, "Attacking speed boost", 0.175D, EntityAttributeModifier.Operation.ADDITION);
     private static final short ANIMATION_PUFF = 0, ANIMATION_ATTACK = 1;
 
@@ -79,7 +79,7 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
         this.ignoreCameraFrustum = true;
 
         if (world.isClient) factory = new AnimationFactory(this);
-        this.puffTimer = puffRange.choose(this.random);
+        this.puffTimer = puffRange.get(this.random);
     }
 
     public BoletusEntity(World world) {
@@ -109,7 +109,7 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
 
     @Override
     public void chooseRandomAngerTime() {
-        this.setAngerTime(angerTimeRange.choose(this.random));
+        this.setAngerTime(angerTimeRange.get(this.random));
     }
 
     @Override
@@ -120,9 +120,9 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
         this.goalSelector.add(3, new BoletusMeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
         this.targetSelector.add(1, new RevengeGoal(this).setGroupRevenge(BoletusEntity.class));
-        this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::shouldAngerAt));
-        this.targetSelector.add(3, new FollowTargetGoal<>(this, PixieEntity.class, 10, false, false, le -> !((PixieEntity) le).isTamed()));
-        this.targetSelector.add(4, new FollowTargetGoal<>(this, IronGolemEntity.class, true));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::shouldAngerAt));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PixieEntity.class, 10, false, false, le -> !((PixieEntity) le).isTamed()));
+        this.targetSelector.add(4, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
         this.targetSelector.add(3, new UniversalAngerGoal<>(this, true));
     }
 
@@ -158,7 +158,7 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
             }
 
             if (!this.isAiDisabled() && puffTimer-- <= 0) {
-                puffTimer = puffRange.choose(this.random);
+                puffTimer = puffRange.get(this.random);
                 MMOAnimations.syncEntityAnimation(this, ANIMATION_PUFF);
                 puffDelayTimer = 9;
             }
@@ -204,18 +204,18 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
                 this.angerNearbyAllies();
             }
 
-            this.angerNearbyAlliesTimer = angerAlliesRange.choose(this.random);
+            this.angerNearbyAlliesTimer = angerAlliesRange.get(this.random);
         }
     }
 
     private void angerNearbyAllies() {
         double range = this.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE);
-        Box box = Box.method_29968(this.getPos()).expand(range, 10.0D, range);
+        Box box = Box.from(this.getPos()).expand(range, 10.0D, range);
 
         LivingEntity attackTarget = this.getTarget();
         if (attackTarget == null) return;
 
-        this.world.getEntitiesIncludingUngeneratedChunks(BoletusEntity.class, box).stream()
+        this.world.getEntitiesByClass(BoletusEntity.class, box, EntityPredicates.EXCEPT_SPECTATOR).stream()
                 .filter(other -> other != this)
                 .filter(other -> other.getTarget() == null)
                 .filter(other -> !other.isTeammate(attackTarget))
@@ -225,8 +225,8 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
     @Override
     public void setTarget(@Nullable LivingEntity target) {
         if (this.getTarget() == null && target != null) {
-            this.angerSoundTimer = angerSoundRange.choose(this.random);
-            this.angerNearbyAlliesTimer = angerAlliesRange.choose(this.random);
+            this.angerSoundTimer = angerSoundRange.get(this.random);
+            this.angerNearbyAlliesTimer = angerAlliesRange.get(this.random);
         }
 
         if (target instanceof PlayerEntity)
@@ -279,15 +279,15 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
     }
 
     @Override
-    public void writeCustomDataToTag(CompoundTag tag) {
-        super.writeCustomDataToTag(tag);
-        this.angerToTag(tag);
+    public void writeCustomDataToNbt(NbtCompound tag) {
+        super.writeCustomDataToNbt(tag);
+        this.writeAngerToNbt(tag);
     }
 
     @Override
-    public void readCustomDataFromTag(CompoundTag tag) {
-        super.readCustomDataFromTag(tag);
-        this.angerFromTag((ServerWorld) this.world, tag);
+    public void readCustomDataFromNbt(NbtCompound tag) {
+        super.readCustomDataFromNbt(tag);
+        this.readAngerFromNbt(this.world, tag);
     }
 
     @Override
@@ -357,7 +357,7 @@ public class BoletusEntity extends HostileEntity implements Angerable, IAnimatab
             this.attacker = creature;
             this.speedTowardsTarget = speedIn;
             this.longMemory = useLongMemory;
-            this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+            this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
         }
 
         /**

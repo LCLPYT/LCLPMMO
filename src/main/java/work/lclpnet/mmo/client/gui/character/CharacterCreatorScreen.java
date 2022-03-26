@@ -47,14 +47,14 @@ public class CharacterCreatorScreen extends MMOScreen {
             this.characterName = s.trim();
             this.validate();
         });
-        this.children.add(this.characterNameField);
+        this.addDrawableChild(this.characterNameField);
 
-        this.btnRaceSel = this.addButton(new ButtonWidget(this.width / 2 - 75, 110, 150, 20,
+        this.btnRaceSel = this.addDrawableChild(new ButtonWidget(this.width / 2 - 75, 110, 150, 20,
                 new TranslatableText("mmo.menu.create_character.choose_race"),
-                buttonWidget -> this.client.openScreen(new RaceSelectionScreen(this))));
-        this.btnCreateCharacter = this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 28, 150, 20, new TranslatableText("mmo.menu.create_character.create"), buttonWidget -> this.createCharacter()));
+                buttonWidget -> this.client.setScreen(new RaceSelectionScreen(this))));
+        this.btnCreateCharacter = this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 28, 150, 20, new TranslatableText("mmo.menu.create_character.create"), buttonWidget -> this.createCharacter()));
         this.btnCreateCharacter.active = !this.characterName.isEmpty();
-        this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableText("gui.cancel"), buttonWidget -> resolver.accept(false)));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableText("gui.cancel"), buttonWidget -> resolver.accept(false)));
 
         this.setFocused(this.characterNameField);
     }

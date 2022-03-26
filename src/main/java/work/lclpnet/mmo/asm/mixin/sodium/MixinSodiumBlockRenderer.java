@@ -1,6 +1,6 @@
 package work.lclpnet.mmo.asm.mixin.sodium;
 
-import me.jellysquid.mods.sodium.client.render.chunk.compile.buffers.ChunkModelBuffers;
+import me.jellysquid.mods.sodium.client.render.chunk.compile.buffers.ChunkModelBuilder;
 import me.jellysquid.mods.sodium.client.render.pipeline.BlockRenderer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -16,11 +16,11 @@ import work.lclpnet.mmo.block.GlassBottleBlock;
 public class MixinSodiumBlockRenderer {
 
     @Inject(
-            method = "renderModel(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/render/model/BakedModel;Lme/jellysquid/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuffers;ZJ)Z",
+            method = "renderModel",
             at = @At("HEAD"),
             cancellable = true
     )
-    public void onRenderModel(BlockRenderView world, BlockState state, BlockPos pos, BakedModel model, ChunkModelBuffers buffers, boolean cull, long seed, CallbackInfoReturnable<Boolean> cir) {
+    public void onRenderModel(BlockRenderView world, BlockState state, BlockPos pos, BlockPos origin, BakedModel model, ChunkModelBuilder buffers, boolean cull, long seed, CallbackInfoReturnable<Boolean> cir) {
         if (state.getBlock() instanceof GlassBottleBlock)  // cancel rendering of GlassBottleBlock, because this is done completely by the GlassBottleBlockEntityRenderer
             cir.setReturnValue(true); // cancel and pretend it was rendered
     }

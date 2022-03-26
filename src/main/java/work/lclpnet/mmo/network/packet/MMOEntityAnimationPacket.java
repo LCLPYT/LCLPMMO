@@ -21,7 +21,7 @@ public class MMOEntityAnimationPacket extends MCPacket implements IClientPacketH
     private final int animationId;
 
     public <T extends Entity & IEntitySyncable> MMOEntityAnimationPacket(T entity, int animationId) {
-        this(entity.getEntityId(), animationId);
+        this(entity.getId(), animationId);
     }
 
     public MMOEntityAnimationPacket(int entityId, int animationId) {

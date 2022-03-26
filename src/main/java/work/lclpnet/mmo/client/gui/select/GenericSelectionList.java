@@ -6,11 +6,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -78,7 +77,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
     }
 
     public Optional<Entry> getSelection() {
-        return Optional.ofNullable(this.getSelected());
+        return Optional.ofNullable(this.getSelectedOrNull());
     }
 
     public void search(Supplier<String> searchQuery, boolean renewAvailable) {
@@ -114,8 +113,8 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         this.client.getTextureManager().bindTexture(bgTexture);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
         bufferbuilder.vertex(this.left, y2, 0.0D)
                 .texture(0.0F, (float) y2 / 32.0F)
                 .color(64, 64, 64, alpha)
@@ -135,7 +134,6 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
         tessellator.draw();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         int i = this.getScrollbarPositionX();
@@ -146,9 +144,9 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
 
         this.client.getTextureManager().bindTexture(bgTexture);
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
         bufferbuilder.vertex(this.left, this.bottom, 0.0D)
                 .texture((float) this.left / 32.0F, (float) (this.bottom + (int) this.getScrollAmount()) / 32.0F)
                 .color(32, 32, 32, 255)
@@ -179,11 +177,11 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
         this.renderWholeBackground(this.bottom, this.height, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.shadeModel(7425);
+        RenderSystem.disableDepthTest();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.disableTexture();
 
-        bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
         bufferbuilder.vertex(this.left, this.top + 4, 0.0D)
                 .texture(0.0F, 1.0F)
                 .color(0, 0, 0, 0)
@@ -202,7 +200,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
                 .next();
         tessellator.draw();
 
-        bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
         bufferbuilder.vertex(this.left, this.bottom, 0.0D)
                 .texture(0.0F, 1.0F)
                 .color(0, 0, 0, 255).next();
@@ -228,7 +226,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
                 l1 = this.top;
             }
 
-            bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+            bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             bufferbuilder.vertex(i, this.bottom, 0.0D)
                     .texture(0.0F, 1.0F)
                     .color(0, 0, 0, 255)
@@ -247,7 +245,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
                     .next();
             tessellator.draw();
 
-            bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+            bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             bufferbuilder.vertex(i, l1 + k1, 0.0D)
                     .texture(0.0F, 1.0F)
                     .color(128, 128, 128, 255)
@@ -266,7 +264,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
                     .next();
             tessellator.draw();
 
-            bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+            bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             bufferbuilder.vertex(i, l1 + k1 - 1, 0.0D)
                     .texture(0.0F, 1.0F)
                     .color(192, 192, 192, 255)
@@ -288,12 +286,11 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
 
         this.renderDecorations(matrices, mouseX, mouseY);
         RenderSystem.enableTexture();
-        RenderSystem.shadeModel(7424);
-        RenderSystem.enableAlphaTest();
+        RenderSystem.enableDepthTest();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.disableBlend();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
         int i = this.getEntryCount();
@@ -319,21 +316,21 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
 
                     if (selItem) {
                         float f = this.isFocused() ? 1.0F : 0.5F;
-                        RenderSystem.color4f(f, f, f, 1.0F);
+                        RenderSystem.setShaderColor(f, f, f, 1.0F);
                     } else { // preSelected
-                        RenderSystem.color4f(0.196F, 0.476F, 0.659F, 1.0F); // rgba(50, 121, 168, 255)
+                        RenderSystem.setShaderColor(0.196F, 0.476F, 0.659F, 1.0F); // rgba(50, 121, 168, 255)
                     }
 
-                    bufferbuilder.begin(7, VertexFormats.POSITION);
+                    bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                     bufferbuilder.vertex(l1, i1 + j1 + 2, 0.0D).next();
                     bufferbuilder.vertex(i2, i1 + j1 + 2, 0.0D).next();
                     bufferbuilder.vertex(i2, i1 - 2, 0.0D).next();
                     bufferbuilder.vertex(l1, i1 - 2, 0.0D).next();
                     tessellator.draw();
 
-                    RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+                    RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
 
-                    bufferbuilder.begin(7, VertexFormats.POSITION);
+                    bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                     bufferbuilder.vertex(l1 + 1, i1 + j1 + 1, 0.0D).next();
                     bufferbuilder.vertex(i2 - 1, i1 + j1 + 1, 0.0D).next();
                     bufferbuilder.vertex(i2 - 1, i1 - 1, 0.0D).next();
@@ -370,7 +367,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
             this.minecraft.textRenderer.draw(matrices, this.entry.getFirstLine(), (float) (x + 32 + 3), (float) (y + 9 + 3), 8421504);
             this.minecraft.textRenderer.draw(matrices, this.entry.getSecondLine(), (float) (x + 32 + 3), (float) (y + 9 + 9 + 3), 8421504);
 
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             this.minecraft.getTextureManager().bindTexture(this.entry.getIcon() != null ? this.entry.getIcon() : GenericSelectionList.unknownTexture);
 
@@ -382,7 +379,7 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
                 this.minecraft.getTextureManager().bindTexture(GenericSelectionList.selectionTextures);
                 DrawableHelper.fill(matrices, x, y, x + 32, y + 32, -1601138544);
 
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 int j = mouseX - x;
                 int i = j < 32 ? 32 : 0;
 
@@ -414,6 +411,11 @@ public class GenericSelectionList<T extends IMMOSelectionItem, S extends Screen 
 
         public T getEntry() {
             return entry;
+        }
+
+        @Override
+        public Text getNarration() {
+            return entry.getTitle();
         }
     }
 }

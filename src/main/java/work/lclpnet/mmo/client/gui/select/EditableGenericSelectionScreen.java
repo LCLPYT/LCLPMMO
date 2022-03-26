@@ -25,22 +25,22 @@ public abstract class EditableGenericSelectionScreen<T extends IMMOSelectionItem
 
     @Override
     protected void init() {
-        this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 52, 150, 20,
+        this.addDrawableChild(new ButtonWidget(this.width / 2 + 4, this.height - 52, 150, 20,
                 new TranslatableText("mmo.menu.generic.new"), buttonWidget -> addEntry()));
 
-        this.editButton = this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 28, 72, 20,
+        this.editButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 154, this.height - 28, 72, 20,
                 new TranslatableText("mmo.menu.generic.edit"),
                 buttonWidget -> this.selectionList.getSelection()
                         .ifPresent(entry -> editEntry(entry.getEntry())))
         );
 
-        this.deleteButton = this.addButton(new ButtonWidget(this.width / 2 - 76, this.height - 28, 72, 20,
+        this.deleteButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 76, this.height - 28, 72, 20,
                 new TranslatableText("mmo.menu.generic.delete"),
                 buttonWidget -> this.selectionList.getSelection()
                         .ifPresent(entry -> deleteEntry(entry.getEntry())))
         );
 
-        this.copyButton = this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 72, 20,
+        this.copyButton = this.addDrawableChild(new ButtonWidget(this.width / 2 + 4, this.height - 28, 72, 20,
                 new TranslatableText("mmo.menu.generic.duplicate"),
                 buttonWidget -> this.selectionList.getSelection()
                         .ifPresent(entry -> copyEntry(entry.getEntry())))

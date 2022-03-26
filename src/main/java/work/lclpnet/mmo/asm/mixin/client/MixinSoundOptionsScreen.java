@@ -1,6 +1,6 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
-import net.minecraft.client.gui.screen.options.SoundOptionsScreen;
+import net.minecraft.client.gui.screen.option.SoundOptionsScreen;
 import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,6 +19,6 @@ public abstract class MixinSoundOptionsScreen {
     public void addMMOMusicOnlyButton(CallbackInfo ci) {
         MMOCheckboxWidget checkbox = new MMOCheckboxWidget(10, 10, 150, 20, new TranslatableText("options_screen.audio.only_mmo"), Config.isMinecraftMusicDisabled());
         checkbox.setChangeListener(Config::setMinecraftMusicDisabled);
-        ((ScreenAccessor) this).invokeAddButton(checkbox);
+        ((ScreenAccessor) this).invokeAddDrawableChild(checkbox);
     }
 }

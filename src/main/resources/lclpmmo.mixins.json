@@ -6,6 +6,7 @@
   "client": [
     "client.ClientConnectionAccessor",
     "client.EntryListWidgetAccessor",
+    "client.GameOptionsAccessor",
     "client.MixinClientPlayerInteractionManager",
     "client.MixinMinecraftClient",
     "client.MixinMusicTracker",

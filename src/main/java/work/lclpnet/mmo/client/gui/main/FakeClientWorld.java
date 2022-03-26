@@ -18,9 +18,10 @@ public class FakeClientWorld extends ClientWorld {
 
     public FakeClientWorld(ClientPlayNetworkHandler networkHandler, Properties properties) {
         super(networkHandler, properties,
-                RegistryKey.of(Registry.DIMENSION, LCLPMMO.identifier("fakeworld")),
+                RegistryKey.of(Registry.WORLD_KEY, LCLPMMO.identifier("fakeworld")),
                 DimensionTypeAccessor.getOverworld(),
-                16,
+                2,
+                2,
                 MinecraftClient.getInstance()::getProfiler,
                 MinecraftClient.getInstance().worldRenderer,
                 true,

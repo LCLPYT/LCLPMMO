@@ -35,7 +35,7 @@ public class GlassBottleBlock extends FurnitureHorizontalWaterloggedBlock implem
     public static final BooleanProperty ENABLED = Properties.ENABLED;
 
     public GlassBottleBlock() {
-        super(Settings.of(Material.SUPPORTED)
+        super(Settings.of(Material.DECORATION)
                 .strength(0F, 0F)
                 .sounds(BlockSoundGroup.GLASS)
                 .nonOpaque()
@@ -154,8 +154,8 @@ public class GlassBottleBlock extends FurnitureHorizontalWaterloggedBlock implem
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new GlassBottleBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new GlassBottleBlockEntity(pos, state);
     }
 
     @Override

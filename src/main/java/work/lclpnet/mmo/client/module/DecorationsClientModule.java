@@ -1,6 +1,6 @@
 package work.lclpnet.mmo.client.module;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.color.world.BiomeColors;
@@ -31,6 +31,6 @@ public class DecorationsClientModule implements IClientModule {
         }, DecorationsModule.glassBottleBlock);
 
         // register GlassBottleBlockEntityRenderer, for sodium compat
-        BlockEntityRendererRegistry.INSTANCE.register(DecorationsModule.glassBottleBlockEntity, GlassBottleBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(DecorationsModule.glassBottleBlockEntity, ctx -> new GlassBottleBlockEntityRenderer());
     }
 }

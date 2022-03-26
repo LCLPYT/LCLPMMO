@@ -25,7 +25,7 @@ public class UpdateAvailableScreen extends Screen {
 
          MutableText updateComponent = new TranslatableText("lclpupdater.update")
                 .formatted(Formatting.GREEN, Formatting.BOLD);
-        addButton(new ButtonWidget(this.width / 2 - 100, (int) (this.height * 0.45), 200, 20, updateComponent, obj -> LCLPLauncher.startLCLPLauncher().thenRun(() -> {
+        addDrawableChild(new ButtonWidget(this.width / 2 - 100, (int) (this.height * 0.45), 200, 20, updateComponent, obj -> LCLPLauncher.startLCLPLauncher().thenRun(() -> {
             if (this.client != null) {
                 this.client.stop();
             }
@@ -37,7 +37,7 @@ public class UpdateAvailableScreen extends Screen {
         })));
 
         MutableText cancelComponent = new TranslatableText("lclpupdater.cancel").formatted(Formatting.RED);
-        addButton(new ButtonWidget(this.width / 2 - 100, (int) (this.height * 0.55), 200, 20, cancelComponent, obj -> {
+        addDrawableChild(new ButtonWidget(this.width / 2 - 100, (int) (this.height * 0.55), 200, 20, cancelComponent, obj -> {
             if (this.client != null) {
                 this.client.stop();
             }

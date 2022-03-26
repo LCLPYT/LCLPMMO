@@ -43,11 +43,11 @@ public class EditCharacterScreen extends MMOScreen {
     protected void init() {
         Objects.requireNonNull(this.client).keyboard.setRepeatEvents(true);
 
-        this.saveButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20,
+        this.saveButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20,
                 new TranslatableText("mmo.menu.edit_character.save"), buttonWidget -> this.saveChanges()));
 
-        this.addButton(new ButtonWidget(this.width / 2 + 2, this.height / 4 + 144 + 5, 98, 20,
-                new TranslatableText("gui.cancel"), buttonWidget -> this.client.openScreen(prevScreen)));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 + 2, this.height / 4 + 144 + 5, 98, 20,
+                new TranslatableText("gui.cancel"), buttonWidget -> this.client.setScreen(prevScreen)));
 
         this.nameEdit = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 53, 200, 20,
                 new TranslatableText("mmo.menu.edit_character.edit_name"));
@@ -56,7 +56,7 @@ public class EditCharacterScreen extends MMOScreen {
             String trimmed = s.trim();
             this.saveButton.active = !trimmed.isEmpty();
         });
-        this.children.add(this.nameEdit);
+        this.addDrawableChild(this.nameEdit);
         this.setFocused(this.nameEdit);
     }
 

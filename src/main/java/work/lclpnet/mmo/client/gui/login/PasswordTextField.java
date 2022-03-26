@@ -19,7 +19,7 @@ public class PasswordTextField extends TextFieldWidget {
                     .mapToObj(i -> "*")
                     .collect(Collectors.joining());
 
-            return OrderedText.styledString(string, Style.EMPTY);
+            return OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
         });
     }
 }

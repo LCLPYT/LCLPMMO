@@ -57,8 +57,8 @@ public abstract class GenericSelectionScreen<T extends IMMOSelectionItem> extend
         this.searchField.setChangedListener(s -> this.selectionList.search(() -> s, false));
 
         updateSelectionList();
-        this.children.add(this.searchField);
-        this.children.add(this.selectionList);
+        this.addDrawableChild(this.searchField);
+        this.addDrawableChild(this.selectionList);
 
         ButtonWidget selectBtn = new ButtonWidget(
                 this.props.selBtnPosX.apply(this.width),
@@ -70,7 +70,7 @@ public abstract class GenericSelectionScreen<T extends IMMOSelectionItem> extend
                         .ifPresent(GenericSelectionList.Entry::onSelect)
         );
 
-        this.selectButton = this.addButton(selectBtn);
+        this.selectButton = this.addDrawableChild(selectBtn);
 
         ButtonWidget cancelBtn = new ButtonWidget(
                 this.props.cancelBtnPosX.apply(this.width),
@@ -78,10 +78,10 @@ public abstract class GenericSelectionScreen<T extends IMMOSelectionItem> extend
                 this.props.cancelBtnWidth.apply(this.width),
                 this.props.cancelBtnHeight.apply(this.height),
                 new TranslatableText("gui.cancel"),
-                buttonWidget -> this.client.openScreen(this.previousScreen)
+                buttonWidget -> this.client.setScreen(this.previousScreen)
         );
 
-        this.addButton(cancelBtn);
+        this.addDrawableChild(cancelBtn);
 
         this.setButtonsActive(false);
         this.setFocused(this.searchField);
@@ -102,7 +102,7 @@ public abstract class GenericSelectionScreen<T extends IMMOSelectionItem> extend
 
     @Override
     public void onClose() {
-        Objects.requireNonNull(this.client).openScreen(this.previousScreen);
+        Objects.requireNonNull(this.client).setScreen(this.previousScreen);
     }
 
     @Override

@@ -4,10 +4,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import work.lclpnet.mmo.block.GlassBottleBlock;
 import work.lclpnet.mmo.module.DecorationsModule;
@@ -18,48 +19,48 @@ public class GlassBottleBlockEntity extends BlockEntity implements IUpdatePacket
 
     protected DefaultedList<ItemStack> items = DefaultedList.ofSize(1, ItemStack.EMPTY);
 
-    public GlassBottleBlockEntity() {
-        super(DecorationsModule.glassBottleBlockEntity);
+    public GlassBottleBlockEntity(BlockPos blockPos, BlockState state) {
+        super(DecorationsModule.glassBottleBlockEntity, blockPos, state);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
         this.readData(tag);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         this.writeData(tag);
-        return super.toTag(tag);
+        super.writeNbt(tag);
     }
 
     @Override
-    public CompoundTag toInitialChunkDataTag() {
-        CompoundTag tag = super.toInitialChunkDataTag();
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound tag = super.toInitialChunkDataNbt();
         return writeData(tag);
     }
 
     @Nullable
     @Override
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(getPos(), 0, toInitialChunkDataTag());
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
     public void onDataPacket(ClientConnection connection, BlockEntityUpdateS2CPacket packet) {
-        CompoundTag tag = packet.getCompoundTag();
+        NbtCompound tag = packet.getNbt();
         this.readData(tag);
     }
 
-    private void readData(CompoundTag compound) {
+    private void readData(NbtCompound compound) {
         this.items = DefaultedList.ofSize(1, ItemStack.EMPTY);
-        Inventories.fromTag(compound, items);
+        Inventories.readNbt(compound, items);
     }
 
-    private CompoundTag writeData(CompoundTag compound) {
+    private NbtCompound writeData(NbtCompound compound) {
 //        ItemStackSerializerHelper.saveAllItemsIncludeEmpty(compound, items, true);
-        Inventories.toTag(compound, items);
+        Inventories.writeNbt(compound, items);
         return compound;
     }
 

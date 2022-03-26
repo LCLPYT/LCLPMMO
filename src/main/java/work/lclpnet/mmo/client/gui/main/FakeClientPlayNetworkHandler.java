@@ -8,6 +8,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.Session;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket.Entry;
 import net.minecraft.text.LiteralText;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +21,15 @@ public class FakeClientPlayNetworkHandler extends ClientPlayNetworkHandler {
     private final PlayerListEntry playerInfo;
 
     public FakeClientPlayNetworkHandler(MinecraftClient client) {
-        super(client, client.currentScreen, new FakeClientConnection(NetworkSide.CLIENTBOUND), client.getSession().getProfile());
+        super(client, client.currentScreen, new FakeClientConnection(NetworkSide.CLIENTBOUND), client.getSession().getProfile(), client.createTelemetrySender());
 
         Session session = client.getSession();
-        PlayerListS2CPacket.Entry entry = new PlayerListS2CPacket().
-                new Entry(getProfile(), 0, GameMode.SURVIVAL, new LiteralText(session.getUsername()));
+        Entry entry = new PlayerListS2CPacket.Entry(
+                getProfile(),
+                0,
+                GameMode.SURVIVAL,
+                new LiteralText(session.getUsername())
+        );
 
         this.playerInfo = new PlayerListEntry(entry);
     }

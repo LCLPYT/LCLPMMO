@@ -56,7 +56,7 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
     }
 
     public DialogPacket(Dialog dialog) {
-        this(dialog.getId(), dialog.getPartner().getEntityId(), dialog.getData(), dialog.isDismissable());
+        this(dialog.getId(), dialog.getPartner().getId(), dialog.getData(), dialog.isDismissable());
     }
 
     public static DialogPacket getClosePacket() {
@@ -126,7 +126,7 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
         MinecraftClient client = MinecraftClient.getInstance();
         Objects.requireNonNull(IMMOPlayer.of(client.player))
                 .setCurrentMMODialog(null);
-        client.openScreen(null);
+        client.setScreen(null);
     }
 
     @Environment(EnvType.CLIENT)
@@ -134,7 +134,7 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
         MinecraftClient client = MinecraftClient.getInstance();
         Objects.requireNonNull(IMMOPlayer.of(client.player))
                 .setCurrentMMODialog(dialog);
-        client.openScreen(new DialogScreen<>(dialog));
+        client.setScreen(new DialogScreen<>(dialog));
     }
 
     @Environment(EnvType.CLIENT)

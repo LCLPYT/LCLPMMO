@@ -1,11 +1,10 @@
 package work.lclpnet.mmo.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,9 +28,8 @@ public class BigChainCornerBlock extends FurnitureHorizontalWaterloggedBlock imp
     public BigChainBlock baseBlock = null;
 
     public BigChainCornerBlock() {
-        super(FabricBlockSettings.of(Material.METAL, MaterialColor.GRAY)
+        super(FabricBlockSettings.of(Material.METAL, MapColor.GRAY)
                 .requiresTool()
-                .breakByTool(FabricToolTags.PICKAXES, 2)
                 .nonOpaque()
                 .strength(5.0F, 6.0F)
                 .sounds(BlockSoundGroup.METAL));

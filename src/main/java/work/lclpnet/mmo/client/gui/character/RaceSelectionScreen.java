@@ -31,7 +31,7 @@ public class RaceSelectionScreen extends GenericSelectionScreen<MMORace> {
         CharacterCreatorScreen ccs = getCharacterCreatorScreen();
         ccs.setSelectedRace(selected);
 
-        Objects.requireNonNull(this.client).openScreen(ccs);
+        Objects.requireNonNull(this.client).setScreen(ccs);
     }
 
     public CharacterCreatorScreen getCharacterCreatorScreen() {

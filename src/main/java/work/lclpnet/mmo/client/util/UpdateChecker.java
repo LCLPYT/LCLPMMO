@@ -35,7 +35,7 @@ public class UpdateChecker {
 
             if (!needsUpdate()) return false;
             else {
-                MinecraftClient.getInstance().openScreen(new UpdateAvailableScreen());
+                MinecraftClient.getInstance().setScreen(new UpdateAvailableScreen());
                 return true;
             }
         });
@@ -43,7 +43,7 @@ public class UpdateChecker {
         // in case the update check takes so long, that Minecraft has started already
         UpdateCheckCompleteEvent.EVENT.register(updateAvailable -> {
             if (updateAvailable && firstScreenOpened) {
-                RenderWorker.push(() -> MinecraftClient.getInstance().openScreen(new UpdateAvailableScreen()));
+                RenderWorker.push(() -> MinecraftClient.getInstance().setScreen(new UpdateAvailableScreen()));
             }
         });
 

@@ -45,23 +45,23 @@ public class LoginScreen extends MMOScreen {
         this.textFieldEmail.setTextFieldFocused(true);
         this.textFieldEmail.setText("");
         this.textFieldEmail.setChangedListener(this::changed);
-        this.children.add(this.textFieldEmail);
+        this.addDrawableChild(this.textFieldEmail);
 
         this.textFieldPassword = new PasswordTextField(this.textRenderer, this.width / 2 - 100, 116, 200, 20, new TranslatableText("mmo.menu.login.password"));
         this.textFieldPassword.setText("");
         this.textFieldPassword.setChangedListener(this::changed);
-        this.children.add(this.textFieldPassword);
+        this.addDrawableChild(this.textFieldPassword);
 
-        this.buttonLogin = this.addButton(new ButtonWidget(this.width / 2 - 100, 146, 200, 20, new TranslatableText("mmo.menu.login.login"), this::login));
+        this.buttonLogin = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, 146, 200, 20, new TranslatableText("mmo.menu.login.login"), this::login));
 
         ButtonWidget registerButton = new ButtonWidget(this.width / 2 - 100, this.height / 4 + 96 + 18 + 10, 200, 20,
                 new TranslatableText("mmo.menu.login.register"), button -> {
         },
                 (button, matrices, mouseX, mouseY) -> LoginScreen.this.renderTooltip(matrices, new TranslatableText("unavailable.temporary"), mouseX, mouseY));
         registerButton.active = false; // disabled until REST API provides a new register mechanism
-        this.addButton(registerButton);
+        this.addDrawableChild(registerButton);
 
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20,
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 120 + 18 + 10, 200, 20,
                 new TranslatableText("mmo.menu.login.play_offline"), buttonWidget -> finishLogin(this.client)));
 
         this.validate();
@@ -93,7 +93,7 @@ public class LoginScreen extends MMOScreen {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 17, 16777215);
-        drawCenteredString(matrices, this.textRenderer, translate("mmo.menu.login.desc"), this.width / 2, 34, 10526880);
+        drawCenteredText(matrices, this.textRenderer, translate("mmo.menu.login.desc"), this.width / 2, 34, 10526880);
         drawStringWithShadow(matrices, this.textRenderer, translate("mmo.menu.login.email"), this.width / 2 - 100, 63, loginFailed ? Color.RED : 10526880);
         drawStringWithShadow(matrices, this.textRenderer, translate("mmo.menu.login.password"), this.width / 2 - 100, 104, loginFailed ? Color.RED : 10526880);
         drawStringWithShadow(matrices, this.textRenderer, translate("mmo.menu.login.no_acc"), this.width / 2 - 100, this.height / 4 + 96 + 18 - 2, 10526880);
@@ -147,6 +147,6 @@ public class LoginScreen extends MMOScreen {
     public static void finishLogin(MinecraftClient mc) {
         Screen startingScreen = TitleScreenClientModule.getStartScreen();
         if (startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
-        mc.openScreen(startingScreen);
+        mc.setScreen(startingScreen);
     }
 }

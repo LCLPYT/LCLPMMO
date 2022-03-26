@@ -1,5 +1,6 @@
 package work.lclpnet.mmo.module;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 import work.lclpnet.mmo.block.BigChainBlock;
@@ -24,7 +25,7 @@ public class DecorationsModule implements IModule {
                 .register(identifier("glass_bottle"), ITEM_GROUP);
 
         glassBottleBlockEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier("glass_bottle"),
-                BlockEntityType.Builder.create(GlassBottleBlockEntity::new, glassBottleBlock).build(null));
+                FabricBlockEntityTypeBuilder.create(GlassBottleBlockEntity::new, glassBottleBlock).build(null));
 
         registerChainVariant("");
         registerChainVariant("iron_");

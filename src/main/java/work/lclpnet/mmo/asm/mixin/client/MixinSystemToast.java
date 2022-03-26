@@ -42,7 +42,7 @@ public class MixinSystemToast {
     public void afterDrawTexture(MatrixStack matrices, ToastManager manager, long startTime, CallbackInfoReturnable<Toast.Visibility> cir) {
         if (!lines.isEmpty()) return;
 
-        manager.getGame().textRenderer.draw(matrices, this.title, 18.0F, 12.0F, -256);
+        manager.getClient().textRenderer.draw(matrices, this.title, 18.0F, 12.0F, -256);
 
         cir.setReturnValue(startTime - this.startTime < 5000L ? Toast.Visibility.SHOW : Toast.Visibility.HIDE);
     }

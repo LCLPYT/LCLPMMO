@@ -6,19 +6,22 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.CubeMapRenderer;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.screen.options.AccessibilityOptionsScreen;
-import net.minecraft.client.gui.screen.options.LanguageOptionsScreen;
-import net.minecraft.client.gui.screen.options.OptionsScreen;
+import net.minecraft.client.gui.screen.option.AccessibilityOptionsScreen;
+import net.minecraft.client.gui.screen.option.LanguageOptionsScreen;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.util.Session;
 import net.minecraft.client.util.math.MatrixStack;
@@ -33,6 +36,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import work.lclpnet.mmo.LCLPMMO;
+import work.lclpnet.mmo.asm.mixin.client.GameOptionsAccessor;
 import work.lclpnet.mmo.asm.mixin.common.PlayerEntityAccessor;
 import work.lclpnet.mmo.client.MMOClient;
 import work.lclpnet.mmo.client.gui.MMOScreen;
@@ -51,20 +55,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MMOTitleScreen extends MMOScreen {
 
     public static final CubeMapRenderer PANORAMA_RESOURCES = new CubeMapRenderer(LCLPMMO.identifier("textures/gui/main/panorama"));
-    private static final Identifier PANORAMA_OVERLAY_TEXTURES = LCLPMMO.identifier("textures/gui/main/panorama_overlay.png"),
-            MINECRAFT_TITLE_TEXTURES = LCLPMMO.identifier("textures/gui/main/title.png"),
+    private static final Identifier PANORAMA_OVERLAY = LCLPMMO.identifier("textures/gui/main/panorama_overlay.png"),
+            MINECRAFT_TITLE_TEXTURE = LCLPMMO.identifier("textures/gui/main/title.png"),
             ACCESSIBILITY_TEXTURES = new Identifier("textures/gui/accessibility.png");
     private static final AtomicBoolean initialTitleScreenShown = new AtomicBoolean(false);
 
     private final RotatingCubeMapRenderer panorama = new RotatingCubeMapRenderer(PANORAMA_RESOURCES);
-    private final boolean showFadeInAnimation;
-    private long firstRenderTime = 0L;
+    private final boolean doBackgroundFade;
+    private long backgroundFadeStart = 0L;
     private final List<MMOButtonInfo> menuButtons = new ArrayList<>();
     private ClientPlayerEntity player;
 
     public MMOTitleScreen(boolean fade) {
         super(new LiteralText("Main menu"));
-        this.showFadeInAnimation = fade;
+        this.doBackgroundFade = fade;
 
         setupButtons();
     }
@@ -84,7 +88,7 @@ public class MMOTitleScreen extends MMOScreen {
 
         TrackedData<Byte> PLAYER_MODEL_FLAG = PlayerEntityAccessor.getPlayerModelFlag();
         int modelParts = 0;
-        for (PlayerModelPart part : client.options.getEnabledPlayerModelParts())
+        for (PlayerModelPart part : ((GameOptionsAccessor) client.options).getEnabledPlayerModelParts())
             modelParts |= part.getBitFlag();
 
         if (PLAYER_MODEL_FLAG != null)
@@ -118,7 +122,7 @@ public class MMOTitleScreen extends MMOScreen {
         for (MMOButtonInfo b : menuButtons) {
             FancyButtonWidget btn = new FancyButtonWidget(currentBtnX, currentBtnY, btnWidth, btnHeight, b.text, b.onClick, b.color, b.hoverColor);
             btn.scale = 1.5F;
-            this.addButton(btn);
+            this.addDrawableChild(btn);
             currentBtnY += btnHeight + btnVSpacing;
         }
 
@@ -127,20 +131,20 @@ public class MMOTitleScreen extends MMOScreen {
         final int imgBtnDim = 20;
         final int imgBtnY = quitY - btnVSpacing - imgBtnDim;
 
-        this.addButton(new TexturedButtonWidget(currentBtnX,
+        this.addDrawableChild(new TexturedButtonWidget(currentBtnX,
                 imgBtnY,
                 imgBtnDim,
                 imgBtnDim,
                 0,
                 106,
                 20,
-                ButtonWidget.WIDGETS_LOCATION,
+                ButtonWidget.WIDGETS_TEXTURE,
                 256,
                 256,
-                b -> this.client.openScreen(new LanguageOptionsScreen(this, this.client.options, this.client.getLanguageManager())),
+                b -> this.client.setScreen(new LanguageOptionsScreen(this, this.client.options, this.client.getLanguageManager())),
                 new TranslatableText("narrator.button.language")));
 
-        this.addButton(new TexturedButtonWidget(currentBtnX + 25,
+        this.addDrawableChild(new TexturedButtonWidget(currentBtnX + 25,
                 imgBtnY,
                 imgBtnDim,
                 imgBtnDim,
@@ -150,12 +154,12 @@ public class MMOTitleScreen extends MMOScreen {
                 ACCESSIBILITY_TEXTURES,
                 32,
                 64,
-                b -> this.client.openScreen(new AccessibilityOptionsScreen(this, this.client.options)),
+                b -> this.client.setScreen(new AccessibilityOptionsScreen(this, this.client.options)),
                 new TranslatableText("narrator.button.accessibility")));
 
         CustomImageButton replayModViewer = ReplayModIntegration.getWidget(currentBtnX + 50, imgBtnY, imgBtnDim);
         if (replayModViewer != null)
-            this.addButton(replayModViewer);
+            this.addDrawableChild(replayModViewer);
 
         Integer hoverColor = Formatting.RED.getColorValue();
         FancyButtonWidget quitButton = new FancyButtonWidget(currentBtnX,
@@ -168,7 +172,7 @@ public class MMOTitleScreen extends MMOScreen {
                 hoverColor != null ? hoverColor : 0xFFFF7070);
         quitButton.scale = 1.5F;
 
-        this.addButton(quitButton);
+        this.addDrawableChild(quitButton);
 
         final boolean loggedIn = LCLPNetworkSession.isLoggedIn();
         Text logoutText = new TranslatableText(loggedIn ? "mmo.menu.logout" : "mmo.menu.login");
@@ -185,13 +189,13 @@ public class MMOTitleScreen extends MMOScreen {
                 0xFFFF7070,
                 hoverColor != null ? hoverColor : 0xFFFF7070);
         logoutBtn.scale = 1F;
-        this.addButton(logoutBtn);
+        this.addDrawableChild(logoutBtn);
     }
 
     private void setupButtons() {
         this.menuButtons.add(new MMOButtonInfo(new TranslatableText("menu.singleplayer"), b -> {
             if (this.client != null)
-                this.client.openScreen(new SelectWorldScreen(this));
+                this.client.setScreen(new SelectWorldScreen(this));
         }));
 
         this.menuButtons.add(new MMOButtonInfo(new TranslatableText("menu.multiplayer"), b -> {
@@ -199,16 +203,16 @@ public class MMOTitleScreen extends MMOScreen {
 
             if (!LCLPNetworkSession.isLoggedIn()) {
                 displayToast(new TranslatableText("mmo.menu.error"), new TranslatableText("mmo.menu.login_first"));
-                client.openScreen(new LoginScreen());
+                client.setScreen(new LoginScreen());
                 return;
             }
 
-            this.client.openScreen(new MultiplayerScreen(this));
+            this.client.setScreen(new MultiplayerScreen(this));
         }));
 
         this.menuButtons.add(new MMOButtonInfo(new TranslatableText("menu.options"), b -> {
             if (this.client != null)
-                this.client.openScreen(new OptionsScreen(this, this.client.options));
+                this.client.setScreen(new OptionsScreen(this, this.client.options));
         }));
 
         this.menuButtons.add(new MMOButtonInfo(new TranslatableText("mmo.menu.btn_create_character"),
@@ -223,12 +227,12 @@ public class MMOTitleScreen extends MMOScreen {
         LCLPNetworkSession.startup().thenRun(() -> {
             if (LCLPNetworkSession.isLoggedIn()) {
                 displayToast(new TranslatableText("mmo.menu.login.login_successful"));
-                this.client.openScreen(new MMOTitleScreen(false));
+                this.client.setScreen(new MMOTitleScreen(false));
             } else {
-                this.client.openScreen(new LoginScreen());
+                this.client.setScreen(new LoginScreen());
             }
         }).exceptionally(err -> {
-            this.client.openScreen(new LoginScreen());
+            this.client.setScreen(new LoginScreen());
             err.printStackTrace();
             return null;
         });
@@ -237,69 +241,70 @@ public class MMOTitleScreen extends MMOScreen {
     protected void doLogout() {
         if (this.client == null) throw new AssertionError();
 
-        this.client.openScreen(new ConfirmScreen(accepted -> {
+        this.client.setScreen(new ConfirmScreen(accepted -> {
             if (accepted) {
                 MMOClient.logout().exceptionally(err -> {
                     err.printStackTrace();
                     return null;
                 });
-                this.client.openScreen(new LoginScreen());
+                this.client.setScreen(new LoginScreen());
             } else {
-                this.client.openScreen(MMOTitleScreen.this);
+                this.client.setScreen(MMOTitleScreen.this);
             }
         }, new TranslatableText("mmo.menu.confirm_logout"), new TranslatableText("mmo.menu.confirm_logout_desc")));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void render(@Nonnull MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.client == null) throw new AssertionError();
 
-        if (this.firstRenderTime == 0L && this.showFadeInAnimation)
-            this.firstRenderTime = Util.getMeasuringTimeMs();
+        if (this.backgroundFadeStart == 0L && this.doBackgroundFade)
+            this.backgroundFadeStart = Util.getMeasuringTimeMs();
 
         // Overlay
-        float alphaRaw = this.showFadeInAnimation ? (float) (Util.getMeasuringTimeMs() - this.firstRenderTime) / 1000.0F : 1.0F;
+        float alphaRaw = this.doBackgroundFade ? (float) (Util.getMeasuringTimeMs() - this.backgroundFadeStart) / 1000.0F : 1.0F;
         this.panorama.render(partialTicks, MathHelper.clamp(alphaRaw, 0.0F, 1.0F));
 
         // Panorama Overlay
-        this.client.getTextureManager().bindTexture(PANORAMA_OVERLAY_TEXTURES);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, PANORAMA_OVERLAY);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.showFadeInAnimation ? (float) MathHelper.ceil(MathHelper.clamp(alphaRaw, 0.0F, 1.0F)) : 1.0F);
-        drawTexture(matrices, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, this.doBackgroundFade ? (float)MathHelper.ceil(MathHelper.clamp(alphaRaw, 0.0f, 1.0f)) : 1.0f);
+        TitleScreen.drawTexture(matrices, 0, 0, this.width, this.height, 0.0f, 0.0f, 16, 128, 16, 128);
 
-        float alpha = this.showFadeInAnimation ? MathHelper.clamp(alphaRaw - 1.0F, 0.0F, 1.0F) : 1.0F;
+        float alpha = this.doBackgroundFade ? MathHelper.clamp(alphaRaw - 1.0F, 0.0F, 1.0F) : 1.0F;
         int l = MathHelper.ceil(alpha * 255.0F) << 24;
-        if ((l & -67108864) != 0) {  // Prevent "flicker" when fading
-            final float scale = 1F / (360F / this.height);
+        if ((l & -67108864) == 0) return;  // Prevent "flicker" when fading
 
-            // Logo
-            this.client.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
-            final int logoDim = (int) (this.width * 0.05);
-            matrices.push();
-            matrices.scale(scale, scale, scale);
-            drawTexture(matrices, (int) (logoDim / scale), (int) (logoDim / scale), 0, 0, 255, 84);
-            matrices.pop();
+        final float scale = 1F / (360F / this.height);
 
-            // Player Model
-            this.drawPlayerModel(mouseX, mouseY, alpha);
+        // Logo
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, MINECRAFT_TITLE_TEXTURE);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+        final int logoDim = (int) (this.width * 0.05);
+        matrices.push();
+        matrices.scale(scale, scale, scale);
+        drawTexture(matrices, (int) (logoDim / scale), (int) (logoDim / scale), 0, 0, 255, 84);
+        matrices.pop();
 
-            // Button Opacity
-            for (AbstractButtonWidget widget : this.buttons)
-                widget.setAlpha(alpha);
+        // Player Model
+        this.drawPlayerModel(mouseX, mouseY, alpha);
 
-            // super
-            super.render(matrices, mouseX, mouseY, partialTicks);
-        }
+        // Button Opacity
+        for (Element element : this.children())
+            if (element instanceof ClickableWidget)
+                ((ClickableWidget) element).setAlpha(alpha);
+
+        // super
+        super.render(matrices, mouseX, mouseY, partialTicks);
     }
 
-    @SuppressWarnings("deprecation")
     protected void drawPlayerModel(int mouseX, int mouseY, float alpha) {
         if (client == null) throw new AssertionError();
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         int x = (int) (this.width * 0.8), y = (int) (this.height * 0.8);
         int scale = (int) (100F * (this.height / 360F));
 
@@ -308,9 +313,11 @@ public class MMOTitleScreen extends MMOScreen {
 
         final float zOffset = 60F;
 
-        RenderSystem.translatef(0F, 0F, zOffset);
+        MatrixStack matrices = RenderSystem.getModelViewStack();
+        matrices.push();
+        matrices.translate(0F, 0F, zOffset);
         InventoryScreen.drawEntity(x, y, scale, (float) (x) - mouseX, (float) (y - 50) - mouseY, player);
-        RenderSystem.translatef(0F, 0F, -zOffset);
+        matrices.pop();
     }
 
     @Override

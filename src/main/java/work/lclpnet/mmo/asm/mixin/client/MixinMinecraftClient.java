@@ -1,10 +1,12 @@
 package work.lclpnet.mmo.asm.mixin.client;
 
+import com.mojang.authlib.minecraft.UserApiService;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.MusicTracker;
+import net.minecraft.client.util.Session;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
@@ -16,18 +18,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import work.lclpnet.mmo.asm.type.client.IMinecraftClient;
 import work.lclpnet.mmo.client.audio.MMOMusic;
 import work.lclpnet.mmo.client.audio.MMOMusicSound;
 import work.lclpnet.mmo.client.event.LeaveWorldCallback;
 import work.lclpnet.mmo.client.event.ScreenOpenCallback;
 import work.lclpnet.mmo.client.gui.main.FakeClientWorld;
 import work.lclpnet.mmo.client.gui.main.MMOTitleScreen;
+import work.lclpnet.mmo.client.util.DisabledTelemetrySender;
 import work.lclpnet.mmo.client.util.RenderWorker;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Mixin(MinecraftClient.class)
-public abstract class MixinMinecraftClient {
+public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Shadow
     @Nullable
@@ -42,13 +47,19 @@ public abstract class MixinMinecraftClient {
     public ClientWorld world;
 
     @Shadow
-    public abstract void openScreen(@Nullable Screen screen);
+    public abstract void setScreen(@Nullable Screen screen);
+
+    @Shadow @Final private UserApiService userApiService;
+
+    @Shadow @Final private Session session;
+
+    @Shadow @Final private UUID deviceSessionId;
 
     @Inject(
             method = "<init>",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V",
+                    target = "Lnet/minecraft/client/MinecraftClient;setScreen(Lnet/minecraft/client/gui/screen/Screen;)V",
                     shift = At.Shift.AFTER
             )
     )
@@ -59,7 +70,7 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(
-            method = "openScreen",
+            method = "setScreen",
             at = @At("HEAD"),
             cancellable = true
     )
@@ -76,7 +87,7 @@ public abstract class MixinMinecraftClient {
         if (Objects.equals(screen, changed)) return;
 
         ci.cancel();
-        openScreen(changed);
+        setScreen(changed);
     }
 
     @Inject(
@@ -128,5 +139,11 @@ public abstract class MixinMinecraftClient {
     )
     public void afterRender(boolean tick, CallbackInfo ci) {
         RenderWorker.doWork();
+    }
+
+    @Override
+    public DisabledTelemetrySender lclpmmo$createDisabledTelemetrySender() {
+        final MinecraftClient client = (MinecraftClient) (Object) this;
+        return new DisabledTelemetrySender(client, this.userApiService, this.session.getXuid(), this.session.getClientId(), this.deviceSessionId);
     }
 }

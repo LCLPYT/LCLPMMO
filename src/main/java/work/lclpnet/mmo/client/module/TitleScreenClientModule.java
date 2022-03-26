@@ -76,7 +76,7 @@ public class TitleScreenClientModule implements IClientModule {
     }
 
     private static void deferOpenScreen(final Screen screen) {
-        RenderWorker.push(() -> MinecraftClient.getInstance().openScreen(screen));
+        RenderWorker.push(() -> MinecraftClient.getInstance().setScreen(screen));
     }
 
     /**

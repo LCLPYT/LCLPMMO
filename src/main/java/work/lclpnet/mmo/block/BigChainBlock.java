@@ -1,7 +1,6 @@
 package work.lclpnet.mmo.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
@@ -37,9 +36,8 @@ public class BigChainBlock extends MMOPillarBlock implements Waterloggable, IBig
     public BigChainCornerBlock cornerBlock = null;
 
     public BigChainBlock() {
-        super(FabricBlockSettings.of(Material.METAL, MaterialColor.GRAY)
+        super(FabricBlockSettings.of(Material.METAL, MapColor.GRAY)
                 .requiresTool()
-                .breakByTool(FabricToolTags.PICKAXES, 2)
                 .nonOpaque()
                 .strength(5.0F, 6.0F)
                 .sounds(BlockSoundGroup.METAL));

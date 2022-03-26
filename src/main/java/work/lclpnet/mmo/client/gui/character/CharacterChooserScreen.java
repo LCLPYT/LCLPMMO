@@ -60,7 +60,7 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
         LCLPNetworkSession.getAuthorizedApi().setActiveCharacter(character.id).thenRun(() -> {
             MMOClient.setActiveCharacter(character);
             MMOClient.logActiveCharacterLoaded(character);
-            RenderWorker.push(() -> MinecraftClient.getInstance().openScreen(new MMOTitleScreen(false)));
+            RenderWorker.push(() -> MinecraftClient.getInstance().setScreen(new MMOTitleScreen(false)));
         }).exceptionally(completionError -> {
             Throwable err = completionError instanceof CompletionException ? completionError.getCause() : completionError;
             if (err == null) err = completionError;
@@ -88,25 +88,25 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
 
     @Override
     public void addEntry() {
-        Objects.requireNonNull(this.client).openScreen(new CharacterCreatorScreen(success -> {
+        Objects.requireNonNull(this.client).setScreen(new CharacterCreatorScreen(success -> {
             if (success)
                 CharacterChooserScreen.updateContentAndShow(this.client, this.getPreviousScreen(), characters.isEmpty());
-            else this.client.openScreen(this);
+            else this.client.setScreen(this);
         }));
     }
 
     @Override
     public void editEntry(CharacterSelectionItem item) {
-        Objects.requireNonNull(this.client).openScreen(new EditCharacterScreen(item.getCharacter(), this));
+        Objects.requireNonNull(this.client).setScreen(new EditCharacterScreen(item.getCharacter(), this));
     }
 
     @Override
     public void deleteEntry(CharacterSelectionItem item) {
         if (item.getCharacter().id == null) throw new NullPointerException("Character id is null.");
 
-        Objects.requireNonNull(this.client).openScreen(new ConfirmScreen(yes -> {
+        Objects.requireNonNull(this.client).setScreen(new ConfirmScreen(yes -> {
             if (yes) deleteCharacter(item.getCharacter());
-            else this.client.openScreen(CharacterChooserScreen.this);
+            else this.client.setScreen(CharacterChooserScreen.this);
         }, new TranslatableText("mmo.menu.select_character.confirm_delete"),
                 new TranslatableText("mmo.menu.select_character.confirm_delete_desc", item.getTitle())));
     }
@@ -151,12 +151,12 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
     public static void updateContentAndShow(final MinecraftClient mc, Screen prevScreen, boolean updateActiveCharacter) {
         if (!LCLPNetworkSession.isLoggedIn()) {
             MMOScreen.displayToast(mc, new TranslatableText("mmo.menu.error"), new TranslatableText("mmo.menu.login_first"));
-            mc.openScreen(new LoginScreen());
+            mc.setScreen(new LoginScreen());
             return;
         }
 
         MMOClient.fetchAndCacheCharacters(updateActiveCharacter)
                 .exceptionally(err -> new ArrayList<>())
-                .thenAccept(characters -> RenderWorker.push(() -> mc.openScreen(new CharacterChooserScreen(prevScreen, characters))));
+                .thenAccept(characters -> RenderWorker.push(() -> mc.setScreen(new CharacterChooserScreen(prevScreen, characters))));
     }
 }
