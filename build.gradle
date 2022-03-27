@@ -49,7 +49,6 @@ repositories {
         url 'https://jcenter.bintray.com/'
     }
 }
-
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -73,7 +72,10 @@ dependencies {
     modImplementation "maven.modrinth:iris:${project.iris_version}"
     modImplementation "maven.modrinth:sodium-extra:${project.sodiumextra_version}"
     modImplementation "maven.modrinth:reeses-sodium-options:${project.sodiumoptions_version}"
-//    modImplementation "maven.modrinth:distanthorizons:${project.distanthorizons_version}"
+
+    if (project.hasProperty('distanthorizons_version')) {
+        modImplementation "maven.modrinth:distanthorizons:${project.distanthorizons_version}"
+    }
 
     // other mods
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -93,8 +95,11 @@ dependencies {
     include "club.minnced:java-discord-rpc:${project.discord_rpc_version}"
     include "club.minnced:discord-rpc-release:${project.discord_rpc_natives_version}"
 
-//    modImplementation files('libs/replaymod-1.16.4-2.6.3.jar')
+    if (project.hasProperty('replaymod_local')) {
+        modImplementation files(project.replaymod_local)
+    }
 }
+
 
 loom {
     accessWidenerPath = file("src/main/resources/lclpmmo.accesswidener")
