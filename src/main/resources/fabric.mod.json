@@ -36,7 +36,8 @@
     "mmocontent": "1.7.x",
     "quark": "1.5.x",
     "cfm": "1.3.x",
-    "geckolib3": ">=3.0.33"
+    "geckolib3": ">=3.0.33",
+    "java": ">=17"
   },
   "suggests": {},
   "accessWidener": "lclpmmo.accesswidener"
