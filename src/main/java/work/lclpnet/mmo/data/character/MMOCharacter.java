@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonWriter;
+import org.jetbrains.annotations.NotNull;
 import work.lclpnet.lclpnetwork.model.JsonSerializable;
 import work.lclpnet.mmo.data.race.MMORace;
 import work.lclpnet.mmo.util.json.EasyTypeAdapter;
@@ -14,7 +15,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MMOCharacter extends JsonSerializable {
+public class MMOCharacter extends JsonSerializable implements Comparable<MMOCharacter> {
 
     @Expose(serialize = false)
     public Integer id = null;
@@ -54,6 +55,14 @@ public class MMOCharacter extends JsonSerializable {
 
     public DynamicCharacterData getData() {
         return data;
+    }
+
+    @Override
+    public int compareTo(@NotNull MMOCharacter o) {
+        // order by id, if available
+        if (this.id == null || o.id == null) return this.hashCode() - o.hashCode();
+
+        return this.id - o.id;
     }
 
     public static class Adapter extends EasyTypeAdapter<MMOCharacter> {

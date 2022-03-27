@@ -123,6 +123,7 @@ public class EditCharacterScreen extends MMOScreen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
+        this.renderBackgroundTexture(BACKGROUND_TEXTURE_ALT);
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
         drawStringWithShadow(matrices, this.textRenderer, I18n.translate("mmo.menu.edit_character.edit_name"), this.width / 2 - 100, 40, 10526880);
         this.nameEdit.render(matrices, mouseX, mouseY, delta);

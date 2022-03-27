@@ -33,10 +33,11 @@ public class CharacterChooserScreen extends EditableGenericSelectionScreen<Chara
         super(new TranslatableText("mmo.menu.select_character.title"), previousScreen);
 
         this.characters = Objects.requireNonNull(characters).stream()
+                .sorted()
                 .map(CharacterSelectionItem::new)
                 .collect(Collectors.toList());
 
-        this.background = BACKGROUND_LOCATION_ALT;
+        this.background = BACKGROUND_TEXTURE_ALT;
 
         final MMOCharacter active = MMOClient.getActiveCharacter();
         if (active != null) {

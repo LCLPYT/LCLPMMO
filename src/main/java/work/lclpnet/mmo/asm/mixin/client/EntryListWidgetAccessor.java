@@ -7,9 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(EntryListWidget.class)
 public interface EntryListWidgetAccessor {
 
-    @Accessor("renderHeader")
-    boolean shouldRenderHeader();
-
     @Accessor("renderSelection")
     boolean shouldRenderSelection();
 }

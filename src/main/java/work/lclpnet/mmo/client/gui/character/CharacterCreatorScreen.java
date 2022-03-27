@@ -66,7 +66,7 @@ public class CharacterCreatorScreen extends MMOScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(BACKGROUND_LOCATION_ALT);
+        this.renderBackgroundTexture(BACKGROUND_TEXTURE_ALT);
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, -1);
 
         drawStringWithShadow(matrices, this.textRenderer, translate("mmo.menu.create_character.character_name"), this.width / 2 - 100, 47, -6250336);

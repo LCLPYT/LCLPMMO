@@ -57,8 +57,8 @@ public abstract class GenericSelectionScreen<T extends IMMOSelectionItem> extend
         this.searchField.setChangedListener(s -> this.selectionList.search(() -> s, false));
 
         updateSelectionList();
-        this.addDrawableChild(this.searchField);
-        this.addDrawableChild(this.selectionList);
+        this.addSelectableChild(this.searchField);
+        this.addSelectableChild(this.selectionList);
 
         ButtonWidget selectBtn = new ButtonWidget(
                 this.props.selBtnPosX.apply(this.width),

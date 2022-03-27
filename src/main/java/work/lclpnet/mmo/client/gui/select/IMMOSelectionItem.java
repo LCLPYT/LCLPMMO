@@ -19,11 +19,11 @@ public interface IMMOSelectionItem {
         return null;
     }
 
-    default String getFirstLine() {
+    default Text getFirstLine() {
         return null;
     }
 
-    default String getSecondLine() {
+    default Text getSecondLine() {
         return null;
     }
 
