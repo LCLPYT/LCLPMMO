@@ -11,6 +11,7 @@ import work.lclpnet.mmo.client.event.UpdateCheckCompleteEvent;
 import work.lclpnet.mmo.client.gui.UpdateAvailableScreen;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,6 +52,13 @@ public class UpdateChecker {
     }
 
     private static void check() {
+        // check for .noupdate file
+        File noUpdate = new File(".noupdate");
+        if (noUpdate.exists() && noUpdate.isFile()) {
+            logger.info("Skipping update check, since .noupdate exists...");
+            return;
+        }
+
         logger.info("Checking for updates...");
 
         LCLPLauncher.getLCLPLauncherExecutable()
