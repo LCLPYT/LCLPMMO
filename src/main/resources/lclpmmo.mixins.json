@@ -13,6 +13,7 @@
     "client.MixinScreen",
     "client.MixinSoundOptionsScreen",
     "client.MixinSystemToast",
+    "client.MixinWorldRenderer",
     "client.MusicTrackerAccessor",
     "client.SystemToastAccessor",
     "client.TexturedButtonWidgetAccessor",
@@ -20,6 +21,7 @@
     "distanthorizons.MixinClientProxy",
     "effective.MixinWaterfallCloudGenerator",
     "geckolib.MixinGeckoLibCache",
+    "iris.MixinShadowRenderer",
     "sodium.MixinSodiumBlockRenderer"
   ],
   "injectors": {

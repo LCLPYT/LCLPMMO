@@ -2,7 +2,9 @@ package work.lclpnet.mmo.client;
 
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.MinecraftClient;
 import work.lclpnet.mmo.client.module.*;
+import work.lclpnet.mmo.client.render.FakeBlockRenderer;
 import work.lclpnet.mmo.client.util.UpdateChecker;
 import work.lclpnet.mmo.network.LMNetworking;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
@@ -25,6 +27,8 @@ public class LCLPMMOClient implements ClientModInitializer {
 
         LMNetworking.registerPackets();
         LMNetworking.registerClientPacketHandlers();
+
+        FakeBlockRenderer.setInstance(new FakeBlockRenderer(MinecraftClient.getInstance()));
 
         modules.forEach(IClientModule::register);
         modules = null;

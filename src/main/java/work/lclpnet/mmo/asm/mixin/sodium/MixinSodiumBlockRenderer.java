@@ -24,4 +24,14 @@ public class MixinSodiumBlockRenderer {
         if (state.getBlock() instanceof GlassBottleBlock)  // cancel rendering of GlassBottleBlock, because this is done completely by the GlassBottleBlockEntityRenderer
             cir.setReturnValue(true); // cancel and pretend it was rendered
     }
+
+//    @Inject(
+//            method = "renderQuadList",
+//            at = @At("HEAD")
+//    )
+//    public void onRenderQuadList(BlockRenderView world, BlockState state, BlockPos pos, BlockPos origin, LightPipeline lighter, Vec3d offset, ChunkModelBuilder buffers, List<BakedQuad> quads, ModelQuadFacing facing, CallbackInfo ci) {
+//        if (pos.getX() == 1600 && pos.getZ() == 3500 && pos.getY() == 184) {
+//            System.out.println("render fake");
+//        }
+//    }
 }
