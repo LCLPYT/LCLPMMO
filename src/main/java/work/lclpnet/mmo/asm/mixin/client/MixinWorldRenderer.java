@@ -7,7 +7,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -19,11 +18,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import work.lclpnet.mmo.asm.type.client.IWorldRenderer;
 import work.lclpnet.mmo.block.fake.*;
+import work.lclpnet.mmo.client.render.RenderContext;
+import work.lclpnet.mmo.client.render.fakeblock.FakeStructureManager;
 import work.lclpnet.mmo.client.render.fakeblock.FakeStructureRenderer;
 import work.lclpnet.mmo.client.render.fakeblock.IFakeStructureRenderer;
+import work.lclpnet.mmo.module.DecorationsModule;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Mixin(WorldRenderer.class)
@@ -40,20 +40,17 @@ public abstract class MixinWorldRenderer implements IWorldRenderer {
         if (this.world != null)
             this.world.getProfiler().swap("fakeblocks");
 
-        final VertexConsumerProvider.Immediate vertexConsumers = this.bufferBuilders.getEntityVertexConsumers();
-
         if (fakeStructureRenderer != null) {
-            final Vec3d cameraPos = camera.getPos();
-            synchronized (this.fakeStructures) {
-                for (FakeStructure fakeStructure : fakeStructures) {
-                    fakeStructureRenderer.render(fakeStructure, cameraPos, tickDelta, matrices, vertexConsumers);
-                }
+            final RenderContext renderContext = new RenderContext(matrices, tickDelta, camera.getPos(), this.bufferBuilders.getEntityVertexConsumers());
+
+            for (var fakeStructure : fakeStructureManager.getFakeStructures()) {
+                fakeStructureRenderer.render(fakeStructure.getKey(), fakeStructure.getValue(), renderContext);
             }
         }
     }
 
     @Unique
-    private final Set<FakeStructure> fakeStructures = new HashSet<>();
+    private final FakeStructureManager fakeStructureManager = new FakeStructureManager();
     @Unique
     private IFakeStructureRenderer fakeStructureRenderer;
 
@@ -73,33 +70,53 @@ public abstract class MixinWorldRenderer implements IWorldRenderer {
         if (fakeStructureRenderer != null)
             fakeStructureRenderer.setWorld(world);
 
-        fakeStructures.clear();
+        fakeStructureManager.clear();
         if (world != null) {
-            fakeStructures.add(new FakeStructure(
+            // TODO remove
+            fakeStructureManager.add(new FakeStructure(
                     UUID.randomUUID(),
                     new FakeGroup[]{
                             new FakeGroup(
                                     new Vec3f(0.5F, 0.5F, 0.5F),
-                                    new BlockPos(1600, 184, 3500),
+                                    new BlockPos(0, 0, 0),
                                     new FakeBlock[]{
                                             new FakeBlock(world, new FakeBlockPos(0, 0, 0), Blocks.COBBLESTONE.getDefaultState()),
                                             new FakeBlock(world, new FakeBlockPos(0, 0, 1), Blocks.STONE.getDefaultState()),
                                             new FakeBlock(world, new FakeBlockPos(0, 1, 1), Blocks.ICE.getDefaultState()),
                                     },
-                                    null,
+                                    new FakeGroup[]{
+                                            new FakeGroup(
+                                                    new Vec3f(0.5F, 0.5F, 0.5F),
+                                                    new BlockPos(1, 2, 0),
+                                                    new FakeBlock[]{
+                                                            new FakeBlock(world, new FakeBlockPos(0, 0, 0), DecorationsModule.glassBottleBlock.getDefaultState()),
+                                                    },
+                                                    null,
+                                                    null
+                                            )
+                                    },
                                     new Transformation[]{
                                             new Transformation(Transformation.ROTATE, new Vec3f(0.0F, (float) Math.PI / 4F, 0.0F)),
 //                                            new Transformation(Transformation.SCALE, new Vec3f(0.5F, 0.5F, 0.5F)),
                                     }
+                            ),
+                            new FakeGroup(
+                                    new Vec3f(0.5F, 0.5F, 0.5F),
+                                    new BlockPos(1, 0, 0),
+                                    new FakeBlock[]{
+                                            new FakeBlock(world, new FakeBlockPos(0, 0, 0), DecorationsModule.glassBottleBlock.getDefaultState()),
+                                    },
+                                    null,
+                                    null
                             )
                     }
-            ));
+            ), new BlockPos(1600, 184, 3500));
         }
     }
 
     @Override
-    public Set<FakeStructure> getFakeStructures() {
-        return fakeStructures;
+    public FakeStructureManager getFakeStructureManager() {
+        return this.fakeStructureManager;
     }
 
     @Override

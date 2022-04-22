@@ -11,18 +11,34 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 import work.lclpnet.mmo.block.fake.*;
+import work.lclpnet.mmo.client.render.RenderContext;
 
 public class FakeStructureRenderer implements IFakeStructureRenderer {
 
     protected World world = null;
 
+    // hold transformStack as field, so that it doesn't need to be allocated every tick.
+    // ensure the stack is properly reset after each render cycle
+    // !!this is not thread safe!!
+    protected final MatrixStack transformStack = new MatrixStack();
+
     @Override
-    public void render(FakeStructure structure, Vec3d cameraPos, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
-        for (FakeGroup group : structure.groups)
-            renderGroup(group, cameraPos, tickDelta, matrices, vertexConsumers, new MatrixStack());
+    public void render(FakeStructure structure, BlockPos position, final RenderContext ctx) {
+        final MatrixStack matrices = ctx.matrices();
+        final Vec3d cameraPos = ctx.cameraPos();
+
+        matrices.push();
+        matrices.translate(position.getX() - cameraPos.x, position.getY() - cameraPos.y, position.getZ() - cameraPos.z);
+
+        for (FakeGroup group : structure.groups) {
+            renderGroup(group, ctx);
+        }
+
+        matrices.pop();
     }
 
-    private void renderGroup(FakeGroup group, Vec3d cameraPos, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, MatrixStack transformStack) {
+    // make sure, transformStack is empty after full iteration
+    protected void renderGroup(FakeGroup group, RenderContext ctx) {
         final IFakeBlockRenderer renderer = FakeBlockRenderer.getInstance();
 
         final boolean groupTransform = group.transform != null && group.transform.length > 0;
@@ -36,26 +52,33 @@ public class FakeStructureRenderer implements IFakeStructureRenderer {
 
         if (group.children != null) {
             for (FakeGroup child : group.children)
-                this.renderGroup(child, cameraPos, tickDelta, matrices, vertexConsumers, transformStack);
+                this.renderGroup(child, ctx);
         }
 
+        final MatrixStack matrices = ctx.matrices();
         matrices.push();
-        matrices.translate(group.origin.getX() - cameraPos.x, group.origin.getY() - cameraPos.y, group.origin.getZ() - cameraPos.z);
 
-        if (groupTransform) {
+        if (!transformStack.isEmpty()) {
+            // manually apply cumulated transformations
             MatrixStack.Entry last = matrices.peek();
             MatrixStack.Entry lastTransform = transformStack.peek();
             last.getPositionMatrix().multiply(lastTransform.getPositionMatrix());
             last.getNormalMatrix().multiply(lastTransform.getNormalMatrix());
         }
 
+        // TESTING ---------------------------------------- TODO remove
         long periodMs = 3000L;
         float rot = (System.currentTimeMillis() % periodMs) / (float) periodMs * 360F;
 
         matrices.translate(0.5F, 0.5F, 0.5F);
-//        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(MathHelper.wrapDegrees(45F)));
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(MathHelper.wrapDegrees(rot)));
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(MathHelper.wrapDegrees(rot)));
         matrices.translate(-0.5F, -0.5F, -0.5F);
+        // END TESTING ------------------------------------
+
+        matrices.translate(group.origin.getX(), group.origin.getY(), group.origin.getZ());
+
+        final float tickDelta = ctx.tickDelta();
+        final VertexConsumerProvider vertexConsumers = ctx.vertexConsumers();
 
         for (FakeBlock block : group.blocks) {
             matrices.push();

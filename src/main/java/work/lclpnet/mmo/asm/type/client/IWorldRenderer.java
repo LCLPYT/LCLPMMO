@@ -1,13 +1,11 @@
 package work.lclpnet.mmo.asm.type.client;
 
-import work.lclpnet.mmo.block.fake.FakeStructure;
+import work.lclpnet.mmo.client.render.fakeblock.FakeStructureManager;
 import work.lclpnet.mmo.client.render.fakeblock.IFakeStructureRenderer;
-
-import java.util.Set;
 
 public interface IWorldRenderer {
 
-    Set<FakeStructure> getFakeStructures();
+    FakeStructureManager getFakeStructureManager();
 
     void setFakeStructureRenderer(IFakeStructureRenderer fakeStructureRenderer);
 

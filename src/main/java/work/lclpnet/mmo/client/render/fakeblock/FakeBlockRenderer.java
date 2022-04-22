@@ -19,6 +19,7 @@ import java.util.Random;
 public class FakeBlockRenderer implements IFakeBlockRenderer {
 
     private static IFakeBlockRenderer instance = null;
+    private final Random random;
 
     public static void setInstance(IFakeBlockRenderer renderer) {
         instance = Objects.requireNonNull(renderer);
@@ -32,6 +33,7 @@ public class FakeBlockRenderer implements IFakeBlockRenderer {
 
     public FakeBlockRenderer(MinecraftClient client) {
         this.client = client;
+        this.random = new Random();
     }
 
     @Override
@@ -40,6 +42,6 @@ public class FakeBlockRenderer implements IFakeBlockRenderer {
 
         final BlockState state = fakeBlock.getState();
         final RenderLayer layer = RenderLayers.getBlockLayer(state);
-        blockRenderManager.renderBlock(state, pos, fakeBlock.getWorld(), matrices, vertexConsumers.getBuffer(layer), true, new Random());
+        blockRenderManager.renderBlock(state, pos, fakeBlock.getWorld(), matrices, vertexConsumers.getBuffer(layer), true, random);
     }
 }

@@ -20,12 +20,12 @@ public class FakeGroup {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Relative to origin (model space).
+     * Relative to origin of this instance (model space).
      */
     @Nonnull
     public final Vec3f pivot;
     /**
-     * Absolute block position (world space).
+     * Relative to parent origin (model space).
      */
     @Nonnull
     public final BlockPos origin;
