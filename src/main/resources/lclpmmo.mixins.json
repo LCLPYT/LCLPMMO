@@ -31,6 +31,7 @@
     "common.DimensionTypeAccessor",
     "common.MixinPlayerEntity",
     "common.PlayerEntityAccessor",
+    "common.StorageIoWorkerAccessor",
     "geckolib.MixinGeckoLibMod"
   ]
 }

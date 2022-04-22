@@ -6,10 +6,12 @@ import net.coderbot.iris.uniforms.CameraUniforms;
 import net.coderbot.iris.uniforms.CapturedRenderingState;
 import net.coderbot.iris.vendored.joml.Vector3d;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilderStorage;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,9 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import work.lclpnet.mmo.asm.type.client.IWorldRenderer;
-import work.lclpnet.mmo.client.fakeblock.FakeBlock;
-import work.lclpnet.mmo.client.render.FakeBlockRenderer;
-import work.lclpnet.mmo.client.render.fakeblock.IFakeBlockRenderer;
+import work.lclpnet.mmo.block.fake.FakeStructure;
+import work.lclpnet.mmo.client.render.fakeblock.IFakeStructureRenderer;
 
 import java.util.Set;
 
@@ -39,28 +40,21 @@ public abstract class MixinShadowRenderer {
     public void beforeEntities(LevelRendererAccessor levelRenderer, Camera playerCamera, CallbackInfo ci) {
         if (!(levelRenderer instanceof WorldRenderer worldRenderer)) return;
 
-        final Set<FakeBlock> fakeBlocks = ((IWorldRenderer) worldRenderer).getFakeBlocks();
-        if (fakeBlocks.isEmpty()) return;
+        final Set<FakeStructure> fakeStructures = ((IWorldRenderer) worldRenderer).getFakeStructures();
+        if (fakeStructures.isEmpty()) return;
 
         MinecraftClient.getInstance().getProfiler().swap("fakeblock shadows");
 
         final VertexConsumerProvider.Immediate vertexConsumers = this.buffers.getEntityVertexConsumers();
-        final Vector3d cameraPos = CameraUniforms.getUnshiftedCameraPosition();
-        final IFakeBlockRenderer renderer = FakeBlockRenderer.getInstance();
+        final Vector3d jCameraPos = CameraUniforms.getUnshiftedCameraPosition();
+        final Vec3d cameraPos = new Vec3d(jCameraPos.x, jCameraPos.y, jCameraPos.z);
+        final IFakeStructureRenderer renderer = ((IWorldRenderer) worldRenderer).getFakeStructureRenderer();
         final MatrixStack matrices = ShadowRenderer.createShadowModelView(this.sunPathRotation, this.intervalSize);
-        final World world = levelRenderer.getLevel();
 
-        // push all fake blocks to the shadow render buffer
-        for (FakeBlock fakeBlock : fakeBlocks) {
-            matrices.push();
-
-            final BlockPos position = fakeBlock.getPos();
-            matrices.translate(position.getX() - cameraPos.x, position.getY() - cameraPos.y, position.getZ() - cameraPos.z);
-
-            int i = world != null ? WorldRenderer.getLightmapCoordinates(world, fakeBlock.getPos()) : LightmapTextureManager.MAX_LIGHT_COORDINATE;
-            renderer.render(fakeBlock, CapturedRenderingState.INSTANCE.getTickDelta(), matrices, vertexConsumers, i, OverlayTexture.DEFAULT_UV);
-
-            matrices.pop();
+        // render all fake blocks to the shadow render buffer
+        final float tickDelta = CapturedRenderingState.INSTANCE.getTickDelta();
+        for (FakeStructure fakeStructure : fakeStructures) {
+            renderer.render(fakeStructure, cameraPos, tickDelta, matrices, vertexConsumers);
         }
     }
 }

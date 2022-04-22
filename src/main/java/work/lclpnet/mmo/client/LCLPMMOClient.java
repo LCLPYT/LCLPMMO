@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import work.lclpnet.mmo.client.module.*;
-import work.lclpnet.mmo.client.render.FakeBlockRenderer;
+import work.lclpnet.mmo.client.render.fakeblock.FakeBlockRenderer;
 import work.lclpnet.mmo.client.util.UpdateChecker;
 import work.lclpnet.mmo.network.LMNetworking;
 import work.lclpnet.mmo.network.backend.LCLPNetworkSession;
