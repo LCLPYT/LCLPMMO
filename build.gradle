@@ -67,7 +67,6 @@ dependencies {
     modImplementation "work.lclpnet.mods:mmofoliage:${project.mmofoliage_version}"
 
     // CurseForge mods
-    modImplementation "curse.maven:entityculling-448233:${project.entityculling_version}"
     modImplementation "curse.maven:oauth-515054:${project.oauth_version}"
 
     // Modrinth mods
