@@ -55,12 +55,11 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    /* Mods that are on the client later on (used to resemble a production environment as close as possible) */
     // LCLPNetwork mods
     modImplementation "work.lclpnet.mods:mmocontent:${project.mmocontent_version}"
     modImplementation "work.lclpnet.mods:mmoquark:${project.mmoquark_version}"
     modImplementation ("work.lclpnet.mods:mmofurniture:${project.mmofurniture_version}") {
-        if (!project.enable_sodium) {
+        if (!project.hasProperty('sodium_version')) {
             exclude group: 'maven.modrinth', module: 'sodium'
         }
     }
@@ -70,16 +69,13 @@ dependencies {
     modImplementation "curse.maven:oauth-515054:${project.oauth_version}"
 
     // Modrinth mods
-    modImplementation "maven.modrinth:lazydfu:${project.lazydfu_version}"
-
-    if (project.enable_sodium) {
+    if (project.hasProperty('sodium_version')) {
         modImplementation "maven.modrinth:sodium:${project.sodium_version}"
-        modImplementation "maven.modrinth:sodium-extra:${project.sodiumextra_version}"
-        modImplementation "maven.modrinth:reeses-sodium-options:${project.sodiumoptions_version}"
     }
 
-    if (project.enable_iris) {
+    if (project.hasProperty('iris_version')) {
         modImplementation "maven.modrinth:iris:${project.iris_version}"
+        modImplementation "org.anarres:jcpp:${project.jcpp_version}" // Preprocessing library used by Iris
     }
 
     if (project.hasProperty('distanthorizons_version')) {
@@ -89,7 +85,6 @@ dependencies {
     // other mods
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:${geckolib_version}"
-    modImplementation "org.anarres:jcpp:${project.jcpp_version}" // Preprocessing library used by Iris
 
     /* other Java dependencies */
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
