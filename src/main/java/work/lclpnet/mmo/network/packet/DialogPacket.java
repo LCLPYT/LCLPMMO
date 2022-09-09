@@ -18,10 +18,10 @@ import work.lclpnet.mmo.data.dialog.Dialog;
 import work.lclpnet.mmo.data.dialog.DialogData;
 import work.lclpnet.mmo.data.dialog.DialogFragment;
 import work.lclpnet.mmo.event.DialogCompleteCallback;
+import work.lclpnet.mmocontent.client.networking.MMOClientNetworking;
 import work.lclpnet.mmocontent.networking.IClientPacketHandler;
 import work.lclpnet.mmocontent.networking.IServerPacketHandler;
 import work.lclpnet.mmocontent.networking.MCPacket;
-import work.lclpnet.mmocontent.networking.MMONetworking;
 
 import java.util.List;
 import java.util.Objects;
@@ -139,6 +139,6 @@ public class DialogPacket extends MCPacket implements IClientPacketHandler, ISer
 
     @Environment(EnvType.CLIENT)
     public static void sendDialogCompleteToServer(int id) {
-        MMONetworking.sendPacketToServer(new DialogPacket(id));
+        MMOClientNetworking.sendPacketToServer(new DialogPacket(id));
     }
 }

@@ -1,5 +1,7 @@
 package work.lclpnet.mmo.asm.mixin.common;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,7 +12,10 @@ import work.lclpnet.mmo.asm.type.IMMOUser;
 import work.lclpnet.mmo.data.character.MMOCharacter;
 import work.lclpnet.mmo.data.dialog.Dialog;
 import work.lclpnet.mmo.network.packet.DialogPacket;
+import work.lclpnet.mmocontent.client.networking.MMOClientNetworking;
+import work.lclpnet.mmocontent.networking.MCPacket;
 import work.lclpnet.mmocontent.networking.MMONetworking;
+import work.lclpnet.mmocontent.util.Env;
 
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity implements IMMOPlayer, IMMOUser {
@@ -55,10 +60,15 @@ public abstract class MixinPlayerEntity implements IMMOPlayer, IMMOUser {
             this.currentDialog = null; // For server players, the currentMMODialog has to be set here instead of the central (client only) method
 
             MMONetworking.sendPacketTo(closePacket, player);
-        } else {
+        } else if (Env.isClient()) {
             DialogPacket.closeDialogClient();
-            MMONetworking.sendPacketToServer(closePacket);
+            sendPacketToServer(closePacket);
         }
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void sendPacketToServer(MCPacket packet) {
+        MMOClientNetworking.sendPacketToServer(packet);
     }
 
     @Override

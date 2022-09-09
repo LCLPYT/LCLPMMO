@@ -7,7 +7,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.Session;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket.Entry;
 import net.minecraft.text.LiteralText;
 import net.minecraft.world.GameMode;
@@ -24,7 +23,7 @@ public class FakeClientPlayNetworkHandler extends ClientPlayNetworkHandler {
         super(client, client.currentScreen, new FakeClientConnection(NetworkSide.CLIENTBOUND), client.getSession().getProfile(), client.createTelemetrySender());
 
         Session session = client.getSession();
-        Entry entry = new PlayerListS2CPacket.Entry(
+        Entry entry = new Entry(
                 getProfile(),
                 0,
                 GameMode.SURVIVAL,

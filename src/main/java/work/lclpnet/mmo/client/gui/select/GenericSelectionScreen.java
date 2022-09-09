@@ -101,7 +101,7 @@ public abstract class GenericSelectionScreen<T extends IMMOSelectionItem> extend
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         Objects.requireNonNull(this.client).setScreen(this.previousScreen);
     }
 

@@ -72,7 +72,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
                 new TranslatableText(dialog.hasNext() ? "mmo.screen.dialog.next" : "mmo.screen.dialog.end"), buttonWidget -> {
             if (!this.dialog.hasNext()) {
                 DialogPacket.sendDialogCompleteToServer(this.id);
-                onClose();
+                close();
                 return;
             }
 
@@ -136,7 +136,7 @@ public class DialogScreen<T extends LivingEntity> extends MMOScreen {
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         Objects.requireNonNull(IMMOPlayer.of(MinecraftClient.getInstance().player))
                 .closeMMODialog();
     }

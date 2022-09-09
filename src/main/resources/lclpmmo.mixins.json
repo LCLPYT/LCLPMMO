@@ -18,7 +18,6 @@
     "client.TexturedButtonWidgetAccessor",
     "client.TitleScreenAccessor",
     "distanthorizons.MixinClientProxy",
-    "effective.MixinWaterfallCloudGenerator",
     "geckolib.MixinGeckoLibCache",
     "sodium.MixinSodiumBlockRenderer"
   ],

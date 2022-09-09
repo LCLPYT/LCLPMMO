@@ -82,7 +82,7 @@ public class CharacterCreatorScreen extends MMOScreen {
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         Objects.requireNonNull(this.client).keyboard.setRepeatEvents(false);
         resolver.accept(false);
     }

@@ -84,8 +84,8 @@ public class LoginScreen extends MMOScreen {
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
+    public void close() {
+        super.close();
         if (client != null) this.client.keyboard.setRepeatEvents(false);
     }
 
