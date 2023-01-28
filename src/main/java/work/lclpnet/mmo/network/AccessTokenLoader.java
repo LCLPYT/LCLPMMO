@@ -1,6 +1,8 @@
 package work.lclpnet.mmo.network;
 
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.lclpnet.mmo.Config;
 import work.lclpnet.storage.LocalLCLPStorage;
 
@@ -11,6 +13,8 @@ import java.util.concurrent.CompletionException;
 
 public class AccessTokenLoader {
 
+    private static final Logger logger = LogManager.getLogger();
+
     public static CompletableFuture<String> load() {
         return CompletableFuture.supplyAsync(() -> {
             File f;
@@ -19,6 +23,8 @@ public class AccessTokenLoader {
             } catch (IOException e) {
                 throw new CompletionException(e);
             }
+
+            logger.info("Expecting access token at {}", f.getAbsolutePath());
 
             if (!f.exists()) throw new CompletionException(new FileNotFoundException("Token file does not exist."));
 

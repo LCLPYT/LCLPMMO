@@ -11,6 +11,7 @@ import work.lclpnet.mmo.client.gui.MMOScreen;
 import work.lclpnet.mmo.client.gui.main.PreIntroScreen;
 import work.lclpnet.mmo.client.module.TitleScreenClientModule;
 import work.lclpnet.mmo.client.util.Color;
+import work.lclpnet.mmo.client.util.RenderWorker;
 import work.lclpnet.mmo.client.util.SingleRequestManager;
 
 import java.util.Objects;
@@ -145,8 +146,10 @@ public class LoginScreen extends MMOScreen {
     }
 
     public static void finishLogin(MinecraftClient mc) {
-        Screen startingScreen = TitleScreenClientModule.getStartScreen();
-        if (startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
-        mc.setScreen(startingScreen);
+        RenderWorker.push(() -> {
+            Screen startingScreen = TitleScreenClientModule.getStartScreen();
+            if (startingScreen instanceof PreIntroScreen) ((PreIntroScreen) startingScreen).renderBG = true;
+            mc.setScreen(startingScreen);
+        });
     }
 }
